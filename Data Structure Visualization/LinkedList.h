@@ -1,1 +1,23 @@
 #pragma once
+struct node {
+	int data;
+	node* next;
+	node(int x) {
+		data = x;
+		next = nullptr;
+	}
+};
+class LinkedList {
+public:
+	node* head;
+	LinkedList() {
+		head = new node(5);
+		head->next = new node(2);
+		head->next->next = new node(34);
+	}
+	bool remove(node*& head, int x);
+	node* reverselist(node* head);
+	void printlist();
+	void deletelist();
+	void insertnode(node* head, int x);
+};

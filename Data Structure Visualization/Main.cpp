@@ -2,20 +2,28 @@
 //
 
 #include <iostream>
+#include <string>
 #include "raylib.h"
+#include "UI.h"
+#include "LinkedList.h"
 
+using namespace std;
 int main()
 {
-    InitWindow(800, 600, "bruh");
-    SetWindowState(FLAG_VSYNC_HINT);
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(BLACK);
-        DrawFPS(10, 10);
-        EndDrawing();
-    }
-    CloseWindow();
-    std::cout << "Hello World!\n";
+	std::cout << "Hello World!\n";
+	UI ui;
+	LinkedList* linkedlist = new LinkedList();
+	InitWindow(800, 600, "Bruh");
+	SetWindowState(FLAG_WINDOW_RESIZABLE);
+	while (!WindowShouldClose()) {
+		BeginDrawing();
+		ClearBackground(RAYWHITE);
+		ui.LinkedListVSL(linkedlist);
+		EndDrawing();
+	}
+	CloseWindow();
+	linkedlist->deletelist();
+	delete linkedlist;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

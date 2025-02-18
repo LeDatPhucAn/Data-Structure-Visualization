@@ -14,6 +14,9 @@ public:
 		head = new node(5);
 		head->next = new node(2);
 		head->next->next = new node(34);
+		head->next->next->next = new node(-23);
+		head->next->next->next->next= new node(53);
+		head->next->next->next->next->next= new node(999);
 	}
 	bool remove(int x);
 	void printlist();

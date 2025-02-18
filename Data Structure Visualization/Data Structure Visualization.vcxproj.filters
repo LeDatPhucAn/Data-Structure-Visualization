@@ -1,60 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="source">
+      <UniqueIdentifier>{3ac6fadb-526b-4353-a2f9-172b458a24a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="header">
+      <UniqueIdentifier>{ba54a66d-7351-4c0c-ad52-61214f856617}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="assets">
+      <UniqueIdentifier>{a20c3216-3efa-4f36-a30a-ddc028af969a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\Icons">
+      <UniqueIdentifier>{317b88ed-2cfb-465e-b2d5-67c9ea2784c3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Graph.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\HashTable.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="Graph.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Main.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="HashTable.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\SinglyLinkedList.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="SinglyLinkedList.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\SinglyLinkedListUI.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="Tree.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\Tree.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="SinglyLinkedListUI.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SinglyLinkedListUI.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\UI.cpp">
+      <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Tree.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header\Graph.h">
+      <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="Graph.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header\HashTable.h">
+      <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header\SinglyLinkedList.h">
+      <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="SinglyLinkedList.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header\SinglyLinkedListUI.h">
+      <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="HashTable.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header\Tree.h">
+      <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="header\UI.h">
+      <Filter>header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\Icons\rightarrow.png">
+      <Filter>assets\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

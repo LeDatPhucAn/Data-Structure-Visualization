@@ -18,6 +18,26 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Graph.cpp" />
+    <ClCompile Include="source\HashTable.cpp" />
+    <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\SinglyLinkedList.cpp" />
+    <ClCompile Include="source\SinglyLinkedListUI.cpp" />
+    <ClCompile Include="source\Tree.cpp" />
+    <ClCompile Include="source\UI.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="header\Graph.h" />
+    <ClInclude Include="header\HashTable.h" />
+    <ClInclude Include="header\SinglyLinkedList.h" />
+    <ClInclude Include="header\SinglyLinkedListUI.h" />
+    <ClInclude Include="header\Tree.h" />
+    <ClInclude Include="header\UI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\Icons\rightarrow.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -126,23 +146,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Graph.cpp" />
-    <ClCompile Include="HashTable.cpp" />
-    <ClCompile Include="SinglyLinkedList.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="SinglyLinkedListUI.cpp" />
-    <ClCompile Include="SinglyLinkedListUI.h" />
-    <ClCompile Include="Tree.cpp" />
-    <ClCompile Include="UI.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Graph.h" />
-    <ClInclude Include="HashTable.h" />
-    <ClInclude Include="SinglyLinkedList.h" />
-    <ClInclude Include="Tree.h" />
-    <ClInclude Include="UI.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

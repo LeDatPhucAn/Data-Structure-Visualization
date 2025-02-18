@@ -1,5 +1,5 @@
 #include<iostream>
-#include"SinglyLinkedList.h"
+#include"../header/SinglyLinkedList.h"
 using namespace std;
 
 bool LinkedList::remove(int x) {

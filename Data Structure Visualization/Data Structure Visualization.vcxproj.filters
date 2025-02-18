@@ -33,6 +33,12 @@
     <ClCompile Include="Tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SinglyLinkedListUI.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SinglyLinkedListUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tree.h">

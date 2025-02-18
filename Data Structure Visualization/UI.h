@@ -1,12 +1,11 @@
 #pragma once
-#include "LinkedList.h"
+#include "SinglyLinkedList.h"
 #include "raylib.h"
 class UI {
-public:
-
-	void LinkedListVSL(LinkedList* list);
-	void drawnode(node* head, int X, int Y, int r);
-private:
+protected:
 	float fontSize = 40.0f;
 	float spacing = 2.0f;
+public:
+	void drawnode(int data, int X, int Y, int r);
+
 };

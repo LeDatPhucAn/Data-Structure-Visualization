@@ -15,9 +15,8 @@ public:
 		head->next = new node(2);
 		head->next->next = new node(34);
 	}
-	bool remove(node*& head, int x);
-	node* reverselist(node* head);
+	bool remove(int x);
 	void printlist();
 	void deletelist();
-	void insertnode(node* head, int x);
+	void insertnode(int x);
 };

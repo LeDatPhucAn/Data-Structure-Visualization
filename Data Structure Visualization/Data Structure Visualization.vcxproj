@@ -131,6 +131,8 @@
     <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="SinglyLinkedList.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="SinglyLinkedListUI.cpp" />
+    <ClCompile Include="SinglyLinkedListUI.h" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>

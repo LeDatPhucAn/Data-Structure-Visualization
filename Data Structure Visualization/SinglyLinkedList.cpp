@@ -1,24 +1,31 @@
-#pragma once
 #include<iostream>
 #include"SinglyLinkedList.h"
 using namespace std;
 
-bool LinkedList::remove(node*& head, int x) {
-	if (!head) return false;
-
-	if (head->data == x) {
-		node* temp = head;
+bool LinkedList::remove(int x) {
+	if (head && head->data == x) {
+		node* del = head;
 		head = head->next;
-		delete temp;
+		delete del;
 		return true;
 	}
-
-	return remove(head->next, x);
+	node* cur = head;
+	while (cur) {
+		if (cur->data == x) {
+			node* temp = cur;
+			cur = cur->next;
+			delete temp;
+			return true;
+		}
+		head = head->next;
+	}
+	return false;
 }
 void LinkedList::printlist() {
-	while (head) {
-		cout << head->data << " ";
-		head = head->next;
+	node* cur = head;
+	while (cur) {
+		cout << cur->data << " ";
+		cur = cur->next;
 	}
 }
 void LinkedList::deletelist() {
@@ -28,13 +35,14 @@ void LinkedList::deletelist() {
 		delete del;
 	}
 }
-void LinkedList::insertnode(node* head, int x) {
+void LinkedList::insertnode(int x) {
 	if (!head) {
 		head = new node(x);
 		return;
 	}
-	while (head && head->next) {
-		head = head->next;
+	node* cur = head;
+	while (cur && cur->next) {
+		cur = cur->next;
 	}
-	head->next = new node(x);
+	cur->next = new node(x);
 }

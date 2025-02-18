@@ -5,25 +5,21 @@
 #include <string>
 #include "raylib.h"
 #include "UI.h"
-#include "LinkedList.h"
+#include "SinglyLinkedListUI.h"
 
 using namespace std;
 int main()
 {
-	std::cout << "Hello World!\n";
-	UI ui;
-	LinkedList* linkedlist = new LinkedList();
-	InitWindow(800, 600, "Bruh");
+	SinglyLinkedListUI LinkedListUI;
+	InitWindow(1800, 1600, "Bruh");
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 	while (!WindowShouldClose()) {
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		ui.LinkedListVSL(linkedlist);
+		LinkedListUI.drawlinkedlist();
 		EndDrawing();
 	}
 	CloseWindow();
-	linkedlist->deletelist();
-	delete linkedlist;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

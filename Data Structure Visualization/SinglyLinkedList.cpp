@@ -1,6 +1,6 @@
 #pragma once
 #include<iostream>
-#include"LinkedList.h"
+#include"SinglyLinkedList.h"
 using namespace std;
 
 bool LinkedList::remove(node*& head, int x) {
@@ -14,12 +14,6 @@ bool LinkedList::remove(node*& head, int x) {
 	}
 
 	return remove(head->next, x);
-}
-node* LinkedList::reverselist(node* head) {
-	if (head) {
-		reverselist(head->next)->next = head;
-	}
-	return nullptr;
 }
 void LinkedList::printlist() {
 	while (head) {

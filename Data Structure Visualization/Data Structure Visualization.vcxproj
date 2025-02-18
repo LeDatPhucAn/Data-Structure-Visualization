@@ -129,7 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="HashTable.cpp" />
-    <ClCompile Include="LinkedList.cpp" />
+    <ClCompile Include="SinglyLinkedList.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="UI.cpp" />
@@ -137,7 +137,7 @@
   <ItemGroup>
     <ClInclude Include="Graph.h" />
     <ClInclude Include="HashTable.h" />
-    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="SinglyLinkedList.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>

@@ -27,7 +27,7 @@
     <ClCompile Include="HashTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LinkedList.cpp">
+    <ClCompile Include="SinglyLinkedList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tree.cpp">
@@ -44,7 +44,7 @@
     <ClInclude Include="UI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LinkedList.h">
+    <ClInclude Include="SinglyLinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HashTable.h">

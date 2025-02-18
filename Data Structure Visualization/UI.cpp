@@ -3,8 +3,7 @@
 #include <string>
 void UI::drawnode(node* head, int X, int Y, int r) {
 	Font font = GetFontDefault();
-	float fontSize = 40.0f;
-	float spacing = 2.0f;
+	
 	std::string messageStr = std::to_string(head->data);
 	const char* message = messageStr.c_str();
 	// Measure text dimensions

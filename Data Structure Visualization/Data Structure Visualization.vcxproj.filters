@@ -24,15 +24,6 @@
     <ClCompile Include="source\Main.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\SinglyLinkedList.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\SinglyLinkedListUI.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Tree.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="source\UI.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -50,19 +41,19 @@
     <ClInclude Include="header\SinglyLinkedListUI.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="header\Tree.h">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="header\UI.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\TreeNode.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="header\LinkedListNode.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="header\Node.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Treap.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\TreapNode.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,11 +1,14 @@
 #include "../header/UI.h"
 
+Font UI::font = { 0 };
 
-//////////////// FIX THE FONT PROBLEM
-Font UI::font = GetFontDefault();
 vector<Texture2D> UI::Icons;
 
-
+UI::UI() {
+	if (font.texture.id == 0) {
+		font = GetFontDefault();
+	}
+}
 
 void UI::initTextures() {
 	if (font.texture.id == 0) {
@@ -21,7 +24,7 @@ void UI::initTextures() {
 
 void UI::drawtext2(string message, int X, int Y, Color color) {
 	const char* messageStr = message.c_str();
-	Font font = GetFontDefault();
+	//Font font = GetFontDefault();
 	// Measure text dimensions
 	Vector2 textSize = MeasureTextEx(font, messageStr, fontSize, spacing);
 	DrawText(messageStr, X - textSize.x / 2, Y - textSize.y / 2, fontSize, color);
@@ -49,6 +52,7 @@ void UI::UnLoadAllTextures() {
 	for (const auto& texture : Icons) {
 		UnloadTexture(texture);
 	}
+	Icons.clear();
 }
 
 void UI::cleanup() {

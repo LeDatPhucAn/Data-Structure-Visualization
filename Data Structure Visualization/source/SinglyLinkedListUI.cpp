@@ -1,5 +1,4 @@
 #include "../header/SinglyLinkedListUI.h"
-
 void SinglyLinkedListUI::drawlinkedlist() {
 	node* cur = head;
 	int i = 1;
@@ -9,5 +8,7 @@ void SinglyLinkedListUI::drawlinkedlist() {
 		i += 200;
 		cur = cur->next;
 	}
+	
+
 	drawtext2("NULL", headX + i, headY, BLUE);
 }

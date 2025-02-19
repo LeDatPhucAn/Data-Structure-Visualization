@@ -16,6 +16,10 @@ protected:
 	static constexpr float fontSize = 40.0f;
 	static constexpr float spacing = 2.0f;
 public:
+	UI();
+	static Font getfont() {
+		return font;
+	}
 	void initTextures();
 	void drawnode(int data, int X, int Y, int r);
 	void drawlink(int X, int Y);

@@ -5,7 +5,7 @@ void SinglyLinkedListUI::drawlinkedlist() {
 	int i = 1;
 	while (cur) {
 		drawnode(cur->data, headX + i, headY, radius);
-		DrawTexture(Icons[0], headX + i + radius, headY - radius,WHITE);
+		drawlink(headX + i + radius, headY - radius);
 		i += 200;
 		cur = cur->next;
 	}

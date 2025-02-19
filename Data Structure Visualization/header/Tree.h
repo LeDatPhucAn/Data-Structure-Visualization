@@ -19,14 +19,16 @@ struct Node {
 class Treap {
 private:
 	Node* root;
-	Node* rotationLeft(Node* root);
-	Node* rotationRight(Node* root);
+	Node* rotateLeft(Node* root);
+	Node* rotateRight(Node* root);
+	Node* insert(Node* root, int key);
+	Node* search(Node* root, int key);
+	Node* remove(Node* root, int key);
 
 public:
 	Treap() : root(nullptr) {
 		srand(time(nullptr));
 	}
-
 	void insert(int key);
 	Node* search(int key);
 	void remove(int key);

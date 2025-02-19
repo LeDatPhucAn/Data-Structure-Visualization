@@ -2,34 +2,23 @@
 
 #include <cstdlib>
 #include <ctime>
+#include "TreapNode.h"
 
-struct Node {
-	int data;
-	int priority;
-	Node* left;
-	Node* right;
-	Node(int data) {
-		this->data = data;
-		this->priority = rand();
-		this->left = nullptr;
-		this->right = nullptr;
-	}
-};
-
+template <typename T> 
 class Treap {
 private:
-	Node* root;
-	Node* rotateLeft(Node* root);
-	Node* rotateRight(Node* root);
-	Node* insert(Node* root, int key);
-	Node* search(Node* root, int key);
-	Node* remove(Node* root, int key);
+	TreapNode<T>* root;
+	TreapNode<T>* rotateLeft(TreapNode<T>* root);
+	TreapNode<T>* rotateRight(TreapNode<T>* root);
+	TreapNode<T>* insert(TreapNode<T>* root, T key);
+	TreapNode<T>* search(TreapNode<T>* root, T key);
+	TreapNode<T>* remove(TreapNode<T>* root, T key);
 
 public:
 	Treap() : root(nullptr) {
 		srand(time(nullptr));
 	}
-	void insert(int key);
-	Node* search(int key);
-	void remove(int key);
+	void insert(T key);
+	TreapNode<T>* search(T key);
+	void remove(T key);
 };

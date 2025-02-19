@@ -1,4 +1,4 @@
-#include "HashTable.h"
+#include "../header/HashTable.h"
 #include <iostream>
 using namespace std;
 HashTable::HashTable(int s) {

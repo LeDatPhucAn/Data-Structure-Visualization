@@ -3,6 +3,7 @@
 using namespace std;
 
 bool LinkedList::remove(int x) {
+	if (!head)return false;
 	if (head && head->data == x) {
 		node* del = head;
 		head = head->next;
@@ -10,14 +11,14 @@ bool LinkedList::remove(int x) {
 		return true;
 	}
 	node* cur = head;
-	while (cur) {
-		if (cur->data == x) {
-			node* temp = cur;
-			cur = cur->next;
+	while (cur->next) {
+		if (cur->next->data == x) {
+			node* temp = cur->next;
+			cur->next = temp->next;
 			delete temp;
 			return true;
 		}
-		head = head->next;
+		cur = cur->next;
 	}
 	return false;
 }

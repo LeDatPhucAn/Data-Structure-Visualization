@@ -20,6 +20,10 @@ int main()
 
 	while (!WindowShouldClose()) {
 		BeginDrawing();
+		if (IsKeyPressed(KEY_ONE))LinkedListUI.insertnode(53);
+		if (IsKeyPressed(KEY_TWO) && LinkedListUI.remove(53)) {
+			cout << "REMOVED!\n";
+		}
 		ClearBackground(RAYWHITE);
 		LinkedListUI.drawlinkedlist();
 		EndDrawing();

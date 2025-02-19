@@ -1,7 +1,7 @@
 #pragma once
 #include "UI.h"
 #include "SinglyLinkedList.h"
-class SinglyLinkedListUI : public UI {
+class SinglyLinkedListUI : public UI, public LinkedList {
 private:
 	static constexpr int headX = 100;
 	static constexpr int headY = 450;

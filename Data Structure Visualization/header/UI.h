@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 using namespace std;
-class UI : public LinkedList{
+class UI {
 protected:
 
 	//Use default font

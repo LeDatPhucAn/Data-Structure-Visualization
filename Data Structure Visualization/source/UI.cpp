@@ -21,7 +21,7 @@ void UI::initTextures() {
 
 void UI::drawtext2(string message, int X, int Y, Color color) {
 	const char* messageStr = message.c_str();
-	Font font = GetFontDefault();
+	//Font font = GetFontDefault();
 	// Measure text dimensions
 	Vector2 textSize = MeasureTextEx(font, messageStr, fontSize, spacing);
 	DrawText(messageStr, X - textSize.x / 2, Y - textSize.y / 2, fontSize, color);
@@ -53,5 +53,4 @@ void UI::UnLoadAllTextures() {
 
 void UI::cleanup() {
 	UnLoadAllTextures();
-	deletelist();
 }

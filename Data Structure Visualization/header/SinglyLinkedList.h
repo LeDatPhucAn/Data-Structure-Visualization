@@ -17,6 +17,9 @@ public:
 		head->next->next->next = new node(-23);
 		head->next->next->next->next= new node(53);
 	}
+	~LinkedList() {
+		deletelist();
+	}
 	bool remove(int x);
 	void printlist();
 	void deletelist();

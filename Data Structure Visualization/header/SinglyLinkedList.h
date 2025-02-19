@@ -12,7 +12,7 @@ public:
 	bool remove(T x);
 	void printlist();
 	void deletelist();
-	void insertnode(T x);
+	void insertnode(T x,int pos);
 };
 template <typename T>
 bool LinkedList<T>::remove(T x) {
@@ -21,7 +21,6 @@ bool LinkedList<T>::remove(T x) {
         LLNode<T>* del = head;
         head = head->next;
         delete del;
-        del = nullptr;
         return true;
     }
     LLNode<T>* cur = head;
@@ -30,7 +29,6 @@ bool LinkedList<T>::remove(T x) {
             LLNode<T>* temp = cur->next;
             cur->next = temp->next;
             delete temp;
-            temp = nullptr;
             return true;
         }
         cur = cur->next;
@@ -58,14 +56,22 @@ void LinkedList<T>::deletelist() {
 }
 
 template <typename T>
-void LinkedList<T>::insertnode(T x) {
-    if (!head) {
-        head = new LLNode<T>(x);
+void LinkedList<T>::insertnode(T x, int pos) {
+    if (pos<1) {
         return;
     }
+    if (pos == 1) {
+		LLNode<T>* temp = new LLNode<T>(x);
+		temp->next = head;
+		head = temp;
+		return;
+    }
     LLNode<T>* cur = head;
-    while (cur && cur->next) {
+    for (int i = 1; i < pos - 1 && cur; i++) {
         cur = cur->next;
     }
-    cur->next = new LLNode<T>(x);
+    if (!cur)return;
+    LLNode<T>* newnode = new LLNode<T>(x);
+	newnode->next = cur->next;
+    cur->next = newnode;
 }

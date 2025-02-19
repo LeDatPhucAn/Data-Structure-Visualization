@@ -21,17 +21,24 @@ int main()
 		return -1; // Exit the program if the font isn't initialized
 	}
 	SinglyLinkedListUI<int> LinkedListUI;
-
+	LinkedListUI.insertnode(10, 1);
+	LinkedListUI.insertnode(20, 2);
+	LinkedListUI.insertnode(30, 1);
+	LinkedListUI.insertnode(40, 3);
+	LinkedListUI.remove(20);
+	LinkedListUI.insertnode(40, 1);
+	LinkedListUI.remove(40);
 	while (!WindowShouldClose()) {
-		BeginDrawing();
-		if (IsKeyPressed(KEY_ONE))LinkedListUI.insertnode(53);
-		if (IsKeyPressed(KEY_TWO) && LinkedListUI.remove(53)) {
+		if (IsKeyPressed(KEY_ONE))LinkedListUI.insertnode(40,1);
+		if (IsKeyPressed(KEY_TWO) && LinkedListUI.remove(40)) {
 			cout << "REMOVED!\n";
 		}
+		BeginDrawing();
 		ClearBackground(RAYWHITE);
 		LinkedListUI.drawlinkedlist();
 		EndDrawing();
 	}
 	CloseWindow();
 	ui.cleanup();
+
 }

@@ -14,7 +14,7 @@ public:
 template <typename T>
 void SinglyLinkedListUI<T>::drawlinkedlist() {
 	LLNode<T>* cur = this->head;
-	int i = 1;
+	int i = 0;
 	while (cur) {
 		drawnode(cur->data, headX + i, headY, radius);
 		drawlink(headX + i + radius, headY - radius);

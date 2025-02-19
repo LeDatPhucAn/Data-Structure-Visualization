@@ -8,6 +8,6 @@ public:
     LLNode() : Node<T>(T()), next(nullptr) {}
     LLNode(T value) : Node<T>(value), next(nullptr) {}
     ~LLNode() override {
-        delete next;
+
     }
 };

@@ -1,7 +1,8 @@
 #pragma once
 #include "UI.h"
 #include "SinglyLinkedList.h"
-class SinglyLinkedListUI : public UI, public LinkedList {
+template <typename T>
+class SinglyLinkedListUI : public UI, public LinkedList<T> {
 private:
 	static constexpr int headX = 100;
 	static constexpr int headY = 450;

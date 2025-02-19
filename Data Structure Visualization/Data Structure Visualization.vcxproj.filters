@@ -56,6 +56,15 @@
     <ClInclude Include="header\UI.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="header\TreeNode.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\LinkedListNode.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Node.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\Icons\rightarrow.png">

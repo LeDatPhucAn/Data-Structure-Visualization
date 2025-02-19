@@ -1,6 +1,7 @@
 #include "../header/SinglyLinkedListUI.h"
-void SinglyLinkedListUI::drawlinkedlist() {
-	node* cur = head;
+template <typename T>
+void SinglyLinkedListUI<T>::drawlinkedlist() {
+	LLNode<T>* cur = head;
 	int i = 1;
 	while (cur) {
 		drawnode(cur->data, headX + i, headY, radius);

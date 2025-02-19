@@ -30,9 +30,12 @@
   <ItemGroup>
     <ClInclude Include="header\Graph.h" />
     <ClInclude Include="header\HashTable.h" />
+    <ClInclude Include="header\LinkedListNode.h" />
+    <ClInclude Include="header\Node.h" />
     <ClInclude Include="header\SinglyLinkedList.h" />
     <ClInclude Include="header\SinglyLinkedListUI.h" />
     <ClInclude Include="header\Tree.h" />
+    <ClInclude Include="header\TreeNode.h" />
     <ClInclude Include="header\UI.h" />
   </ItemGroup>
   <ItemGroup>

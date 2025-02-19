@@ -1,27 +1,16 @@
 #pragma once
-struct node {
-	int data;
-	node* next;
-	node(int x) {
-		data = x;
-		next = nullptr;
-	}
-};
-class LinkedList {
+#include "../header/LinkedListNode.h"
+
+template <typename T>
+class LinkedList : public LLNode<T> {
 public:
-	node* head;
-	LinkedList() {
-		head = new node(5);
-		head->next = new node(2);
-		head->next->next = new node(34);
-		head->next->next->next = new node(-23);
-		head->next->next->next->next= new node(53);
-	}
+	LLNode<T>* head;
+	LinkedList() : head(nullptr) {}
 	~LinkedList() {
 		deletelist();
 	}
-	bool remove(int x);
+	bool remove(T x);
 	void printlist();
 	void deletelist();
-	void insertnode(int x);
+	void insertnode(T x);
 };

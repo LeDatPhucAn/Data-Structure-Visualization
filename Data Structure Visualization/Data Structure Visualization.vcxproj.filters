@@ -27,7 +27,21 @@
     <ClCompile Include="source\UI.cpp">
       <Filter>source</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
     <ClCompile Include="Treap.cpp">
+=======
+<<<<<<< HEAD
+    <ClCompile Include="source\Treap.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SinglyLinkedList.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SinglyLinkedListUI.cpp">
+=======
+    <ClCompile Include="Treap.cpp">
+>>>>>>> 75b9b526fb00c34a18a42b27ba7aed8fab6dc1df
+>>>>>>> Stashed changes
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

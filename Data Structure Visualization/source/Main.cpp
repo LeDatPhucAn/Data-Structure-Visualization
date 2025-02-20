@@ -29,7 +29,7 @@ int main()
 	LinkedListUI.insertnode(40, 1);
 	LinkedListUI.remove(40);
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_ONE))LinkedListUI.insertnode(40,1);
+		if (IsKeyPressed(KEY_ONE))LinkedListUI.insertnode(40,2);
 		if (IsKeyPressed(KEY_TWO) && LinkedListUI.remove(40)) {
 			cout << "REMOVED!\n";
 		}

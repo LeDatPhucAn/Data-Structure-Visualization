@@ -1,39 +1,23 @@
-#pragma once
-#include "Node.h"
+#include "./header/Treap.h"
 
-template <typename T>
-class TreapNode : public Node<T> {
-public:
-    int priority;
-    TreapNode<T>* left;
-    TreapNode<T>* right;
-
-    TreapNode(T value) : Node<T>(value), priority(rand()), left(nullptr), right(nullptr) {}
-    ~TreapNode() override {
-        delete left;
-        delete right;
-    }
-};
-
-template <typename T>
-TreapNode<T>* Treap<T>::rotateLeft(TreapNode<T>* root) {
-	TreapNode<T>* newRoot = root->right;
+TreapNode* Treap::rotateLeft(TreapNode* root) {
+	TreapNode* newRoot = root->right;
 	root->right = newRoot->left;
 	newRoot->left = root;
 	return newRoot;
 }
 
-template <typename T>
-TreapNode<T>* Treap<T>::rotateRight(TreapNode<T>* root) {
-	TreapNode<T>* newRoot = root->left;
+
+TreapNode* Treap::rotateRight(TreapNode* root) {
+	TreapNode* newRoot = root->left;
 	root->left = newRoot->right;
 	newRoot->right = root;
 	return newRoot;
 }
 
-template <typename T>
-TreapNode<T>* Treap<T>::insert(TreapNode<T>* root, T key) {
-	if (!root) return new TreapNode<T>(key);
+
+TreapNode* Treap::insert(TreapNode* root, int key) {
+	if (!root) return new TreapNode(key);
 	if (root->data == key) return root;
 
 	if (key < root->data) {
@@ -52,8 +36,8 @@ TreapNode<T>* Treap<T>::insert(TreapNode<T>* root, T key) {
 	return root;
 }
 
-template <typename T>
-TreapNode<T>* Treap<T>::search(TreapNode<T>* root, T key) {
+
+TreapNode* Treap::search(TreapNode* root, int key) {
 	if (!root) return nullptr;
 
 	if (root->data == key) return root;
@@ -63,8 +47,8 @@ TreapNode<T>* Treap<T>::search(TreapNode<T>* root, T key) {
 	return search(root->right, key);
 }
 
-template <typename T>
-TreapNode<T>* Treap<T>::remove(TreapNode<T>* root, T key) {
+
+TreapNode* Treap::remove(TreapNode* root, int key) {
 	if (!root) return nullptr;
 
 	if (root->data > key) {
@@ -93,17 +77,17 @@ TreapNode<T>* Treap<T>::remove(TreapNode<T>* root, T key) {
 	return root;
 }
 
-template <typename T>
-void Treap<T>::insert(T key) {
+
+void Treap::insert(int key) {
 	root = insert(root, key);
 }
 
-template <typename T>
-TreapNode<T>* Treap<T>::search(T key) {
+
+TreapNode* Treap::search(int key) {
 	return search(root, key);
 }
 
-template <typename T>
-void Treap<T>::remove(T key) {
+
+void Treap::remove(int key) {
 	root = remove(root, key);
 }

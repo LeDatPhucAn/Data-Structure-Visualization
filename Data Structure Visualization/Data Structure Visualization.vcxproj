@@ -23,6 +23,7 @@
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\UI.cpp" />
+    <ClCompile Include="Treap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Graph.h" />
@@ -32,7 +33,6 @@
     <ClInclude Include="header\SinglyLinkedList.h" />
     <ClInclude Include="header\SinglyLinkedListUI.h" />
     <ClInclude Include="header\Treap.h" />
-    <ClInclude Include="header\TreapNode.h" />
     <ClInclude Include="header\UI.h" />
   </ItemGroup>
   <ItemGroup>

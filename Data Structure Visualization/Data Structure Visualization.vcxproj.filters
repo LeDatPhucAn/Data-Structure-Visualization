@@ -27,6 +27,9 @@
     <ClCompile Include="source\UI.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="Treap.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Graph.h">
@@ -51,9 +54,6 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="header\Treap.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\TreapNode.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

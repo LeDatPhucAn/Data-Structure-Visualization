@@ -3,5 +3,5 @@
 class Animation : public UI {
 private:
 public:
-	void AnimateSprite(float X, float Y, Texture2D texture, int numframes, int frameindex);
+	void AnimateSprite(float X, float Y, Texture2D texture, int numframes, float frameindex);
 };

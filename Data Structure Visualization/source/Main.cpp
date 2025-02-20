@@ -30,7 +30,8 @@ int main()
 	LinkedListUI.remove(40);
 
 	Animation sprite;
-	int frameindex = 0;
+	int radius = 0;
+	float frameindex = 0;
 	int framedelay = 100;
 	int framedelaycounter = 0;
 	bool isanimating = false;
@@ -51,7 +52,7 @@ int main()
 			posX+=0.25;
 			isanimating = true;
 		}
-		else if (IsKeyDown(KEY_DOWN)) {
+		if (IsKeyDown(KEY_DOWN)) {
 			posY += 0.25;
 			isanimating = true;
 		}
@@ -59,7 +60,7 @@ int main()
 			posY -= 0.25;
 			isanimating = true;
 		}
-		else {
+		if(!IsKeyDown(KEY_RIGHT)&&!IsKeyDown(KEY_LEFT)&&!IsKeyDown(KEY_DOWN)&&!IsKeyDown(KEY_UP)) {
 			isanimating = false;
 		}
 		framedelaycounter++;
@@ -67,14 +68,19 @@ int main()
 			framedelaycounter = 0;
 			if(isanimating)
 			{
-				frameindex++;
-				if (frameindex == 10) frameindex = 0;
+				frameindex+=0.55;
+				radius+=4;
+				if (radius == 52)radius = 50;
+				if (frameindex == 10) frameindex = 10;
 			}
 		}
 		// draw
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		sprite.AnimateSprite(posX, posY, UI::Icons[1], 10, frameindex);
+		//DrawCircle(posX, posY, radius, RED);
+		DrawTexturePro(UI::Icons[0], { 0,0,(float)UI::Icons[0].width,(float)UI::Icons[0].height }, { posX,posY,(float)UI::Icons[0].width,(float)UI::Icons[0].height }, { (float)UI::Icons[0].width / 2,(float)UI::Icons[0].height / 2 }, posX, WHITE);
+		//ui.drawlink(posX + 50, posY - 50);
+		//sprite.AnimateSprite(200, 200, UI::Icons[0], 10, frameindex);
 		//LinkedListUI.drawlinkedlist();
 		EndDrawing();
 	}

@@ -1,12 +1,11 @@
 #pragma once
-#include "../header/Node.h"
+#include "Node.h"
 
-template <typename T>
-class LLNode : public Node<T> {
+class LLNode : public Node {
 public:
-    LLNode<T>* next;
-    LLNode() : Node<T>(T()), next(nullptr) {}
-    LLNode(T value) : Node<T>(value), next(nullptr) {}
+    LLNode* next;
+    LLNode() : Node(0), next(nullptr) {}
+    LLNode(int value) : Node(value), next(nullptr) {}
     ~LLNode() override {
 
     }

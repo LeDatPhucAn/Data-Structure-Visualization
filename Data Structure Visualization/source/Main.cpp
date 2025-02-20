@@ -20,7 +20,7 @@ int main()
 		std::cerr << "Font not initialized correctly!\n";
 		return -1; // Exit the program if the font isn't initialized
 	}
-	SinglyLinkedListUI<int> LinkedListUI;
+	SinglyLinkedListUI LinkedListUI;
 	LinkedListUI.insertnode(10, 1);
 	LinkedListUI.insertnode(20, 2);
 	LinkedListUI.insertnode(30, 1);

@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
 using namespace std;
-template <typename T>
+
 class Node {
 public:
-    T data;
-    Node(T value) : data(value) {}
+    int data;
+    Node(int value) : data(value) {}
     virtual ~Node() {}
 };

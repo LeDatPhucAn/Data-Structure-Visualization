@@ -22,6 +22,9 @@
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\SinglyLinkedList.cpp" />
+    <ClCompile Include="source\SinglyLinkedListUI.cpp" />
+    <ClCompile Include="source\Treap.cpp" />
     <ClCompile Include="source\UI.cpp" />
     <ClCompile Include="Treap.cpp" />
   </ItemGroup>

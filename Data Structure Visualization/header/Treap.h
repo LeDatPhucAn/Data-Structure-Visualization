@@ -2,25 +2,13 @@
 
 #include <cstdlib>
 #include <ctime>
-
-class TreapNode {
-public:
-	int data;
-	int priority;
-	TreapNode* left;
-	TreapNode* right;
-
-	TreapNode(int data) : data(data), priority(rand()), left(nullptr), right(nullptr) {};
-	~TreapNode() {
-		delete left;
-		left = nullptr;
-		delete right;
-		right = nullptr;
-	}
-};
+#include "header/TreapNode.h"
 
 class Treap {
 private:
+	static constexpr int MIN_SIZE = 0;
+	// temporarily set
+	static constexpr int MAX_SIZE = 20;
 	TreapNode* root;
 	TreapNode* rotateLeft(TreapNode* root);
 	TreapNode* rotateRight(TreapNode* root);

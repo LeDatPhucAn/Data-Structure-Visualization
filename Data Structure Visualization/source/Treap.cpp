@@ -1,4 +1,4 @@
-#include "../header/Treap.h"
+#include "header/Treap.h"
 
 TreapNode* Treap::rotateLeft(TreapNode* root) {
     TreapNode* newRoot = root->right;

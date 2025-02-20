@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include "raylib.h"
-#include "../header/UI.h"
+#include "../header/Animation.h"
 #include "../header/SinglyLinkedListUI.h"
 
 using namespace std;
@@ -28,14 +28,54 @@ int main()
 	LinkedListUI.remove(20);
 	LinkedListUI.insertnode(40, 1);
 	LinkedListUI.remove(40);
+
+	Animation sprite;
+	int frameindex = 0;
+	int framedelay = 100;
+	int framedelaycounter = 0;
+	bool isanimating = false;
+	float posX = 200;
+	float posY = 200;
 	while (!WindowShouldClose()) {
+
+		// update
 		if (IsKeyPressed(KEY_ONE))LinkedListUI.insertnode(40,2);
 		if (IsKeyPressed(KEY_TWO) && LinkedListUI.remove(40)) {
 			cout << "REMOVED!\n";
 		}
+		if (IsKeyDown(KEY_LEFT)) {
+			posX-=0.25;
+			isanimating = true;
+		}
+		else if (IsKeyDown(KEY_RIGHT)) {
+			posX+=0.25;
+			isanimating = true;
+		}
+		else if (IsKeyDown(KEY_DOWN)) {
+			posY += 0.25;
+			isanimating = true;
+		}
+		else if (IsKeyDown(KEY_UP)) {
+			posY -= 0.25;
+			isanimating = true;
+		}
+		else {
+			isanimating = false;
+		}
+		framedelaycounter++;
+		if (framedelaycounter >= framedelay) {
+			framedelaycounter = 0;
+			if(isanimating)
+			{
+				frameindex++;
+				if (frameindex == 10) frameindex = 0;
+			}
+		}
+		// draw
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		LinkedListUI.drawlinkedlist();
+		sprite.AnimateSprite(posX, posY, UI::Icons[1], 10, frameindex);
+		//LinkedListUI.drawlinkedlist();
 		EndDrawing();
 	}
 	CloseWindow();

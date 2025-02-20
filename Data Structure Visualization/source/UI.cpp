@@ -11,10 +11,8 @@ UI::UI() {
 }
 
 void UI::initTextures() {
-	if (font.texture.id == 0) {
-		cout << "Error: Default font not loaded correctly!" << endl;
-	}
 	Icons.push_back(LoadTexture("assets/Icons/rightarrow.png"));
+	Icons.push_back(LoadTexture("assets/Icons/Sprite.png"));
 }
 
 

@@ -1,20 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="source">
-      <UniqueIdentifier>{3ac6fadb-526b-4353-a2f9-172b458a24a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="header">
-      <UniqueIdentifier>{ba54a66d-7351-4c0c-ad52-61214f856617}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets">
-      <UniqueIdentifier>{a20c3216-3efa-4f36-a30a-ddc028af969a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\Icons">
-      <UniqueIdentifier>{317b88ed-2cfb-465e-b2d5-67c9ea2784c3}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="source\Graph.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -24,41 +10,27 @@
     <ClCompile Include="source\Main.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\UI.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-<<<<<<< Updated upstream
-    <ClCompile Include="Treap.cpp">
-=======
-<<<<<<< HEAD
-    <ClCompile Include="source\Treap.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="source\SinglyLinkedList.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\SinglyLinkedListUI.cpp">
-=======
-    <ClCompile Include="Treap.cpp">
->>>>>>> 75b9b526fb00c34a18a42b27ba7aed8fab6dc1df
->>>>>>> Stashed changes
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Treap.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Animation.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\Graph.h">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="header\HashTable.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="header\SinglyLinkedList.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\SinglyLinkedListUI.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\UI.h">
+    <ClInclude Include="header\Graph.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="header\LinkedListNode.h">
@@ -67,12 +39,41 @@
     <ClInclude Include="header\Node.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="header\SinglyLinkedList.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\SinglyLinkedListUI.h">
+      <Filter>header</Filter>
+    </ClInclude>
     <ClInclude Include="header\Treap.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\UI.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Animation.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{9badb8b3-70f6-4200-9a28-c832af767f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{31ac3d2d-8e71-4d09-8636-87cc33e51c60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets">
+      <UniqueIdentifier>{975de8dd-88ff-4861-8228-e88055011f9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\Icons">
+      <UniqueIdentifier>{ee8fd742-edeb-4dfe-9b0c-7eea054812bc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
     <Image Include="assets\Icons\rightarrow.png">
+      <Filter>assets\Icons</Filter>
+    </Image>
+    <Image Include="assets\Icons\Sprite.png">
       <Filter>assets\Icons</Filter>
     </Image>
   </ItemGroup>

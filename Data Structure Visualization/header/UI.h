@@ -11,12 +11,12 @@ protected:
 	//Use default font
 	static Font font;
 
-	int totalicons = 1;
-	static vector <Texture2D> Icons;
+	int totalicons = 2;
 	static constexpr float fontSize = 40.0f;
 	static constexpr float spacing = 2.0f;
 public:
 	UI();
+	static vector <Texture2D> Icons;
 	static Font getfont() {
 		return font;
 	}

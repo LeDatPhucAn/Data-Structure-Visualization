@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Animation.cpp" />
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\Main.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\Animation.h" />
     <ClInclude Include="header\Graph.h" />
     <ClInclude Include="header\HashTable.h" />
     <ClInclude Include="header\LinkedListNode.h" />
@@ -39,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\Icons\rightarrow.png" />
+    <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

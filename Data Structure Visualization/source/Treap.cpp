@@ -1,5 +1,9 @@
 #include "header/Treap.h"
 
+int Treap::getSize(){
+    return NodesVector.size();
+}
+
 TreapNode* Treap::rotateLeft(TreapNode* root) {
     TreapNode* newRoot = root->right;
     root->right = newRoot->left;

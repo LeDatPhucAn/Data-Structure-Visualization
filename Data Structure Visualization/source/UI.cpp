@@ -13,6 +13,7 @@ UI::UI() {
 void UI::initTextures() {
 	Icons.push_back(LoadTexture("assets/Icons/rightarrow.png"));
 	Icons.push_back(LoadTexture("assets/Icons/Sprite.png"));
+	Icons.push_back(LoadTexture("assets/Backgrounds/cubeBG.jpg"));
 }
 
 
@@ -31,7 +32,7 @@ void UI::drawtext2(string message, int X, int Y, Color color) {
 
 void UI::drawnode(int data, int X, int Y, int r) {
 	//draw the node
-	DrawCircle(X, Y, r, BLACK);
+	DrawCircle(X, Y, r, BLUE);
 	DrawCircle(X, Y, r * 4/5, RAYWHITE);
 	drawtext2(to_string(data), X, Y, BLUE);
 }

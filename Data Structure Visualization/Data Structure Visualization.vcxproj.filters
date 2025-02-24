@@ -68,6 +68,9 @@
     <Filter Include="assets\Icons">
       <UniqueIdentifier>{ee8fd742-edeb-4dfe-9b0c-7eea054812bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets\Backgrounds">
+      <UniqueIdentifier>{63032186-60bd-43a6-8bf4-13380fce5d56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\Icons\rightarrow.png">
@@ -75,6 +78,12 @@
     </Image>
     <Image Include="assets\Icons\Sprite.png">
       <Filter>assets\Icons</Filter>
+    </Image>
+    <Image Include="assets\Backgrounds\chillBG.jpg">
+      <Filter>assets\Backgrounds</Filter>
+    </Image>
+    <Image Include="assets\Backgrounds\cubeBG.jpg">
+      <Filter>assets\Backgrounds</Filter>
     </Image>
   </ItemGroup>
 </Project>

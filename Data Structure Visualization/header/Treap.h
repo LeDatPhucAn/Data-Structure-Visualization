@@ -28,6 +28,7 @@ public:
 	void insert(int key);
 	TreapNode* search(int key);
 	void remove(int key);
+	void drawTreap();
 };
 
 

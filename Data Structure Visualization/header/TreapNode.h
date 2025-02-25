@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdlib>
+
 class TreapNode {
 public:
     int data;
@@ -19,5 +21,8 @@ private:
     void detachRight();
     void attachLeft(TreapNode* node);
     void attachRight(TreapNode* node);
+public:
+    void drawNode(TreapNode* node, int x, int y, int xOffset, int yOffset);
 };
+
 

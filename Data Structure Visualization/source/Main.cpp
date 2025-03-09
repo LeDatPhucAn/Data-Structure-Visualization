@@ -107,7 +107,7 @@ int main()
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-		if (scenehandler.currentSceneObject->CurrentScene == MENU) {
+		if (scenehandler.getCurrentScene() == MENU) {
 			scenehandler.displayCurrentScene();
 		}
 		else{

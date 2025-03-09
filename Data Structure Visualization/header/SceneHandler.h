@@ -27,6 +27,9 @@ public:
         }
     }
 
+    int getCurrentScene() {
+        return currentSceneObject->CurrentScene;
+    }
     void changeScene(Scene newScene) {
         currentSceneObject = scenes[newScene];
         if (currentSceneObject) {

@@ -25,6 +25,12 @@
     <ClCompile Include="source\Animation.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\Scene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Menu.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\HashTable.h">
@@ -52,6 +58,24 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="header\Animation.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\SceneManager.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\GraphUI.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\HashTableUI.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Menu.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\TreapUI.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\SceneHandler.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

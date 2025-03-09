@@ -3,12 +3,9 @@
 
 #include <iostream>
 #include <string>
-#include "raylib.h"
-#include "rlgl.h"
-#include "raymath.h"
 #include "../header/Animation.h"
 #include "../header/SinglyLinkedListUI.h"
-
+#include "../header/SceneHandler.h"
 using namespace std;
 int main()
 {
@@ -21,14 +18,8 @@ int main()
 		std::cerr << "Font not initialized correctly!\n";
 		return -1; // Exit the program if the font isn't initialized
 	}
-	SinglyLinkedListUI LinkedListUI;
-	LinkedListUI.insertnode(10, 1);
-	LinkedListUI.insertnode(20, 2);
-	LinkedListUI.insertnode(30, 1);
-	LinkedListUI.insertnode(40, 3);
-	LinkedListUI.remove(20);
-	LinkedListUI.insertnode(40, 1);
-	LinkedListUI.remove(40);
+	SceneHandler scenehandler;
+	scenehandler.changeScene(MENU);
 	Camera2D camera = { 0 };
 	camera.zoom = 1.0f;
 	Animation sprite;
@@ -42,6 +33,9 @@ int main()
 	bool visible = false;
     bool zoomMode = 1;
 	Vector2 circlepos = { 100,100 };
+
+
+	/// main functions
 	while (!WindowShouldClose()) {
 
 		// update
@@ -54,12 +48,10 @@ int main()
 			delta = Vector2Scale(delta, -1.0f / camera.zoom);
 			camera.target = Vector2Add(camera.target, delta);
 		}
-		if (IsKeyPressed(KEY_ONE))LinkedListUI.insertnode(40, 2);
-		if (IsKeyPressed(KEY_TWO) && LinkedListUI.remove(40)) {
-			cout << "REMOVED!\n";
-		}
-		if (IsKeyPressed(KEY_THREE))visible = !visible;
-		if (IsKeyDown(KEY_LEFT)) {
+		if (IsKeyPressed(KEY_THREE))scenehandler.changeScene(MENU);
+		else if (IsKeyPressed(KEY_FOUR))scenehandler.changeScene(LINKEDLIST);
+		scenehandler.updateCurrentScene();
+		/*if (IsKeyDown(KEY_LEFT)) {
 			motion.x -= 1;
 			isanimating = true;
 		}
@@ -77,7 +69,7 @@ int main()
 		}
 		if (!IsKeyDown(KEY_RIGHT) && !IsKeyDown(KEY_LEFT) && !IsKeyDown(KEY_DOWN) && !IsKeyDown(KEY_UP)) {
 			isanimating = false;
-		}
+		}*/
 
         // Translate based on mouse right click
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -115,20 +107,14 @@ int main()
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        BeginMode2D(camera);
-
-        // Draw the 3d grid, rotated 90 degrees and centered around 0,0 
-        // just so we have something in the XY plane
-        rlPushMatrix();
-        rlTranslatef(0, 10000, 0);
-        rlRotatef(90, 1, 0, 0);
-        DrawGrid(1000, 100);
-        rlPopMatrix();
-
-        // Draw a reference circle
-        DrawCircle(GetScreenWidth() / 2, GetScreenHeight() / 2, 50, MAROON);
-        LinkedListUI.drawlinkedlist();
-        EndMode2D();
+		if (scenehandler.currentSceneObject->CurrentScene == MENU) {
+			scenehandler.displayCurrentScene();
+		}
+		else{
+			BeginMode2D(camera);
+			scenehandler.displayCurrentScene();
+			EndMode2D();
+		}
         // Draw mouse reference
         //Vector2 mousePos = GetWorldToScreen2D(GetMousePosition(), camera)
         DrawCircleV(GetMousePosition(), 4, DARKGRAY);
@@ -145,5 +131,4 @@ int main()
 	}
 	CloseWindow();
 	ui.cleanup();
-
 }

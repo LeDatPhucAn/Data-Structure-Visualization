@@ -1,6 +1,8 @@
 #pragma once
 #include "SinglyLinkedList.h"
 #include "raylib.h"
+#include "rlgl.h"
+#include "raymath.h"
 #include <iostream>
 #include <vector>
 #include <string>

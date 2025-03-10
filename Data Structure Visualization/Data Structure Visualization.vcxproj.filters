@@ -31,6 +31,9 @@
     <ClCompile Include="source\Menu.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\SceneHandler.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\HashTable.h">

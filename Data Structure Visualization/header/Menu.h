@@ -1,16 +1,33 @@
 #pragma once
 #include "SceneManager.h"
-
+//#include "SceneHandler.h"
+typedef enum selected {
+    NONE = -1,
+    MENU_LINKEDLIST,
+    MENU_HASHTABLE,
+    MENU_TREAP,
+    MENU_GRAPH
+} Selected;
+class SceneHandler;
 class Menu : public SceneManager {
+protected:
+    static constexpr int spacing = 100;
+    SceneHandler* sceneHandler = nullptr;
 public:
+    Selected selected;
+    Rectangle sourceRec;
+    Rectangle linkedlist;
+    Rectangle hashtable;
+    Rectangle treap;
+    Rectangle graph;
+    Rectangle rectangles[4];
     Menu() {
-        // Default constructor
-        std::cout << "Menu Scene Created" << std::endl;
+        selected = NONE;
     }
-    void updateScene() override {
-        // Implement the update logic for the menu
-        std::cout << "Updating Menu Scene" << std::endl;
+    Menu(SceneHandler* handler) : sceneHandler(handler) {
+        selected = NONE;
     }
+    void updateScene() override;
 
     void displayScene() override;
 };

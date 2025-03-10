@@ -42,7 +42,7 @@ void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
         return;
     }
-    if (pos == 1) {
+    if (pos == 1 || !head) {
         LLNode* temp = new LLNode(x);
         temp->next = head;
         head = temp;

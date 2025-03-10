@@ -19,27 +19,40 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Animation.cpp" />
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\Menu.cpp" />
+    <ClCompile Include="source\Scene.cpp" />
+    <ClCompile Include="source\SceneHandler.cpp" />
     <ClCompile Include="source\SinglyLinkedList.cpp" />
     <ClCompile Include="source\SinglyLinkedListUI.cpp" />
     <ClCompile Include="source\Treap.cpp" />
     <ClCompile Include="source\UI.cpp" />
-    <ClCompile Include="Treap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\Animation.h" />
     <ClInclude Include="header\Graph.h" />
+    <ClInclude Include="header\GraphUI.h" />
     <ClInclude Include="header\HashTable.h" />
+    <ClInclude Include="header\HashTableUI.h" />
     <ClInclude Include="header\LinkedListNode.h" />
+    <ClInclude Include="header\Menu.h" />
     <ClInclude Include="header\Node.h" />
+    <ClInclude Include="header\SceneManager.h" />
+    <ClInclude Include="header\SceneHandler.h" />
     <ClInclude Include="header\SinglyLinkedList.h" />
     <ClInclude Include="header\SinglyLinkedListUI.h" />
     <ClInclude Include="header\Treap.h" />
+    <ClInclude Include="header\TreapUI.h" />
     <ClInclude Include="header\UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\Backgrounds\chillBG.jpg" />
+    <Image Include="assets\Backgrounds\cubeBG.jpg" />
     <Image Include="assets\Icons\rightarrow.png" />
+    <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

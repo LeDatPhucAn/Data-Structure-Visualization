@@ -30,6 +30,8 @@ void SceneHandler::changeScene(Scene newScene) {
 }
 
 void SceneHandler::drawButtontoMenu(float X, float Y) {
+    BacktoMenu.x = X;
+    BacktoMenu.y = Y;
     float roundness = 0.5f;
     float segments = 10.0f;
     float lineThick = 12.0f;
@@ -47,11 +49,6 @@ void SceneHandler::updateCurrentScene() {
             float height = 100.0f;
             BacktoMenu = { 20, 20, (float)width, (float)height };
 
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                Vector2 delta = GetMouseDelta();
-                delta = Vector2Scale(delta, -1.0f / camera.zoom);
-                camera.target = Vector2Add(camera.target, delta);
-            }
             // Translate based on mouse right click
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 Vector2 delta = GetMouseDelta();

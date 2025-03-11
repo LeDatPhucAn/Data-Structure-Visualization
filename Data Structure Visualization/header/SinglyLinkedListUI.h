@@ -4,7 +4,7 @@
 #include "SceneManager.h"
 class SceneHandler;
 
-class SinglyLinkedListUI : public UI, public LinkedList, public SceneManager {
+class SinglyLinkedListUI : public LinkedList, public SceneManager {
 private:
     static constexpr int headX = 100;
     static constexpr int headY = 450;

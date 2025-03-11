@@ -49,8 +49,8 @@
     <ClInclude Include="header\UI.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\Backgrounds\chillBG.jpg" />
-    <Image Include="assets\Backgrounds\cubeBG.jpg" />
+    <Image Include="assets\Backgrounds\DSAlogo.png" />
+    <Image Include="assets\Backgrounds\technoBG.jpg" />
     <Image Include="assets\Icons\rightarrow.png" />
     <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>

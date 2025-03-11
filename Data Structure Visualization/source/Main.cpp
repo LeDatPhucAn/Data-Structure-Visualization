@@ -29,9 +29,7 @@ int main()
 		UI::screenHeight = GetScreenHeight();
 
 
-		/// draw background
-		Rectangle screen = { 0, 0, ui.screenWidth, ui.screenHeight };
-		DrawTexturePro(UI::Icons[2], screen, screen, { 0,0 }, 0, WHITE);
+		
 
 		if (IsKeyPressed(KEY_THREE))scenehandler.changeScene(MENU);
 
@@ -42,18 +40,17 @@ int main()
 
         //----------------------------------------------------------------------------------
 
+
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
 		scenehandler.displayCurrentScene();
-        // Draw mouse reference
-        DrawCircleV(GetMousePosition(), 4, DARKGRAY);
-        DrawTextEx(GetFontDefault(), TextFormat("[%i, %i]", GetMouseX(), GetMouseY()),
-		Vector2Add(GetMousePosition(), { -44, -24 }), 20, 2, BLACK);
+        
+        
         EndDrawing();
-
+		//----------------------------------------------------------------------------------
 		
 	}
 	CloseWindow();

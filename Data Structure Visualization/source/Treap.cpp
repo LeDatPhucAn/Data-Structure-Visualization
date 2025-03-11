@@ -1,4 +1,10 @@
-#include "../header/Treap.h"
+#include "header/Treap.h"
+
+#include "raylib.h" 
+
+int Treap::getSize(){
+    return NodesVector.size();
+}
 
 TreapNode* Treap::rotateLeft(TreapNode* root) {
     TreapNode* newRoot = root->right;
@@ -83,4 +89,8 @@ TreapNode* Treap::search(int key) {
 
 void Treap::remove(int key) {
     root = remove(root, key);
+}
+
+void Treap::drawTreap(){
+    if(root) root->drawNode(root, GetScreenWidth() / 2, 20, 30, 30);
 }

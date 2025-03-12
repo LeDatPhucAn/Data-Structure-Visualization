@@ -16,6 +16,7 @@ void LinkedList::addEdge(LLNode* from, LLNode* to) {
 void LinkedList::removeEdge(LLNode* from, LLNode* to) {
     for (int i = 0; i < Edges.size(); i++) {
         if (Edges[i].from == from && Edges[i].to == to) {
+            cout << "REMOVED YO ASs";
             Edges.erase(Edges.begin()+i);
             return;
         }
@@ -41,11 +42,13 @@ bool LinkedList::remove(int x) {
     LLNode* cur = head;
     while (cur->next) {
         if (cur->next->data == x) {
+            removeEdge(cur, cur->next);
             LLNode* temp = cur->next;
+            removeEdge(temp, temp->next);
             cur->next = temp->next;
-            adjustPos(cur);
-            removeEdge(cur, temp);
             addEdge(cur, cur->next);
+            adjustPos(cur);
+            
             delete temp;
             temp = nullptr;
             return true;

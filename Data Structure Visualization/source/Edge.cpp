@@ -1,14 +1,20 @@
 #include "../header/Edge.h"
 #include "../header/UI.h"
 void Edge::drawEdge() {
-	int fromX = from->position.x + from->radius;
-	int fromY = from->position.y;
-	if (!to) {
-		DrawLine(fromX, fromY, fromX + 200, fromY, BLACK);
-		UI::drawtext2("NULL",fromX, fromY, BLUE);
+	if (!from) {
+		cout << "u done fucked up";
 		return;
 	}
-	int toX = to->position.x - to->radius;
-	int toY = to->position.y;
-	DrawLine(fromX, fromY, toX, toY, BLACK);
+	float fromX = from->position.x + from->radius;
+	float fromY = from->position.y;
+	if (!to) {
+		DrawLineEx({fromX,fromY}, {fromX + 100,fromY}, thickness, BLACK);
+		string message = "NULL";
+		UI::drawtext2(message, fromX + 150, fromY, BLUE);
+		//DrawText(message.c_str(), fromX + 100, fromY, UI::fontSize, BLUE);
+		return;
+	}
+	float toX = to->position.x - to->radius;
+	float toY = to->position.y;
+	DrawLineEx({fromX,fromY}, {toX,toY}, thickness, BLACK);
 }

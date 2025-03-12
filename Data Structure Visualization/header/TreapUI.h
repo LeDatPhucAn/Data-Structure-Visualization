@@ -3,11 +3,18 @@
 #include "Treap.h" // Assuming you have this class
 
 class TreapUI : public SceneManager, public Treap {
+private: 
+    const Vector2 rootPos = {GetScreenWidth() / 2, 20};
+    const int xOffset = GetScreenWidth() / 2 - 20;
+    const int yOffset = GetScreenHeight() / 5; 
+    void drawTreapNode(TreapNode* curr, const Vector2 pos, const int xOffset, const int yOffset);
+    void drawLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLeftChild);
+    void drawTreap(TreapNode* curr);
 public:
-    TreapUI() {
-        // Default constructor
-        std::cout << "TreapUI Scene Created" << std::endl;
-    }
+    TreapUI() = default;
+
+    void drawTreap();
+
     void updateScene() override {
         // Implement the update logic for the treap scene
     }

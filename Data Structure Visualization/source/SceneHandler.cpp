@@ -9,7 +9,7 @@ SceneHandler::SceneHandler() {
     scenes[TREAP] = new TreapUI();
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed
-    currentSceneObject = scenes[MENU];
+    changeScene(MENU);
 }
 
 SceneHandler::~SceneHandler() {

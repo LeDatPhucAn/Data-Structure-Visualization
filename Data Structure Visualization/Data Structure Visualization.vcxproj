@@ -20,11 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Animation.cpp" />
+    <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
-    <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\SceneHandler.cpp" />
     <ClCompile Include="source\SinglyLinkedList.cpp" />
     <ClCompile Include="source\SinglyLinkedListUI.cpp" />
@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Animation.h" />
+    <ClInclude Include="header\Edge.h" />
     <ClInclude Include="header\Graph.h" />
     <ClInclude Include="header\GraphUI.h" />
     <ClInclude Include="header\HashTable.h" />

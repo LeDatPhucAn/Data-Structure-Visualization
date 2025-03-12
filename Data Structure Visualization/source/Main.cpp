@@ -14,12 +14,8 @@ int main()
 	SetTargetFPS(60);
 	UI ui;
 	ui.initTextures();
-	if (UI::getfont().texture.id == 0) {
-		std::cerr << "Font not initialized correctly!\n";
-		return -1; // Exit the program if the font isn't initialized
-	}
+
 	SceneHandler scenehandler;
-	scenehandler.changeScene(MENU);
 
 	/// main functions
 	while (!WindowShouldClose()) {
@@ -27,11 +23,6 @@ int main()
 		// Get screen values
 		UI::screenWidth = GetScreenWidth();
 		UI::screenHeight = GetScreenHeight();
-
-
-		
-
-		if (IsKeyPressed(KEY_THREE))scenehandler.changeScene(MENU);
 
 		// Update
 		//----------------------------------------------------------------------------------
@@ -47,7 +38,6 @@ int main()
         ClearBackground(RAYWHITE);
 
 		scenehandler.displayCurrentScene();
-        
         
         EndDrawing();
 		//----------------------------------------------------------------------------------

@@ -7,8 +7,8 @@ using namespace std;
 class Node {
 public:
     int data;
-    //Vector2 position;
-
-    Node(int value) : data(value) {}
+    Vector2 position;
+    int radius;
+    Node(int value,Vector2 pos, int r): data(value), position(pos), radius(r) {}
     virtual ~Node() {}
 };

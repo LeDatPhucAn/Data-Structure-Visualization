@@ -1,10 +1,20 @@
 #pragma once
 #include "Node.h"
+class UI;
 class Edge {
 protected:
-	int thickness;
+	
+public:
 	Node* from;
 	Node* to;
-public:
+	Edge() {
+		from = nullptr;
+		to = nullptr;
+	}
+	Edge(Node* f, Node* t) : from(f), to(t){
+	}
+	bool operator==(const Edge& other) const {
+		return (from == other.from && to == other.to);
+	}
 	void drawEdge();
 };

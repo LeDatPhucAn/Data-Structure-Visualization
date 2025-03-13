@@ -1,19 +1,19 @@
 #include "../header/Button.h"
 
-void TextBox::hover() {
+void InputBox::hover() { // Renamed from TextBox to InputBox
 	OutLineColor = RED;
 }
-void TextBox::unhover() {
+void InputBox::unhover() { // Renamed from TextBox to InputBox
 	OutLineColor = DARKGRAY;
 }
-void TextBox::draw() {
+void InputBox::draw() { // Renamed from TextBox to InputBox
 	DrawRectangleRec(rect, FillColor);
 
 	DrawText(inputText.c_str(), (int)rect.x + 5, (int)rect.y + 8, UI::fontSize, TextColor);
 
 	if (Texting)
 	{
-		DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, TextColor);
+		DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
 		if (inputText.size() < maxChars)
 		{
 			// Draw blinking underscore char
@@ -21,12 +21,12 @@ void TextBox::draw() {
 		}
 	}
 }
-void TextBox::update() {
+void InputBox::update() { // Renamed from TextBox to InputBox
 	framesCounter++;
 
 	if (Texting) {
 
-		OutLineColor = RED;
+		hover();
 
 		// Get char pressed (unicode character) on the queue
 		int key = GetCharPressed();
@@ -50,7 +50,13 @@ void TextBox::update() {
 	}
 	else
 	{
-		OutLineColor = DARKGRAY;
+		unhover();
 		framesCounter = 0;
 	}
+}
+
+void TextBox::draw() {
+	DrawRectangleRec(rect, FillColor);
+	DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
+	DrawTextEx(UI::font, Text.c_str(), { rect.x+10,rect.y+10 }, UI::fontSize, UI::spacing, TextColor);
 }

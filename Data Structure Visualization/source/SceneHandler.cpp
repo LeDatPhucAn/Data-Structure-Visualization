@@ -42,55 +42,7 @@ void SceneHandler::drawButtontoMenu(float X, float Y) {
     DrawTexturePro(Icons[0], { 0,0,(float)Icons[0].width,(float)Icons[0].height }, rec2, { 0,(float)Icons[0].height / 2 }, 180, WHITE);
 }
 
-void SceneHandler::updateTextBox() {
-    // Update
-        //----------------------------------------------------------------------------------
-    TextBox = { 50, 500,  TextBoxWidth, TextBoxHeight};
-    framesCounter++;
 
-    if (Texting) {
-
-        // Get char pressed (unicode character) on the queue
-        int key = GetCharPressed();
-        
-        // Check if more characters have been pressed on the same frame
-        while (key > 0)
-        {
-            // NOTE: Only allow keys in range [32..125]
-            if ((key >= 32) && (key <= 125) && (inputText.size() < MAX_INPUT_CHARS))
-            {
-                inputText.push_back(key);
-            }
-
-            key = GetCharPressed();  // Check next character in the queue
-        }
-
-        if (IsKeyPressed(KEY_BACKSPACE) && inputText.size() != 0)
-        {
-            inputText.pop_back();
-        }
-    }
-    else
-    {
-        TextBoxLinesColor = DARKGRAY;
-        framesCounter = 0;
-    }
-}
-void SceneHandler::drawTextBox() {
-    DrawRectangleRec(TextBox, LIGHTGRAY);
-
-    DrawText(inputText.c_str(), (int)TextBox.x + 5, (int)TextBox.y + 8, UI::fontSize, MAROON);
-
-    if (Texting)
-    {
-        DrawRectangleLines((int)TextBox.x, (int)TextBox.y, (int)TextBox.width, (int)TextBox.height, TextBoxLinesColor);
-        if (inputText.size()< MAX_INPUT_CHARS)
-        {
-            // Draw blinking underscore char
-            if (((framesCounter / 20) % 2) == 0) DrawText("_", (int)TextBox.x + 8 + MeasureText(inputText.c_str(), 40), (int)TextBox.y + 12, UI::fontSize, MAROON);
-        }
-    }
-}
 void SceneHandler::updateCamera() {
     // button for all scenes except menu
     float width = 200.0f;
@@ -166,7 +118,6 @@ void SceneHandler::updateCurrentScene() {
             
             updateCollision();
 
-            updateTextBox();
 
         }
         currentSceneObject->updateScene();
@@ -193,7 +144,7 @@ void SceneHandler::displayCurrentScene() {
 
             // draw things that stay permanent on screen
             drawButtontoMenu(20, 20);
-            drawTextBox();
+            
         }
         else {
 

@@ -6,6 +6,7 @@
 #include "../header/Animation.h"
 #include "../header/SinglyLinkedListUI.h"
 #include "../header/SceneHandler.h"
+#include "../header/Button.h"
 using namespace std;
 int main()
 {
@@ -14,9 +15,9 @@ int main()
 	SetTargetFPS(60);
 	UI ui;
 	ui.initTextures();
-
+	TextBox test("ayo what the fuck man", 300, 100);
 	SceneHandler scenehandler;
-
+	
 	/// main functions
 	while (!WindowShouldClose()) {
 
@@ -36,7 +37,7 @@ int main()
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
+		test.draw();
 		scenehandler.displayCurrentScene();
         
         EndDrawing();

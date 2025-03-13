@@ -8,6 +8,7 @@
 #include <string>
 #include "Edge.h"
 using namespace std;
+
 class UI {
 protected:
 
@@ -31,6 +32,18 @@ public:
 	static void drawNode(Node* node);
 	static void drawlink(int X, int Y);
 	static void drawtext2(string message, int X, int Y, Color color);
+
+	static void darkenColor(Color& color, int amount) {
+		color.r = (unsigned char)(color.r - amount < 0 ? 0 : color.r - amount);
+		color.g = (unsigned char)(color.g - amount < 0 ? 0 : color.g - amount);
+		color.b = (unsigned char)(color.b - amount < 0 ? 0 : color.b - amount);
+	}
+	static void lightenColor(Color& color, int amount) {
+		color.r = (unsigned char)(color.r - amount < 0 ? 0 : color.r - amount);
+		color.g = (unsigned char)(color.g - amount < 0 ? 0 : color.g - amount);
+		color.b = (unsigned char)(color.b - amount < 0 ? 0 : color.b - amount);
+	}
+
 	void cleanup();
 
 private:

@@ -11,6 +11,7 @@ UI::UI() {
 		font = GetFontDefault();
 	}
 }
+
 void UI::drawBackground() {
 	Rectangle screen = { 0, 0, screenWidth, screenHeight };
 	Rectangle source = { 1300, 300,screenWidth, screenHeight };
@@ -98,3 +99,4 @@ void UI::UnLoadAllTextures() {
 void UI::cleanup() {
 	UnLoadAllTextures();
 }
+

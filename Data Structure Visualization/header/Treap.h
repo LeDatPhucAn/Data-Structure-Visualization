@@ -29,16 +29,13 @@ protected:
 private:
 	TreapNode* rotateLeft(TreapNode* root);
 	TreapNode* rotateRight(TreapNode* root);
-	TreapNode* insert(TreapNode* root, int key);
-	TreapNode* search(TreapNode* root, int key);
-	TreapNode* remove(TreapNode* root, int key);
 public:
 	Treap() : root(nullptr) {
 		srand(time(nullptr));
 	}
-	void insert(int key);
-	TreapNode* search(int key);
-	void remove(int key);
+	TreapNode* insert(TreapNode* root, int key, Vector2 pos);
+	TreapNode* search(TreapNode* root, int key);
+	TreapNode* remove(TreapNode* root, int key);
 };
 
 

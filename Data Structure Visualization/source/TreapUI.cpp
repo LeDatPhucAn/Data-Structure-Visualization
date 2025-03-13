@@ -1,5 +1,25 @@
 #include "../header/TreapUI.h"
 
+const Vector2 TreapUI::ROOT_POS = {GetScreenWidth() / 2, 0};
+
+TreapUI::TreapUI(){
+    root = nullptr;
+}
+
+void TreapUI::insert(int key){
+    root = treap.insert(root, key, ROOT_POS);
+}
+
+void TreapUI::search(int key){
+    root = treap.search(root, key);
+}
+
+void TreapUI::remove(int key){
+    root = treap.remove(root, key);
+}
+
+
+
 void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos){
     static const float width = 60.0f;
     static const float height = 30.0f;
@@ -15,20 +35,6 @@ void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos){
     Vector2 priorityTextSize = MeasureTextEx(GetFontDefault(), priority.c_str(), 15.0f, 2.0f);
     DrawText(value.c_str(), pos.x - width / 2 + dataWidth / 2 - valueTextSize.x / 2, pos.y - valueTextSize.y / 2, 20, DARKGRAY);
     DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 15, RED);
-}
-
-void TreapUI::drawTreapLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLeftChild){
-    static const float nodeWidth = 60.0f;
-    static const float nodeHeight = 30.0f;
-    static const float lineThickness = 3.0f;
-
-    Vector2 start = startNodeCenter;
-    Vector2 end = endNodeCenter;
-    if(isLeftChild) start.x -= nodeWidth / 4;
-    else start.x += nodeWidth / 4;
-    start.y += nodeHeight / 2;
-    end.y -= nodeHeight / 2;
-    DrawLineEx(start, end, lineThickness, BLACK);
 }
 
 void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const int yOffset){

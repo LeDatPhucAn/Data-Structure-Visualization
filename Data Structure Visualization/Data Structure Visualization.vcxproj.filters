@@ -25,13 +25,13 @@
     <ClCompile Include="source\Animation.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\Scene.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="source\Menu.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\SceneHandler.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Edge.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,6 +81,9 @@
     <ClInclude Include="header\SceneHandler.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="header\Edge.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="source">
@@ -96,7 +99,10 @@
       <UniqueIdentifier>{ee8fd742-edeb-4dfe-9b0c-7eea054812bc}</UniqueIdentifier>
     </Filter>
     <Filter Include="assets\Backgrounds">
-      <UniqueIdentifier>{63032186-60bd-43a6-8bf4-13380fce5d56}</UniqueIdentifier>
+      <UniqueIdentifier>{d7b25fdd-df04-4d47-b247-7e26b51f9527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\Buttons">
+      <UniqueIdentifier>{8736c001-7cc9-4d2d-8ffa-d21bc40c2c11}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -106,10 +112,34 @@
     <Image Include="assets\Icons\Sprite.png">
       <Filter>assets\Icons</Filter>
     </Image>
-    <Image Include="assets\Backgrounds\chillBG.jpg">
+    <Image Include="assets\Buttons\menu-sll-selected.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Buttons\menu-graph-normal.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Buttons\menu-graph-selected.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Buttons\menu-hash-normal.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Buttons\menu-hash-selected.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Buttons\menu-sll-normal.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Buttons\menu-trie-normal.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Buttons\menu-trie-selected.png">
+      <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Backgrounds\technoBG.jpg">
       <Filter>assets\Backgrounds</Filter>
     </Image>
-    <Image Include="assets\Backgrounds\cubeBG.jpg">
+    <Image Include="assets\Backgrounds\DSAlogo.png">
       <Filter>assets\Backgrounds</Filter>
     </Image>
   </ItemGroup>

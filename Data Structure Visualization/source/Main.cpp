@@ -14,12 +14,8 @@ int main()
 	SetTargetFPS(60);
 	UI ui;
 	ui.initTextures();
-	if (UI::getfont().texture.id == 0) {
-		std::cerr << "Font not initialized correctly!\n";
-		return -1; // Exit the program if the font isn't initialized
-	}
+
 	SceneHandler scenehandler;
-	scenehandler.changeScene(MENU);
 
 	/// main functions
 	while (!WindowShouldClose()) {
@@ -28,13 +24,6 @@ int main()
 		UI::screenWidth = GetScreenWidth();
 		UI::screenHeight = GetScreenHeight();
 
-
-		/// draw background
-		Rectangle screen = { 0, 0, ui.screenWidth, ui.screenHeight };
-		DrawTexturePro(UI::Icons[2], screen, screen, { 0,0 }, 0, WHITE);
-
-		if (IsKeyPressed(KEY_THREE))scenehandler.changeScene(MENU);
-
 		// Update
 		//----------------------------------------------------------------------------------
 		
@@ -42,18 +31,16 @@ int main()
 
         //----------------------------------------------------------------------------------
 
+
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
 		scenehandler.displayCurrentScene();
-        // Draw mouse reference
-        DrawCircleV(GetMousePosition(), 4, DARKGRAY);
-        DrawTextEx(GetFontDefault(), TextFormat("[%i, %i]", GetMouseX(), GetMouseY()),
-		Vector2Add(GetMousePosition(), { -44, -24 }), 20, 2, BLACK);
+        
         EndDrawing();
-
+		//----------------------------------------------------------------------------------
 		
 	}
 	CloseWindow();

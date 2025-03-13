@@ -31,7 +31,8 @@ void UI::initTextures() {
 	// Icons
 	Icons.push_back(LoadTexture("assets/Icons/rightarrow.png"));
 	Icons.push_back(LoadTexture("assets/Icons/Sprite.png"));
-	Icons.push_back(LoadTexture("assets/Backgrounds/cubeBG.jpg"));
+	Icons.push_back(LoadTexture("assets/Backgrounds/technoBG.jpg"));
+	Icons.push_back(LoadTexture("assets/Backgrounds/DSAlogo.png"));
 }
 
 
@@ -58,13 +59,12 @@ void UI::drawButton(float X, float Y) {
 	DrawRectangleRoundedLinesEx(rec, roundness, (int)segments, lineThick, Fade(MAROON, 0.4f));
 }
 
-void UI::drawnode(int data, int X, int Y, int r) {
-	//draw the node
-	DrawCircle(X, Y, r, BLUE);
-	DrawCircle(X, Y, r * 4/5, RAYWHITE);
-	drawtext2(to_string(data), X, Y, BLUE);
+void UI::drawNode(Node* node) {
+	if (!node)return;
+	string message = to_string(node->data);
+	DrawRing(node->position, node->radius * 4 / 5, node->radius, 0, 360, 100, BLUE);
+	drawtext2(to_string(node->data), node->position.x, node->position.y, BLUE);
 }
-
 void UI::drawlink(int X, int Y) {
 	DrawTexture(Icons[0], X, Y, WHITE);
 }

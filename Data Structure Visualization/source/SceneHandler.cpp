@@ -9,7 +9,7 @@ SceneHandler::SceneHandler() {
     scenes[TREAP] = new TreapUI();
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed
-    currentSceneObject = scenes[MENU];
+    changeScene(MENU);
 }
 
 SceneHandler::~SceneHandler() {
@@ -111,8 +111,22 @@ void SceneHandler::displayCurrentScene() {
             // draw things that stay permanent on screen
             drawButtontoMenu(20, 20);
         }
+        else {
 
+            /// draw background
+            Rectangle screen = { 0, 0, screenWidth, screenHeight };
+            Rectangle source = { 1300, 300,screenWidth, screenHeight };
+            DrawTexturePro(UI::Icons[2], source, screen, { 0,0}, 0, LIGHTGRAY);
 
-        else currentSceneObject->displayScene();
+            /// draw logo
+            Rectangle logo = { screenWidth / 2 - UI::Icons[3].width / 2, screenHeight / 64, UI::Icons[3].width, UI::Icons[3].height };
+            DrawTexturePro(UI::Icons[3], {0,0,(float)UI::Icons[3].width,(float)UI::Icons[3].height }, logo, {0,0}, 0, WHITE);
+            currentSceneObject->displayScene();
+        }
     }
+
+    // Draw mouse reference
+    DrawCircleV(GetMousePosition(), 4, DARKGRAY);
+    DrawTextEx(GetFontDefault(), TextFormat("[%i, %i]", GetMouseX(), GetMouseY()),
+    Vector2Add(GetMousePosition(), { -44, -24 }), 20, 2, BLACK);
 }

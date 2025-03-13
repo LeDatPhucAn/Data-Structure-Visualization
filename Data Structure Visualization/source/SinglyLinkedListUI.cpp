@@ -2,20 +2,20 @@
 
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
-    int i = 0;
     while (cur) {
-        UI::drawnode(cur->data, headX + i, headY, radius);
-        UI::drawlink(headX + i + radius, headY - radius);
-        i += 200;
+        UI::drawNode(cur);
         cur = cur->next;
     }
-
-    UI::drawtext2("NULL", headX + i, headY, BLUE);
+    for (auto& edge : Edges) {
+        edge.drawEdge();
+    }
 }
 void SinglyLinkedListUI::init() {
     this->insertnode(10, 1);
     this->insertnode(30, 1);
     this->insertnode(40, 1);
+    this->insertnode(50, 3);
+    this->insertnode(50, 5);
 }
 void SinglyLinkedListUI::displayScene() {
     drawlinkedlist();

@@ -20,11 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Animation.cpp" />
+    <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
-    <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\SceneHandler.cpp" />
     <ClCompile Include="source\SinglyLinkedList.cpp" />
     <ClCompile Include="source\SinglyLinkedListUI.cpp" />
@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Animation.h" />
+    <ClInclude Include="header\Edge.h" />
     <ClInclude Include="header\Graph.h" />
     <ClInclude Include="header\GraphUI.h" />
     <ClInclude Include="header\HashTable.h" />
@@ -49,8 +50,16 @@
     <ClInclude Include="header\UI.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\Backgrounds\chillBG.jpg" />
-    <Image Include="assets\Backgrounds\cubeBG.jpg" />
+    <Image Include="assets\Backgrounds\DSAlogo.png" />
+    <Image Include="assets\Backgrounds\technoBG.jpg" />
+    <Image Include="assets\Buttons\menu-graph-normal.png" />
+    <Image Include="assets\Buttons\menu-graph-selected.png" />
+    <Image Include="assets\Buttons\menu-hash-normal.png" />
+    <Image Include="assets\Buttons\menu-hash-selected.png" />
+    <Image Include="assets\Buttons\menu-sll-normal.png" />
+    <Image Include="assets\Buttons\menu-sll-selected.png" />
+    <Image Include="assets\Buttons\menu-trie-normal.png" />
+    <Image Include="assets\Buttons\menu-trie-selected.png" />
     <Image Include="assets\Icons\rightarrow.png" />
     <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>

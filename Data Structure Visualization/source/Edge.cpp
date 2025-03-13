@@ -11,7 +11,6 @@ void Edge::drawEdge() {
 		DrawLineEx({fromX,fromY}, {fromX + 100,fromY}, thickness, BLACK);
 		string message = "NULL";
 		UI::drawtext2(message, fromX + 150, fromY, BLUE);
-		//DrawText(message.c_str(), fromX + 100, fromY, UI::fontSize, BLUE);
 		return;
 	}
 	float toX = to->position.x - to->radius;

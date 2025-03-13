@@ -29,6 +29,7 @@
     <ClCompile Include="source\SinglyLinkedList.cpp" />
     <ClCompile Include="source\SinglyLinkedListUI.cpp" />
     <ClCompile Include="source\Treap.cpp" />
+    <ClCompile Include="source\TreapUI.cpp" />
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>

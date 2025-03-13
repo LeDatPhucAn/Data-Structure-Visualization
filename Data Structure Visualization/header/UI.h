@@ -25,9 +25,11 @@ public:
 	static vector <Texture2D> Buttons;
 	static vector<Texture2D> selectedButtons;
 	void initTextures();
-	void drawButton(float X, float Y);
-	void drawNode(Node* node);
-	void drawlink(int X, int Y);
+	static void drawBackground();
+	static void drawLogo();
+	static void drawButton(float X, float Y);
+	static void drawNode(Node* node);
+	static void drawlink(int X, int Y);
 	static void drawtext2(string message, int X, int Y, Color color);
 	void cleanup();
 

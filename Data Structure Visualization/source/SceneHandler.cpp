@@ -6,7 +6,7 @@ SceneHandler::SceneHandler() {
     scenes[MENU] = new Menu(this);
     scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
     scenes[HASHTABLE] = new HashTableUI();
-    scenes[TREAP] = new TreapUI();
+    scenes[TREAP] = new TreapUI(this);
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed
     changeScene(MENU);
@@ -42,51 +42,132 @@ void SceneHandler::drawButtontoMenu(float X, float Y) {
     DrawTexturePro(Icons[0], { 0,0,(float)Icons[0].width,(float)Icons[0].height }, rec2, { 0,(float)Icons[0].height / 2 }, 180, WHITE);
 }
 
+void SceneHandler::updateTextBox() {
+    // Update
+        //----------------------------------------------------------------------------------
+    TextBox = { 50, 500,  TextBoxWidth, TextBoxHeight};
+    framesCounter++;
+
+    if (Texting) {
+
+        // Get char pressed (unicode character) on the queue
+        int key = GetCharPressed();
+        
+        // Check if more characters have been pressed on the same frame
+        while (key > 0)
+        {
+            // NOTE: Only allow keys in range [32..125]
+            if ((key >= 32) && (key <= 125) && (inputText.size() < MAX_INPUT_CHARS))
+            {
+                inputText.push_back(key);
+            }
+
+            key = GetCharPressed();  // Check next character in the queue
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE) && inputText.size() != 0)
+        {
+            inputText.pop_back();
+        }
+    }
+    else
+    {
+        TextBoxLinesColor = DARKGRAY;
+        framesCounter = 0;
+    }
+}
+void SceneHandler::drawTextBox() {
+    DrawRectangleRec(TextBox, LIGHTGRAY);
+
+    DrawText(inputText.c_str(), (int)TextBox.x + 5, (int)TextBox.y + 8, UI::fontSize, MAROON);
+
+    if (Texting)
+    {
+        DrawRectangleLines((int)TextBox.x, (int)TextBox.y, (int)TextBox.width, (int)TextBox.height, TextBoxLinesColor);
+        if (inputText.size()< MAX_INPUT_CHARS)
+        {
+            // Draw blinking underscore char
+            if (((framesCounter / 20) % 2) == 0) DrawText("_", (int)TextBox.x + 8 + MeasureText(inputText.c_str(), 40), (int)TextBox.y + 12, UI::fontSize, MAROON);
+        }
+    }
+}
+void SceneHandler::updateCamera() {
+    // button for all scenes except menu
+    float width = 200.0f;
+    float height = 100.0f;
+    BacktoMenu = { 20, 20, (float)width, (float)height };
+
+    // Translate based on mouse right click
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        Vector2 delta = GetMouseDelta();
+        delta = Vector2Scale(delta, -1.0f / camera.zoom);
+        camera.target = Vector2Add(camera.target, delta);
+    }
+
+    // Zoom based on mouse wheel
+    float wheel = GetMouseWheelMove();
+    if (wheel != 0) {
+        // Get the world point that is under the mouse
+        Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+        // Set the offset to where the mouse is
+        camera.offset = GetMousePosition();
+
+        // Set the target to match, so that the camera maps the world space point 
+        // under the cursor to the screen space point under the cursor at any zoom
+        camera.target = mouseWorldPos;
+
+        // Zoom increment
+        float scaleFactor = 1.0f + (0.25f * fabsf(wheel));
+        if (wheel < 0) scaleFactor = 1.0f / scaleFactor;
+
+        // limit the values of zoom
+        camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
+    }
+}
+void SceneHandler::updateCollision() {
+
+    int currentGesture = GetGestureDetected();
+    Vector2 mousePoint = GetMousePosition();
+
+    // if you click anywhere it disables Texting
+    if (currentGesture == GESTURE_TAP) {
+        Texting = 0;
+    }
+
+    if (CheckCollisionPointRec(mousePoint, BacktoMenu)) {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (currentGesture == GESTURE_TAP) {
+            changeScene(MENU);
+        }
+        BacktoMenuColor = BLUE;
+    }
+    else if (CheckCollisionPointRec(GetMousePosition(), TextBox))
+    {
+        TextBoxLinesColor = RED;
+
+        // Set the window's cursor to the I-Beam
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+        if (currentGesture == GESTURE_TAP) {
+            Texting = 1;
+        }
+    }
+    else {
+        BacktoMenuColor = LIGHTGRAY;
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    }
+}
+
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
         if (getCurrentScene() != MENU) {
 
-            // button for all scenes except menu
-            float width = 200.0f;
-            float height = 100.0f;
-            BacktoMenu = { 20, 20, (float)width, (float)height };
+            updateCamera();
+            
+            updateCollision();
 
-            // Translate based on mouse right click
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                Vector2 delta = GetMouseDelta();
-                delta = Vector2Scale(delta, -1.0f / camera.zoom);
-                camera.target = Vector2Add(camera.target, delta);
-            }
+            updateTextBox();
 
-            // Zoom based on mouse wheel
-            float wheel = GetMouseWheelMove();
-            if (wheel != 0) {
-                // Get the world point that is under the mouse
-                Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-                // Set the offset to where the mouse is
-                camera.offset = GetMousePosition();
-
-                // Set the target to match, so that the camera maps the world space point 
-                // under the cursor to the screen space point under the cursor at any zoom
-                camera.target = mouseWorldPos;
-
-                // Zoom increment
-                float scaleFactor = 1.0f + (0.25f * fabsf(wheel));
-                if (wheel < 0) scaleFactor = 1.0f / scaleFactor;
-
-                // limit the values of zoom
-                camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
-            }
-
-            // go back to menu
-            Vector2 mousePoint = GetMousePosition();
-            if (CheckCollisionPointRec(mousePoint, BacktoMenu)) {
-                if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                    changeScene(MENU);
-                }
-                BacktoMenuColor = BLUE;
-            }
-            else BacktoMenuColor = LIGHTGRAY;
         }
         currentSceneObject->updateScene();
     }
@@ -112,17 +193,14 @@ void SceneHandler::displayCurrentScene() {
 
             // draw things that stay permanent on screen
             drawButtontoMenu(20, 20);
+            drawTextBox();
         }
         else {
 
-            /// draw background
-            Rectangle screen = { 0, 0, screenWidth, screenHeight };
-            Rectangle source = { 1300, 300,screenWidth, screenHeight };
-            DrawTexturePro(UI::Icons[2], source, screen, { 0,0}, 0, LIGHTGRAY);
+            UI::drawBackground();
 
-            /// draw logo
-            Rectangle logo = { screenWidth / 2 - UI::Icons[3].width / 2, screenHeight / 64, UI::Icons[3].width, UI::Icons[3].height };
-            DrawTexturePro(UI::Icons[3], {0,0,(float)UI::Icons[3].width,(float)UI::Icons[3].height }, logo, {0,0}, 0, WHITE);
+            UI::drawLogo();
+
             currentSceneObject->displayScene();
         }
     }

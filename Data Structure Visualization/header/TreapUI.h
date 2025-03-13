@@ -1,17 +1,25 @@
 #pragma once
 #include "SceneManager.h"
 #include "Treap.h" // Assuming you have this class
-
+class SceneHandler;
 class TreapUI : public SceneManager, public Treap {
 private: 
-    const Vector2 rootPos = {GetScreenWidth() / 2, 20};
+    const Vector2 rootPos = {(float)GetScreenWidth() / 2, (float)20};
     const int xOffset = GetScreenWidth() / 2 - 20;
     const int yOffset = GetScreenHeight() / 5; 
     void drawTreapNode(TreapNode* curr, const Vector2 pos, const int xOffset, const int yOffset);
     void drawLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLeftChild);
     void drawTreap(TreapNode* curr);
+protected:
+    SceneHandler* scenehandler;
 public:
-    TreapUI() = default;
+    TreapUI() {
+        init();
+    }
+    TreapUI(SceneHandler* handler) : scenehandler(handler){
+        init();
+    }
+    void init();
 
     void drawTreap();
 
@@ -20,6 +28,7 @@ public:
     }
 
     void displayScene() override {
+        drawTreap();
         // Implement the display logic for the treap scene
     }
 };

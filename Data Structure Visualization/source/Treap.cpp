@@ -15,7 +15,7 @@ TreapNode* Treap::rotateRight(TreapNode* root) {
 }
 
 TreapNode* Treap::insert(TreapNode* root, int key) {
-    if (!root) return new TreapNode(key);
+    if (!root) return new TreapNode(key,50,50);
     if (root->data == key) return root;
 
     if (key < root->data) {

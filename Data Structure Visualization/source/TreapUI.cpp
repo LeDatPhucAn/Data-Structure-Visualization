@@ -1,5 +1,15 @@
 #include "../header/TreapUI.h"
 
+void TreapUI::init() {
+    root = nullptr;
+    root = this->insert(root, 69);
+    root = this->insert(root, 420);
+    root = this->insert(root, 123);
+    root = this->insert(root, 231);
+    root = this->insert(root, 99);
+    root = this->insert(root, 1);
+}
+
 void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos, const int xOffset, const int yOffset){
     static const float width = 60.0f;
     static const float height = 30.0f;
@@ -38,5 +48,5 @@ void TreapUI::drawTreap(TreapNode* curr){
 }
 
 void TreapUI::drawTreap(){
-    
+    drawTreapNode(this->root, { 100,100 }, 50, 50);
 }

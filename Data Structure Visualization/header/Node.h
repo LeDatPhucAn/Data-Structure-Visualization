@@ -11,6 +11,4 @@ public:
     int radius;
     Node(int value,Vector2 pos, int r): data(value), position(pos), radius(r) {}
     virtual ~Node() {}
-    //vector2D position;
-    //void connectnode(vector2D from, vector2D to);
 };

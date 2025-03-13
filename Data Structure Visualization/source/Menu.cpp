@@ -36,34 +36,41 @@ void Menu::updateScene() {
 	rectangles[3] = graph;
 
 
-
+    int currentGesture = GetGestureDetected();
     // clicking
 	Vector2 mousePoint = GetMousePosition();
     if (CheckCollisionPointRec(mousePoint, linkedlist)) {
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (currentGesture == GESTURE_TAP) {
             sceneHandler->changeScene(LINKEDLIST);
         }
         selected = MENU_LINKEDLIST;
     }
     else if (CheckCollisionPointRec(mousePoint, hashtable)) {
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (currentGesture == GESTURE_TAP) {
             sceneHandler->changeScene(HASHTABLE);
         }
         selected = MENU_HASHTABLE;
     }
     else if (CheckCollisionPointRec(mousePoint, treap)) {
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (currentGesture == GESTURE_TAP) {
             sceneHandler->changeScene(TREAP);
         }
         selected = MENU_TREAP;
     }
     else if (CheckCollisionPointRec(mousePoint, graph)) {
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (currentGesture == GESTURE_TAP) {
             sceneHandler->changeScene(GRAPH);
         }
         selected = MENU_GRAPH;
     }
-	else selected = NONE;
+    else {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+        selected = NONE;
+    }
 }
 
 void Menu::displayScene() {

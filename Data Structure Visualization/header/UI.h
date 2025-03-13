@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <functional>
 #include "Edge.h"
 using namespace std;
 
@@ -39,9 +40,9 @@ public:
 		color.b = (unsigned char)(color.b - amount < 0 ? 0 : color.b - amount);
 	}
 	static void lightenColor(Color& color, int amount) {
-		color.r = (unsigned char)(color.r - amount < 0 ? 0 : color.r - amount);
-		color.g = (unsigned char)(color.g - amount < 0 ? 0 : color.g - amount);
-		color.b = (unsigned char)(color.b - amount < 0 ? 0 : color.b - amount);
+		color.r = (unsigned char)(color.r + amount > 255 ? 255 : color.r + amount);
+		color.g = (unsigned char)(color.g + amount > 255 ? 255 : color.g + amount);
+		color.b = (unsigned char)(color.b + amount > 255 ? 255 : color.b + amount);
 	}
 
 	void cleanup();

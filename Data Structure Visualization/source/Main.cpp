@@ -15,7 +15,9 @@ int main()
 	SetTargetFPS(60);
 	UI ui;
 	ui.initTextures();
-	TextBox test("ayo what the fuck man", 300, 100);
+	TextBox test("BRuhw123123123TF",400,200);
+	InputBox test2(500,400,15);
+	NumberInputBox test3(900, 600, 9);
 	SceneHandler scenehandler;
 	
 	/// main functions
@@ -27,9 +29,10 @@ int main()
 
 		// Update
 		//----------------------------------------------------------------------------------
-		
 		scenehandler.updateCurrentScene();
-
+		test.update();
+		test2.update();
+		test3.update();
         //----------------------------------------------------------------------------------
 
 
@@ -37,9 +40,10 @@ int main()
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
-		test.draw();
 		scenehandler.displayCurrentScene();
-        
+		test.draw();
+		test2.draw();
+		test3.draw();
         EndDrawing();
 		//----------------------------------------------------------------------------------
 		

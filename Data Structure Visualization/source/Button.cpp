@@ -1,12 +1,12 @@
 #include "../header/Button.h"
 
-void InputBox::hover() { // Renamed from TextBox to InputBox
+void InputBox::hover() { 
 	OutLineColor = RED;
 }
-void InputBox::unhover() { // Renamed from TextBox to InputBox
+void InputBox::unhover() { 
 	OutLineColor = DARKGRAY;
 }
-void InputBox::draw() { // Renamed from TextBox to InputBox
+void InputBox::draw() { 
 	DrawRectangleRec(rect, FillColor);
 
 	DrawText(inputText.c_str(), (int)rect.x + 5, (int)rect.y + 8, UI::fontSize, TextColor);
@@ -14,19 +14,27 @@ void InputBox::draw() { // Renamed from TextBox to InputBox
 	if (Texting)
 	{
 		DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
-		if (inputText.size() < maxChars)
-		{
-			// Draw blinking underscore char
-			if (((framesCounter / 20) % 2) == 0) DrawText("_", (int)rect.x + 8 + MeasureText(inputText.c_str(), UI::fontSize), (int)rect.y + 12, UI::fontSize, TextColor);
-		}
+		// Draw blinking underscore char
+		if (((framesCounter / 20) % 2) == 0) DrawText("_", (int)rect.x + 8 + MeasureText(inputText.c_str(), UI::fontSize), (int)rect.y + 12, UI::fontSize, TextColor);
 	}
 }
-void InputBox::update() { // Renamed from TextBox to InputBox
+void InputBox::update() { 
 	framesCounter++;
-
-	if (Texting) {
-
+	if (GetGestureDetected() == GESTURE_TAP) {
+		Texting = 0;
+	}
+	if (CheckCollisionPointRec(GetMousePosition(), rect))
+	{
 		hover();
+
+		// Set the window's cursor to the I-Beam
+		SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+		if (GetGestureDetected() == GESTURE_TAP) {
+			Texting = 1;
+		}
+	}
+	if (Texting) {
 
 		// Get char pressed (unicode character) on the queue
 		int key = GetCharPressed();
@@ -54,7 +62,64 @@ void InputBox::update() { // Renamed from TextBox to InputBox
 		framesCounter = 0;
 	}
 }
+void NumberInputBox::update() { 
+	framesCounter++;
+	if (GetGestureDetected() == GESTURE_TAP) {
+		Texting = 0;
+	}
+	if (CheckCollisionPointRec(GetMousePosition(), rect))
+	{
+		hover();
 
+		// Set the window's cursor to the I-Beam
+		SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+		if (GetGestureDetected() == GESTURE_TAP) {
+			Texting = 1;
+		}
+	}
+	if (Texting) {
+
+		// Get char pressed (unicode character) on the queue
+		int key = GetCharPressed();
+
+		// Check if more characters have been pressed on the same frame
+		while (key > 0)
+		{
+			// NOTE: Only numbers
+			if ( key >= '0' && key <= '9' && (inputText.size() < maxChars))
+			{
+				inputText.push_back(key);
+				inputNumber = stoi(inputText);
+			}
+
+			key = GetCharPressed();  // Check next character in the queue
+		}
+
+		if (IsKeyPressed(KEY_BACKSPACE) && inputText.size() != 0)
+		{
+			inputText.pop_back();
+		}
+	}
+	else
+	{
+		unhover();
+		framesCounter = 0;
+	}
+}
+
+void Button::update() {
+	if (CheckCollisionPointRec(GetMousePosition(), rect))
+	{
+		hover();
+		SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+
+		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) click();
+
+		if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) unclick();
+	}
+	else unhover();
+}
 void TextBox::draw() {
 	DrawRectangleRec(rect, FillColor);
 	DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);

@@ -68,7 +68,6 @@ void Menu::updateScene() {
         selected = MENU_GRAPH;
     }
     else {
-        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         selected = NONE;
     }
 }

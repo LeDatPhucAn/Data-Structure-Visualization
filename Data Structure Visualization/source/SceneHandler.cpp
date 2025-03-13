@@ -93,26 +93,16 @@ void SceneHandler::updateCollision() {
         }
         BacktoMenuColor = BLUE;
     }
-    else if (CheckCollisionPointRec(GetMousePosition(), TextBox))
-    {
-        TextBoxLinesColor = RED;
-
-        // Set the window's cursor to the I-Beam
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
-
-        if (currentGesture == GESTURE_TAP) {
-            Texting = 1;
-        }
-    }
-    else {
-        BacktoMenuColor = LIGHTGRAY;
-        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-    }
+    else BacktoMenuColor = LIGHTGRAY;
 }
 
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
+        // reset mouse cursor
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
         if (getCurrentScene() != MENU) {
+
 
             updateCamera();
             

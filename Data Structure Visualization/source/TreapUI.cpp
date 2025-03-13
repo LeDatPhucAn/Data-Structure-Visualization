@@ -1,12 +1,11 @@
 #include "../header/TreapUI.h"
 
-void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos, const int xOffset, const int yOffset){
+void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos){
     static const float width = 60.0f;
     static const float height = 30.0f;
     static const float dataWidth = 40.0f;
     static const float priorityWidth = 20.0f;
 
-    if(!curr) return;
     DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, {255, 203, 203, 255});
     DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
     DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
@@ -18,7 +17,7 @@ void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos, const int xOffse
     DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 15, RED);
 }
 
-void TreapUI::drawLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLeftChild){
+void TreapUI::drawTreapLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLeftChild){
     static const float nodeWidth = 60.0f;
     static const float nodeHeight = 30.0f;
     static const float lineThickness = 3.0f;
@@ -32,11 +31,22 @@ void TreapUI::drawLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLe
     DrawLineEx(start, end, lineThickness, BLACK);
 }
 
-void TreapUI::drawTreap(TreapNode* curr){
+void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const int yOffset){
     if(!curr) return;
-
+    drawTreapNode(curr, pos);
+    int newXOffset = xOffset / 2;    
+    if(curr->left){
+        Vector2 leftPos = {pos.x - xOffset, pos.y + yOffset};
+        drawTreap(curr->left, leftPos, newXOffset, yOffset);
+        drawTreapLink(pos, leftPos, true);
+    }    
+    if(curr->right){
+        Vector2 rightPos = {pos.x + xOffset, pos.y + yOffset};
+        drawTreap(curr->right, rightPos, newXOffset, yOffset);
+        drawTreapLink(pos, rightPos, false);
+    }
 }
 
 void TreapUI::drawTreap(){
-    
+    drawTreap(root, rootPos, xOffset, yOffset);
 }

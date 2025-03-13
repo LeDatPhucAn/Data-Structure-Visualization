@@ -20,14 +20,14 @@ public:
 };
 
 class Treap {
-private:
+protected:
 	TreapNode* root;
+private:
 	TreapNode* rotateLeft(TreapNode* root);
 	TreapNode* rotateRight(TreapNode* root);
 	TreapNode* insert(TreapNode* root, int key);
 	TreapNode* search(TreapNode* root, int key);
 	TreapNode* remove(TreapNode* root, int key);
-
 public:
 	Treap() : root(nullptr) {
 		srand(time(nullptr));

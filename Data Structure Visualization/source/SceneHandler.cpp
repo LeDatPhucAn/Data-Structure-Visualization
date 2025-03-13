@@ -35,14 +35,16 @@ void SceneHandler::drawButtontoMenu(float X, float Y) {
     float lineThick = 12.0f;
     Rectangle rec2 = { BacktoMenu.x + BacktoMenu.width, BacktoMenu.y + BacktoMenu.height / 2, (float)BacktoMenu.width, (float)BacktoMenu.height };
 
-    DrawRectangleRounded(BacktoMenu, roundness, (int)segments, Fade(BacktoMenuColor, 0.6f));
-    DrawRectangleRoundedLinesEx(BacktoMenu, roundness, (int)segments, lineThick, Fade(BacktoMenuColor, 0.8f));
+    DrawRectangleRounded(BacktoMenu, roundness, (int)segments, Fade(BacktoMenuColor, 0.7f));
+    DrawRectangleRoundedLinesEx(BacktoMenu, roundness, (int)segments, lineThick, Fade(BacktoMenuColor, 0.9f));
     DrawTexturePro(Icons[0], { 0,0,(float)Icons[0].width,(float)Icons[0].height }, rec2, { 0,(float)Icons[0].height / 2 }, 180, WHITE);
 }
 
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
         if (getCurrentScene() != MENU) {
+
+            // button for all scenes except menu
             float width = 200.0f;
             float height = 100.0f;
             BacktoMenu = { 20, 20, (float)width, (float)height };

@@ -1,23 +1,23 @@
 #pragma once
 
 #include "Node.h"
+#include "Edge.h"
 #include <cstdlib>
 #include <ctime>
 
-class TreapNode{
+class TreapNode : public Node{
 public:
-	int data;
 	int priority;
-	TreapNode* left;
-	TreapNode* right;
+	Edge* leftEdge;
+	Edge* rightEdge;
 	int subtreeWidth;
 
-	TreapNode(int data) : data(data), priority(rand()), left(nullptr), right(nullptr), subtreeWidth(1) {};
+	TreapNode(int data, Vector2 pos) : Node(data, pos, 0), priority(rand()), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){}
 	~TreapNode() {
-		delete left;
-		left = nullptr;
-		delete right;
-		right = nullptr;
+		delete leftEdge;
+		leftEdge = nullptr;
+		delete rightEdge;
+		rightEdge = nullptr;
 	}
 };
 

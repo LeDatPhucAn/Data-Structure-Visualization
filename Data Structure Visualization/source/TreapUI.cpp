@@ -32,16 +32,22 @@ void TreapUI::drawTreapLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool
 }
 
 void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const int yOffset){
-    if(!curr) return;
+    if (!curr) return;
+
     drawTreapNode(curr, pos);
-    int newXOffset = xOffset / 2;    
-    if(curr->left){
-        Vector2 leftPos = {pos.x - xOffset, pos.y + yOffset};
+    
+    int leftWidth = getSubtreeWidth(curr->left);
+    int rightWidth = getSubtreeWidth(curr->right);
+    int newXOffset = max((leftWidth + rightWidth) * 15, 30);
+
+    if (curr->left) {
+        Vector2 leftPos = {pos.x - newXOffset, pos.y + yOffset};
         drawTreap(curr->left, leftPos, newXOffset, yOffset);
         drawTreapLink(pos, leftPos, true);
-    }    
-    if(curr->right){
-        Vector2 rightPos = {pos.x + xOffset, pos.y + yOffset};
+    }
+
+    if (curr->right) {
+        Vector2 rightPos = {pos.x + newXOffset, pos.y + yOffset};
         drawTreap(curr->right, rightPos, newXOffset, yOffset);
         drawTreapLink(pos, rightPos, false);
     }
@@ -50,3 +56,4 @@ void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const i
 void TreapUI::drawTreap(){
     drawTreap(root, rootPos, xOffset, yOffset);
 }
+

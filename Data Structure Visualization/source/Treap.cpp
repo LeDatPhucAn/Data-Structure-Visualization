@@ -4,6 +4,8 @@ TreapNode* Treap::rotateLeft(TreapNode* root) {
     TreapNode* newRoot = root->right;
     root->right = newRoot->left;
     newRoot->left = root;
+    updateSubtreeWidth(root);
+    updateSubtreeWidth(newRoot);
     return newRoot;
 }
 
@@ -11,6 +13,8 @@ TreapNode* Treap::rotateRight(TreapNode* root) {
     TreapNode* newRoot = root->left;
     root->left = newRoot->right;
     newRoot->right = root;
+    updateSubtreeWidth(root);
+    updateSubtreeWidth(newRoot);
     return newRoot;
 }
 
@@ -30,7 +34,7 @@ TreapNode* Treap::insert(TreapNode* root, int key) {
             root = rotateLeft(root);
         }
     }
-
+    updateSubtreeWidth(root);
     return root;
 }
 
@@ -54,11 +58,20 @@ TreapNode* Treap::remove(TreapNode* root, int key) {
         root->right = remove(root->right, key);
     }
     else {
-        if (!root->left && !root->right) return nullptr;
-
-        else if (!root->right) return root->left;
-
-        else if (!root->left) return root->right;
+        if (!root->left && !root->right){
+            delete root;
+            return nullptr;
+        }
+        else if (!root->right){
+            TreapNode* temp = root->left;
+            delete root;
+            return temp;
+        }
+        else if (!root->left){
+            TreapNode* temp = root->right;
+            delete root;
+            return temp;
+        }
 
         if (root->left->priority > root->right->priority) {
             root = rotateRight(root);
@@ -70,6 +83,7 @@ TreapNode* Treap::remove(TreapNode* root, int key) {
         }
     }
 
+    updateSubtreeWidth(root);
     return root;
 }
 
@@ -83,4 +97,15 @@ TreapNode* Treap::search(int key) {
 
 void Treap::remove(int key) {
     root = remove(root, key);
+}
+
+int Treap::getSubtreeWidth(TreapNode* curr){
+    if(!curr) return 0;
+    return curr->subtreeWidth;
+}
+
+void Treap::updateSubtreeWidth(TreapNode* curr){
+    if(curr){
+        curr->subtreeWidth =  1 + getSubtreeWidth(curr->left) + getSubtreeWidth(curr->right);
+    }
 }

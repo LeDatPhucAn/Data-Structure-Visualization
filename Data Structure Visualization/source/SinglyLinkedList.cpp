@@ -75,7 +75,7 @@ void LinkedList::insertnode(int x, int pos) {
         return;
     }
     if (pos == 1 || !head) {
-        LLNode* temp = new LLNode(x,50,50);
+        LLNode* temp = new LLNode(x,100,100);
         temp->next = head;
         adjustPos(temp);
         Edge::addEdge(Edges, temp, head);

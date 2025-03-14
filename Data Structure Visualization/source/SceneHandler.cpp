@@ -65,6 +65,7 @@ void SceneHandler::updateCamera() {
     }
 }
 
+
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
         // reset mouse cursor
@@ -72,9 +73,7 @@ void SceneHandler::updateCurrentScene() {
 
         if (getCurrentScene() != MENU) {
 
-
             updateCamera();
-
 
         }
 

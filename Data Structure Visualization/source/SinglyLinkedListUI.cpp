@@ -12,7 +12,11 @@ void SinglyLinkedListUI::drawlinkedlist() {
 }
 void SinglyLinkedListUI::deleteButtons(){
     for (auto button : Buttons) {
-        delete button;
+        while (button) {
+            Button* del = button;
+            button = button->next;
+            delete del;
+        }
     }
 }
 void SinglyLinkedListUI::init() {
@@ -23,13 +27,31 @@ void SinglyLinkedListUI::init() {
     this->insertnode(50, 5);
 
     Buttons.push_back(new TextBox("Insert", 100, UI::screenHeight / 2));
-    Buttons[0]->onClick = [this]() {
-        this->insertnode(60, 2); // Example action: Insert a node with value 60 at position 1
-        };
+    //Buttons[0]->head = Buttons[0];
+    Button* Value = new TextBox("Value:",0,0);
+    Button* ValueInput = new NumberInputBox(0,0,3);
+    Button* Pos = new TextBox("Pos:", 0, 0);
+    Button* PosInput = new NumberInputBox(0, 0, 2);
+    Button* Enter = new TextBox(">", 0, 0);
+    Buttons[0]->insertSubButton(Value);
+    Buttons[0]->insertSubButton(ValueInput);
+    Buttons[0]->insertSubButton(Pos);
+    Buttons[0]->insertSubButton(PosInput);
+    Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
+        this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
+        });
+
+
     Buttons.push_back(new TextBox("Remove", Buttons[0]->rect.x, Buttons[0]->rect.y + Buttons[0]->rect.height));
-    Buttons[1]->onClick = [this]() {
-        this->remove(60); 
-        };
+    //Buttons[0]->head = Buttons[0]
+    Button* Value1 = new TextBox("Value:", 0, 0);
+    Button* ValueInput1 = new NumberInputBox(0, 0, 3);
+    Button* Enter1 = new TextBox(">", 0, 0);
+    Buttons[1]->insertSubButton(Value1);
+    Buttons[1]->insertSubButton(ValueInput1);
+    Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
+        this->remove(ValueInput1->getNumber());
+        });
 
     Buttons.push_back(new TextBox("Menu", 50, 50));
     Buttons[2]->onClick = [this]() {
@@ -50,9 +72,4 @@ void SinglyLinkedListUI::updateScene() {
     for (auto button : Buttons) {
         button->update();
     }
-    if (IsKeyPressed(KEY_ONE))this->insertnode(40, 2);
-    if (IsKeyPressed(KEY_TWO) && this->remove(40)) {
-        cout << "REMOVED!\n";
-    }
-
 }

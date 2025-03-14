@@ -1,5 +1,9 @@
+#pragma once
 #include "UI.h"
+
 class Button {
+protected:
+    const int padding = UI::fontSize;
 public:
     Rectangle rect;
     Color TextColor;
@@ -58,8 +62,8 @@ public:
     // default input box best one
     InputBox(float x, float y, int maxCh) : Button({x, y, x, y},MAROON,LIGHTGRAY,DARKGRAY), inputText(""), Texting(false), maxChars(maxCh), framesCounter(0) {
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars-1, 'W').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + UI::fontSize / 2;
-        rect.height = textSize.y + UI::fontSize / 2;
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
     }  
     InputBox(Rectangle r) : inputText(""), Texting(false), Button(r, MAROON, LIGHTGRAY, DARKGRAY), maxChars(10), framesCounter(0) {} //default inputbox
     InputBox(Rectangle r, int maxCh) : inputText(""), Texting(false), Button(r, MAROON, LIGHTGRAY, DARKGRAY), maxChars(maxCh), framesCounter(0) {} 
@@ -72,10 +76,12 @@ public:
 class NumberInputBox : public InputBox {
 public:
     int inputNumber;
+
+    // default Number Input Box
     NumberInputBox(float x, float y, int maxCh) : InputBox(x, y, maxCh), inputNumber(0) {
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars+1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + UI::fontSize / 2;
-        rect.height = textSize.y + UI::fontSize / 2;
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
     }
     void update() override;
 };
@@ -87,7 +93,7 @@ public:
     //default TextBox best one
     TextBox(string t, float x, float y) : Text(t), Button({ x,y,x,y }) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
-        rect = { x, y, tsize.x + UI::fontSize / 2, tsize.y + UI::fontSize / 2 };
+        rect = { x, y, tsize.x + padding, tsize.y + padding };
     }
     TextBox(Rectangle r, string t) : Text(t), Button(r) {} 
     TextBox(Rectangle r, string t, Color tc, Color fc, Color olc) : Text(t), Button(r, tc, fc, olc) {}

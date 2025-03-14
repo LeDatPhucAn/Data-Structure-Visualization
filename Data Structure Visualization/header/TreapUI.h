@@ -1,7 +1,7 @@
 #pragma once
 #include "SceneManager.h"
 #include "Treap.h" // Assuming you have this class
-class SceneHandler;
+
 class TreapUI : public SceneManager, public Treap {
 private: 
     const Vector2 rootPos = {(float)GetScreenWidth() / 2, (float)20};
@@ -11,12 +11,9 @@ private:
     void drawLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLeftChild);
     void drawTreap(TreapNode* curr);
 protected:
-    SceneHandler* scenehandler;
+
 public:
     TreapUI() {
-        init();
-    }
-    TreapUI(SceneHandler* handler) : scenehandler(handler){
         init();
     }
     void init();
@@ -31,4 +28,8 @@ public:
         drawTreap();
         // Implement the display logic for the treap scene
     }
+    void displaySceneInCamera() override {
+        // Implement the display logic for the graph scene
+    }
+
 };

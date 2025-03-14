@@ -51,7 +51,7 @@ void InputBox::update() {
 			key = GetCharPressed();  // Check next character in the queue
 		}
 
-		if (IsKeyPressed(KEY_BACKSPACE) && inputText.size() != 0)
+		if (IsKeyDown(KEY_BACKSPACE) && GetFrameTime() >= 0.014 && inputText.size() != 0 )
 		{
 			inputText.pop_back();
 		}
@@ -96,8 +96,9 @@ void NumberInputBox::update() {
 			key = GetCharPressed();  // Check next character in the queue
 		}
 
-		if (IsKeyPressed(KEY_BACKSPACE) && inputText.size() != 0)
+		if (IsKeyDown(KEY_BACKSPACE) && GetFrameTime() == 0.01 && inputText.size() != 0 )
 		{
+
 			inputText.pop_back();
 		}
 	}
@@ -115,13 +116,17 @@ void Button::update() {
 		SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
 
 		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) click();
+		
 
-		if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) unclick();
+		if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+			onClick();
+			unclick();
+		}
 	}
 	else unhover();
 }
 void TextBox::draw() {
 	DrawRectangleRec(rect, FillColor);
 	DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
-	DrawTextEx(UI::font, Text.c_str(), { rect.x+10,rect.y+10 }, UI::fontSize, UI::spacing, TextColor);
+	DrawTextEx(UI::font, Text.c_str(), { rect.x+padding/2,rect.y+padding/2 }, UI::fontSize, UI::spacing, TextColor);
 }

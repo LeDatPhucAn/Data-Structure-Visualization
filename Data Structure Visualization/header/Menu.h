@@ -30,4 +30,8 @@ public:
     void updateScene() override;
 
     void displayScene() override;
+
+    void displaySceneInCamera() {
+        // Implement the display logic for the graph scene
+    }
 };

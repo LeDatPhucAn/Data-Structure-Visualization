@@ -3,10 +3,12 @@
 
 SceneHandler::SceneHandler() {
     camera.zoom = 1.0f;
+    UI::screenWidth = GetScreenWidth();
+    UI::screenHeight = GetScreenHeight();
     scenes[MENU] = new Menu(this);
     scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
     scenes[HASHTABLE] = new HashTableUI();
-    scenes[TREAP] = new TreapUI(this);
+    scenes[TREAP] = new TreapUI();
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed
     changeScene(MENU);
@@ -29,25 +31,11 @@ void SceneHandler::changeScene(Scene newScene) {
     }
 }
 
-void SceneHandler::drawButtontoMenu(float X, float Y) {
-    BacktoMenu.x = X;
-    BacktoMenu.y = Y;
-    float roundness = 0.5f;
-    float segments = 10.0f;
-    float lineThick = 12.0f;
-    Rectangle rec2 = { BacktoMenu.x + BacktoMenu.width, BacktoMenu.y + BacktoMenu.height / 2, (float)BacktoMenu.width, (float)BacktoMenu.height };
-
-    DrawRectangleRounded(BacktoMenu, roundness, (int)segments, Fade(BacktoMenuColor, 0.7f));
-    DrawRectangleRoundedLinesEx(BacktoMenu, roundness, (int)segments, lineThick, Fade(BacktoMenuColor, 0.9f));
-    DrawTexturePro(Icons[0], { 0,0,(float)Icons[0].width,(float)Icons[0].height }, rec2, { 0,(float)Icons[0].height / 2 }, 180, WHITE);
-}
-
 
 void SceneHandler::updateCamera() {
     // button for all scenes except menu
     float width = 200.0f;
     float height = 100.0f;
-    BacktoMenu = { 20, 20, (float)width, (float)height };
 
     // Translate based on mouse right click
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
@@ -76,25 +64,6 @@ void SceneHandler::updateCamera() {
         camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
     }
 }
-void SceneHandler::updateCollision() {
-
-    int currentGesture = GetGestureDetected();
-    Vector2 mousePoint = GetMousePosition();
-
-    // if you click anywhere it disables Texting
-    if (currentGesture == GESTURE_TAP) {
-        Texting = 0;
-    }
-
-    if (CheckCollisionPointRec(mousePoint, BacktoMenu)) {
-        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-        if (currentGesture == GESTURE_TAP) {
-            changeScene(MENU);
-        }
-        BacktoMenuColor = BLUE;
-    }
-    else BacktoMenuColor = LIGHTGRAY;
-}
 
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
@@ -105,17 +74,17 @@ void SceneHandler::updateCurrentScene() {
 
 
             updateCamera();
-            
-            updateCollision();
 
 
         }
+
         currentSceneObject->updateScene();
     }
 }
 
 void SceneHandler::displayCurrentScene() {
     if (currentSceneObject) {
+
         //apply camera to data structures
         if (getCurrentScene() != MENU) {
             BeginMode2D(camera);
@@ -129,21 +98,20 @@ void SceneHandler::displayCurrentScene() {
 
             // Draw a reference circle
             DrawCircle(GetScreenWidth() / 2, GetScreenHeight() / 2, 50, MAROON);
-            currentSceneObject->displayScene();
+            currentSceneObject->displaySceneInCamera();
             EndMode2D();
 
-            // draw things that stay permanent on screen
-            drawButtontoMenu(20, 20);
             
         }
         else {
-
             UI::drawBackground();
 
             UI::drawLogo();
-
-            currentSceneObject->displayScene();
         }
+
+
+        // display permanent objects
+        currentSceneObject->displayScene();
     }
 
     // Draw mouse reference

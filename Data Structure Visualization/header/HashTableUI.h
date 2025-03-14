@@ -15,4 +15,8 @@ public:
     void displayScene() override {
         // Implement the display logic for the hash table scene
     }
+    void displaySceneInCamera() override {
+        // Implement the display logic for the graph scene
+    }
+
 };

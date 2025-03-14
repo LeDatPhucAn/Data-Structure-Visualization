@@ -13,5 +13,6 @@ public:
 	Scene CurrentScene;
 	virtual void updateScene() = 0;
 	virtual void displayScene() = 0;
+	virtual void displaySceneInCamera() = 0;
     virtual ~SceneManager() = default;
 };

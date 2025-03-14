@@ -1,6 +1,6 @@
 #pragma once
 #include "Node.h"
-class UI;
+#include <vector>
 class Edge {
 protected:
 	
@@ -20,5 +20,7 @@ public:
 	bool operator==(const Edge& other) const {
 		return (from == other.from && to == other.to);
 	}
+	static void addEdge(vector<Edge*>& Edges, Node* from, Node* to);
+	static void removeEdge(vector<Edge*>& Edges, Node* from, Node* to);
 	void drawEdge();
 };

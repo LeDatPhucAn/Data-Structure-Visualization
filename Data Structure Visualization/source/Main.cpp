@@ -30,9 +30,9 @@ int main()
 		// Update
 		//----------------------------------------------------------------------------------
 		scenehandler.updateCurrentScene();
-		test.update();
+		/*test.update();
 		test2.update();
-		test3.update();
+		test3.update();*/
         //----------------------------------------------------------------------------------
 
 
@@ -41,9 +41,9 @@ int main()
         BeginDrawing();
         ClearBackground(RAYWHITE);
 		scenehandler.displayCurrentScene();
-		test.draw();
+		/*test.draw();
 		test2.draw();
-		test3.draw();
+		test3.draw();*/
         EndDrawing();
 		//----------------------------------------------------------------------------------
 		

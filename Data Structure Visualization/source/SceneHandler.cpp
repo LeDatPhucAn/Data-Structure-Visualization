@@ -8,7 +8,7 @@ SceneHandler::SceneHandler() {
     scenes[MENU] = new Menu(this);
     scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
     scenes[HASHTABLE] = new HashTableUI();
-    scenes[TREAP] = new TreapUI();
+    scenes[TREAP] = new TreapUI(this);
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed
     changeScene(MENU);
@@ -30,14 +30,6 @@ void SceneHandler::changeScene(Scene newScene) {
         currentSceneObject->CurrentScene = newScene;
     }
 }
-
-void SceneHandler::drawButtontoMenu(float X, float Y) {
-    BacktoMenu.x = X;
-    BacktoMenu.y = Y;
-    float roundness = 0.5f;
-    float segments = 10.0f;
-    float lineThick = 12.0f;
-    Rectangle rec2 = { BacktoMenu.x + BacktoMenu.width, BacktoMenu.y + BacktoMenu.height / 2, (float)BacktoMenu.width, (float)BacktoMenu.height };
 
 void SceneHandler::updateCamera() {
     // button for all scenes except menu
@@ -79,7 +71,6 @@ void SceneHandler::updateCurrentScene() {
             updateCamera();
             float width = 200.0f;
             float height = 100.0f;
-            BacktoMenu = { 20, 20, (float)width, (float)height };
 
             // Translate based on mouse right click
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
@@ -108,15 +99,6 @@ void SceneHandler::updateCurrentScene() {
                 camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
             }
 
-            // go back to menu
-            Vector2 mousePoint = GetMousePosition();
-            if (CheckCollisionPointRec(mousePoint, BacktoMenu)) {
-                if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                    changeScene(MENU);
-                }
-                BacktoMenuColor = BLUE;
-            }
-            else BacktoMenuColor = LIGHTGRAY;
         }
 
         currentSceneObject->updateScene();

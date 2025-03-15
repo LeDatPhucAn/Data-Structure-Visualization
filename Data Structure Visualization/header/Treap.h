@@ -12,7 +12,7 @@ public:
 	Edge* rightEdge;
 	int subtreeWidth;
 
-	TreapNode(int data, Vector2 pos) : Node(data, pos, 0), priority(rand()), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){}
+	TreapNode(int data, Vector2 pos) : Node(data, pos, 0), priority(rand() % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){}
 
 	~TreapNode() {
 		delete leftEdge;

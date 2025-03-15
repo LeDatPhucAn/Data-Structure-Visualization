@@ -2,9 +2,7 @@
 
 const Vector2 TreapUI::ROOT_POS = {GetScreenWidth() / 2, 0};
 
-TreapUI::TreapUI(){
-    root = nullptr;
-}
+TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr){}
 
 void TreapUI::insert(int key){
     root = treap.insert(root, key, ROOT_POS);

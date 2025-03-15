@@ -4,11 +4,24 @@ void Edge::drawEdge() {
 	int fromX = from->position.x + from->radius;
 	int fromY = from->position.y;
 	if (!to) {
-		DrawLine(fromX, fromY, fromX + 200, fromY, BLACK);
-		UI::drawtext2("NULL",fromX, fromY, BLUE);
+		DrawLineEx({fromX,fromY}, {fromX + 100,fromY}, thickness, BLACK);
+		string message = "NULL";
+		UI::drawtext2(message, fromX + 150, fromY, BLUE);
 		return;
 	}
-	int toX = to->position.x - to->radius;
-	int toY = to->position.y;
-	DrawLine(fromX, fromY, toX, toY, BLACK);
+	float toX = to->position.x - to->radius;
+	float toY = to->position.y;
+	DrawLineEx({fromX,fromY}, {toX,toY}, thickness, BLACK);
+}
+
+void Edge::addEdge(vector<Edge*>& Edges, Node* from, Node* to) {
+	Edges.push_back(new Edge(from, to));
+}
+void Edge::removeEdge(vector<Edge*>& Edges, Node* from, Node* to) {
+	for (int i = 0; i < Edges.size(); i++) {
+		if (Edges[i]->from == from && Edges[i]->to == to) {
+			Edges.erase(Edges.begin() + i);
+			return;
+		}
+	}
 }

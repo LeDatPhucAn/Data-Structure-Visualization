@@ -5,7 +5,7 @@
 #include "TreapUI.h"
 #include "GraphUI.h"
 #include "SinglyLinkedListUI.h"
-
+#include "Button.h"
 class SceneHandler : public UI {
 private:
     SceneManager* scenes[5];
@@ -13,13 +13,11 @@ private:
 protected:
     SceneManager* currentSceneObject;
 public:
-    Rectangle BacktoMenu;
-    Color BacktoMenuColor = LIGHTGRAY;
     SceneHandler();
     ~SceneHandler();
     int getCurrentScene();
+    void updateCamera();
     void changeScene(Scene newScene);
-    void drawButtontoMenu(float X, float Y);
     void updateCurrentScene();
     void displayCurrentScene();
 };

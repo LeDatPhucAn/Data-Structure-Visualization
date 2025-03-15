@@ -1,5 +1,7 @@
 #include "../header/SinglyLinkedList.h"
 #include "../header/Edge.h"
+
+vector<Edge*> LinkedList::Edges;
 void LinkedList::adjustPos(LLNode* pHead) {
     LLNode* prev = nullptr;
     while (pHead) {
@@ -8,17 +10,6 @@ void LinkedList::adjustPos(LLNode* pHead) {
         }
         prev = pHead;
         pHead = pHead->next;
-    }
-}
-void LinkedList::addEdge(LLNode* from, LLNode* to) {
-    Edges.push_back(Edge(from, to));
-}
-void LinkedList::removeEdge(LLNode* from, LLNode* to) {
-    for (int i = 0; i < Edges.size(); i++) {
-        if (Edges[i].from == from && Edges[i].to == to) {
-            Edges.erase(Edges.begin()+i);
-            return;
-        }
     }
 }
 bool LinkedList::remove(int x) {
@@ -31,7 +22,7 @@ bool LinkedList::remove(int x) {
             // adjusting position
             head->position.x = 100;
             adjustPos(head);
-            removeEdge(del, head);
+            Edge::removeEdge(Edges, del, head);
         }
 
         delete del;
@@ -41,8 +32,11 @@ bool LinkedList::remove(int x) {
     LLNode* cur = head;
     while (cur->next) {
         if (cur->next->data == x) {
+            Edge::removeEdge(Edges, cur, cur->next);
             LLNode* temp = cur->next;
+            Edge::removeEdge(Edges, temp, temp->next);
             cur->next = temp->next;
+            Edge::addEdge(Edges, cur, cur->next);
             adjustPos(cur);
             removeEdge(cur, temp);
             addEdge(cur, cur->next);
@@ -63,7 +57,13 @@ void LinkedList::printlist() {
     }
     cout << endl;
 }
-
+bool LinkedList::search(int x) {
+    LLNode* cur = head;
+    while (cur) {
+        if (cur->data == x)return true;
+    }
+    return false;
+}
 void LinkedList::deletelist() {
     while (head) {
         LLNode* del = head;
@@ -71,16 +71,20 @@ void LinkedList::deletelist() {
         delete del;
     }
 }
-
+void LinkedList::deleteEdges() {
+    for (auto edge : Edges) {
+        delete edge;
+    }
+}
 void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
         return;
     }
     if (pos == 1 || !head) {
-        LLNode* temp = new LLNode(x,50,50);
+        LLNode* temp = new LLNode(x,100,100);
         temp->next = head;
         adjustPos(temp);
-        addEdge(temp, head);
+        Edge::addEdge(Edges, temp, head);
         head = temp;
         return;
     }
@@ -91,9 +95,9 @@ void LinkedList::insertnode(int x, int pos) {
     if (!cur) return;
     LLNode* newnode = new LLNode(x,cur->position.x + 200, cur->position.y);
     newnode->next = cur->next;
-    addEdge(newnode, cur->next);
-    removeEdge(cur, cur->next);
+    Edge::addEdge(Edges, newnode, cur->next);
+    Edge::removeEdge(Edges, cur, cur->next);
     cur->next = newnode;
     adjustPos(newnode);
-    addEdge(cur, newnode);
+    Edge::addEdge(Edges, cur, newnode);
 }

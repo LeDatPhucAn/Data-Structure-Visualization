@@ -38,6 +38,7 @@ void SinglyLinkedListUI::init() {
     Buttons[0]->insertSubButton(ValueInput);
     Buttons[0]->insertSubButton(Pos);
     Buttons[0]->insertSubButton(PosInput);
+
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
         });
@@ -53,7 +54,6 @@ void SinglyLinkedListUI::init() {
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
         });
-    
     Button::insertHeadButton(Buttons, new TextBox("Search"));
     Buttons[2]->insertSubButton(new TextBox("Value:"));
 
@@ -67,7 +67,7 @@ void SinglyLinkedListUI::init() {
     Buttons[3]->onClick = [this]() {
         this->scenehandler->changeScene(MENU);
         };
-
+    
 }
 void SinglyLinkedListUI::displaySceneInCamera() {
     drawlinkedlist();

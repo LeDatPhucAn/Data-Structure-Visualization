@@ -11,7 +11,7 @@ void InputBox::unhover() {
 }
 
 void InputBox::draw() {
-    if(this == head || head->isActivated) {
+    if(!head || head->isActivated) {
         DrawRectangleRec(rect, FillColor);
         DrawText(inputText.c_str(), (int)rect.x + 5, (int)rect.y + 8, UI::fontSize, TextColor);
         if (Texting && (framesCounter / 20) % 2 == 0) {
@@ -27,7 +27,7 @@ void InputBox::draw() {
 void InputBox::update() {
     Button::update(); // Handle base interaction logic
 
-    if (head->isActivated) {
+    if (!head || head->isActivated) {
         framesCounter++;
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             SetMouseCursor(MOUSE_CURSOR_IBEAM);
@@ -67,7 +67,7 @@ void NumberInputBox::unhover() {
 void NumberInputBox::update() {
     Button::update(); // Handle base interaction logic
 
-    if (head->isActivated) {
+    if (!head || head->isActivated) {
         framesCounter++;
         if (GetGestureDetected() == GESTURE_TAP) {
             Texting = 0;
@@ -116,34 +116,36 @@ void NumberInputBox::update() {
 }
 
 void Button::update() {
-    if (this == head) {
-        // Head button logic: Toggle activation on click
-        if (CheckCollisionPointRec(GetMousePosition(), rect)) {
-            hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                isActivated = !isActivated; // Toggle state
-                if (onClick) onClick();
-            }
-            Button::isCollision = true;
+    // Head button logic: Toggle activation on click
+    if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+        hover();
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated; // Toggle state
+            if (onClick) onClick();
         }
-        else {
-            unhover();
-        }
+        Button::isCollision = true;
     }
-    else if (head->isActivated) {
-        // Non-head buttons: Process input only if head is activated
-        if (CheckCollisionPointRec(GetMousePosition(), rect)) {
-            hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                if (onClick) onClick();
-            }
-            Button::isCollision = true;
+    else {
+        unhover();
+    }
+
+    // Recursively update the next button
+    if (next) {
+        next->update();
+    }
+}
+void TextBox::update() {
+    if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+        hover();
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated; // Toggle state
+            if (onClick) onClick();
         }
-        else {
-            unhover();
-        }
+        Button::isCollision = true;
+    }
+    else {
+        unhover();
     }
 
     // Recursively update the next button
@@ -153,7 +155,7 @@ void Button::update() {
 }
 
 void TextBox::draw() {
-    if(this==head || head->isActivated){
+    if(!head || head->isActivated){
         DrawRectangleRec(rect, FillColor);
         DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
         DrawTextEx(UI::font, Text.c_str(), { rect.x + padding / 2,rect.y + padding / 2 }, UI::fontSize, UI::spacing, TextColor);

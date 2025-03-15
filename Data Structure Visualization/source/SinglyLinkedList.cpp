@@ -61,6 +61,8 @@ bool LinkedList::search(int x) {
     LLNode* cur = head;
     while (cur) {
         if (cur->data == x)return true;
+        cur = cur->next;
+
     }
     return false;
 }

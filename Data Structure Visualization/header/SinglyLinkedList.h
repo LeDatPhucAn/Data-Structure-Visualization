@@ -15,10 +15,11 @@ public:
         deleteEdges();
     }
     void adjustPos(LLNode* head);
+    void insertnode(int x, int pos);
     bool remove(int x);
+    bool search(int x);
     void printlist();
     void deletelist();
     void deleteEdges();
-    void insertnode(int x, int pos);
 };
 

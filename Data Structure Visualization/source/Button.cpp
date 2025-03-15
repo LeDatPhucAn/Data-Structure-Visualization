@@ -1,11 +1,15 @@
 #include "../header/Button.h"
 
+bool Button::isCollision = false;
+
 void InputBox::hover() {
     OutLineColor = RED;
 }
+
 void InputBox::unhover() {
     OutLineColor = DARKGRAY;
 }
+
 void InputBox::draw() {
     if(this == head || head->isActivated) {
         DrawRectangleRec(rect, FillColor);
@@ -44,10 +48,21 @@ void InputBox::update() {
                 inputText.pop_back();
                 lastDeletedTime = currenttime;
             }
+
+            if (IsKeyPressed(KEY_ENTER)) {
+                if (onClick)onClick();
+            }
         }
     }
 }
 
+void NumberInputBox::hover() {
+    InputBox::hover();
+}
+
+void NumberInputBox::unhover() {
+    InputBox::unhover();
+}
 
 void NumberInputBox::update() {
     Button::update(); // Handle base interaction logic
@@ -92,10 +107,13 @@ void NumberInputBox::update() {
                 inputText.pop_back();
                 lastDeletedTime = currenttime;
             }
+
+            if (IsKeyPressed(KEY_ENTER)) {
+                if (onClick)onClick();
+            }
         }
     }
 }
-
 
 void Button::update() {
     if (this == head) {
@@ -107,6 +125,7 @@ void Button::update() {
                 isActivated = !isActivated; // Toggle state
                 if (onClick) onClick();
             }
+            Button::isCollision = true;
         }
         else {
             unhover();
@@ -120,6 +139,7 @@ void Button::update() {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (onClick) onClick();
             }
+            Button::isCollision = true;
         }
         else {
             unhover();

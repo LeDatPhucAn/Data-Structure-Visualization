@@ -68,8 +68,7 @@ void SceneHandler::updateCamera() {
 
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
-        // reset mouse cursor
-        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
 
         if (getCurrentScene() != MENU) {
 

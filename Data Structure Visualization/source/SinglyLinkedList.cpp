@@ -57,7 +57,13 @@ void LinkedList::printlist() {
     }
     cout << endl;
 }
-
+bool LinkedList::search(int x) {
+    LLNode* cur = head;
+    while (cur) {
+        if (cur->data == x)return true;
+    }
+    return false;
+}
 void LinkedList::deletelist() {
     while (head) {
         LLNode* del = head;

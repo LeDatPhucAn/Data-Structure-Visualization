@@ -26,13 +26,14 @@ void SinglyLinkedListUI::init() {
     this->insertnode(50, 3);
     this->insertnode(50, 5);
 
-    Buttons.push_back(new TextBox("Insert", 100, UI::screenHeight / 2));
-    //Buttons[0]->head = Buttons[0];
-    Button* Value = new TextBox("Value:",0,0);
-    Button* ValueInput = new NumberInputBox(0,0,3);
-    Button* Pos = new TextBox("Pos:", 0, 0);
-    Button* PosInput = new NumberInputBox(0, 0, 2);
-    Button* Enter = new TextBox(">", 0, 0);
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight*3/4));
+
+    Button* Value = new TextBox("Value:");
+    Button* ValueInput = new NumberInputBox(3);
+    Button* Pos = new TextBox("Pos:");
+    Button* PosInput = new NumberInputBox(2);
+    Button* Enter = new TextBox(">");
+
     Buttons[0]->insertSubButton(Value);
     Buttons[0]->insertSubButton(ValueInput);
     Buttons[0]->insertSubButton(Pos);
@@ -41,20 +42,29 @@ void SinglyLinkedListUI::init() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
         });
 
-
-    Buttons.push_back(new TextBox("Remove", Buttons[0]->rect.x, Buttons[0]->rect.y + Buttons[0]->rect.height));
-    //Buttons[0]->head = Buttons[0]
-    Button* Value1 = new TextBox("Value:", 0, 0);
-    Button* ValueInput1 = new NumberInputBox(0, 0, 3);
-    Button* Enter1 = new TextBox(">", 0, 0);
+    Button::insertHeadButton(Buttons, new TextBox("Remove"));
+    Button* Value1 = new TextBox("Value:");
+    Button* ValueInput1 = new NumberInputBox(3);
+    Button* Enter1 = new TextBox(">");
     Buttons[1]->insertSubButton(Value1);
-    Buttons[1]->insertSubButton(ValueInput1);
+    Buttons[1]->insertSubButton(ValueInput1, [this, ValueInput1]() {
+        this->remove(ValueInput1->getNumber());
+        });
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
         });
+    
+    Button::insertHeadButton(Buttons, new TextBox("Search"));
+    Buttons[2]->insertSubButton(new TextBox("Value:"));
+
+    Button* ValueInput2 = new NumberInputBox(3);
+    Buttons[2]->insertSubButton(ValueInput2);
+    Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
+        this->search(ValueInput2->getNumber());
+        });
 
     Buttons.push_back(new TextBox("Menu", 50, 50));
-    Buttons[2]->onClick = [this]() {
+    Buttons[3]->onClick = [this]() {
         this->scenehandler->changeScene(MENU);
         };
 
@@ -69,7 +79,9 @@ void SinglyLinkedListUI::displayScene() {
     }
 }
 void SinglyLinkedListUI::updateScene() {
+    Button::isCollision = false;
     for (auto button : Buttons) {
         button->update();
     }
+    if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

@@ -1,12 +1,8 @@
 #include "../header/Edge.h"
 #include "../header/UI.h"
 void Edge::drawEdge() {
-	if (!from) {
-		cout << "u done fucked up";
-		return;
-	}
-	float fromX = from->position.x + from->radius;
-	float fromY = from->position.y;
+	int fromX = from->position.x + from->radius;
+	int fromY = from->position.y;
 	if (!to) {
 		DrawLineEx({fromX,fromY}, {fromX + 100,fromY}, thickness, BLACK);
 		string message = "NULL";

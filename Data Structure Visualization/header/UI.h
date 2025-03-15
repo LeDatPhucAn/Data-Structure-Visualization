@@ -13,19 +13,24 @@ using namespace std;
 class UI {
 protected:
 
-
-public:
-	UI();
+	//Use default font
 	static Font font;
+	
+	int totalicons = 3;
 	static constexpr float fontSize = 40.0f;
 	static constexpr float spacing = 2.0f;
-
+public:
+	UI();
 	bool menuhovered = false;
 	static int screenWidth;
 	static int screenHeight;
 	static vector <Texture2D> Icons;
 	static vector <Texture2D> Buttons;
 	static vector<Texture2D> selectedButtons;
+
+	static Font getfont() {
+		return font;
+	}
 	void initTextures();
 	static void drawBackground();
 	static void drawLogo();

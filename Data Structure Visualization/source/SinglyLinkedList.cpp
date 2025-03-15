@@ -12,7 +12,6 @@ void LinkedList::adjustPos(LLNode* pHead) {
         pHead = pHead->next;
     }
 }
-
 bool LinkedList::remove(int x) {
     if (!head) return false;
     if (head && head->data == x) {
@@ -39,7 +38,8 @@ bool LinkedList::remove(int x) {
             cur->next = temp->next;
             Edge::addEdge(Edges, cur, cur->next);
             adjustPos(cur);
-            
+            removeEdge(cur, temp);
+            addEdge(cur, cur->next);
             delete temp;
             temp = nullptr;
             return true;

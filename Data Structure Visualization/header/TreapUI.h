@@ -1,22 +1,21 @@
 #pragma once
 #include "SceneManager.h"
-#include "Treap.h" // Assuming you have this class
+#include "Treap.h" 
 
-class TreapUI : public SceneManager, public Treap {
+class TreapUI : public SceneManager{
 private: 
-    const Vector2 rootPos = {(float)GetScreenWidth() / 2, (float)20};
+    Treap treap;
+    TreapNode* root = nullptr;
+    static const Vector2 ROOT_POS;
     const int xOffset = GetScreenWidth() / 2 - 20;
     const int yOffset = GetScreenHeight() / 5; 
-    void drawTreapNode(TreapNode* curr, const Vector2 pos, const int xOffset, const int yOffset);
-    void drawLink(Vector2 startNodeCenter, Vector2 endNodeCenter, bool isLeftChild);
-    void drawTreap(TreapNode* curr);
-protected:
-
+    void drawTreapNode(TreapNode* curr, const Vector2 pos);
+    void drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const int yOffset);
 public:
-    TreapUI() {
-        init();
-    }
-    void init();
+    void insert(int key);
+    void remove(int key);
+    void search(int key);
+    TreapUI();
 
     void drawTreap();
 

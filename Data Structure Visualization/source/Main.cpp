@@ -6,6 +6,7 @@
 #include "../header/Animation.h"
 #include "../header/SinglyLinkedListUI.h"
 #include "../header/SceneHandler.h"
+#include "../header/Button.h"
 using namespace std;
 int main()
 {
@@ -14,9 +15,8 @@ int main()
 	SetTargetFPS(60);
 	UI ui;
 	ui.initTextures();
-
 	SceneHandler scenehandler;
-
+	
 	/// main functions
 	while (!WindowShouldClose()) {
 
@@ -26,7 +26,6 @@ int main()
 
 		// Update
 		//----------------------------------------------------------------------------------
-		
 		scenehandler.updateCurrentScene();
 
         //----------------------------------------------------------------------------------
@@ -36,9 +35,7 @@ int main()
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
 		scenehandler.displayCurrentScene();
-        
         EndDrawing();
 		//----------------------------------------------------------------------------------
 		

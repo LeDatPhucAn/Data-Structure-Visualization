@@ -62,4 +62,3 @@ void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const i
 void TreapUI::drawTreap(){
     drawTreap(root, rootPos, xOffset, yOffset);
 }
-

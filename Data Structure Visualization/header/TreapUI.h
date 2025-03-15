@@ -24,6 +24,11 @@ public:
     }
 
     void displayScene() override {
+        drawTreap();
         // Implement the display logic for the treap scene
     }
+    void displaySceneInCamera() override {
+        // Implement the display logic for the graph scene
+    }
+
 };

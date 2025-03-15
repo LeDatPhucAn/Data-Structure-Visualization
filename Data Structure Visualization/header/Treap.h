@@ -4,7 +4,7 @@
 #include "Edge.h"
 #include <cstdlib>
 #include <ctime>
-
+#include "Node.h"
 class TreapNode : public Node{
 public:
 	int priority;
@@ -12,7 +12,11 @@ public:
 	Edge* rightEdge;
 	int subtreeWidth;
 
+	TreapNode(int value, Vector2 pos) : Node(value, pos, 50), priority(rand()), left(nullptr), right(nullptr) {}
+	TreapNode(int value, float X, float Y) : Node(value, { X,Y }, 50), priority(rand()) , left(nullptr), right(nullptr) {}
+	TreapNode(int value, float X, float Y, int r) : Node(value, { X,Y }, r), priority(rand()) , left(nullptr), right(nullptr) {}
 	TreapNode(int data, Vector2 pos) : Node(data, pos, 0), priority(rand()), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){}
+
 	~TreapNode() {
 		delete leftEdge;
 		leftEdge = nullptr;

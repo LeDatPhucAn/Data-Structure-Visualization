@@ -1,5 +1,4 @@
 #include "../header/Button.h"
-#include "../header/UI.h"
 bool Button::isCollision = false;
 
 void InputBox::hover() {

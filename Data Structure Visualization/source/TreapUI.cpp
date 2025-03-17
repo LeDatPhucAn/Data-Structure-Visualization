@@ -23,8 +23,8 @@ void TreapUI::remove(int key) {
 }
 
 
-void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset){
-    if(!root) return;
+void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
+    if (!root) return;
 
     root->position = pos;
 
@@ -33,17 +33,16 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
 
     int newXOffset = max((leftWidth + rightWidth + 1) * 120, 120);
 
-    if(root->leftEdge){
-        Vector2 leftPos = {pos.x - newXOffset, pos.y + yOffset};
+    if (root->leftEdge) {
+        Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
         reposition(static_cast<TreapNode*> (root->leftEdge->to), leftPos, newXOffset, yOffset);
     }
 
-    if(root->rightEdge){
-        Vector2 rightPos = {pos.x + newXOffset, pos.y + yOffset};
+    if (root->rightEdge) {
+        Vector2 rightPos = { pos.x + newXOffset, pos.y + yOffset };
         reposition(static_cast<TreapNode*> (root->rightEdge->to), rightPos, newXOffset, yOffset);
-    }   
-}   
-
+    }
+}
 void TreapUI::drawTreapNode(TreapNode* curr){
     if(!curr) return;
 

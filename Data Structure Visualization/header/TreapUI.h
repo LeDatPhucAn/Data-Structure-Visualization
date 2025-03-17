@@ -24,9 +24,7 @@ public:
     void remove(int key);
     void search(int key);
     TreapUI(SceneHandler* handler);
-    ~TreapUI(){
-        delete root;
-    }
+    ~TreapUI() = default;
 
     void updateScene() override {
         // Implement the update logic for the treap scene

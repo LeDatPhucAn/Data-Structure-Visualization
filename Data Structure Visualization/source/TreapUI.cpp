@@ -29,7 +29,7 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr);
     int rightWidth = treap.getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*> (root->rightEdge->to) : nullptr);
 
-    int newXOffset = max((leftWidth + rightWidth + 1) * 120, 120);
+    int newXOffset = max((leftWidth + rightWidth + 1) * 60, 120);
 
     if(root->leftEdge){
         Vector2 leftPos = {pos.x - newXOffset, pos.y + yOffset};

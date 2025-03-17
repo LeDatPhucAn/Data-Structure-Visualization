@@ -20,5 +20,6 @@ public:
 	static void addEdge(vector<Edge*>& Edges, Node* from, Node* to);
 	static void removeEdge(vector<Edge*>& Edges, Node* from, Node* to);
 	void drawEdge();
+	void drawLLEdge();
 	void drawTreapEdge();
 };

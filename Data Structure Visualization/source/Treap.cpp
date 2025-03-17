@@ -126,10 +126,8 @@ int Treap::getSubtreeWidth(TreapNode* curr) {
 
 void Treap::updateSubtreeWidth(TreapNode* curr) {
     if (curr) {
-        if (curr) {
-            int leftWidth = curr->leftEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
-            int rightWidth = curr->rightEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
-            curr->subtreeWidth = 1 + leftWidth + rightWidth;
-        }
+        int leftWidth = curr->leftEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
+        int rightWidth = curr->rightEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
+        curr->subtreeWidth = 1 + leftWidth + rightWidth;
     }
 }

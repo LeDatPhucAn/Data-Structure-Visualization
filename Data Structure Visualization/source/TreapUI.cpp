@@ -2,10 +2,6 @@
 
 const Vector2 TreapUI::ROOT_POS = { GetScreenWidth() / 2, 0 };
 
-TreapUI::TreapUI() {
-    root = nullptr;
-}
-
 void TreapUI::insert(int key) {
     root = treap.insert(root, key, ROOT_POS);
 }
@@ -66,3 +62,6 @@ void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const i
     }
 }
 
+void TreapUI::drawTreap() {
+    drawTreap(root, ROOT_POS, xOffset, yOffset);
+}

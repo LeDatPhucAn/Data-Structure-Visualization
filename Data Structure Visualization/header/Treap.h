@@ -16,11 +16,11 @@ public:
 
 	~TreapNode() {
 		if (leftEdge) {
-			delete static_cast<TreapNode*>(leftEdge->to);
+			if(leftEdge->to) delete static_cast<TreapNode*>(leftEdge->to);
 			delete leftEdge;
 		}
 		if (rightEdge) {
-			delete static_cast<TreapNode*>(rightEdge->to);
+			if(rightEdge->to) delete static_cast<TreapNode*>(rightEdge->to);
 			delete rightEdge;
 		}
 	}

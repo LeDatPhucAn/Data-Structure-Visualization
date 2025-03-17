@@ -8,10 +8,12 @@ TreapNode* Treap::rotateLeft(TreapNode* root) {
 
     TreapNode* newRoot = static_cast<TreapNode*> (oldRightEdge->to);
 
-    delete root->rightEdge;
-    root->rightEdge = newRoot->leftEdge;
+    Edge* temp = newRoot->leftEdge;
+    root->rightEdge = temp ? new Edge(root, temp->to) : nullptr;
 
-    delete newRoot->leftEdge;
+    delete oldRightEdge;
+    delete temp;
+
     newRoot->leftEdge = new Edge(newRoot, root);
 
     return newRoot;
@@ -23,10 +25,13 @@ TreapNode* Treap::rotateRight(TreapNode* root) {
 
     TreapNode* newRoot = static_cast<TreapNode*> (oldLeftEdge->to);
 
-    delete root->leftEdge;
-    root->leftEdge = newRoot->rightEdge;
+    Edge* temp = newRoot->rightEdge;
 
-    delete newRoot->rightEdge;
+    root->leftEdge = temp ? new Edge(root, temp->to) : nullptr;
+
+    delete temp;     
+    delete oldLeftEdge;  
+
     newRoot->rightEdge = new Edge(newRoot, root);
 
     return newRoot;
@@ -72,14 +77,14 @@ TreapNode* Treap::remove(TreapNode* root, int key) {
     if (root->data > key) {
         if (root->leftEdge) {
             TreapNode* newLeft = remove(static_cast<TreapNode*> (root->leftEdge->to), key);
-            delete root->leftEdge;
+            if(root->leftEdge) delete root->leftEdge;
             root->leftEdge = newLeft ? new Edge(root, newLeft) : nullptr;
         }
     }
     else if (root->data < key) {
         if (root->rightEdge) {
             TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
-            delete root->rightEdge;
+            if(root->rightEdge) root->rightEdge;
             root->rightEdge = newRight ? new Edge(root, newRight) : nullptr;
         }
     }

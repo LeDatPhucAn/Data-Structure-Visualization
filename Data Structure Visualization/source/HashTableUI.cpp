@@ -2,6 +2,7 @@
 #include "../header/UI.h"
 #include "../header/HashTableUI.h"
 #include "../header/SceneHandler.h"
+#include "../header/"Button.h"
 
 void HashTableUI::init() {
     insertHashTable(10); // example
@@ -38,15 +39,20 @@ void HashTableUI::drawHashTable() {
 }
 
 void HashTableUI::displayScene() {
-
+    for (auto button : Buttons) {
+        button->draw();
+    }
 }
-void HashTableUI::displaySceneInCamera() {
 
+void HashTableUI::displaySceneInCamera() {
     drawHashTable();
 }
 
 void HashTableUI::updateScene() {
-
-
+    Button::isCollision = false;
+    for (auto button : Buttons) {
+        button->update();
+    }
+    if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 

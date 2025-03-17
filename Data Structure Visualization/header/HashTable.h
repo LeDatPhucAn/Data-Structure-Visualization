@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 class HashTable {
-private:
+protected:
     std::vector<std::vector<int>> data;
     int size;
 

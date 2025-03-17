@@ -23,7 +23,24 @@ void Edge::drawEdge() {
 	float toY = to->radius * sin(theta) + to->position.y;
 	DrawLineEx({fromX,fromY}, {toX,toY}, thickness, BLACK);
 }
+void Edge::drawTreapEdge() {
+	if (!from || !to) return;  
 
+	static const float nodeWidth = 60.0f;
+	static const float nodeHeight = 30.0f;
+	float lineThickness = max(nodeWidth / 20, 2.0f);
+
+	Vector2 start = from->position;
+	Vector2 end = to->position;
+
+	if (start.x > end.x) start.x -= nodeWidth / 4;  // Left child
+	else start.x += nodeWidth / 4;  // Right child
+
+	start.y += nodeHeight / 2 - 2;
+	end.y -= nodeHeight / 2 - 2;
+
+	DrawLineEx(start, end, lineThickness, BLACK);
+}
 void Edge::addEdge(vector<Edge*>& Edges, Node* from, Node* to) {
 	Edges.push_back(new Edge(from, to));
 }

@@ -12,7 +12,7 @@ public:
 	Edge* rightEdge;
 	int subtreeWidth;
 
-	TreapNode(int data, Vector2 pos) : Node(data, pos, 0), priority(rand() % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){}
+	TreapNode(int data, int priority, Vector2 pos) : Node(data, pos, 0), priority(priority % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){}
 
 	~TreapNode() {
 		if (leftEdge) {
@@ -41,7 +41,7 @@ public:
 	}
 	int getSubtreeWidth(TreapNode* curr);
 	void updateSubtreeWidth(TreapNode* curr);
-	TreapNode* insert(TreapNode* root, int key, Vector2 pos);
+	TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
 	TreapNode* search(TreapNode* root, int key);
 	TreapNode* remove(TreapNode* root, int key);
 

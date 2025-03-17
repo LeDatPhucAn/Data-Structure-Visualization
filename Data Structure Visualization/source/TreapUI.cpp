@@ -1,15 +1,13 @@
 #include "../header/TreapUI.h"
 
-
 const Vector2 TreapUI::ROOT_POS = { UI::screenWidth / 2, 0 };
 
 TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr) {
-
     init();
 }
 
-void TreapUI::insert(int key) {
-    root = treap.insert(root, key, ROOT_POS);
+void TreapUI::insert(int key, int priority) {
+    root = treap.insert(root, ROOT_POS, key, priority);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 

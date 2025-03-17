@@ -8,7 +8,7 @@ SceneHandler::SceneHandler() {
     scenes[MENU] = new Menu(this);
     scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
     scenes[HASHTABLE] = new HashTableUI();
-    scenes[TREAP] = new TreapUI();
+    scenes[TREAP] = new TreapUI(this);
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed
     changeScene(MENU);
@@ -30,7 +30,6 @@ void SceneHandler::changeScene(Scene newScene) {
         currentSceneObject->CurrentScene = newScene;
     }
 }
-
 
 void SceneHandler::updateCamera() {
     // button for all scenes except menu
@@ -73,7 +72,7 @@ void SceneHandler::updateCurrentScene() {
         if (getCurrentScene() != MENU) {
 
             updateCamera();
-
+        
         }
 
         currentSceneObject->updateScene();

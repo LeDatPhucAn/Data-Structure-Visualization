@@ -12,15 +12,15 @@ public:
 	Edge* rightEdge;
 	int subtreeWidth;
 
-	TreapNode(int data, int priority, Vector2 pos) : Node(data, pos, 0), priority(priority % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){}
+	TreapNode(int data, int priority, Vector2 pos) : Node(data, pos, 0), priority(priority % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1) {}
 
 	~TreapNode() {
 		if (leftEdge) {
-			if(leftEdge->to) delete static_cast<TreapNode*>(leftEdge->to);
+			if (leftEdge->to) delete static_cast<TreapNode*>(leftEdge->to);
 			delete leftEdge;
 		}
 		if (rightEdge) {
-			if(rightEdge->to) delete static_cast<TreapNode*>(rightEdge->to);
+			if (rightEdge->to) delete static_cast<TreapNode*>(rightEdge->to);
 			delete rightEdge;
 		}
 	}
@@ -36,7 +36,7 @@ public:
 	Treap() : root(nullptr) {
 		srand(time(nullptr));
 	}
-	~Treap(){
+	~Treap() {
 		delete root;
 	}
 	int getSubtreeWidth(TreapNode* curr);
@@ -46,4 +46,3 @@ public:
 	TreapNode* remove(TreapNode* root, int key);
 
 };
-

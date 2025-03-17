@@ -1,8 +1,8 @@
 #include "../header/UI.h"
 
 Font UI::font = { 0 };
-int UI::screenWidth = GetScreenWidth();
-int UI::screenHeight = GetScreenHeight();
+int UI::screenWidth = 1600;
+int UI::screenHeight = 900;
 vector<Texture2D> UI::Icons;
 vector<Texture2D> UI::Buttons;
 vector<Texture2D> UI::selectedButtons;

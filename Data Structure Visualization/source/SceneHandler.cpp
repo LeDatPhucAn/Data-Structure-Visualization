@@ -31,7 +31,6 @@ void SceneHandler::changeScene(Scene newScene) {
     }
 }
 
-
 void SceneHandler::updateCamera() {
     // button for all scenes except menu
     float width = 200.0f;
@@ -73,7 +72,7 @@ void SceneHandler::updateCurrentScene() {
         if (getCurrentScene() != MENU) {
 
             updateCamera();
-
+        
         }
 
         currentSceneObject->updateScene();

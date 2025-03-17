@@ -1,6 +1,9 @@
 #pragma once
 #include "SceneManager.h"
 #include "HashTable.h" // Assuming you have this class
+#include "SceneHandler.h"
+#include "Button.h"
+#include <vector>
 class SceneHandler;
 class HashTableUI : public SceneManager, public HashTable {
 private:
@@ -12,13 +15,22 @@ private:
     static constexpr int spacing = 20;
 protected:
     SceneHandler* scenehandler;
+    std::vector<Button*> Buttons;
 public:
     HashTableUI() : HashTable(5) {  // Initial size: 5
         init();
     }
     HashTableUI(SceneHandler* handler) : HashTable(5), scenehandler(handler) {
         init();
-
+    }
+    ~HashTableUI() {
+        for (auto button : Buttons) {
+            while (button) {
+                Button* del = button;
+                button = button->next;
+                delete del;
+            }
+        }
     }
     void init();
     void drawHashTable();

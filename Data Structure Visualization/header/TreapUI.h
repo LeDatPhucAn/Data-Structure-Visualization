@@ -23,7 +23,7 @@ public:
     void remove(int key);
     void search(int key);
     TreapUI(SceneHandler* handler);
-    ~TreapUI() {
+    ~TreapUI(){
         delete root;
     }
 

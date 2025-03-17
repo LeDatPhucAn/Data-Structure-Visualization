@@ -55,6 +55,7 @@ void SinglyLinkedListUI::init() {
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
         });
+
     Button::insertHeadButton(Buttons, new TextBox("Search"));
     Buttons[2]->insertSubButton(new TextBox("Value:"));
 

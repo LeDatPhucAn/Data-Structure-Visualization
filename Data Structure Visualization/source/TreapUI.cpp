@@ -5,6 +5,15 @@ const Vector2 TreapUI::ROOT_POS = { UI::screenWidth / 2, 0 };
 TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr) {
     init();
 }
+void TreapUI::deleteButtons() {
+    for (auto button : Buttons) {
+        while (button) {
+            Button* del = button;
+            button = button->next;
+            delete del;
+        }
+    }
+}
 
 void TreapUI::insert(int key, int priority) {
     root = treap.insert(root, ROOT_POS, key, priority);
@@ -94,4 +103,15 @@ void TreapUI::init(){
         int x = rand() % 100;
         insert(x);
     }
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
+    Buttons[0]->insertSubButton(new TextBox("Value:"));
+    Button* ValueInput = new NumberInputBox(3);
+    Buttons[0]->insertSubButton(ValueInput, [this, ValueInput]() {
+        this->insert(ValueInput->getNumber());
+        });
+    Button* Enter = new TextBox(">");
+    Buttons[0]->insertSubButton(Enter, [this, ValueInput]() {
+        this->insert(ValueInput->getNumber());
+        });
+    
 }

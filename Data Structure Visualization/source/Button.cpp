@@ -24,7 +24,24 @@ void InputBox::draw() {
 }
 
 void InputBox::update() {
-    Button::update(); // Handle base interaction logic
+    // Head button logic: Toggle activation on click
+    if (!head || head->isActivated) {
+        if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+            hover();
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                isActivated = !isActivated; // Toggle state
+            }
+            Button::isCollision = true;
+        }
+        else {
+            unhover();
+        }
+    }
+
+    // Recursively update the next button
+    if (next) {
+        next->update();
+    }
 
     if (!head || head->isActivated) {
         framesCounter++;
@@ -64,7 +81,24 @@ void NumberInputBox::unhover() {
 }
 
 void NumberInputBox::update() {
-    Button::update(); // Handle base interaction logic
+    // Head button logic: Toggle activation on click
+    if (!head || head->isActivated) {
+        if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+            hover();
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                isActivated = !isActivated; // Toggle state
+            }
+            Button::isCollision = true;
+        }
+        else {
+            unhover();
+        }
+    }
+
+    // Recursively update the next button
+    if (next) {
+        next->update();
+    }
 
     if (!head || head->isActivated) {
         framesCounter++;

@@ -39,12 +39,8 @@ bool LinkedList::remove(int x) {
             cur->next = temp->next;
             Edge::addEdge(Edges, cur, cur->next);
             adjustPos(cur);
-<<<<<<< HEAD
             Edge::removeEdge(Edges, cur, temp);
             Edge::addEdge(Edges,cur, cur->next);
-=======
-            
->>>>>>> master
             delete temp;
             temp = nullptr;
             return true;

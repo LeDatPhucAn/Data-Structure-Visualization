@@ -11,22 +11,11 @@
 using namespace std;
 
 class UI {
-<<<<<<< HEAD
-protected:	
-	int totalicons = 3;
-=======
-protected:
-
-
->>>>>>> master
 public:
 	static Font font;
 	static constexpr float spacing = 2.0f;
 	static constexpr float fontSize = 40.0f;
 	UI();
-	static Font font;
-	static constexpr float fontSize = 40.0f;
-	static constexpr float spacing = 2.0f;
 
 	bool menuhovered = false;
 	static int screenWidth;

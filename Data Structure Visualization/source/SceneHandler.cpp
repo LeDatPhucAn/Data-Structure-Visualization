@@ -7,7 +7,7 @@ SceneHandler::SceneHandler() {
     UI::screenHeight = GetScreenHeight();
     scenes[MENU] = new Menu(this);
     scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
-    scenes[HASHTABLE] = new HashTableUI();
+    scenes[HASHTABLE] = new HashTableUI(this);
     scenes[TREAP] = new TreapUI(this);
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed

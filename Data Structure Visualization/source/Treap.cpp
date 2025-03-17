@@ -37,7 +37,7 @@ TreapNode* Treap::insert(TreapNode* root, int key, Vector2 pos) {
     if (!root) return new TreapNode(key, pos);
 
     int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
-    int newXOffset = max(getSubtreeWidth(root) * treeDepth * 5, 30);
+    int newXOffset = max(getSubtreeWidth(root) * treeDepth * 10, 30);
 
     if (root->data > key) {
         TreapNode* newLeftChild = insert(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, key, { pos.x - newXOffset, pos.y + Y_OFFSET });
@@ -126,8 +126,10 @@ int Treap::getSubtreeWidth(TreapNode* curr) {
 
 void Treap::updateSubtreeWidth(TreapNode* curr) {
     if (curr) {
-        int leftWidth = curr->leftEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
-        int rightWidth = curr->rightEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
-        curr->subtreeWidth = 1 + leftWidth + rightWidth;
+        if (curr) {
+            int leftWidth = curr->leftEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
+            int rightWidth = curr->rightEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
+            curr->subtreeWidth = 1 + leftWidth + rightWidth;
+        }
     }
 }

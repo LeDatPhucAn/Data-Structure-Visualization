@@ -22,7 +22,7 @@ void Edge::drawEdge() {
 // Helper: Draw Edge With arrow
 // Description: this Function draws an edge with an arrow head to any position
 //---------------------------------------------------------------------
-void Edge::drawLLEdge()
+void Edge::drawArrowEdge()
 {
 	if (!from || !to) return;
 	float dx = to->position.x - from->position.x;
@@ -52,41 +52,23 @@ void Edge::drawLLEdge()
 
 	DrawTriangle({toX,toY}, arrowPoint1, arrowPoint2, BLACK);
 }
-//void Edge::drawTreapEdge() {
-//	if (!from || !to) return;  
-//
-//	static const float nodeWidth = 60.0f;
-//	static const float nodeHeight = 30.0f;
-//	float lineThickness = max(nodeWidth / 20, 2.0f);
-//
-//	Vector2 start = from->position;
-//	Vector2 end = to->position;
-//
-//	if (start.x > end.x) start.x -= nodeWidth / 4;  // Left child
-//	else start.x += nodeWidth / 4;  // Right child
-//
-//	start.y += nodeHeight / 2 - 2;
-//	end.y -= nodeHeight / 2 - 2;
-//
-//	DrawLineEx(start, end, lineThickness, BLACK);
-//}
+
 void Edge::drawTreapEdge() {
-	if (!from || !to) return;  
+	if (!from || !to) return;
 
-	static const float nodeWidth = 60.0f;
-	//static const float nodeHeight = 30.0f;
-	float lineThickness = max(nodeWidth / 20, 2.0f);
+	static const float nodeWidth = 120.0f;
+	static const float nodeHeight = 100.0f;
 
-	//Vector2 start = from->position;
-	//Vector2 end = to->position;
+	Vector2 start = from->position;
+	Vector2 end = to->position;
 
-	//if (start.x > end.x) start.x -= nodeWidth / 4;  // Left child
-	//else start.x += nodeWidth / 4;  // Right child
+	if (start.x > end.x) start.x -= nodeWidth / 4;  // Left child
+	else start.x += nodeWidth / 4;  // Right child
 
-	//start.y += nodeHeight / 2 - 2;
-	//end.y -= nodeHeight / 2 - 2;
+	start.y += nodeHeight / 2 - 2;
+	end.y -= nodeHeight / 2 - 2;
 
-	DrawLineEx(from->position,to->position, lineThickness, BLACK);
+	DrawLineEx(start, end, thickness, BLACK);
 }
 void Edge::addEdge(vector<Edge*>& Edges, Node* from, Node* to) {
 	Edges.push_back(new Edge(from, to));

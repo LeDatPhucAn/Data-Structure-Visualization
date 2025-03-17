@@ -1,6 +1,6 @@
 #include "../header/TreapUI.h"
 
-const Vector2 TreapUI::ROOT_POS = { GetScreenWidth() / 2, 0 };
+const Vector2 TreapUI::ROOT_POS = { static_cast<float> (WINDOW_WIDTH) / 2, 0 };
 
 TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr){
     init();
@@ -21,22 +21,21 @@ void TreapUI::remove(int key) {
 void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos){
     if(!curr) return;
 
-
-    static const float width = 60.0f;
-    static const float height = 30.0f;
-    static const float dataWidth = 40.0f;
-    static const float priorityWidth = 20.0f;
+    static const float width = 120.0f;
+    static const float height = 100.0f;
+    static const float dataWidth = 80.0f;
+    static const float priorityWidth = 40.0f;
 
     DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, { 255, 203, 203, 255 });
     DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
     DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
 
     string value = to_string(curr->data).substr(0, 5);
-    Vector2 valueTextSize = MeasureTextEx(GetFontDefault(), value.c_str(), 20.0f, 2.0f);
+    Vector2 valueTextSize = MeasureTextEx(GetFontDefault(), value.c_str(), 30.0f, 2.0f);
     string priority = to_string(curr->priority);
     Vector2 priorityTextSize = MeasureTextEx(GetFontDefault(), priority.c_str(), 15.0f, 2.0f);
 
-    DrawText(value.c_str(), pos.x - width / 2 + dataWidth / 2 - valueTextSize.x / 2, pos.y - valueTextSize.y / 2, 20, DARKGRAY);
+    DrawText(value.c_str(), pos.x - width / 2 + dataWidth / 2 - valueTextSize.x / 2, pos.y - valueTextSize.y / 2, 30, DARKGRAY);
     DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 15, RED);
 }
 
@@ -53,7 +52,7 @@ void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const i
 
     int leftWidth = curr->leftEdge ? treap.getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
     int rightWidth = curr->rightEdge ? treap.getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
-    int newXOffset = max((leftWidth + rightWidth) * 15, 30);
+    int newXOffset = max((leftWidth + rightWidth) * 120, 120);
 
     if (curr->leftEdge) {
         Vector2 leftPos = {pos.x - newXOffset, pos.y + yOffset};
@@ -69,7 +68,10 @@ void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const i
 }
 
 void TreapUI::init(){
-    insert(10);
-    insert(20);
-    insert(30);
+    srand(time(nullptr));
+    int n = rand() % 10;
+    for(int i = 0; i < n; ++i){
+        int x = rand() % 100;
+        insert(x);
+    }
 }

@@ -5,12 +5,15 @@
 #include <string>
 #include "../header/Animation.h"
 #include "../header/SinglyLinkedListUI.h"
+#include "../header/TreapUI.h"
 #include "../header/SceneHandler.h"
 #include "../header/Button.h"
 using namespace std;
+const int WINDOW_WIDTH = 1600;
+const int WINDOW_HEIGHT = 1200;
 int main()
 {
-	InitWindow(1600, 1200, "Bruh");
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Bruh");
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 	SetTargetFPS(60);
 	UI ui;

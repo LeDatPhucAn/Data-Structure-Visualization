@@ -32,20 +32,20 @@ TreapNode* Treap::rotateRight(TreapNode* root) {
     return newRoot;
 }
 
-TreapNode* Treap::insert(TreapNode* root, int key, Vector2 pos) {
+TreapNode* Treap::insert(TreapNode* root, Vector2 pos, int key, int priority) {
     static const int Y_OFFSET = 70;
-    if (!root) return new TreapNode(key, pos);
+    if (!root) return new TreapNode(key, priority, pos);
 
     int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
     int newXOffset = max(getSubtreeWidth(root) * treeDepth * 10, 30);
 
     if (root->data > key) {
-        TreapNode* newLeftChild = insert(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, key, { pos.x - newXOffset, pos.y + Y_OFFSET });
+        TreapNode* newLeftChild = insert(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
         root->leftEdge = new Edge(root, newLeftChild);
         if (newLeftChild->priority > root->priority) root = rotateRight(root);
     }
     else {
-        TreapNode* newRightChild = insert(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr, key, { pos.x + newXOffset, pos.y + Y_OFFSET });
+        TreapNode* newRightChild = insert(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
         root->rightEdge = new Edge(root, newRightChild);
         if (newRightChild->priority > root->priority) root = rotateLeft(root);
     }

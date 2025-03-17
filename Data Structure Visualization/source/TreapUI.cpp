@@ -54,13 +54,13 @@ void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const i
     if (curr->leftEdge) {
         Vector2 leftPos = {pos.x - newXOffset, pos.y + yOffset};
         drawTreap(static_cast<TreapNode*>(curr->leftEdge->to), leftPos, newXOffset, yOffset);
-        drawTreapLink(curr->leftEdge);
+        //drawTreapLink(curr->leftEdge);
     }
 
     if (curr->rightEdge) {
         Vector2 rightPos = {pos.x + newXOffset, pos.y + yOffset};
         drawTreap(static_cast<TreapNode*>(curr->rightEdge->to), rightPos, newXOffset, yOffset);
-        drawTreapLink(curr->rightEdge);\
+        //drawTreapLink(curr->rightEdge);
     }
 }
 

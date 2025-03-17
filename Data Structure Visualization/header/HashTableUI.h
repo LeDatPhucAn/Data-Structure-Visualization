@@ -18,6 +18,7 @@ public:
     }
     HashTableUI(SceneHandler* handler) : HashTable(5), scenehandler(handler) {
         init();
+
     }
     void init();
     void drawHashTable();

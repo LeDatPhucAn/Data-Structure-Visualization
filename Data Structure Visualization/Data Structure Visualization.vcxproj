@@ -24,6 +24,7 @@
     <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
+    <ClCompile Include="source\HashTableUI.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
     <ClCompile Include="source\SceneHandler.cpp" />

@@ -1,14 +1,7 @@
-#include "UI.h"
-#include "HashTableUI.h"
-#include "SceneHandler.h"
 
-HashTableUI::HashTableUI() : HashTable(5) {  // Initial size: 5
-    init();
-}
-
-HashTableUI::HashTableUI(SceneHandler* handler) : HashTable(5), scenehandler(handler) {
-    init();
-}
+#include "../header/UI.h"
+#include "../header/HashTableUI.h"
+#include "../header/SceneHandler.h"
 
 void HashTableUI::init() {
     insertHashTable(10); // example
@@ -45,9 +38,15 @@ void HashTableUI::drawHashTable() {
 }
 
 void HashTableUI::displayScene() {
+
+}
+void HashTableUI::displaySceneInCamera() {
+
     drawHashTable();
 }
 
 void HashTableUI::updateScene() {
-    
+
+
 }
+

@@ -13,22 +13,19 @@ private:
 protected:
     SceneHandler* scenehandler;
 public:
-    HashTableUI() {
-        // Default constructor
-        std::cout << "HashTableUI Scene Created" << std::endl;
+    HashTableUI() : HashTable(5) {  // Initial size: 5
+        init();
     }
-    HashTableUI(SceneHandler* handler);
+    HashTableUI(SceneHandler* handler) : HashTable(5), scenehandler(handler) {
+        init();
+
+    }
     void init();
     void drawHashTable();
-    void updateScene() override {
-        // Implement the update logic for the hash table scene
-    }
 
-    void displayScene() override {
-        // Implement the display logic for the hash table scene
-    }
-    void displaySceneInCamera() override {
-        // Implement the display logic for the graph scene
-    }
+    void updateScene() override;
+
+    void displayScene() override;
+    void displaySceneInCamera() override;
 
 };

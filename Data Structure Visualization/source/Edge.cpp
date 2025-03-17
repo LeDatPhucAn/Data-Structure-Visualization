@@ -8,11 +8,11 @@ void Edge::drawEdge() {
 	}
 	
 	if (!to) {
-		float fromX = from->position.x + from->radius;
+		/*float fromX = from->position.x + from->radius;
 		float fromY = from->position.y;
 		DrawLineEx({fromX,fromY}, {fromX + 100,fromY}, thickness, BLACK);
 		string message = "NULL";
-		UI::drawtext2(message, fromX + 150, fromY, BLUE);
+		UI::drawtext2(message, fromX + 150, fromY, BLUE);*/
 		return;
 	}
 	float theta = atan2(to->position.y - from->position.y, to->position.x - from->position.x);

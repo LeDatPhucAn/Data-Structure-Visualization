@@ -116,16 +116,18 @@ void NumberInputBox::update() {
 
 void Button::update() {
     // Head button logic: Toggle activation on click
-    if (CheckCollisionPointRec(GetMousePosition(), rect)) {
-        hover();
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            isActivated = !isActivated; // Toggle state
-            if (onClick) onClick();
+    if(!head || head->isActivated){
+        if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+            hover();
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                isActivated = !isActivated; // Toggle state
+                if (onClick) onClick();
+            }
+            Button::isCollision = true;
         }
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
+        else {
+            unhover();
+        }
     }
 
     // Recursively update the next button
@@ -134,17 +136,19 @@ void Button::update() {
     }
 }
 void TextBox::update() {
-    if (CheckCollisionPointRec(GetMousePosition(), rect)) {
-        hover();
-        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            isActivated = !isActivated; // Toggle state
-            if (onClick) onClick();
+    if(!head || head->isActivated){
+        if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+            hover();
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                isActivated = !isActivated; // Toggle state
+                if (onClick) onClick();
+            }
+            Button::isCollision = true;
         }
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
+        else {
+            unhover();
+        }
     }
 
     // Recursively update the next button

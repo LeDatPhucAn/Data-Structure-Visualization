@@ -32,17 +32,10 @@ public:
     }
 
     void displayScene() override {
-        // insert(10);
-        // insert(20);
-        // insert(30);
-        // insert(55);
-        // insert(77);
-        //drawTreap(root, ROOT_POS, xOffset, yOffset);
         // Implement the display logic for the treap scene
     }
     void displaySceneInCamera() override {
         // Implement the display logic for the graph scene
-        //drawTreap(root, ROOT_POS, xOffset, yOffset);
         drawTreap(root);
     }
 

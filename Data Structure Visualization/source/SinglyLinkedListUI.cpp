@@ -7,7 +7,7 @@ void SinglyLinkedListUI::drawlinkedlist() {
         cur = cur->next;
     }
     for (auto& edge : Edges) {
-        edge->drawEdge();
+        edge->drawArrowEdge();
     }
 }
 void SinglyLinkedListUI::deleteButtons(){

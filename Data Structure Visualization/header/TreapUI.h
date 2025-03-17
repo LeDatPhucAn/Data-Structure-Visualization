@@ -4,9 +4,6 @@
 #include "Treap.h" 
 #include "Button.h"
 
-extern const int WINDOW_WIDTH;
-extern const int WINDOW_HEIGHT;
-
 class TreapUI : public SceneManager {
 private:
     Treap treap;

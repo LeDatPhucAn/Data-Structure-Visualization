@@ -1,8 +1,10 @@
 #include "../header/TreapUI.h"
 
-const Vector2 TreapUI::ROOT_POS = { static_cast<float> (WINDOW_WIDTH) / 2, 0 };
 
-TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr){
+const Vector2 TreapUI::ROOT_POS = { UI::screenWidth / 2, 0 };
+
+TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr) {
+
     init();
 }
 
@@ -19,6 +21,7 @@ void TreapUI::remove(int key) {
     root = treap.remove(root, key);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
+
 
 void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset){
     if(!root) return;
@@ -53,6 +56,7 @@ void TreapUI::drawTreapNode(TreapNode* curr){
 
     DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, {255, 203, 203, 255});
     DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, {69, 180, 238, 255});
+
     DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
     DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
 
@@ -93,5 +97,4 @@ void TreapUI::init(){
         int x = rand() % 100;
         insert(x);
     }
-    
 }

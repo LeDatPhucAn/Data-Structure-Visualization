@@ -1,0 +1,68 @@
+[
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Animation.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Animation.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Animation.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Animation.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Graph.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Graph.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Graph.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Graph.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\HashTable.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\HashTable.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\HashTable.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\HashTable.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Main.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Main.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Main.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Main.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Menu.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Menu.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Menu.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Menu.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Scene.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Scene.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Scene.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Scene.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\SceneHandler.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\SceneHandler.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\SceneHandler.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\SceneHandler.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\SinglyLinkedList.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\SinglyLinkedList.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\SinglyLinkedList.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\SinglyLinkedList.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\SinglyLinkedListUI.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\SinglyLinkedListUI.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\SinglyLinkedListUI.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\SinglyLinkedListUI.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Treap.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Treap.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\Treap.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\Treap.cpp.obj"
+},
+{
+  "directory": "D:/Github Repositories/Data-Structure-Visualization/build",
+  "command": "D:\\msys64\\ucrt64\\bin\\g++.exe -I\"D:/Github Repositories/Data-Structure-Visualization/Data Structure Visualization/header\" -g -std=gnu++17 -o CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\UI.cpp.obj -c \"D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\UI.cpp\"",
+  "file": "D:\\Github Repositories\\Data-Structure-Visualization\\Data Structure Visualization\\source\\UI.cpp",
+  "output": "CMakeFiles\\output.dir\\Data_Structure_Visualization\\source\\UI.cpp.obj"
+}
+]

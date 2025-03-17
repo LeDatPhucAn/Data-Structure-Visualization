@@ -1,30 +1,31 @@
 #include "../header/TreapUI.h"
 
-const Vector2 TreapUI::ROOT_POS = {GetScreenWidth() / 2, 0};
+const Vector2 TreapUI::ROOT_POS = { GetScreenWidth() / 2, 0 };
 
 TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr){}
 
-void TreapUI::insert(int key){
+void TreapUI::insert(int key) {
     root = treap.insert(root, key, ROOT_POS);
 }
 
-void TreapUI::search(int key){
+void TreapUI::search(int key) {
     root = treap.search(root, key);
 }
 
-void TreapUI::remove(int key){
+void TreapUI::remove(int key) {
     root = treap.remove(root, key);
 }
 
 void TreapUI::drawTreapNode(TreapNode* curr, const Vector2 pos){
     if(!curr) return;
 
+
     static const float width = 60.0f;
     static const float height = 30.0f;
     static const float dataWidth = 40.0f;
     static const float priorityWidth = 20.0f;
 
-    DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, {255, 203, 203, 255});
+    DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, { 255, 203, 203, 255 });
     DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
     DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
 
@@ -43,6 +44,7 @@ void TreapUI::drawTreapLink(Edge* edge) {
 }
 
 void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const int yOffset){
+
     if (!curr) return;
 
     drawTreapNode(curr, pos);
@@ -63,5 +65,4 @@ void TreapUI::drawTreap(TreapNode* curr, Vector2 pos, const int xOffset, const i
         //drawTreapLink(curr->rightEdge);
     }
 }
-
 

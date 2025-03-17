@@ -31,6 +31,10 @@ void SceneHandler::changeScene(Scene newScene) {
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 void SceneHandler::updateCamera() {
     // button for all scenes except menu
     float width = 200.0f;
@@ -67,8 +71,12 @@ void SceneHandler::updateCamera() {
 
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
+
+
         if (getCurrentScene() != MENU) {
+
             updateCamera();
+<<<<<<< HEAD
             float width = 200.0f;
             float height = 100.0f;
 
@@ -99,6 +107,9 @@ void SceneHandler::updateCurrentScene() {
                 camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
             }
 
+=======
+
+>>>>>>> master
         }
 
         currentSceneObject->updateScene();

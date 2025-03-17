@@ -1,0 +1,17 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+      "major": 4,
+      "minor": 0
+    },
+    "configurePresets": [
+      {
+        "name": "ninja-vcpkg",
+        "generator": "Ninja",
+        "cacheVariables": {
+          "CMAKE_TOOLCHAIN_FILE": "D:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+          "CMAKE_BUILD_TYPE": "Debug"
+        }
+      }
+    ]
+}

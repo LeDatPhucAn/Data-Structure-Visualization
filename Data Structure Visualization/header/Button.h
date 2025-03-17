@@ -18,8 +18,8 @@ public:
     Button* head;
     Button* next; // Pointer to the next button
 
-    Button(Rectangle r) : rect(r), TextColor(WHITE), FillColor(BLUE), OutLineColor(DARKGRAY), isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(this), next(nullptr) {}
-    Button(Rectangle r, Color tc, Color fc, Color olc) : rect(r), TextColor(tc), FillColor(fc), OutLineColor(olc), isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(this), next(nullptr) {}
+    Button(Rectangle r) : rect(r), TextColor(WHITE), FillColor(BLUE), OutLineColor(DARKGRAY), isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {}
+    Button(Rectangle r, Color tc, Color fc, Color olc) : rect(r), TextColor(tc), FillColor(fc), OutLineColor(olc), isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {}
     
 
     virtual int getNumber() const { return 0; }
@@ -182,4 +182,5 @@ public:
     }
 
     void draw() override;
+    void update() override;
 };

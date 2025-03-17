@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "Node.h"
-class TreapNode : public Node{
+class TreapNode : public Node {
 public:
 	int priority;
 	Edge* leftEdge;
@@ -38,5 +38,4 @@ public:
 	TreapNode* search(TreapNode* root, int key);
 	TreapNode* remove(TreapNode* root, int key);
 };
-
 

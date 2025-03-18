@@ -25,6 +25,7 @@ void Edge::drawEdge() {
 void Edge::drawArrowEdge()
 {
 	if (!from || !to) return;
+
 	float dx = to->position.x - from->position.x;
 	float dy = to->position.y - from->position.y;
 

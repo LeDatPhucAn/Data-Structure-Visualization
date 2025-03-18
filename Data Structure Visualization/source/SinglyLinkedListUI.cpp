@@ -10,13 +10,23 @@ void SinglyLinkedListUI::drawlinkedlist() {
         edge->drawArrowEdge();
     }
 }
-void SinglyLinkedListUI::deleteButtons(){
+void SinglyLinkedListUI::deleteButtons(vector<Button*>& Buttons){
     for (auto button : Buttons) {
         while (button) {
             Button* del = button;
             button = button->next;
             delete del;
         }
+    }
+}
+void SinglyLinkedListUI::drawButtons(vector<Button*>&Buttons) {
+    for (auto button : Buttons) {
+        button->draw();
+    }
+}
+void SinglyLinkedListUI::updateButtons(vector<Button*>&Buttons) {
+    for (auto button : Buttons) {
+        button->update();
     }
 }
 void SinglyLinkedListUI::init() {
@@ -71,20 +81,22 @@ void SinglyLinkedListUI::init() {
         this->scenehandler->changeScene(MENU);
         };
     
+    /// Code Blocks
+    Button::insertHeadButton(CodeBlocks, new TextBox("Code Block:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
+
 }
+
 void SinglyLinkedListUI::displaySceneInCamera() {
     drawlinkedlist();
     
 }
 void SinglyLinkedListUI::displayScene() {
-    for (auto button : Buttons) {
-        button->draw();
-    }
+    drawButtons(Buttons);
+    drawButtons(CodeBlocks);
 }
 void SinglyLinkedListUI::updateScene() {
     Button::isCollision = false;
-    for (auto button : Buttons) {
-        button->update();
-    }
+    updateButtons(Buttons);
+    updateButtons(CodeBlocks);
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

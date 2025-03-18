@@ -23,71 +23,21 @@ public:
     
 
     virtual int getNumber() const { return 0; }
-    static void insertHeadButton(vector<Button*>& Buttons, Button* button) {
-        if (Buttons.empty()) {
-            Buttons.push_back(button);
-            return;
-        }
-        Button* prev = Buttons.back();
-        Buttons.push_back(button);
-        button->rect.x = prev->rect.x + prev->rect.width - button->rect.width;
-        button->rect.y = prev->rect.y + prev->rect.height;
-    }
-    virtual void insertSubButton(Button* button) {
-        Button* cur = this;
-        while(cur->next){
-            cur = cur->next;
-        }
-        cur->next = button;
-        button->head = this;
-        button->rect = { cur->rect.x + cur->rect.width + padding/2, cur->rect.y, button->rect.width, button->rect.height };
-    }
-    virtual void insertSubButton(Button* button, std::function<void()> function) {
-        Button* cur = this;
-        while (cur->next) {
-            cur = cur->next;
-        }
-        cur->next = button;
-        button->head = this;
-        button->onClick = function;
-        button->rect = { cur->rect.x + cur->rect.width + padding/2, cur->rect.y, button->rect.width, button->rect.height };
 
+    static void insertHeadButton(vector<Button*>& Buttons, Button* button);
+
+    virtual void insertSubButton(Button* button);
+    virtual void insertSubButton(Button* button, std::function<void()> function);
+    virtual void setPosition(float x, float y) {
+        rect.x = x;
+        rect.y = x;
     }
-
-
     virtual void update();
     virtual void draw() = 0;
-    virtual void hover() {
-        if (!isHovered) {
-            UI::darkenColor(FillColor, 30);
-            UI::darkenColor(TextColor, 30);
-            isHovered = true;
-        }
-    }
-
-    virtual void unhover() {
-        if (isHovered) {
-            UI::lightenColor(FillColor, 30);
-            UI::lightenColor(TextColor, 30);
-            isHovered = false;
-        }
-    }
-
-    virtual void click() {
-        if (!isClicked) {
-            UI::lightenColor(FillColor, 30);
-            UI::lightenColor(TextColor, 30);
-            isClicked = true;
-        }
-    }
-
-    virtual void unclick() {
-        if (isClicked) {
-            UI::darkenColor(FillColor, 30);
-            UI::darkenColor(TextColor, 30);
-            isClicked = false;
-        }
-    }
+    virtual void hover();
+    virtual void unhover();
+    virtual void click();
+    virtual void unclick();
 };
 
 class InputBox : public Button {
@@ -185,4 +135,15 @@ public:
 
     void draw() override;
     void update() override;
+};
+class CodeBox : public TextBox{
+public:
+    CodeBox(string t) : TextBox(t, GRAY, RAYWHITE, GRAY) {
+        Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
+        rect = { 0, 0, tsize.x + padding, tsize.y + padding };
+    }
+    CodeBox(string t, float x, float y) : TextBox(t, x, y,GRAY, RAYWHITE, GRAY) {
+        Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
+        rect = { x, y, tsize.x + padding, tsize.y + padding };
+    }
 };

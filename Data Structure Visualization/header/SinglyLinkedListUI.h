@@ -12,6 +12,7 @@ private:
 protected:
     SceneHandler* scenehandler;
     vector<Button*> Buttons;
+    vector<Button*> CodeBlocks;
 public:
     SinglyLinkedListUI() {
         init();
@@ -20,10 +21,13 @@ public:
         init();
     }
     ~SinglyLinkedListUI() {
-        deleteButtons();
+        deleteButtons(Buttons);
+        deleteButtons(CodeBlocks);
     }
     void init();
-    void deleteButtons();
+    void drawButtons(vector<Button*>&Buttons);
+    void updateButtons(vector<Button*>&Buttons);
+    void deleteButtons(vector<Button*>&Buttons);
     void drawlinkedlist();
     void displayScene() override;
     void displaySceneInCamera() override;

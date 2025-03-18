@@ -1,6 +1,69 @@
 #include "../header/Button.h"
 bool Button::isCollision = false;
 
+void Button::hover() {
+    if (!isHovered) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(TextColor, 30);
+        isHovered = true;
+    }
+}
+
+void Button::unhover() {
+    if (isHovered) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(TextColor, 30);
+        isHovered = false;
+    }
+}
+
+void Button::click() {
+    if (!isClicked) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(TextColor, 30);
+        isClicked = true;
+    }
+}
+
+void Button::unclick() {
+    if (isClicked) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(TextColor, 30);
+        isClicked = false;
+    }
+}
+
+void Button::insertHeadButton(vector<Button*>& Buttons, Button* button) {
+    if (Buttons.empty()) {
+        Buttons.push_back(button);
+        return;
+    }
+    Button* prev = Buttons.back();
+    Buttons.push_back(button);
+    button->rect.x = prev->rect.x + prev->rect.width - button->rect.width;
+    button->rect.y = prev->rect.y + prev->rect.height;
+}
+void Button::insertSubButton(Button* button) {
+    Button* cur = this;
+    while (cur->next) {
+        cur = cur->next;
+    }
+    cur->next = button;
+    button->head = this;
+    button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
+}
+void Button::insertSubButton(Button* button, std::function<void()> function) {
+    Button* cur = this;
+    while (cur->next) {
+        cur = cur->next;
+    }
+    cur->next = button;
+    button->head = this;
+    button->onClick = function;
+    button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
+}
+
+
 void InputBox::hover() {
     OutLineColor = RED;
 }

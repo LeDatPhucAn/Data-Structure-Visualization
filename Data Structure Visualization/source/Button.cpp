@@ -1,5 +1,62 @@
 #include "../header/Button.h"
 bool Button::isCollision = false;
+const int Button::padding = UI::fontSize;
+
+void Button::deleteButtons(vector<Button*>& Buttons) {
+    for (auto button : Buttons) {
+        while (button) {
+            Button* del = button;
+            button = button->next;
+            delete del;
+        }
+    }
+}
+void Button::drawButtons(vector<Button*>& Buttons) {
+    for (auto button : Buttons) {
+        button->draw();
+    }
+}
+void Button::updateButtons(vector<Button*>& Buttons) {
+    for (auto button : Buttons) {
+        button->update();
+    }
+}
+void Button::setPosition(float x, float y) {
+    rect.x = x;
+    rect.y = y;
+}
+void Button::setSubPosition() {
+    Button* prev = this;
+    Button* cur = this->next;
+    while (cur) {
+        cur->setPosition(prev->rect.x + prev->rect.width + padding / 2, prev->rect.y);
+        prev = cur;
+        cur = cur->next;
+    }
+}
+void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
+    if (Buttons.empty()) {
+        cout << "YO ur Button is missing";
+        return;
+    }
+
+    // Update the first head
+    Buttons[0]->setPosition(x, y);
+    Buttons[0]->setSubPosition();
+
+    for (int i = 1; i < Buttons.size(); i++) {
+        // update the group Head Buttons
+        Button* prevHead = Buttons[i - 1];
+        Button* curHead = Buttons[i];
+        curHead->setPosition(
+            prevHead->rect.x + prevHead->rect.width - curHead->rect.width,
+            prevHead->rect.y + prevHead->rect.height
+        );
+        // update the Sub Buttons
+        Buttons[i]->setSubPosition();
+    }
+
+}
 
 void Button::hover() {
     if (!isHovered) {

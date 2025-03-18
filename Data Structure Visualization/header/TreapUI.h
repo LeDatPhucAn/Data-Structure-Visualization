@@ -10,7 +10,7 @@ private:
     Treap treap;
     TreapNode* root = nullptr;
     vector<Button*>Buttons;
-    SceneHandler* sceneHandler;
+    vector<Button*>CodeBlocks;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 5;
@@ -18,7 +18,6 @@ private:
     void drawTreapNode(TreapNode* curr);
     void drawTreapLink(Edge* edge);
     void drawTreap(TreapNode* curr);
-    void init();
     void deleteButtons();
 public:
     void insert(int key, int priority = rand());
@@ -26,25 +25,18 @@ public:
     void search(int key);
     void clear();
 
-    TreapUI(SceneHandler* handler);
+    TreapUI();
     ~TreapUI() {
-        deleteButtons();
+        Button::deleteButtons(Buttons);
+        Button::deleteButtons(CodeBlocks);
     }
-    void updateScene() override {
-        // Implement the update logic for the treap scene
-        Button::isCollision = false;
-        for (auto button : Buttons) {
-            button->update();
-        }
-        if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-    }
+    void init() override;
+    void initButtons() override;
+    void updateButtonPositions() override;
 
-    void displayScene() override {
-        // Implement the display logic for the treap scene
-        for (auto button : Buttons) {
-            button->draw();
-        }
-    }
+    void updateScene() override;
+    void displayScene() override;
+
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
         drawTreap(root);

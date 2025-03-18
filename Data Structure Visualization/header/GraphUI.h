@@ -8,6 +8,11 @@ public:
         // Default constructor
         std::cout << "GraphUI Scene Created" << std::endl;
     }
+
+    void init() {};
+    void initButtons() {};
+    void updateButtonPositions() {};
+
     void updateScene() override {
         // Implement the update logic for the graph scene
     }
@@ -18,5 +23,5 @@ public:
     void displaySceneInCamera() override {
         // Implement the display logic for the graph scene
     }
-
+    
 };

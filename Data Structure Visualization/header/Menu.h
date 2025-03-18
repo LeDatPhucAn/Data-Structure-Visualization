@@ -27,11 +27,13 @@ public:
     Menu(SceneHandler* handler) : sceneHandler(handler) {
         selected = NONE;
     }
+    void init() {};
+    void initButtons() {};
+    void updateButtonPositions() {};
+
     void updateScene() override;
 
     void displayScene() override;
 
-    void displaySceneInCamera() {
-        // Implement the display logic for the graph scene
-    }
+    void displaySceneInCamera() {}
 };

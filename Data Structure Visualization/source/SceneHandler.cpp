@@ -1,14 +1,22 @@
 #include "../header/SceneHandler.h"
 
+Button* SceneHandler::MenuButton = nullptr;
 
 SceneHandler::SceneHandler() {
+
+    // initialize menu button
+    MenuButton = new TextBox("Menu", UI::screenWidth / 100, UI::screenHeight / 100);
+    MenuButton->onClick = [this]() {
+        this->changeScene(MENU);
+        };
+
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
     scenes[MENU] = new Menu(this);
-    scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
-    scenes[HASHTABLE] = new HashTableUI(this);
-    scenes[TREAP] = new TreapUI(this);
+    scenes[LINKEDLIST] = new SinglyLinkedListUI();
+    scenes[HASHTABLE] = new HashTableUI();
+    scenes[TREAP] = new TreapUI();
     scenes[GRAPH] = new GraphUI();
     // Initialize other scenes as needed
     changeScene(MENU);
@@ -18,6 +26,7 @@ SceneHandler::~SceneHandler() {
     for (int i = 0; i < 5; ++i) {
         delete scenes[i];
     }
+    delete MenuButton;
 }
 
 int SceneHandler::getCurrentScene() {
@@ -32,9 +41,6 @@ void SceneHandler::changeScene(Scene newScene) {
 }
 
 void SceneHandler::updateCamera() {
-    // button for all scenes except menu
-    float width = 200.0f;
-    float height = 100.0f;
 
     // Translate based on mouse right click
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {

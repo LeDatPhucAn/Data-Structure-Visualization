@@ -4,7 +4,7 @@
 #include "UI.h"
 class Button {
 public:
-    const int padding = UI::fontSize;
+    static const int padding;
     static bool isCollision;
     Rectangle rect;
     Color TextColor;
@@ -23,15 +23,19 @@ public:
     
 
     virtual int getNumber() const { return 0; }
+    
+    virtual void setPosition(float x, float y);
+    virtual void setSubPosition();
 
+    static void setHeadPosition(vector<Button*>& Buttons, float x, float y);
     static void insertHeadButton(vector<Button*>& Buttons, Button* button);
+
+    static void drawButtons(vector<Button*>& Buttons);
+    static void updateButtons(vector<Button*>& Buttons);
+    static void deleteButtons(vector<Button*>& Buttons);
 
     virtual void insertSubButton(Button* button);
     virtual void insertSubButton(Button* button, std::function<void()> function);
-    virtual void setPosition(float x, float y) {
-        rect.x = x;
-        rect.y = x;
-    }
     virtual void update();
     virtual void draw() = 0;
     virtual void hover();

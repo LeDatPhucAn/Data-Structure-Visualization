@@ -2,7 +2,7 @@
 
 const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
 
-TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr) {
+TreapUI::TreapUI() : root(nullptr) {
     init();
 }
 void TreapUI::deleteButtons() {
@@ -110,6 +110,10 @@ void TreapUI::init() {
         int x = rand() % 100;
         insert(x);
     }
+    initButtons();
+}
+
+void TreapUI::initButtons() {
     Button::insertHeadButton(Buttons, new TextBox(" Insert", 100, UI::screenHeight * 3 / 4));
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
@@ -123,10 +127,10 @@ void TreapUI::init() {
     Buttons[0]->insertSubButton(PriorityInput);
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PriorityInput]() {
-        if(PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
+        if (PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
         else this->insert(ValueInput->getNumber());
         static_cast<NumberInputBox*>(ValueInput)->clear();
-        static_cast<NumberInputBox*>(PriorityInput)->clear();     
+        static_cast<NumberInputBox*>(PriorityInput)->clear();
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
@@ -149,13 +153,44 @@ void TreapUI::init() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
-    Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, {214, 102, 49, 255}, DARKGRAY));
-    Buttons[3]->onClick = [this](){
+    Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, { 214, 102, 49, 255 }, DARKGRAY));
+    Buttons[3]->onClick = [this]() {
         this->clear();
-    };
-
-    Buttons.push_back(new TextBox("Menu", 50, 50));
-    Buttons[4]->onClick = [this]() {
-        this->sceneHandler->changeScene(MENU);
         };
+
+}
+
+void TreapUI::displayScene() {
+    SceneHandler::MenuButton->draw();
+    Button::drawButtons(Buttons);
+    Button::drawButtons(CodeBlocks);
+}
+void TreapUI::updateButtonPositions() {
+
+    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+
+    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
+
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4);
+
+}
+void TreapUI::updateScene() {
+
+    if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
+
+        updateButtonPositions();
+
+        UI::lastScreenWidth = UI::screenWidth;
+        UI::lastScreenHeight = UI::screenHeight;
+    }
+
+    Button::isCollision = false;
+
+
+    SceneHandler::MenuButton->update();
+    Button::updateButtons(Buttons);
+    Button::updateButtons(CodeBlocks);
+
+
+    if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

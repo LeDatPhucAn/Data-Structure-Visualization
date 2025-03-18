@@ -14,25 +14,19 @@ private:
     static constexpr int nodeRadius = 30;
     static constexpr int spacing = 20;
 protected:
-    SceneHandler* scenehandler;
     std::vector<Button*> Buttons;
+    std::vector<Button*> CodeBlocks;
 public:
     HashTableUI() : HashTable(5) {  // Initial size: 5
         init();
     }
-    HashTableUI(SceneHandler* handler) : HashTable(5), scenehandler(handler) {
-        init();
-    }
     ~HashTableUI() {
-        for (auto button : Buttons) {
-            while (button) {
-                Button* del = button;
-                button = button->next;
-                delete del;
-            }
-        }
+        Button::deleteButtons(Buttons);
+        Button::deleteButtons(CodeBlocks);
     }
-    void init();
+    void init() override;
+    void initButtons() override;
+    void updateButtonPositions() override;
     void drawHashTable();
 
     void updateScene() override;

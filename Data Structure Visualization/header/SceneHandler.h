@@ -18,6 +18,7 @@ private:
 protected:
     SceneManager* currentSceneObject;
 public:
+    static Button* MenuButton;
     SceneHandler();
     ~SceneHandler();
     int getCurrentScene();

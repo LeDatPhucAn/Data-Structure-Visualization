@@ -37,6 +37,15 @@ TreapNode* Treap::rotateRight(TreapNode* root) {
     return newRoot;
 }
 
+void Treap::clear(TreapNode* root){
+    if(!root) return;
+
+    if(root->leftEdge) clear(static_cast<TreapNode*>(root->leftEdge->to));
+    if(root->rightEdge) clear(static_cast<TreapNode*>(root->rightEdge->to));
+
+    delete root;
+}
+
 TreapNode* Treap::insert(TreapNode* root, Vector2 pos, int key, int priority) {
     static const int Y_OFFSET = 70;
     if (!root) return new TreapNode(key, priority, pos);
@@ -124,6 +133,10 @@ TreapNode* Treap::remove(TreapNode* root, int key) {
 
     updateSubtreeWidth(root);
     return root;
+}
+
+void Treap::clear(){
+    clear(root);
 }
 
 int Treap::getSubtreeWidth(TreapNode* curr) {

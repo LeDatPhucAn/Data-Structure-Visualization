@@ -1,6 +1,6 @@
 #include "../header/TreapUI.h"
 
-const Vector2 TreapUI::ROOT_POS = { UI::screenWidth / 2, 0 };
+const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
 
 TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr) {
     init();
@@ -27,6 +27,11 @@ void TreapUI::search(int key) {
 void TreapUI::remove(int key) {
     root = treap.remove(root, key);
     reposition(root, ROOT_POS, xOffset, yOffset);
+}
+
+void TreapUI::clear(){
+    treap.Treap::clear();
+    this->root = nullptr;
 }
 
 
@@ -105,7 +110,7 @@ void TreapUI::init() {
         insert(x);
     }
 
-    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(Buttons, new TextBox(" Insert", 100, UI::screenHeight * 3 / 4));
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
     Button* Priority = new TextBox("Priority:");
@@ -144,8 +149,13 @@ void TreapUI::init() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
+    Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, {214, 102, 49, 255}, DARKGRAY));
+    Buttons[3]->onClick = [this](){
+        this->clear();
+    };
+
     Buttons.push_back(new TextBox("Menu", 50, 50));
-    Buttons[3]->onClick = [this]() {
+    Buttons[4]->onClick = [this]() {
         this->sceneHandler->changeScene(MENU);
         };
 }

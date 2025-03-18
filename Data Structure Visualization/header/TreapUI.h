@@ -24,9 +24,9 @@ public:
     void insert(int key, int priority = rand());
     void remove(int key);
     void search(int key);
+
     TreapUI(SceneHandler* handler);
-    ~TreapUI(){
-        delete root;
+    ~TreapUI() {
         deleteButtons();
     }
     void updateScene() override {

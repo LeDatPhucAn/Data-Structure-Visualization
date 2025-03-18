@@ -24,10 +24,10 @@ void InputBox::draw() {
 }
 
 void InputBox::update() {
-    // Head button logic: Toggle activation on click
     if (!head || head->isActivated) {
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
             }
@@ -81,10 +81,10 @@ void NumberInputBox::unhover() {
 }
 
 void NumberInputBox::update() {
-    // Head button logic: Toggle activation on click
     if (!head || head->isActivated) {
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
             }

@@ -1,8 +1,9 @@
 #include "../header/UI.h"
-
 Font UI::font = { 0 };
 int UI::screenWidth = 1600;
 int UI::screenHeight = 900;
+int UI::lastScreenWidth = 1600;
+int UI::lastScreenHeight = 900;
 vector<Texture2D> UI::Icons;
 vector<Texture2D> UI::Buttons;
 vector<Texture2D> UI::selectedButtons;
@@ -17,24 +18,25 @@ void UI::drawBackground() {
 	Rectangle source = { 1300, 300,static_cast<float>(screenWidth), static_cast<float>(screenHeight)};
 	DrawTexturePro(UI::Icons[2], source, screen, { 0,0 }, 0, LIGHTGRAY);
 }
+
 void UI::drawLogo() {
 	Rectangle logo = { screenWidth / 2 - static_cast<float>(UI::Icons[3].width) / 2, static_cast<float> (screenHeight) / 64, static_cast<float> (UI::Icons[3].width), static_cast<float> (UI::Icons[3].height) };
-	DrawTexturePro(UI::Icons[3], { 0,0,(float)UI::Icons[3].width,(float)UI::Icons[3].height }, logo, { 0,0 }, 0, WHITE);
+	DrawTexturePro(UI::Icons[3], { 0,0,(float)UI::Icons[3].width,(float)UI::Icons[3].height }, logo, { 0,0 }, 0, RAYWHITE);
 }
+
 void UI::initTextures() {
 
-	// credit https://github.com/BJMinhNhut/data-visualization-2
 	// Buttons
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-sll-normal.png"));
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-hash-normal.png"));
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-trie-normal.png"));
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-graph-normal.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/SinglyLinkedList.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/HashTable.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/Treap.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/Graph.png"));
 
 	// Selected Buttons
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-sll-selected.png"));
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-hash-selected.png"));
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-trie-selected.png"));
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-graph-selected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/SinglyLinkedListSelected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/HashTableSelected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/TreapSelected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/GraphSelected.png"));
 
 
 	// Icons
@@ -57,17 +59,6 @@ void UI::drawtext2(string message, int X, int Y, Color color) {
 	DrawText(messageStr, X - textSize.x / 2, Y - textSize.y / 2, fontSize, color);
 
 }
-void UI::drawButton(float X, float Y) {
-	float roundness = 0.5f;
-	float width = 250.0f;
-	float height = 100.0f;
-	float segments = 0.0f;
-	float lineThick = 12.0f;
-	Rectangle rec = { X, Y, (float)width, (float)height };
-	DrawRectangleRounded(rec, roundness, (int)segments, Fade(MAROON, 0.2f));
-	DrawRectangleRoundedLinesEx(rec, roundness, (int)segments, lineThick, Fade(MAROON, 0.4f));
-}
-
 void UI::drawNode(Node* node) {
 	if (!node)return;
 	string message = to_string(node->data);

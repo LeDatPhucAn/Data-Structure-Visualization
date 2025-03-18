@@ -10,6 +10,7 @@
 #include "../header/Button.h"
 #include "../header/UI.h"
 using namespace std;
+
 int main()
 {
 	InitWindow(UI::screenWidth, UI::screenHeight, "Bruh");

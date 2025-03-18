@@ -14,8 +14,18 @@ public:
         // Default constructor
         std::cout << "GraphUI Scene Created" << std::endl;
     }
+<<<<<<< HEAD
     GraphUI(SceneHandler* handler) : scenehandler(handler) {
         init();
+=======
+
+    void init() {};
+    void initButtons() {};
+    void updateButtonPositions() {};
+
+    void updateScene() override {
+        // Implement the update logic for the graph scene
+>>>>>>> origin/master
     }
     void init();
     void drawEdge();
@@ -25,5 +35,9 @@ public:
     void displaySceneInCamera() override {
         // Implement the display logic for the graph scene
     }
+<<<<<<< HEAD
     ~GraphUI() {}
+=======
+    
+>>>>>>> origin/master
 };

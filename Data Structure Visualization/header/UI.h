@@ -20,13 +20,15 @@ public:
 	bool menuhovered = false;
 	static int screenWidth;
 	static int screenHeight;
+	static int lastScreenWidth;
+	static int lastScreenHeight;
 	static vector <Texture2D> Icons;
 	static vector <Texture2D> Buttons;
 	static vector<Texture2D> selectedButtons;
 	void initTextures();
+	
 	static void drawBackground();
 	static void drawLogo();
-	static void drawButton(float X, float Y);
 	static void drawNode(Node* node);
 	static void drawlink(int X, int Y);
 	static void drawtext2(string message, int X, int Y, Color color);

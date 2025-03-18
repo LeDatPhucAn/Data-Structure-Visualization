@@ -63,8 +63,8 @@
     <Image Include="assets\Buttons\menu-hash-selected.png" />
     <Image Include="assets\Buttons\menu-sll-normal.png" />
     <Image Include="assets\Buttons\menu-sll-selected.png" />
-    <Image Include="assets\Buttons\menu-trie-normal.png" />
-    <Image Include="assets\Buttons\menu-trie-selected.png" />
+    <Image Include="assets\Buttons\menu-treap-normal.png" />
+    <Image Include="assets\Buttons\menu-treap-selected.png" />
     <Image Include="assets\Icons\rightarrow.png" />
     <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>
@@ -169,6 +169,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

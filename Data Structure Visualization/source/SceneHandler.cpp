@@ -1,15 +1,25 @@
 #include "../header/SceneHandler.h"
 
+Button* SceneHandler::MenuButton = nullptr;
 
 SceneHandler::SceneHandler() {
+
+    // initialize menu button
+    MenuButton = new TextBox("Menu", UI::screenWidth / 100, UI::screenHeight / 100);
+    MenuButton->onClick = [this]() {
+        this->changeScene(MENU);
+        };
+
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
     scenes[MENU] = new Menu(this);
+
     scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
     scenes[HASHTABLE] = new HashTableUI(this);
     scenes[TREAP] = new TreapUI(this);
     scenes[GRAPH] = new GraphUI(this);
+
     // Initialize other scenes as needed
     changeScene(MENU);
 }
@@ -18,6 +28,7 @@ SceneHandler::~SceneHandler() {
     for (int i = 0; i < 5; ++i) {
         delete scenes[i];
     }
+    delete MenuButton;
 }
 
 int SceneHandler::getCurrentScene() {
@@ -32,9 +43,6 @@ void SceneHandler::changeScene(Scene newScene) {
 }
 
 void SceneHandler::updateCamera() {
-    // button for all scenes except menu
-    float width = 200.0f;
-    float height = 100.0f;
 
     // Translate based on mouse right click
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
@@ -68,7 +76,18 @@ void SceneHandler::updateCamera() {
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
 
+        // update The Positions of all Scenes when there is a Window Resize
+        if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
 
+            for (int i = 1; i < 5; i++) {
+                scenes[i]->updateButtonPositions();
+            }
+
+            UI::lastScreenWidth = UI::screenWidth;
+            UI::lastScreenHeight = UI::screenHeight;
+        }
+
+        
         if (getCurrentScene() != MENU) {
 
             updateCamera();

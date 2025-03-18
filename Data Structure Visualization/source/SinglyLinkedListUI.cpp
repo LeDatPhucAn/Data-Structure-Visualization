@@ -10,23 +10,9 @@ void SinglyLinkedListUI::drawlinkedlist() {
         edge->drawArrowEdge();
     }
 }
-void SinglyLinkedListUI::deleteButtons(){
-    for (auto button : Buttons) {
-        while (button) {
-            Button* del = button;
-            button = button->next;
-            delete del;
-        }
-    }
-}
-void SinglyLinkedListUI::init() {
-    this->insertnode(10, 1);
-    this->insertnode(30, 1);
-    this->insertnode(40, 1);
-    this->insertnode(50, 3);
-    this->insertnode(50, 5);
 
-    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight*3/4));
+void SinglyLinkedListUI::initButtons() {
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
 
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
@@ -65,25 +51,53 @@ void SinglyLinkedListUI::init() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
-    Buttons.push_back(new TextBox("Menu", 50, 50));
-    Buttons[3]->onClick = [this]() {
-        this->scenehandler->changeScene(MENU);
-        };
-    
+
+    /// Code Blocks
+    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
+
 }
+
+void SinglyLinkedListUI::updateButtonPositions() {
+
+    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+
+    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
+
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4);
+
+}
+void SinglyLinkedListUI::init() {
+
+    srand(time(nullptr));
+    int n = rand() % 10;
+    for (int i = 0; i < n; ++i) {
+        int x = rand() % 100;
+        int pos = rand() % 10;
+        this->insertnode(x,pos);
+    }
+
+    initButtons();
+
+}
+
 void SinglyLinkedListUI::displaySceneInCamera() {
     drawlinkedlist();
     
 }
 void SinglyLinkedListUI::displayScene() {
-    for (auto button : Buttons) {
-        button->draw();
-    }
+    SceneHandler::MenuButton->draw();
+    Button::drawButtons(Buttons);
+    Button::drawButtons(CodeBlocks);
 }
 void SinglyLinkedListUI::updateScene() {
+
     Button::isCollision = false;
-    for (auto button : Buttons) {
-        button->update();
-    }
+
+
+    SceneHandler::MenuButton->update();
+    Button::updateButtons(Buttons);
+    Button::updateButtons(CodeBlocks);
+
+    
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

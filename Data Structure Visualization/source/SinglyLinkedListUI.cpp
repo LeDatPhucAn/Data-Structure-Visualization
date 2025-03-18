@@ -50,8 +50,10 @@ void SinglyLinkedListUI::initButtons() {
         this->search(ValueInput2->getNumber());
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
+
+
     /// Code Blocks
-    Button::insertHeadButton(CodeBlocks, new TextBox("Code Block:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
 
 }
 

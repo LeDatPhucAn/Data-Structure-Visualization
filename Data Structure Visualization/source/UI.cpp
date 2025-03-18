@@ -27,13 +27,13 @@ void UI::initTextures() {
 	// Buttons
 	Buttons.push_back(LoadTexture("assets/Buttons/menu-sll-normal.png"));
 	Buttons.push_back(LoadTexture("assets/Buttons/menu-hash-normal.png"));
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-trie-normal.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/menu-treap-normal.png"));
 	Buttons.push_back(LoadTexture("assets/Buttons/menu-graph-normal.png"));
 
 	// Selected Buttons
 	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-sll-selected.png"));
 	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-hash-selected.png"));
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-trie-selected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-treap-selected.png"));
 	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-graph-selected.png"));
 
 

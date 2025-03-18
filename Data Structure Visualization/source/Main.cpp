@@ -8,12 +8,11 @@
 #include "../header/TreapUI.h"
 #include "../header/SceneHandler.h"
 #include "../header/Button.h"
+#include "../header/UI.h"
 using namespace std;
-const int WINDOW_WIDTH = 1600;
-const int WINDOW_HEIGHT = 900;
 int main()
 {
-	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Bruh");
+	InitWindow(UI::screenWidth, UI::screenHeight, "Bruh");
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 	SetTargetFPS(60);
 	UI ui;

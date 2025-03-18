@@ -72,6 +72,10 @@ void InputBox::update() {
     }
 }
 
+void InputBox::clear(){
+    inputText.clear();
+}
+
 void NumberInputBox::hover() {
     InputBox::hover();
 }
@@ -128,7 +132,6 @@ void NumberInputBox::update() {
                 if (key >= '0' && key <= '9' && (inputText.size() < maxChars))
                 {
                     inputText.push_back(key);
-                    inputNumber = stoi(inputText);
                 }
 
                 key = GetCharPressed();  // Check next character in the queue
@@ -141,11 +144,23 @@ void NumberInputBox::update() {
                 lastDeletedTime = currenttime;
             }
 
+            if (!inputText.empty()) {
+                inputNumber = stoi(inputText); 
+            } else {
+                inputNumber = 0;
+            }
+
             if (IsKeyPressed(KEY_ENTER)) {
                 if (onClick)onClick();
             }
         }
     }
+}
+
+
+void NumberInputBox::clear(){
+    InputBox::clear();
+    inputNumber = 0;
 }
 
 void Button::update() {

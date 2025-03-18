@@ -41,6 +41,8 @@ void SinglyLinkedListUI::init() {
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
+        static_cast<NumberInputBox*>(ValueInput)->clear();
+        static_cast<NumberInputBox*>(PosInput)->clear();
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
@@ -48,19 +50,19 @@ void SinglyLinkedListUI::init() {
     Button* ValueInput1 = new NumberInputBox(3);
     Button* Enter1 = new TextBox(">");
     Buttons[1]->insertSubButton(Value1);
-    Buttons[1]->insertSubButton(ValueInput1, [this, ValueInput1]() {
-        this->remove(ValueInput1->getNumber());
-        });
+    Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
+        static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
+
     Button::insertHeadButton(Buttons, new TextBox("Search"));
     Buttons[2]->insertSubButton(new TextBox("Value:"));
-
     Button* ValueInput2 = new NumberInputBox(3);
     Buttons[2]->insertSubButton(ValueInput2);
     Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
         this->search(ValueInput2->getNumber());
+        static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
     Buttons.push_back(new TextBox("Menu", 50, 50));

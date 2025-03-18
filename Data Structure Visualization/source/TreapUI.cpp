@@ -83,17 +83,17 @@ void TreapUI::drawTreapLink(Edge* edge) {
 
 void TreapUI::drawTreap(TreapNode* curr) {
     if (!curr) return;
-
+  
     drawTreapNode(curr);
 
     if (curr->leftEdge) {
-        drawTreap(static_cast<TreapNode*>(curr->leftEdge->to));
         drawTreapLink(curr->leftEdge);
+        drawTreap(static_cast<TreapNode*>(curr->leftEdge->to));
     }
 
     if (curr->rightEdge) {
-        drawTreap(static_cast<TreapNode*>(curr->rightEdge->to));
         drawTreapLink(curr->rightEdge);
+        drawTreap(static_cast<TreapNode*>(curr->rightEdge->to));
     }
 }
 
@@ -106,33 +106,42 @@ void TreapUI::init() {
     }
 
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
-    Buttons[0]->insertSubButton(new TextBox("Value:"));
+    Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
-    Buttons[0]->insertSubButton(ValueInput, [this, ValueInput]() {
-        this->insert(ValueInput->getNumber());
-        });
+    Button* Priority = new TextBox("Priority:");
+    Button* PriorityInput = new NumberInputBox(3);
     Button* Enter = new TextBox(">");
-    Buttons[0]->insertSubButton(Enter, [this, ValueInput]() {
-        this->insert(ValueInput->getNumber());
+
+    Buttons[0]->insertSubButton(Value);
+    Buttons[0]->insertSubButton(ValueInput);
+    Buttons[0]->insertSubButton(Priority);
+    Buttons[0]->insertSubButton(PriorityInput);
+
+    Buttons[0]->insertSubButton(Enter, [this, ValueInput, PriorityInput]() {
+        if(PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
+        else this->insert(ValueInput->getNumber());
+        static_cast<NumberInputBox*>(ValueInput)->clear();
+        static_cast<NumberInputBox*>(PriorityInput)->clear();     
         });
+
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
     Button* Value1 = new TextBox("Value:");
     Button* ValueInput1 = new NumberInputBox(3);
     Button* Enter1 = new TextBox(">");
     Buttons[1]->insertSubButton(Value1);
-    Buttons[1]->insertSubButton(ValueInput1, [this, ValueInput1]() {
-        this->remove(ValueInput1->getNumber());
-        });
+    Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
+        static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
+
     Button::insertHeadButton(Buttons, new TextBox("Search"));
     Buttons[2]->insertSubButton(new TextBox("Value:"));
-
     Button* ValueInput2 = new NumberInputBox(3);
     Buttons[2]->insertSubButton(ValueInput2);
     Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
         this->search(ValueInput2->getNumber());
+        static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
     Buttons.push_back(new TextBox("Menu", 50, 50));

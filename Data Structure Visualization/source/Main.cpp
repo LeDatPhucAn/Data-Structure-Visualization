@@ -18,7 +18,10 @@ int main()
 	UI ui;
 	ui.initTextures();
 	SceneHandler scenehandler;
-	
+	Node* node1 = new Node(293, { 250, 250 }, 50);
+	Node* node2 = new Node(201, { 400, 250 }, 50);
+
+	Edge* edge1 = new Edge(node1, node2);
 	/// main functions
 	while (!WindowShouldClose()) {
 
@@ -37,6 +40,12 @@ int main()
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
+
+		//Test
+		/*UI::drawNode(node1);
+		UI::drawNode(node2);
+		edge1->drawArrowEdge();*/
+
 		scenehandler.displayCurrentScene();
         EndDrawing();
 		//----------------------------------------------------------------------------------
@@ -45,3 +54,35 @@ int main()
 	CloseWindow();
 	ui.cleanup();
 }
+
+
+
+
+//
+////Test for graph
+//#include <iostream>
+//#include "../header/Graph.h"
+//int main() {
+//	Graph graph(10);
+//    graph.addEdge(1, 2);
+//    graph.addEdge(1, 3);
+//    graph.addEdge(2, 4);
+//    graph.addEdge(3, 5);
+//    graph.printGraph();
+//
+//    graph.calculatePositions();
+//    graph.printPosition();
+//
+//    /*Vector2 pos = { GetRandomValue(100, 1500), GetRandomValue(100, 800) };
+//    graph.addNode(pos);
+//    graph.printGraph();
+//    graph.addEdge(1, 4);
+//    graph.addEdge(3, 6);
+//    graph.printGraph();
+//    graph.removeNode(1);
+//    graph.printGraph();
+//    graph.removeEdge(2, 4);
+//    graph.printGraph();*/
+//
+//
+//}

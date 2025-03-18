@@ -9,7 +9,7 @@ SceneHandler::SceneHandler() {
     scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
     scenes[HASHTABLE] = new HashTableUI(this);
     scenes[TREAP] = new TreapUI(this);
-    scenes[GRAPH] = new GraphUI();
+    scenes[GRAPH] = new GraphUI(this);
     // Initialize other scenes as needed
     changeScene(MENU);
 }

@@ -24,6 +24,7 @@ public:
     void insert(int key, int priority = rand());
     void remove(int key);
     void search(int key);
+    void clear();
 
     TreapUI(SceneHandler* handler);
     ~TreapUI() {

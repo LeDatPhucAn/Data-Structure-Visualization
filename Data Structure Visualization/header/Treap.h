@@ -16,12 +16,12 @@ public:
 
 	~TreapNode() {
 		if (leftEdge) {
-			if (leftEdge->to) delete static_cast<TreapNode*>(leftEdge->to);
 			delete leftEdge;
+			leftEdge = nullptr;
 		}
 		if (rightEdge) {
-			if (rightEdge->to) delete static_cast<TreapNode*>(rightEdge->to);
 			delete rightEdge;
+			rightEdge = nullptr;
 		}
 	}
 };
@@ -32,17 +32,20 @@ protected:
 private:
 	TreapNode* rotateLeft(TreapNode* root);
 	TreapNode* rotateRight(TreapNode* root);
+	void clear(TreapNode* root);
 public:
 	Treap() : root(nullptr) {
 		srand(time(nullptr));
 	}
 	~Treap() {
-		delete root;
+		clear(root);
+		root = nullptr;
 	}
 	int getSubtreeWidth(TreapNode* curr);
 	void updateSubtreeWidth(TreapNode* curr);
 	TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
 	TreapNode* search(TreapNode* root, int key);
 	TreapNode* remove(TreapNode* root, int key);
+	void clear();
 
 };

@@ -23,18 +23,17 @@ void UI::drawLogo() {
 }
 void UI::initTextures() {
 
-	// credit https://github.com/BJMinhNhut/data-visualization-2
 	// Buttons
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-sll-normal.png"));
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-hash-normal.png"));
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-trie-normal.png"));
-	Buttons.push_back(LoadTexture("assets/Buttons/menu-graph-normal.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/SinglyLinkedList.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/HashTable.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/Treap.png"));
+	Buttons.push_back(LoadTexture("assets/Buttons/Graph.png"));
 
 	// Selected Buttons
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-sll-selected.png"));
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-hash-selected.png"));
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-trie-selected.png"));
-	selectedButtons.push_back(LoadTexture("assets/Buttons/menu-graph-selected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/SinglyLinkedListSelected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/HashTableSelected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/TreapSelected.png"));
+	selectedButtons.push_back(LoadTexture("assets/Buttons/GraphSelected.png"));
 
 
 	// Icons

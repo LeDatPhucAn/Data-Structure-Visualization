@@ -35,6 +35,7 @@ void UI::initTextures() {
 	selectedButtons.push_back(LoadTexture("assets/Buttons/TreapSelected.png"));
 	selectedButtons.push_back(LoadTexture("assets/Buttons/GraphSelected.png"));
 
+
 	// Icons
 	Icons.push_back(LoadTexture("assets/Icons/rightarrow.png"));
 	Icons.push_back(LoadTexture("assets/Icons/Sprite.png"));

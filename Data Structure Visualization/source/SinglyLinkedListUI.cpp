@@ -89,14 +89,6 @@ void SinglyLinkedListUI::displayScene() {
 }
 void SinglyLinkedListUI::updateScene() {
 
-    if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
-
-        updateButtonPositions();
-
-        UI::lastScreenWidth = UI::screenWidth;
-        UI::lastScreenHeight = UI::screenHeight;
-    }
-
     Button::isCollision = false;
 
 

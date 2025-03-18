@@ -176,14 +176,6 @@ void TreapUI::updateButtonPositions() {
 }
 void TreapUI::updateScene() {
 
-    if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
-
-        updateButtonPositions();
-
-        UI::lastScreenWidth = UI::screenWidth;
-        UI::lastScreenHeight = UI::screenHeight;
-    }
-
     Button::isCollision = false;
 
 

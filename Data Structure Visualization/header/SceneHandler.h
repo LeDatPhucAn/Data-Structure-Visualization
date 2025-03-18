@@ -10,10 +10,10 @@ class SceneHandler : public UI {
 private:
     SceneManager* scenes[5];
     Camera2D camera = { 
-        .offset = {static_cast<float> (UI::screenWidth) / 2, static_cast<float> (UI::screenHeight) / 5},  
-        .target = { static_cast<float> (UI::screenWidth) / 2, 0 },
-        .rotation = 0.0f,  
-        .zoom = 0.0f
+        {static_cast<float> (UI::screenWidth) / 2, static_cast<float> (UI::screenHeight) / 5},  
+        { static_cast<float> (UI::screenWidth) / 2, 0 },
+        0.0f,  
+        0.0f
     };
 protected:
     SceneManager* currentSceneObject;

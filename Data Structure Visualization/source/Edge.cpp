@@ -25,22 +25,24 @@ void Edge::drawEdge() {
 void Edge::drawArrowEdge()
 {
 	if (!from || !to) return;
+
 	float dx = to->position.x - from->position.x;
 	float dy = to->position.y - from->position.y;
-
 	float arrowHeadAngle = PI / 6;
-	float arrowHeadLength = sqrt(dx * dx + dy * dy) / 10;
+	float arrowHeadLength = thickness*5;
 
 	float theta = atan2(dy, dx);
 
 	float fromX = from->radius * cos(theta) + from->position.x;
 	float fromY = from->radius * sin(theta) + from->position.y;
-	float toX = -to->radius * cos(theta) + to->position.x;
-	float toY = to->radius * sin(theta) + to->position.y;
+	float toX =  to->position.x - to->radius * cos(theta);
+	float toY =  to->position.y - to->radius * sin(theta);
 
+	float EdgeEndX = toX - arrowHeadLength * cos(arrowHeadAngle);
+	float EdgeEndY = toY - arrowHeadLength * sin(theta);
 	//draw edge
 	
-	DrawLineEx({ fromX,fromY }, { toX - arrowHeadLength*cos(PI/2 - arrowHeadAngle),toY}, thickness, BLACK);
+	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, BLACK);
 
 	//draw arrow head
 

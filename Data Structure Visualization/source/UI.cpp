@@ -13,12 +13,12 @@ UI::UI() {
 }
 
 void UI::drawBackground() {
-	Rectangle screen = { 0, 0, screenWidth, screenHeight };
-	Rectangle source = { 1300, 300,screenWidth, screenHeight };
+	Rectangle screen = { 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight)};
+	Rectangle source = { 1300, 300,static_cast<float>(screenWidth), static_cast<float>(screenHeight)};
 	DrawTexturePro(UI::Icons[2], source, screen, { 0,0 }, 0, LIGHTGRAY);
 }
 void UI::drawLogo() {
-	Rectangle logo = { screenWidth / 2 - UI::Icons[3].width / 2, screenHeight / 64, UI::Icons[3].width, UI::Icons[3].height };
+	Rectangle logo = { screenWidth / 2 - static_cast<float>(UI::Icons[3].width) / 2, static_cast<float> (screenHeight) / 64, static_cast<float> (UI::Icons[3].width), static_cast<float> (UI::Icons[3].height) };
 	DrawTexturePro(UI::Icons[3], { 0,0,(float)UI::Icons[3].width,(float)UI::Icons[3].height }, logo, { 0,0 }, 0, WHITE);
 }
 void UI::initTextures() {

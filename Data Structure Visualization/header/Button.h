@@ -124,6 +124,7 @@ public:
     void draw() override;
     void hover() override;
     void unhover() override;
+    virtual void clear();
 };
 
 class NumberInputBox : public InputBox {
@@ -132,22 +133,22 @@ private:
 public:
 
     // default Number Input Box
-    NumberInputBox(int maxCh) : InputBox(maxCh), inputNumber(0) {
+    NumberInputBox(int maxCh) : InputBox(maxCh), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
-    NumberInputBox(int maxCh, Color tc, Color fc, Color olc) : InputBox(maxCh,tc, fc, olc), inputNumber(0) {
+    NumberInputBox(int maxCh, Color tc, Color fc, Color olc) : InputBox(maxCh,tc, fc, olc), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
-    NumberInputBox(float x, float y, int maxCh) : InputBox(x, y, maxCh), inputNumber(0) {
+    NumberInputBox(float x, float y, int maxCh) : InputBox(x, y, maxCh), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
-    NumberInputBox(float x, float y, int maxCh, Color tc, Color fc, Color olc) : InputBox(x, y, maxCh, tc, fc, olc), inputNumber(0) {
+    NumberInputBox(float x, float y, int maxCh, Color tc, Color fc, Color olc) : InputBox(x, y, maxCh, tc, fc, olc), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
@@ -158,6 +159,7 @@ public:
     void update() override;
     void hover() override;
     void unhover() override;
+    void clear() override;
 };
 
 class TextBox : public Button {

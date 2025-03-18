@@ -9,7 +9,7 @@ class TreapUI : public SceneManager {
 private:
     Treap treap;
     TreapNode* root = nullptr;
-
+    vector<Button*>Buttons;
     SceneHandler* sceneHandler;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
@@ -19,19 +19,33 @@ private:
     void drawTreapLink(Edge* edge);
     void drawTreap(TreapNode* curr);
     void init();
+    void deleteButtons();
 public:
     void insert(int key, int priority = rand());
     void remove(int key);
     void search(int key);
+
     TreapUI(SceneHandler* handler);
-    ~TreapUI() = default;
+
+    ~TreapUI() {
+        deleteButtons();
+    }
+
 
     void updateScene() override {
         // Implement the update logic for the treap scene
+        Button::isCollision = false;
+        for (auto button : Buttons) {
+            button->update();
+        }
+        if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
     }
 
     void displayScene() override {
         // Implement the display logic for the treap scene
+        for (auto button : Buttons) {
+            button->draw();
+        }
     }
     void displaySceneInCamera() override {
         // Implement the display logic for the graph scene

@@ -5,6 +5,15 @@ const Vector2 TreapUI::ROOT_POS = { UI::screenWidth / 2, 0 };
 TreapUI::TreapUI(SceneHandler* handler) : sceneHandler(handler), root(nullptr) {
     init();
 }
+void TreapUI::deleteButtons() {
+    for (auto button : Buttons) {
+        while (button) {
+            Button* del = button;
+            button = button->next;
+            delete del;
+        }
+    }
+}
 
 void TreapUI::insert(int key, int priority) {
     root = treap.insert(root, ROOT_POS, key, priority);
@@ -21,8 +30,8 @@ void TreapUI::remove(int key) {
 }
 
 
-void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset){
-    if(!root) return;
+void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
+    if (!root) return;
 
     root->position = pos;
 
@@ -31,19 +40,19 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
 
     int newXOffset = max((leftWidth + rightWidth + 1) * 60, 120);
 
-    if(root->leftEdge){
-        Vector2 leftPos = {pos.x - newXOffset, pos.y + yOffset};
+    if (root->leftEdge) {
+        Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
         reposition(static_cast<TreapNode*> (root->leftEdge->to), leftPos, newXOffset, yOffset);
     }
 
-    if(root->rightEdge){
-        Vector2 rightPos = {pos.x + newXOffset, pos.y + yOffset};
+    if (root->rightEdge) {
+        Vector2 rightPos = { pos.x + newXOffset, pos.y + yOffset };
         reposition(static_cast<TreapNode*> (root->rightEdge->to), rightPos, newXOffset, yOffset);
-    }   
-}   
+    }
+}
 
-void TreapUI::drawTreapNode(TreapNode* curr){
-    if(!curr) return;
+void TreapUI::drawTreapNode(TreapNode* curr) {
+    if (!curr) return;
 
     static const float width = 120.0f;
     static const float height = 100.0f;
@@ -52,8 +61,8 @@ void TreapUI::drawTreapNode(TreapNode* curr){
 
     Vector2 pos = curr->position;
 
-    DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, {255, 203, 203, 255});
-    DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, {69, 180, 238, 255});
+    DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, { 255, 203, 203, 255 });
+    DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, { 69, 180, 238, 255 });
 
     DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
     DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
@@ -72,8 +81,8 @@ void TreapUI::drawTreapLink(Edge* edge) {
     edge->drawTreapEdge();
 }
 
-void TreapUI::drawTreap(TreapNode* curr){
-    if(!curr) return;
+void TreapUI::drawTreap(TreapNode* curr) {
+    if (!curr) return;
 
     drawTreapNode(curr);
 
@@ -88,11 +97,46 @@ void TreapUI::drawTreap(TreapNode* curr){
     }
 }
 
-void TreapUI::init(){
+void TreapUI::init() {
     srand(time(nullptr));
     int n = rand() % 10;
-    for(int i = 0; i < n; ++i){
+    for (int i = 0; i < n; ++i) {
         int x = rand() % 100;
         insert(x);
     }
+
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
+    Buttons[0]->insertSubButton(new TextBox("Value:"));
+    Button* ValueInput = new NumberInputBox(3);
+    Buttons[0]->insertSubButton(ValueInput, [this, ValueInput]() {
+        this->insert(ValueInput->getNumber());
+        });
+    Button* Enter = new TextBox(">");
+    Buttons[0]->insertSubButton(Enter, [this, ValueInput]() {
+        this->insert(ValueInput->getNumber());
+        });
+    Button::insertHeadButton(Buttons, new TextBox("Remove"));
+    Button* Value1 = new TextBox("Value:");
+    Button* ValueInput1 = new NumberInputBox(3);
+    Button* Enter1 = new TextBox(">");
+    Buttons[1]->insertSubButton(Value1);
+    Buttons[1]->insertSubButton(ValueInput1, [this, ValueInput1]() {
+        this->remove(ValueInput1->getNumber());
+        });
+    Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
+        this->remove(ValueInput1->getNumber());
+        });
+    Button::insertHeadButton(Buttons, new TextBox("Search"));
+    Buttons[2]->insertSubButton(new TextBox("Value:"));
+
+    Button* ValueInput2 = new NumberInputBox(3);
+    Buttons[2]->insertSubButton(ValueInput2);
+    Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
+        this->search(ValueInput2->getNumber());
+        });
+
+    Buttons.push_back(new TextBox("Menu", 50, 50));
+    Buttons[3]->onClick = [this]() {
+        this->sceneHandler->changeScene(MENU);
+        };
 }

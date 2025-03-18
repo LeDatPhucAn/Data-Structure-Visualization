@@ -1,9 +1,7 @@
 #include "../header/GraphUI.h"
 void GraphUI::init() {
 	buttonsOnGraph.push_back(new TextBox("Menu", 50, 50));
-	buttonsOnGraph[0]->onClick = [this]() {
-		this->scenehandler->changeScene(MENU);
-		};
+	
 }
 void GraphUI::displayScene() {
 	for (auto button : buttonsOnGraph) {

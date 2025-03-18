@@ -14,11 +14,10 @@ SceneHandler::SceneHandler() {
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
     scenes[MENU] = new Menu(this);
-
-    scenes[LINKEDLIST] = new SinglyLinkedListUI(this);
-    scenes[HASHTABLE] = new HashTableUI(this);
-    scenes[TREAP] = new TreapUI(this);
-    scenes[GRAPH] = new GraphUI(this);
+    scenes[LINKEDLIST] = new SinglyLinkedListUI();
+    scenes[HASHTABLE] = new HashTableUI();
+    scenes[TREAP] = new TreapUI();
+    scenes[GRAPH] = new GraphUI();
 
     // Initialize other scenes as needed
     changeScene(MENU);

@@ -40,7 +40,7 @@ void Edge::drawArrowEdge()
 
 	//draw edge
 	
-	DrawLineEx({ fromX,fromY }, { toX - arrowHeadLength*cos(PI/2 - arrowHeadAngle),toY}, thickness, BLACK);
+	DrawLineEx({ fromX,fromY }, { toX - arrowHeadLength*sin(arrowHeadAngle),toY}, thickness, BLACK);
 
 	//draw arrow head
 

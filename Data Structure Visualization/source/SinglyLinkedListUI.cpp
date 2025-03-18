@@ -20,12 +20,13 @@ void SinglyLinkedListUI::deleteButtons(){
     }
 }
 void SinglyLinkedListUI::init() {
-    this->insertnode(10, 1);
-    this->insertnode(30, 1);
-    this->insertnode(40, 1);
-    this->insertnode(50, 3);
-    this->insertnode(50, 5);
-
+    srand(time(nullptr));
+    int n = rand() % 10;
+    for (int i = 0; i < n; ++i) {
+        int x = rand() % 100;
+        int pos = rand() % 10;
+        this->insertnode(x,pos);
+    }
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight*3/4));
 
     Button* Value = new TextBox("Value:");

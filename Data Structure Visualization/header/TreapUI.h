@@ -27,12 +27,9 @@ public:
     void clear();
 
     TreapUI(SceneHandler* handler);
-
     ~TreapUI() {
         deleteButtons();
     }
-
-
     void updateScene() override {
         // Implement the update logic for the treap scene
         Button::isCollision = false;
@@ -49,7 +46,7 @@ public:
         }
     }
     void displaySceneInCamera() override {
-        // Implement the display logic for the graph scene
+        // Implement the display logic for treap in camera scene
         drawTreap(root);
     }
 

@@ -56,6 +56,7 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     }
 }
 
+
 void TreapUI::drawTreapNode(TreapNode* curr) {
     if (!curr) return;
 
@@ -109,7 +110,6 @@ void TreapUI::init() {
         int x = rand() % 100;
         insert(x);
     }
-
     Button::insertHeadButton(Buttons, new TextBox(" Insert", 100, UI::screenHeight * 3 / 4));
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);

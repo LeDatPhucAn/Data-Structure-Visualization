@@ -116,11 +116,11 @@ void TreapUI::init() {
 void TreapUI::initButtons() {
 
     /// Code Blocks
-    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight / 4));
 
 
     /// Buttons
-    Button::insertHeadButton(Buttons, new TextBox(" Insert", 100, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
     Button* Priority = new TextBox("Priority:");
@@ -177,7 +177,7 @@ void TreapUI::updateButtonPositions() {
 
     Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
-    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4);
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
 
 }
 void TreapUI::updateScene() {

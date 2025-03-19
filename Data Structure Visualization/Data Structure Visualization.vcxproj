@@ -45,6 +45,7 @@
     <ClInclude Include="header\LinkedListNode.h" />
     <ClInclude Include="header\Menu.h" />
     <ClInclude Include="header\Node.h" />
+    <ClInclude Include="header\PseudoCode.h" />
     <ClInclude Include="header\SceneManager.h" />
     <ClInclude Include="header\SceneHandler.h" />
     <ClInclude Include="header\SinglyLinkedList.h" />
@@ -66,6 +67,10 @@
     <Image Include="assets\Buttons\menu-treap-selected.png" />
     <Image Include="assets\Icons\rightarrow.png" />
     <Image Include="assets\Icons\Sprite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\Fonts\JetBrainsMono-BoldItalic.ttf" />
+    <Font Include="assets\Fonts\JetBrainsMono-Regular.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

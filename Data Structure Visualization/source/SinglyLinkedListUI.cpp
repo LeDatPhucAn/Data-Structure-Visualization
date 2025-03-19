@@ -1,5 +1,5 @@
 #include "../header/SinglyLinkedListUI.h"
-
+#include "../header/PseudoCode.h"
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
     while (cur) {
@@ -12,6 +12,11 @@ void SinglyLinkedListUI::drawlinkedlist() {
 }
 
 void SinglyLinkedListUI::initButtons() {
+    
+    /// Code Blocks
+    Button::insertCodeBlock(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight / 4));
+    Button::insertPseudoCode(CodeBlocks, PseudoCode::LLInsert);
+    /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
 
     Button* Value = new TextBox("Value:");
@@ -27,9 +32,12 @@ void SinglyLinkedListUI::initButtons() {
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
+        Button::insertCodeBlock(CodeBlocks,
+            new CodeBlock("Inserting " + to_string(ValueInput->getNumber()) + " to Position: " + to_string(PosInput->getNumber())));
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PosInput)->clear();
-        });
+
+    });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
     Button* Value1 = new TextBox("Value:");
@@ -52,8 +60,7 @@ void SinglyLinkedListUI::initButtons() {
         });
 
 
-    /// Code Blocks
-    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
+    
 
 }
 
@@ -63,7 +70,7 @@ void SinglyLinkedListUI::updateButtonPositions() {
 
     Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
-    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4);
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
 
 }
 void SinglyLinkedListUI::init() {

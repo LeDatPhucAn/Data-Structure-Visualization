@@ -11,20 +11,24 @@ void Button::deleteButtons(vector<Button*>& Buttons) {
         }
     }
 }
+
 void Button::drawButtons(vector<Button*>& Buttons) {
     for (auto button : Buttons) {
         button->draw();
     }
 }
+
 void Button::updateButtons(vector<Button*>& Buttons) {
     for (auto button : Buttons) {
         button->update();
     }
 }
+
 void Button::setPosition(float x, float y) {
     rect.x = x;
     rect.y = y;
 }
+
 void Button::setSubPosition() {
     Button* prev = this;
     Button* cur = this->next;
@@ -34,6 +38,7 @@ void Button::setSubPosition() {
         cur = cur->next;
     }
 }
+
 void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
     if (Buttons.empty()) {
         cout << "YO ur Button is missing";
@@ -49,7 +54,7 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
         Button* prevHead = Buttons[i - 1];
         Button* curHead = Buttons[i];
         curHead->setPosition(
-            prevHead->rect.x + prevHead->rect.width - curHead->rect.width,
+            prevHead->rect.x,
             prevHead->rect.y + prevHead->rect.height
         );
         // update the Sub Buttons
@@ -57,6 +62,7 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
     }
 
 }
+
 
 void Button::hover() {
     if (!isHovered) {
@@ -97,9 +103,18 @@ void Button::insertHeadButton(vector<Button*>& Buttons, Button* button) {
     }
     Button* prev = Buttons.back();
     Buttons.push_back(button);
-    button->rect.x = prev->rect.x + prev->rect.width - button->rect.width;
+    if (button->rect.width <= prev->rect.width) {
+        button->rect.width = prev->rect.width;
+    }
+    else {
+        for (int i = 0; i < Buttons.size() - 1; i++) {
+            Buttons[i]->rect.width = button->rect.width;
+        }
+    }
+    button->rect.x = prev->rect.x;
     button->rect.y = prev->rect.y + prev->rect.height;
 }
+
 void Button::insertSubButton(Button* button) {
     Button* cur = this;
     while (cur->next) {
@@ -109,6 +124,7 @@ void Button::insertSubButton(Button* button) {
     button->head = this;
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
 }
+
 void Button::insertSubButton(Button* button, std::function<void()> function) {
     Button* cur = this;
     while (cur->next) {
@@ -120,6 +136,35 @@ void Button::insertSubButton(Button* button, std::function<void()> function) {
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
 }
 
+void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
+    if (CodeBlocks.empty()) {
+        CodeBlocks.push_back(codeblock);
+        return;
+    }
+    Button* prev = CodeBlocks.back();
+    CodeBlocks.push_back(codeblock);
+
+	if (codeblock->rect.width <= prev->rect.width) {
+		codeblock->rect.width = prev->rect.width;
+	}
+	else {
+		for (int i = 0; i < CodeBlocks.size()-1; i++) {
+			CodeBlocks[i]->rect.width = codeblock->rect.width;
+		}
+	}
+    codeblock->head = CodeBlocks[0];
+    codeblock->rect.x = prev->rect.x;
+    codeblock->rect.y = prev->rect.y + prev->rect.height;
+}
+
+void Button::insertPseudoCode(vector<Button*>& CodeBlocks, string pseudocode) {
+    std::stringstream ss(pseudocode);
+    std::string line;
+
+    while (std::getline(ss, line, '\n')) {
+        insertCodeBlock(CodeBlocks, new CodeBlock(line.c_str()));
+    }
+}
 
 void InputBox::hover() {
     OutLineColor = RED;

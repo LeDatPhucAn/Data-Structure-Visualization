@@ -20,6 +20,36 @@ void TreapUI::insert(int key, int priority) {
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
+void TreapUI::loadFromFile(){
+    const char* filter[] = {"*.txt"};
+    const char* filePath = tinyfd_openFileDialog(
+        "Select a text file", // Title
+        "", // Default path (empty = open from last used folder)
+        1, // Number of filter patterns
+        filter, // Filter patterns
+        "Text file (*.txt)", // Filter description
+        0 // Single file seclection mode
+    );
+
+    if(filePath){
+        cout << "Trying to open the file: " << filePath << endl;
+        ifstream fin(filePath);
+        if(fin.is_open()){
+            clear();
+            string line;
+            while(getline(fin, line)){
+                istringstream iss(line);
+                int key = 0, priority = 0;
+                if(iss >> key){
+                    if(iss >> priority) insert(key, priority);
+                    else insert(key);
+                }
+            }
+        }
+        else cerr << "Error: Can not open file\n";
+    }
+}
+
 void TreapUI::search(int key) {
     root = treap.search(root, key);
 }
@@ -110,7 +140,7 @@ void TreapUI::init() {
         int x = rand() % 100;
         insert(x);
     }
-    Button::insertHeadButton(Buttons, new TextBox(" Insert", 100, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(Buttons, new TextBox(" Insert", 100, UI::screenHeight * 0.7));
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
     Button* Priority = new TextBox("Priority:");
@@ -148,14 +178,19 @@ void TreapUI::init() {
         this->search(ValueInput2->getNumber());
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
+    
+    Button::insertHeadButton(Buttons, new TextBox("LoadFile"));
+    Buttons[3]->onClick = [this](){
+        this->loadFromFile();
+    };
 
     Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, {214, 102, 49, 255}, DARKGRAY));
-    Buttons[3]->onClick = [this](){
+    Buttons[4]->onClick = [this](){
         this->clear();
     };
 
     Buttons.push_back(new TextBox("Menu", 50, 50));
-    Buttons[4]->onClick = [this]() {
+    Buttons[5]->onClick = [this]() {
         this->sceneHandler->changeScene(MENU);
         };
 }

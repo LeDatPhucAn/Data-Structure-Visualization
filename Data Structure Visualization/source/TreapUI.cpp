@@ -198,7 +198,7 @@ void TreapUI::initButtons() {
 
 
     Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, { 214, 102, 49, 255 }, DARKGRAY));
-    Buttons[3]->onClick = [this]() {
+    Buttons[4]->onClick = [this]() {
         this->clear();
         };
 

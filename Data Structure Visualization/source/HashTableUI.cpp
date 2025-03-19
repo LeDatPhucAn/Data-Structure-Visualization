@@ -15,7 +15,7 @@ void HashTableUI::init() {
 void HashTableUI::initButtons() {
 
     /// Code Blocks
-    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight / 4));
 
 
     /// Buttons
@@ -66,7 +66,7 @@ void HashTableUI::updateButtonPositions() {
 
     Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
-    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4);
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
 
 }
 void HashTableUI::drawHashTable() {

@@ -28,10 +28,9 @@ public:
     virtual void setSubPosition();
 
     static void setHeadPosition(vector<Button*>& Buttons, float x, float y);
-    static void setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y);
     static void insertHeadButton(vector<Button*>& Buttons, Button* button);
-    static void insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock);
-    static void insertPseudoCode(vector<Button*>& CodeBlocks, const char* pseudocode);
+    static void insertCodeBlock(vector<Button*>& Buttons, Button* button);
+    static void insertPseudoCode(vector<Button*>& CodeBlocks, string pseudocode);
 
 
     static void drawButtons(vector<Button*>& Buttons);

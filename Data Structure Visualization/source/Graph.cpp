@@ -14,20 +14,45 @@ void Graph::calculatePositions() {
 	}
 }
 void Graph::addNode(Vector2 pos) {
-	int id = nodes.size() + 1;
-	setNumberOfVertices(id);
+	int id;
+
+	if (!deleteIds.empty()) {
+		id = *deleteIds.begin();
+		deleteIds.erase(deleteIds.begin());
+	}
+	else {
+		id = ++maxID;
+	}
+	setNumberOfVertices(nodes.size() + 1);
 	position.push_back(pos);
 	nodes.push_back(new Node(id, pos, radiusNode));
 }
 void Graph::removeNode(int id) {
-	nodes.erase(std::remove_if(nodes.begin(), nodes.end(),
-		[id](Node* node) { return node->data == id;  }), nodes.end());
 	edges.erase(std::remove_if(edges.begin(), edges.end(),
 		[id](EdgeOfGraph* edge) {
 			return edge->from->data == id ||
 				edge->to->data == id;
 		}),
 		edges.end());
+	
+	auto posIt = position.begin();
+	for (size_t i = 0; i < nodes.size(); ++i) {
+		if (nodes[i]->data == id) {
+			posIt = position.begin() + i;
+			break;
+		}
+	}
+	if (posIt != position.end()) {
+		position.erase(posIt);
+	}
+	auto iter = std::find_if(nodes.begin(), nodes.end(),
+		[id](Node* node) { return node->data == id; });
+
+	if (iter != nodes.end()) {
+		deleteIds.insert(id);
+		delete* iter;
+		nodes.erase(iter);
+	}
 }
 void Graph::addEdge(int from, int to, float weight) {
 	Node* nodeFrom = Graph::getNodeById(from);
@@ -87,5 +112,10 @@ void Graph::printGraph() {
 void Graph::printPosition() {
 	for (Vector2 pos : position) {
 		cout << pos.x << " " << pos.y << endl;
+	}
+}
+void Graph::printEdge() {
+	for (auto edge : edges) {
+		cout << edge->from->data << " " << edge->to->data << endl;
 	}
 }

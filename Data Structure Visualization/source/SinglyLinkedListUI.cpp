@@ -14,8 +14,14 @@ void SinglyLinkedListUI::drawlinkedlist() {
 void SinglyLinkedListUI::initButtons() {
     
     /// Code Blocks
-    Button::insertCodeBlock(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight / 4));
+	Button* OpenCodeBlocks = new TextBox("<");
+	OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
+    OpenCodeBlocks->rect.y = UI::screenHeight / 4;
+
+    Button::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
     Button::insertPseudoCode(CodeBlocks, PseudoCode::LLInsert);
+
+
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
 
@@ -32,8 +38,6 @@ void SinglyLinkedListUI::initButtons() {
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
-        Button::insertCodeBlock(CodeBlocks,
-            new CodeBlock("Inserting " + to_string(ValueInput->getNumber()) + " to Position: " + to_string(PosInput->getNumber())));
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PosInput)->clear();
 
@@ -70,7 +74,7 @@ void SinglyLinkedListUI::updateButtonPositions() {
 
     Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
-    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
+    Button::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 
 }
 void SinglyLinkedListUI::init() {

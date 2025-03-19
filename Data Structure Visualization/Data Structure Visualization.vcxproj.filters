@@ -43,7 +43,7 @@
     <ClCompile Include="source\HashTableUI.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\GraphUI.cpp">
+    <ClCompile Include="source\PseudoCode.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

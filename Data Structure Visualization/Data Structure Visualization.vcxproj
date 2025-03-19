@@ -28,6 +28,7 @@
     <ClCompile Include="source\HashTableUI.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
+    <ClCompile Include="source\PseudoCode.cpp" />
     <ClCompile Include="source\SceneHandler.cpp" />
     <ClCompile Include="source\SinglyLinkedList.cpp" />
     <ClCompile Include="source\SinglyLinkedListUI.cpp" />

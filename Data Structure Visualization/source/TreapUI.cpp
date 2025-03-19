@@ -51,7 +51,8 @@ void TreapUI::loadFromFile(){
 }
 
 void TreapUI::search(int key) {
-    root = treap.search(root, key);
+    TreapNode* curr = treap.getRoot();
+    
 }
 
 void TreapUI::remove(int key) {

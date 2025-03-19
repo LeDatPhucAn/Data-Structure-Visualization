@@ -4,18 +4,13 @@ int UI::screenWidth = 1600;
 int UI::screenHeight = 900;
 int UI::lastScreenWidth = 1600;
 int UI::lastScreenHeight = 900;
-
 vector<Texture2D> UI::Icons;
 vector<Texture2D> UI::Buttons;
 vector<Texture2D> UI::selectedButtons;
 UI::UI() {
-	font = LoadFont("assets/Fonts/JetBrainsMono-Regular.ttf");
-	SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
 	if (font.texture.id == 0) {
-		cout << "didnt get da font";
 		font = GetFontDefault();
 	}
-
 }
 
 void UI::drawBackground() {

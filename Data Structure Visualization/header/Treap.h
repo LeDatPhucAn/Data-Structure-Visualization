@@ -41,7 +41,6 @@ public:
 		clear(root);
 		root = nullptr;
 	}
-	TreapNode* getRoot();
 	int getSubtreeWidth(TreapNode* curr);
 	void updateSubtreeWidth(TreapNode* curr);
 	TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);

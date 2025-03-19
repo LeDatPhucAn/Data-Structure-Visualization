@@ -75,10 +75,8 @@ void SceneHandler::updateCamera() {
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
 
-        // update font size
         // update The Positions of all Scenes when there is a Window Resize
         if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
-
 
             for (int i = 1; i < 5; i++) {
                 scenes[i]->updateButtonPositions();

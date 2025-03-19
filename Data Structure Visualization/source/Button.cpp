@@ -54,7 +54,7 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
         Button* prevHead = Buttons[i - 1];
         Button* curHead = Buttons[i];
         curHead->setPosition(
-            prevHead->rect.x,
+            prevHead->rect.x + prevHead->rect.width - curHead->rect.width,
             prevHead->rect.y + prevHead->rect.height
         );
         // update the Sub Buttons
@@ -63,6 +63,26 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
 
 }
 
+void Button::setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y) {
+	if (CodeBlocks.empty()) {
+		cout << "YO ur Button is missing";
+		return;
+	}
+	// Update the first head
+	CodeBlocks[0]->setPosition(x, y);
+	CodeBlocks[0]->setSubPosition();
+	for (int i = 1; i < CodeBlocks.size(); i++) {
+		// update the group Head Buttons
+		Button* prevHead = CodeBlocks[i - 1];
+		Button* curHead = CodeBlocks[i];
+		curHead->setPosition(
+			prevHead->rect.x,
+			prevHead->rect.y + prevHead->rect.height
+		);
+		// update the Sub Buttons
+		CodeBlocks[i]->setSubPosition();
+	}
+}
 
 void Button::hover() {
     if (!isHovered) {
@@ -103,15 +123,7 @@ void Button::insertHeadButton(vector<Button*>& Buttons, Button* button) {
     }
     Button* prev = Buttons.back();
     Buttons.push_back(button);
-    if (button->rect.width <= prev->rect.width) {
-        button->rect.width = prev->rect.width;
-    }
-    else {
-        for (int i = 0; i < Buttons.size() - 1; i++) {
-            Buttons[i]->rect.width = button->rect.width;
-        }
-    }
-    button->rect.x = prev->rect.x;
+    button->rect.x = prev->rect.x + prev->rect.width - button->rect.width;
     button->rect.y = prev->rect.y + prev->rect.height;
 }
 
@@ -157,12 +169,12 @@ void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
     codeblock->rect.y = prev->rect.y + prev->rect.height;
 }
 
-void Button::insertPseudoCode(vector<Button*>& CodeBlocks, string pseudocode) {
+void Button::insertPseudoCode(vector<Button*>& CodeBlocks, const char* pseudocode) {
     std::stringstream ss(pseudocode);
     std::string line;
 
     while (std::getline(ss, line, '\n')) {
-        insertCodeBlock(CodeBlocks, new CodeBlock(line.c_str()));
+		insertCodeBlock(CodeBlocks, new CodeBlock(line.c_str()));
     }
 }
 

@@ -153,7 +153,3 @@ void Treap::updateSubtreeWidth(TreapNode* curr) {
         }
     }
 }
-
-TreapNode* Treap::getRoot(){
-    return root;
-}

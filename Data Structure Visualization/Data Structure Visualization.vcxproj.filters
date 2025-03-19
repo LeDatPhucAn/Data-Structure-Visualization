@@ -146,9 +146,6 @@
     <Filter Include="assets\Buttons">
       <UniqueIdentifier>{8736c001-7cc9-4d2d-8ffa-d21bc40c2c11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="assets\Fonts">
-      <UniqueIdentifier>{9d942c5f-8ee7-49d8-9713-2f1872b8642f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\Icons\rightarrow.png">
@@ -190,13 +187,5 @@
     <Image Include="assets\Icons\Pause.png">
       <Filter>assets\Icons</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="assets\Fonts\JetBrainsMono-BoldItalic.ttf">
-      <Filter>assets\Fonts</Filter>
-    </Font>
-    <Font Include="assets\Fonts\JetBrainsMono-Regular.ttf">
-      <Filter>assets\Fonts</Filter>
-    </Font>
   </ItemGroup>
 </Project>

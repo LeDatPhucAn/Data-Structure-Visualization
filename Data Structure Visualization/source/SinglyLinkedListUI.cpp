@@ -1,5 +1,5 @@
 #include "../header/SinglyLinkedListUI.h"
-
+#include "../header/PseudoCode.h"
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
     while (cur) {
@@ -10,24 +10,14 @@ void SinglyLinkedListUI::drawlinkedlist() {
         edge->drawArrowEdge();
     }
 }
-void SinglyLinkedListUI::deleteButtons(){
-    for (auto button : Buttons) {
-        while (button) {
-            Button* del = button;
-            button = button->next;
-            delete del;
-        }
-    }
-}
-void SinglyLinkedListUI::init() {
-    srand(time(nullptr));
-    int n = rand() % 10;
-    for (int i = 0; i < n; ++i) {
-        int x = rand() % 100;
-        int pos = rand() % 10;
-        this->insertnode(x,pos);
-    }
-    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight*3/4));
+
+void SinglyLinkedListUI::initButtons() {
+    
+    /// Code Blocks
+    Button::insertCodeBlock(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight / 4));
+    Button::insertPseudoCode(CodeBlocks, PseudoCode::LLInsert);
+    /// Buttons
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
 
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
@@ -42,9 +32,12 @@ void SinglyLinkedListUI::init() {
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
+        Button::insertCodeBlock(CodeBlocks,
+            new CodeBlock("Inserting " + to_string(ValueInput->getNumber()) + " to Position: " + to_string(PosInput->getNumber())));
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PosInput)->clear();
-        });
+
+    });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
     Button* Value1 = new TextBox("Value:");
@@ -66,25 +59,52 @@ void SinglyLinkedListUI::init() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
-    Buttons.push_back(new TextBox("Menu", 50, 50));
-    Buttons[3]->onClick = [this]() {
-        this->scenehandler->changeScene(MENU);
-        };
+
     
+
 }
+
+void SinglyLinkedListUI::updateButtonPositions() {
+
+    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+
+    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
+
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
+
+}
+void SinglyLinkedListUI::init() {
+
+    srand(time(nullptr));
+    int n = rand() % 10;
+    for (int i = 0; i < n; ++i) {
+        int x = rand() % 100;
+        int pos = rand() % 10;
+        this->insertnode(x,pos);
+    }
+
+    initButtons();
+
+}
+
 void SinglyLinkedListUI::displaySceneInCamera() {
     drawlinkedlist();
     
 }
 void SinglyLinkedListUI::displayScene() {
-    for (auto button : Buttons) {
-        button->draw();
-    }
+    SceneHandler::MenuButton->draw();
+    Button::drawButtons(Buttons);
+    Button::drawButtons(CodeBlocks);
 }
 void SinglyLinkedListUI::updateScene() {
+
     Button::isCollision = false;
-    for (auto button : Buttons) {
-        button->update();
-    }
+
+
+    SceneHandler::MenuButton->update();
+    Button::updateButtons(Buttons);
+    Button::updateButtons(CodeBlocks);
+
+    
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

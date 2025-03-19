@@ -9,7 +9,16 @@ void HashTableUI::init() {
     insertHashTable(15);
     insertHashTable(7);
     insertHashTable(12);
+    
+    initButtons();
+}
+void HashTableUI::initButtons() {
 
+    /// Code Blocks
+    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight / 4));
+
+
+    /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
@@ -49,12 +58,17 @@ void HashTableUI::init() {
         cout << "Value " << value << " found: " << (found ? "Yes" : "No") << endl;
         });
 
-    Buttons.push_back(new TextBox("Menu", 50, 50));
-    Buttons[3]->onClick = [this]() {
-        this->scenehandler->changeScene(MENU);
-    };
 }
 
+void HashTableUI::updateButtonPositions() {
+
+    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+
+    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
+
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
+
+}
 void HashTableUI::drawHashTable() {
     for (int i = 0; i < size; ++i) {
         float bucketX = startX + i * (Width + spacing);
@@ -82,21 +96,25 @@ void HashTableUI::drawHashTable() {
     }
 }
 
-void HashTableUI::displayScene() {
-    for (auto button : Buttons) {
-        button->draw();
-    }
-}
-
 void HashTableUI::displaySceneInCamera() {
     drawHashTable();
 }
 
+void HashTableUI::displayScene() {
+    SceneHandler::MenuButton->draw();
+    Button::drawButtons(Buttons);
+    Button::drawButtons(CodeBlocks);
+}
 void HashTableUI::updateScene() {
+
     Button::isCollision = false;
-    for (auto button : Buttons) {
-        button->update();
-    }
+
+
+    SceneHandler::MenuButton->update();
+    Button::updateButtons(Buttons);
+    Button::updateButtons(CodeBlocks);
+
+
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 

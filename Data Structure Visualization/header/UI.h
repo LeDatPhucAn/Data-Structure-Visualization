@@ -14,19 +14,21 @@ class UI {
 public:
 	static Font font;
 	static constexpr float spacing = 2.0f;
-	static constexpr float fontSize = 25.0f;
+	static constexpr float fontSize = 40.0f;
 	UI();
 
 	bool menuhovered = false;
 	static int screenWidth;
 	static int screenHeight;
+	static int lastScreenWidth;
+	static int lastScreenHeight;
 	static vector <Texture2D> Icons;
 	static vector <Texture2D> Buttons;
 	static vector<Texture2D> selectedButtons;
 	void initTextures();
+	
 	static void drawBackground();
 	static void drawLogo();
-	static void drawButton(float X, float Y);
 	static void drawNode(Node* node);
 	static void drawlink(int X, int Y);
 	static void drawtext2(string message, int X, int Y, Color color);

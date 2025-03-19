@@ -14,7 +14,7 @@ class UI {
 public:
 	static Font font;
 	static constexpr float spacing = 2.0f;
-	static constexpr float fontSize = 40.0f;
+	static constexpr float fontSize = 30.0f;
 	UI();
 
 	bool menuhovered = false;

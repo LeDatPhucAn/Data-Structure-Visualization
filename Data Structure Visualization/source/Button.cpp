@@ -60,9 +60,29 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
         // update the Sub Buttons
         Buttons[i]->setSubPosition();
     }
-
 }
 
+void Button::setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y) {
+    if (CodeBlocks.empty()) {
+        cout << "YO ur Button is missing";
+        return;
+    }
+
+    // Update the first head
+    CodeBlocks[0]->setPosition(x, y);
+    CodeBlocks[1]->setPosition(
+		CodeBlocks[0]->rect.x - CodeBlocks[1]->rect.width,
+        CodeBlocks[0]->rect.y);
+    for (int i = 2; i < CodeBlocks.size(); i++) {
+        // update the group Head Buttons
+        Button* curHead = CodeBlocks[i];
+        Button* prevHead = CodeBlocks[i - 1];
+        curHead->setPosition(
+			prevHead->rect.x,
+			prevHead->rect.y + prevHead->rect.height
+        );
+    }
+}
 
 void Button::hover() {
     if (!isHovered) {
@@ -141,20 +161,30 @@ void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
         CodeBlocks.push_back(codeblock);
         return;
     }
+
+    if (CodeBlocks.size() == 1) {
+        CodeBlocks.push_back(codeblock);
+        codeblock->head = CodeBlocks[0];
+		codeblock->rect.x = CodeBlocks[0]->rect.x - codeblock->rect.width;
+        codeblock->rect.y = CodeBlocks[0]->rect.y;;
+        return;
+    }
+    
     Button* prev = CodeBlocks.back();
     CodeBlocks.push_back(codeblock);
-
 	if (codeblock->rect.width <= prev->rect.width) {
 		codeblock->rect.width = prev->rect.width;
+		codeblock->rect.x = prev->rect.x;
 	}
 	else {
-		for (int i = 0; i < CodeBlocks.size()-1; i++) {
+		for (int i = 1; i < CodeBlocks.size(); i++) {
 			CodeBlocks[i]->rect.width = codeblock->rect.width;
+            CodeBlocks[i]->rect.x = CodeBlocks[0]->rect.x - codeblock->rect.width;
 		}
 	}
     codeblock->head = CodeBlocks[0];
-    codeblock->rect.x = prev->rect.x;
     codeblock->rect.y = prev->rect.y + prev->rect.height;
+	CodeBlocks[0]->rect.height += codeblock->rect.height;
 }
 
 void Button::insertPseudoCode(vector<Button*>& CodeBlocks, string pseudocode) {
@@ -349,6 +379,7 @@ void Button::update() {
         next->update();
     }
 }
+
 void TextBox::update() {
     if(!head || head->isActivated){
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
@@ -375,7 +406,9 @@ void TextBox::draw() {
     if(!head || head->isActivated){
         DrawRectangleRec(rect, FillColor);
         DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
-        DrawTextEx(UI::font, Text.c_str(), { rect.x + padding / 2,rect.y + padding / 2 }, UI::fontSize, UI::spacing, TextColor);
+
+        //Vector2 tsize = MeasureTextEx(UI::font, Text.c_str(), UI::fontSize, UI::spacing);
+        DrawTextEx(UI::font, Text.c_str(), { rect.x + padding/2, rect.y + rect.height /2 - padding/2}, UI::fontSize, UI::spacing, TextColor);
     }
     if (next) {
         next->draw();

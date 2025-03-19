@@ -43,6 +43,9 @@
     <ClCompile Include="source\HashTableUI.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\PseudoCode.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\HashTable.h">

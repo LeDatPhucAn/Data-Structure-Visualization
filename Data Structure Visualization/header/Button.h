@@ -2,6 +2,7 @@
 #include <functional>
 #include "raylib.h"
 #include "UI.h"
+#include <sstream>
 class Button {
 public:
     static const int padding;
@@ -14,7 +15,6 @@ public:
     bool isHovered;
     bool isClicked;
     std::function<void()> onClick;
-
     Button* head;
     Button* next; // Pointer to the next button
 
@@ -28,7 +28,11 @@ public:
     virtual void setSubPosition();
 
     static void setHeadPosition(vector<Button*>& Buttons, float x, float y);
+    static void setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y);
     static void insertHeadButton(vector<Button*>& Buttons, Button* button);
+    static void insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock);
+    static void insertPseudoCode(vector<Button*>& CodeBlocks, const char* pseudocode);
+
 
     static void drawButtons(vector<Button*>& Buttons);
     static void updateButtons(vector<Button*>& Buttons);
@@ -140,13 +144,13 @@ public:
     void draw() override;
     void update() override;
 };
-class CodeBox : public TextBox{
+class CodeBlock : public TextBox{
 public:
-    CodeBox(string t) : TextBox(t, GRAY, RAYWHITE, GRAY) {
+    CodeBlock(string t) : TextBox(t, GRAY, RAYWHITE, RAYWHITE) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { 0, 0, tsize.x + padding, tsize.y + padding };
     }
-    CodeBox(string t, float x, float y) : TextBox(t, x, y,GRAY, RAYWHITE, GRAY) {
+    CodeBlock(string t, float x, float y) : TextBox(t, x, y,GRAY, RAYWHITE, RAYWHITE) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { x, y, tsize.x + padding, tsize.y + padding };
     }

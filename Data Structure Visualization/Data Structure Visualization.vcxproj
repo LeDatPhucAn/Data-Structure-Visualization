@@ -46,6 +46,7 @@
     <ClInclude Include="header\LinkedListNode.h" />
     <ClInclude Include="header\Menu.h" />
     <ClInclude Include="header\Node.h" />
+    <ClInclude Include="header\PseudoCode.h" />
     <ClInclude Include="header\SceneManager.h" />
     <ClInclude Include="header\SceneHandler.h" />
     <ClInclude Include="header\SinglyLinkedList.h" />

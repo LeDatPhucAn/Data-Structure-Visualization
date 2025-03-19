@@ -99,6 +99,9 @@
     <ClInclude Include="header\Button.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="header\PseudoCode.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="source">

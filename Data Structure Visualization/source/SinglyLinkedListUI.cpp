@@ -70,7 +70,7 @@ void SinglyLinkedListUI::updateButtonPositions() {
 
     Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
-    Button::setCodeBlockPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
+    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
 
 }
 void SinglyLinkedListUI::init() {

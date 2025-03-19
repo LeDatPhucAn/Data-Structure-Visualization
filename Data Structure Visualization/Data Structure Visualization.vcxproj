@@ -69,6 +69,10 @@
     <Image Include="assets\Icons\rightarrow.png" />
     <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\Fonts\JetBrainsMono-BoldItalic.ttf" />
+    <Font Include="assets\Fonts\JetBrainsMono-Regular.ttf" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

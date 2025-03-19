@@ -120,6 +120,17 @@ void Button::insertSubButton(Button* button, std::function<void()> function) {
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
 }
 
+void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
+    if (CodeBlocks.empty()) {
+        CodeBlocks.push_back(codeblock);
+        return;
+    }
+    Button* prev = CodeBlocks.back();
+    CodeBlocks.push_back(codeblock);
+    codeblock->head = CodeBlocks[0];
+    codeblock->rect.x = prev->rect.x;
+    codeblock->rect.y = prev->rect.y + prev->rect.height;
+}
 
 void InputBox::hover() {
     OutLineColor = RED;

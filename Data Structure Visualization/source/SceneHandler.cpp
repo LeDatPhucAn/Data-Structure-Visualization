@@ -18,6 +18,7 @@ SceneHandler::SceneHandler() {
     scenes[HASHTABLE] = new HashTableUI();
     scenes[TREAP] = new TreapUI();
     scenes[GRAPH] = new GraphUI();
+
     // Initialize other scenes as needed
     changeScene(MENU);
 }

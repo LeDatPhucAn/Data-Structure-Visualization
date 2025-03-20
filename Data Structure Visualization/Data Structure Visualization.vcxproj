@@ -23,6 +23,7 @@
     <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
+    <ClCompile Include="source\GraphUI.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\HashTableUI.cpp" />
     <ClCompile Include="source\Main.cpp" />
@@ -159,6 +160,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

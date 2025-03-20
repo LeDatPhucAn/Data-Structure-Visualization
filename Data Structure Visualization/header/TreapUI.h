@@ -4,6 +4,10 @@
 #include "Treap.h" 
 #include "Button.h"
 #include "UI.h"
+#include "tinyfiledialogs.h"
+#include <fstream>
+#include <string>
+#include <sstream>
 
 class TreapUI : public SceneManager {
 private:
@@ -21,6 +25,7 @@ private:
     void deleteButtons();
 public:
     void insert(int key, int priority = rand());
+    void loadFromFile();
     void remove(int key);
     void search(int key);
     void clear();

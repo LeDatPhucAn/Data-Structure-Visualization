@@ -67,7 +67,10 @@ void Button::setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y)
         cout << "YO ur Button is missing";
         return;
     }
-
+	else if (CodeBlocks.size() == 1) {
+		CodeBlocks[0]->setPosition(x, y);
+		return;
+	}
     // Update the first head
     CodeBlocks[0]->setPosition(x, y);
     CodeBlocks[1]->setPosition(
@@ -162,13 +165,13 @@ void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
         return;
     }
 
-    if (CodeBlocks.size() == 1) {
+    /*if (CodeBlocks.size() == 1) {
         CodeBlocks.push_back(codeblock);
         codeblock->head = CodeBlocks[0];
 		codeblock->rect.x = CodeBlocks[0]->rect.x - codeblock->rect.width;
         codeblock->rect.y = CodeBlocks[0]->rect.y;;
         return;
-    }
+    }*/
     
     Button* prev = CodeBlocks.back();
     CodeBlocks.push_back(codeblock);
@@ -188,6 +191,18 @@ void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
 }
 
 void Button::insertPseudoCode(vector<Button*>& CodeBlocks, string pseudocode) {
+    if (CodeBlocks.size() > 1) {
+        Button* head = CodeBlocks[0];
+		for (int i = 1; i < CodeBlocks.size(); i++) {
+			delete CodeBlocks[i];
+		}
+		CodeBlocks.clear();
+		CodeBlocks.push_back(head);
+        head->rect.height = 0;
+	}
+	else if (CodeBlocks.empty()) {
+		return;
+	}
     std::stringstream ss(pseudocode);
     std::string line;
 

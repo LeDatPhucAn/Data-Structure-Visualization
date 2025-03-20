@@ -17,9 +17,9 @@ void SinglyLinkedListUI::initButtons() {
 	Button* OpenCodeBlocks = new TextBox("<");
 	OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
     OpenCodeBlocks->rect.y = UI::screenHeight / 4;
-
+    OpenCodeBlocks->rect.height = 0;
+    OpenCodeBlocks->isActivated = true;
     Button::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
-    Button::insertPseudoCode(CodeBlocks, PseudoCode::LLInsert);
 
 
     /// Buttons
@@ -38,9 +38,10 @@ void SinglyLinkedListUI::initButtons() {
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
+		if (PosInput->getNumber() == 1) Button::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertHead);
+		else Button::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertPos);
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PosInput)->clear();
-
     });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
@@ -51,6 +52,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::LLRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
 
@@ -60,6 +62,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[2]->insertSubButton(ValueInput2);
     Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
         this->search(ValueInput2->getNumber());
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::LLSearch);
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 

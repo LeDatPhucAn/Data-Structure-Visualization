@@ -19,9 +19,9 @@ void HashTableUI::initButtons() {
     Button* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
     OpenCodeBlocks->rect.y = UI::screenHeight / 4;
-
+    OpenCodeBlocks->rect.height = 0;
+    OpenCodeBlocks->isActivated = true;
     Button::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
-    Button::insertPseudoCode(CodeBlocks, PseudoCode::HashTableInsert);
 
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
@@ -36,6 +36,8 @@ void HashTableUI::initButtons() {
         if (value >= 0) {
             insertHashTable(value);
         }
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::HashTableInsert);
+
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
@@ -49,6 +51,8 @@ void HashTableUI::initButtons() {
         if (value >= 0) {
             deleteHashTable(value);
         }
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::HashTableRemove);
+
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Search"));
@@ -61,6 +65,8 @@ void HashTableUI::initButtons() {
         int value = ValueInput2->getNumber();
         bool found = findHashTable(value);
         cout << "Value " << value << " found: " << (found ? "Yes" : "No") << endl;
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::HashTableSearch);
+
         });
 }
 

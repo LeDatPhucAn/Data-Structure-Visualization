@@ -1,5 +1,6 @@
 #include "../header/SinglyLinkedListUI.h"
 #include "../header/PseudoCode.h"
+#include "../header/Animation.h"
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
     while (cur) {
@@ -24,7 +25,7 @@ void SinglyLinkedListUI::initButtons() {
 
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
-
+	Buttons[0]->animation = new ButtonScaleAnimation(Buttons[0], 0.5);
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
     Button* Pos = new TextBox("Pos:");

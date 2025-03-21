@@ -34,11 +34,12 @@ public:
 	static void drawlink(int X, int Y);
 	static void drawtext2(string message, int X, int Y, Color color);
 
-	static void interpolateColors(Color& color1, Color& color2, float t) {
+	static Color interpolateColors(Color& color1, Color& color2, float t) {
 		color1.r = (unsigned char)(color1.r + (color2.r - color1.r) * t);
 		color1.g = (unsigned char)(color1.g + (color2.g - color1.g) * t);
 		color1.b = (unsigned char)(color1.b + (color2.b - color1.b) * t);
 		color1.a = (unsigned char)(color1.a + (color2.a - color1.a) * t);
+		return color1;
 	}
 	static void darkenColor(Color& color, int amount) {
 		color.r = (unsigned char)(color.r - amount < 0 ? 0 : color.r - amount);

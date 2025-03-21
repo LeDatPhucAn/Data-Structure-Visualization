@@ -98,7 +98,7 @@ void SceneHandler::updateCurrentScene() {
 
             if (MenuButton->rect.x < finalPositionX)
             {
-                MenuButton->rect.x = EaseElasticIn(currentTime, UI::screenWidth / 100, finalPositionX, duration);
+                MenuButton->rect.x = EaseElasticIn(currentTime, UI::screenWidth / 100, finalPositionX-UI::screenWidth/100, duration);
 			}
 			currentTime++;
         }

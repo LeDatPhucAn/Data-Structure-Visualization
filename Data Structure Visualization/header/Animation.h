@@ -9,11 +9,11 @@ protected:
     bool completed;
 
 public:
+	Animation() : duration(0), elapsed(0), completed(false) {};
     Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
     virtual ~Animation() = default;
 
-    virtual void update(float deltaTime);
-    virtual void draw() = 0;
+    virtual void update(float deltaTime) = 0;
     bool isCompleted() {
         return completed;
     }
@@ -25,42 +25,28 @@ public:
         return elapsed;
     }
     
-
-    // Easing functions for smooth animations
-    static float easeLinear(float t);
-    static float easeInOut(float t);
-    static float easeOut(float t);
-    static float easeIn(float t);
-    static float easeBounce(float t);
 };
-class ButtonColorAnimation : public Animation {
+class ButtonScaleAnimation : public Animation {
 private:
-    Button* button;          // Pointer to the button being animated
-    Color startColor;        // Starting color
-    Color endColor;          // Target color
-
+    Button* button;
+    float startWidth, startHeight;
+    float endWidth, endHeight;
 public:
-    //input button, the resulting color and duration
-    ButtonColorAnimation(Button* btn, Color end, float duration)
-        : Animation(duration), button(btn), endColor(end) {
-        startColor = button->FillColor; // Capture the current color as the start
+    ButtonScaleAnimation(Button* btn, float duration)
+        : Animation(duration), button(btn) {
+        startWidth = 0;
+        startHeight = 0;
+        endWidth = btn->rect.width;
+        endHeight = btn->rect.height;
     }
-
     void update(float deltaTime) override {
         if (completed) return;
         elapsed += deltaTime;
         float t = elapsed / duration;
-        if (t >= 1.0f) {
-            t = 1.0f;
-            completed = true;
-        }
-		float easedT = EaseBackIn(t, 0.0f, 1.0f, duration);
-        //float easedT = Animation::easeInOut(t); // Use an easing function for smoothness
-        UI::interpolateColors(startColor, endColor, easedT); // Interpolate color
-    }
+        if (t >= 1.0f) { t = 1.0f; completed = true; }
+        EaseCubicIn(elapsed, startWidth, button->rect.width-startWidth, duration);
+        EaseCubicIn(elapsed, startHeight, button->rect.height-startHeight, duration);
 
-    void draw() override {
-        // No additional drawing needed; the button’s draw() handles rendering
     }
 };
 class AnimatedNode : public Node {
@@ -73,7 +59,6 @@ private:
 public:
     AnimatedNode(int val, Vector2 pos, float r) : Node(val,pos,r) {};
 
-    void draw();
     void setPosition(Vector2 pos);
     void setHighlighted(bool highlight);
 
@@ -94,7 +79,6 @@ public:
     AnimatedEdge(AnimatedNode* from, AnimatedNode* to,
         Color color = GRAY, bool directed = true);
 
-    void draw();
     void setHighlighted(bool highlight);
 
     AnimatedNode* getSource();
@@ -161,7 +145,6 @@ private:
 public:
     NodeMoveAnimation(AnimatedNode* node, Vector2 end, float duration) : Animation(duration), Node(node), endPos(end) {};
     void update(float deltaTime) override;
-    void draw() override;
 };
 
 class NodeHighlightAnimation : public Animation {
@@ -172,7 +155,6 @@ private:
 public:
     NodeHighlightAnimation(AnimatedNode* node, Color highlightColor, float duration);
     void update(float deltaTime) override;
-    void draw() override;
 };
 
 class EdgeHighlightAnimation : public Animation {
@@ -183,5 +165,4 @@ private:
 public:
     EdgeHighlightAnimation(AnimatedEdge* edge, Color highlightColor, float duration);
     void update(float deltaTime) override;
-    void draw() override;
 };

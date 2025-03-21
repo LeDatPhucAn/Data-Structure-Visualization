@@ -1,10 +1,12 @@
 #include "../header/Button.h"
+#include "../header/Animation.h"
 bool Button::isCollision = false;
 const int Button::padding = UI::fontSize;
 
 void Button::deleteButtons(vector<Button*>& Buttons) {
     for (auto button : Buttons) {
         while (button) {
+            if (button->animation)delete button->animation;
             Button* del = button;
             button = button->next;
             delete del;
@@ -21,6 +23,8 @@ void Button::drawButtons(vector<Button*>& Buttons) {
 void Button::updateButtons(vector<Button*>& Buttons) {
     for (auto button : Buttons) {
         button->update();
+        if (button->animation)button->animation->update(GetFrameTime());
+
     }
 }
 
@@ -164,14 +168,6 @@ void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
         CodeBlocks.push_back(codeblock);
         return;
     }
-
-    /*if (CodeBlocks.size() == 1) {
-        CodeBlocks.push_back(codeblock);
-        codeblock->head = CodeBlocks[0];
-		codeblock->rect.x = CodeBlocks[0]->rect.x - codeblock->rect.width;
-        codeblock->rect.y = CodeBlocks[0]->rect.y;;
-        return;
-    }*/
     
     Button* prev = CodeBlocks.back();
     CodeBlocks.push_back(codeblock);

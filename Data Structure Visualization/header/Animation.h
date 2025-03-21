@@ -1,6 +1,7 @@
 #pragma once
 #include "reasings.h"
 #include "SceneManager.h"
+#include "Button.h"
 class Animation {
 protected:
     float duration;
@@ -8,7 +9,7 @@ protected:
     bool completed;
 
 public:
-    Animation(float duration);
+    Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
     virtual ~Animation() = default;
 
     virtual void update(float deltaTime);
@@ -31,6 +32,36 @@ public:
     static float easeOut(float t);
     static float easeIn(float t);
     static float easeBounce(float t);
+};
+class ButtonColorAnimation : public Animation {
+private:
+    Button* button;          // Pointer to the button being animated
+    Color startColor;        // Starting color
+    Color endColor;          // Target color
+
+public:
+    //input button, the resulting color and duration
+    ButtonColorAnimation(Button* btn, Color end, float duration)
+        : Animation(duration), button(btn), endColor(end) {
+        startColor = button->FillColor; // Capture the current color as the start
+    }
+
+    void update(float deltaTime) override {
+        if (completed) return;
+        elapsed += deltaTime;
+        float t = elapsed / duration;
+        if (t >= 1.0f) {
+            t = 1.0f;
+            completed = true;
+        }
+		float easedT = EaseBackIn(t, 0.0f, 1.0f, duration);
+        //float easedT = Animation::easeInOut(t); // Use an easing function for smoothness
+        UI::interpolateColors(startColor, endColor, easedT); // Interpolate color
+    }
+
+    void draw() override {
+        // No additional drawing needed; the button’s draw() handles rendering
+    }
 };
 class AnimatedNode : public Node {
 private:

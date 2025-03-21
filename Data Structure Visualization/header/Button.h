@@ -146,11 +146,12 @@ public:
 };
 class CodeBlock : public TextBox{
 public:
-    CodeBlock(string t) : TextBox(t, GRAY, RAYWHITE, RAYWHITE) {
+    static constexpr Color CodeColor = {232,232,232,180};
+    CodeBlock(string t) : TextBox(t, DARKGRAY, CodeColor, CodeColor) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { 0, 0, tsize.x + padding, tsize.y + padding };
     }
-    CodeBlock(string t, float x, float y) : TextBox(t, x, y,GRAY, RAYWHITE, RAYWHITE) {
+    CodeBlock(string t, float x, float y) : TextBox(t, x, y, DARKGRAY, CodeColor, CodeColor) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { x, y, tsize.x + padding, tsize.y + padding };
     }

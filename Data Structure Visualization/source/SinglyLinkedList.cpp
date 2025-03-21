@@ -73,11 +73,14 @@ void LinkedList::deletelist() {
         head = head->next;
         delete del;
     }
+    cout << "DELETED\n";
+    head = nullptr;
 }
 void LinkedList::deleteEdges() {
     for (auto edge : Edges) {
         delete edge;
     }
+    Edges.clear();
 }
 void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
@@ -92,10 +95,10 @@ void LinkedList::insertnode(int x, int pos) {
         return;
     }
     LLNode* cur = head;
-    for (int i = 1; i < pos - 1 && cur; i++) {
+    for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         cur = cur->next;
     }
-    if (!cur) return;
+
     LLNode* newnode = new LLNode(x,cur->position.x + 200, cur->position.y);
     newnode->next = cur->next;
     Edge::addEdge(Edges, newnode, cur->next);

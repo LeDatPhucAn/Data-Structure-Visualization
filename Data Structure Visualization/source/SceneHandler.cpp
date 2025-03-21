@@ -1,5 +1,5 @@
 #include "../header/SceneHandler.h"
-
+#include "../header/reasings.h"
 Button* SceneHandler::MenuButton = nullptr;
 
 SceneHandler::SceneHandler() {
@@ -39,6 +39,7 @@ void SceneHandler::changeScene(Scene newScene) {
     if (currentSceneObject) {
         currentSceneObject->CurrentScene = newScene;
     }
+    currentTime = 0;
 }
 
 void SceneHandler::updateCamera() {
@@ -92,7 +93,14 @@ void SceneHandler::updateCurrentScene() {
         if (getCurrentScene() != MENU) {
 
             updateCamera();
-        
+            int duration =  150;
+            float finalPositionX = 500;
+
+            if (MenuButton->rect.x < finalPositionX)
+            {
+                MenuButton->rect.x = EaseElasticIn(currentTime, UI::screenWidth / 100, finalPositionX, duration);
+			}
+			currentTime++;
         }
 
         currentSceneObject->updateScene();
@@ -124,9 +132,11 @@ void SceneHandler::displayCurrentScene() {
             UI::drawBackground();
 
             UI::drawLogo();
+
+            
         }
 
-
+        
         // display permanent objects
         currentSceneObject->displayScene();
     }

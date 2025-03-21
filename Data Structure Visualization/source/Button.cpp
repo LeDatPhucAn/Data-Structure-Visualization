@@ -237,7 +237,6 @@ void InputBox::update() {
     if (!head || head->isActivated) {
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
             }
@@ -298,7 +297,6 @@ void NumberInputBox::update() {
     if (!head || head->isActivated) {
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
             }

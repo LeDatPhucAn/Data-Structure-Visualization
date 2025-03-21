@@ -66,7 +66,18 @@ void SinglyLinkedListUI::initButtons() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
-
+    Button::insertHeadButton(Buttons, new TextBox("Random"));
+    Buttons[3]->onClick = [this]() {
+        this->deletelist();
+        this->deleteEdges();
+        srand(time(nullptr));
+        int n = rand() % 10;
+        for (int i = 0; i < n; ++i) {
+            int x = rand() % 100;
+            int pos = rand() % 10;
+            this->insertnode(x, pos);
+        }
+    };
     
 
 }

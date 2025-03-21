@@ -15,7 +15,6 @@ private:
         0.0f,  
         0.0f
     };
-    int currentTime = 0;
 
 protected:
     SceneManager* currentSceneObject;

@@ -11,7 +11,19 @@ void SinglyLinkedListUI::drawlinkedlist() {
         edge->drawArrowEdge();
     }
 }
-
+void SinglyLinkedListUI::resetAnimations() {
+	SceneHandler::MenuButton->animation->reset();
+	for (auto& button : Buttons) {
+		if (button->animation) {
+			button->animation->reset();
+		}
+	}
+	for (auto& button : CodeBlocks) {
+		if (button->animation) {
+			button->animation->reset();
+		}
+	}
+}
 void SinglyLinkedListUI::initButtons() {
     
     /// Code Blocks
@@ -25,7 +37,7 @@ void SinglyLinkedListUI::initButtons() {
 
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
-	Buttons[0]->animation = new ButtonScaleAnimation(Buttons[0], 0.5);
+	Buttons[0]->animation = new ButtonMoveYAnimation(Buttons[0], 0.5);
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
     Button* Pos = new TextBox("Pos:");
@@ -46,6 +58,8 @@ void SinglyLinkedListUI::initButtons() {
     });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
+    Buttons[1]->animation = new ButtonMoveXAnimation(Buttons[1], 0.5);
+
     Button* Value1 = new TextBox("Value:");
     Button* ValueInput1 = new NumberInputBox(3);
     Button* Enter1 = new TextBox(">");
@@ -58,6 +72,7 @@ void SinglyLinkedListUI::initButtons() {
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Search"));
+    Buttons[2]->animation = new ButtonMoveXAnimation(Buttons[2], 0.5);
     Buttons[2]->insertSubButton(new TextBox("Value:"));
     Button* ValueInput2 = new NumberInputBox(3);
     Buttons[2]->insertSubButton(ValueInput2);
@@ -68,6 +83,8 @@ void SinglyLinkedListUI::initButtons() {
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Random"));
+    Buttons[3]->animation = new ButtonMoveXAnimation(Buttons[3], 0.5);
+
     Buttons[3]->onClick = [this]() {
         this->deletelist();
         this->deleteEdges();
@@ -121,6 +138,7 @@ void SinglyLinkedListUI::updateScene() {
 
 
     SceneHandler::MenuButton->update();
+	SceneHandler::MenuButton->animation->update(GetFrameTime());
     Button::updateButtons(Buttons);
     Button::updateButtons(CodeBlocks);
 

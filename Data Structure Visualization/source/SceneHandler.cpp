@@ -1,5 +1,6 @@
 #include "../header/SceneHandler.h"
 #include "../header/reasings.h"
+#include "../header/Animation.h"
 Button* SceneHandler::MenuButton = nullptr;
 
 SceneHandler::SceneHandler() {
@@ -9,7 +10,7 @@ SceneHandler::SceneHandler() {
     MenuButton->onClick = [this]() {
         this->changeScene(MENU);
         };
-
+	MenuButton->animation = new ButtonMoveXAnimation(MenuButton, 0.5);
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
@@ -35,11 +36,10 @@ int SceneHandler::getCurrentScene() {
 }
 
 void SceneHandler::changeScene(Scene newScene) {
+    if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
-    if (currentSceneObject) {
-        currentSceneObject->CurrentScene = newScene;
-    }
-    currentTime = 0;
+    currentSceneObject->CurrentScene = newScene;
+    
 }
 
 void SceneHandler::updateCamera() {
@@ -93,14 +93,6 @@ void SceneHandler::updateCurrentScene() {
         if (getCurrentScene() != MENU) {
 
             updateCamera();
-            int duration =  150;
-            float finalPositionX = 500;
-
-            if (MenuButton->rect.x < finalPositionX)
-            {
-                MenuButton->rect.x = EaseElasticIn(currentTime, UI::screenWidth / 100, finalPositionX-UI::screenWidth/100, duration);
-			}
-			currentTime++;
         }
 
         currentSceneObject->updateScene();

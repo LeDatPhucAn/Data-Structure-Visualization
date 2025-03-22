@@ -16,6 +16,7 @@ public:
 		Edge(f, t) {}
 	EdgeOfGraph(int weight, int th, Node* f, Node* t) : weight(weight), 
 		Edge(th, f, t) {}
+	void drawEdgeOfGraph();
 	void setWeight(float weight) {
 		weight = weight;
 	}
@@ -46,6 +47,7 @@ public:
 	void removeNode(int id);
 	void addEdge(int from, int to, float weight = -1);
 	void removeEdge(int from, int to);
+	void clear();
 	Node* getNodeById(int id);
 	void printGraph();
 	void printPosition();

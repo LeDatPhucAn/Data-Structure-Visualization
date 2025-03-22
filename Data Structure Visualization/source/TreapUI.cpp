@@ -151,9 +151,9 @@ void TreapUI::initButtons() {
     Button* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
     OpenCodeBlocks->rect.y = UI::screenHeight / 4;
-
+    OpenCodeBlocks->rect.height = 0;
+    OpenCodeBlocks->isActivated = true;
     Button::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
-    Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
 
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
@@ -171,6 +171,7 @@ void TreapUI::initButtons() {
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PriorityInput]() {
         if (PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
         else this->insert(ValueInput->getNumber());
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PriorityInput)->clear();
         });
@@ -183,6 +184,7 @@ void TreapUI::initButtons() {
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
 
@@ -192,6 +194,7 @@ void TreapUI::initButtons() {
     Buttons[2]->insertSubButton(ValueInput2);
     Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
         this->search(ValueInput2->getNumber());
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
     

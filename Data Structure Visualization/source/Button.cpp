@@ -1,10 +1,12 @@
 #include "../header/Button.h"
+#include "../header/Animation.h"
 bool Button::isCollision = false;
 const int Button::padding = UI::fontSize;
 
 void Button::deleteButtons(vector<Button*>& Buttons) {
     for (auto button : Buttons) {
         while (button) {
+            if (button->animation)delete button->animation;
             Button* del = button;
             button = button->next;
             delete del;
@@ -21,6 +23,8 @@ void Button::drawButtons(vector<Button*>& Buttons) {
 void Button::updateButtons(vector<Button*>& Buttons) {
     for (auto button : Buttons) {
         button->update();
+        if (button->animation)button->animation->update(GetFrameTime());
+
     }
 }
 
@@ -34,6 +38,7 @@ void Button::setSubPosition() {
     Button* cur = this->next;
     while (cur) {
         cur->setPosition(prev->rect.x + prev->rect.width + padding / 2, prev->rect.y);
+		if (cur->animation)cur->animation->HandleResize();
         prev = cur;
         cur = cur->next;
     }
@@ -48,7 +53,7 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
     // Update the first head
     Buttons[0]->setPosition(x, y);
     Buttons[0]->setSubPosition();
-
+	if (Buttons[0]->animation)Buttons[0]->animation->HandleResize();
     for (int i = 1; i < Buttons.size(); i++) {
         // update the group Head Buttons
         Button* prevHead = Buttons[i - 1];
@@ -57,6 +62,7 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
             prevHead->rect.x,
             prevHead->rect.y + prevHead->rect.height
         );
+		if (curHead->animation)curHead->animation->HandleResize();
         // update the Sub Buttons
         Buttons[i]->setSubPosition();
     }
@@ -67,7 +73,10 @@ void Button::setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y)
         cout << "YO ur Button is missing";
         return;
     }
-
+	else if (CodeBlocks.size() == 1) {
+		CodeBlocks[0]->setPosition(x, y);
+		return;
+	}
     // Update the first head
     CodeBlocks[0]->setPosition(x, y);
     CodeBlocks[1]->setPosition(
@@ -161,14 +170,6 @@ void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
         CodeBlocks.push_back(codeblock);
         return;
     }
-
-    if (CodeBlocks.size() == 1) {
-        CodeBlocks.push_back(codeblock);
-        codeblock->head = CodeBlocks[0];
-		codeblock->rect.x = CodeBlocks[0]->rect.x - codeblock->rect.width;
-        codeblock->rect.y = CodeBlocks[0]->rect.y;;
-        return;
-    }
     
     Button* prev = CodeBlocks.back();
     CodeBlocks.push_back(codeblock);
@@ -188,6 +189,18 @@ void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
 }
 
 void Button::insertPseudoCode(vector<Button*>& CodeBlocks, string pseudocode) {
+    if (CodeBlocks.size() > 1) {
+        Button* head = CodeBlocks[0];
+		for (int i = 1; i < CodeBlocks.size(); i++) {
+			delete CodeBlocks[i];
+		}
+		CodeBlocks.clear();
+		CodeBlocks.push_back(head);
+        head->rect.height = 0;
+	}
+	else if (CodeBlocks.empty()) {
+		return;
+	}
     std::stringstream ss(pseudocode);
     std::string line;
 
@@ -222,7 +235,6 @@ void InputBox::update() {
     if (!head || head->isActivated) {
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
             }
@@ -283,7 +295,6 @@ void NumberInputBox::update() {
     if (!head || head->isActivated) {
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
             }

@@ -19,6 +19,7 @@ public:
     void initButtons() override;
     void updateButtonPositions() override {};
     void updateScene() override;
+    void resetAnimations() {};
 
     void displayScene() override;
     void displaySceneInCamera() override;

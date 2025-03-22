@@ -1,8 +1,29 @@
 #include "../header/Animation.h"
+void ButtonMoveAnimation::HandleResize() {
+	endX = button->rect.x;
+	endY = button->rect.y;
+}
 
 
-void Animation::AnimateSprite(float X, float Y, Texture2D texture, int numframes, float frameindex) {
-	//float frameX = frameindex * texture.width / numframes;
-	Rectangle frameRec = { 0.0f, 0.0f, (float) frameindex * texture.width / numframes, (float)texture.height };
-	DrawTextureRec(texture, frameRec, { X, Y }, WHITE);
+void ButtonMoveAnimation::update(float deltaTime) {
+    if (completed) return;
+    elapsed += deltaTime;
+    float t = elapsed / duration;
+    if (t >= 1.0f) { t = 1.0f; completed = true; }
+    button->rect.x = EaseSineOut(elapsed, startX, endX - startX, duration);
+    button->rect.y = EaseSineOut(elapsed, startY, endY - startY, duration);
+}
+void ButtonMoveXAnimation::update(float deltaTime)  {
+    if (completed) return;
+    elapsed += deltaTime;
+    float t = elapsed / duration;
+    if (t >= 1.0f) { t = 1.0f; completed = true; }
+    button->rect.x = EaseBounceOut(elapsed, startX, endX - startX, duration);
+}
+void ButtonMoveYAnimation::update(float deltaTime)  {
+    if (completed) return;
+    elapsed += deltaTime;
+    float t = elapsed / duration;
+    if (t >= 1.0f) { t = 1.0f; completed = true; }
+    button->rect.y = EaseBounceOut(elapsed, startY, endY - startY, duration);
 }

@@ -75,7 +75,6 @@ void LinkedList::deletelist() {
         delete del->animation;
         delete del;
     }
-    cout << "DELETED\n";
     head = nullptr;
 }
 void LinkedList::deleteEdges() {

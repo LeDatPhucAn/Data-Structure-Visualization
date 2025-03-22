@@ -85,7 +85,7 @@ void SinglyLinkedListUI::initButtons() {
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Random"));
-    Buttons[3]->animation = new ButtonMoveXAnimation(Buttons[3], 0.5);
+    Buttons[3]->animation = new ButtonMoveYAnimation(Buttons[3], 2000, 0.7);
 
     Buttons[3]->onClick = [this]() {
         this->deletelist();
@@ -139,7 +139,11 @@ void SinglyLinkedListUI::updateScene() {
 
     Button::isCollision = false;
 
-
+    LLNode* cur = this->head;
+    while (cur) {
+        if (cur->animation)cur->animation->update(GetFrameTime());
+        cur = cur->next;
+    }
     SceneHandler::MenuButton->update();
 	SceneHandler::MenuButton->animation->update(GetFrameTime());
     Button::updateButtons(Buttons);

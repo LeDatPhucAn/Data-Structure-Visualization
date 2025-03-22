@@ -26,7 +26,6 @@ public:
     bool search(int x);
     void init() override;
     void initButtons() override;
-	void resetAnimations() override;
     void updateButtonPositions() override;
     void displayScene() override;
     void displaySceneInCamera() override;

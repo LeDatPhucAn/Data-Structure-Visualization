@@ -19,7 +19,10 @@ int main()
 	UI ui;
 	ui.initTextures();
 	SceneHandler scenehandler;
-	
+	Node* node1 = new Node(293, { 250, 250 }, 50);
+	Node* node2 = new Node(201, { 400, 250 }, 50);
+
+	Edge* edge1 = new Edge(node1, node2);
 	/// main functions
 	while (!WindowShouldClose()) {
 
@@ -40,8 +43,9 @@ int main()
         ClearBackground(RAYWHITE);
 
 		//Test
-		
-
+		/*UI::drawNode(node1);
+		UI::drawNode(node2);
+		edge1->drawArrowEdge();*/
 
 		scenehandler.displayCurrentScene();
         EndDrawing();

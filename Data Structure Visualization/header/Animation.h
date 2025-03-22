@@ -13,6 +13,7 @@ public:
     Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
     virtual ~Animation() = default;
 
+    virtual void Animate(float deltaTime);
     virtual void HandleResize() = 0;
     virtual void update(float deltaTime) = 0;
     bool isCompleted() {
@@ -90,9 +91,24 @@ public:
 class ButtonMoveYAnimation : public ButtonMoveAnimation {
 public:
     ButtonMoveYAnimation(Button* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
-    ButtonMoveYAnimation(Button* btn, float sX, float duration) : ButtonMoveAnimation(btn, sX, 0, duration) {};
+    ButtonMoveYAnimation(Button* btn, float sY, float duration) : ButtonMoveAnimation(btn, 0, sY, duration) {};
     void update(float deltaTime) override;
 };
+
+class NodeInitialAnimation : public Animation {
+private:
+	Node* node;
+	float startRadius;
+	float endRadius;
+public:
+	NodeInitialAnimation(Node* n, float duration) : node(n), Animation(duration) {
+		startRadius = 0;
+        endRadius = node->radius;
+    };
+    void update(float deltaTime) override;
+    void HandleResize() {};
+};
+
 class AnimatedNode : public Node {
 private:
     Color color;

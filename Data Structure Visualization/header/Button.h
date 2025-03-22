@@ -21,12 +21,12 @@ public:
     Button* next; // Pointer to the next button
 
     Button(Rectangle r) : rect(r), TextColor(WHITE), FillColor(BLUE), OutLineColor(DARKGRAY),
-        //hoverAnimation(nullptr), unhoverAnimation(nullptr),
+        animation(nullptr),
         isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {
     };
 
     Button(Rectangle r, Color tc, Color fc, Color olc) : rect(r), TextColor(tc), FillColor(fc), OutLineColor(olc),
-        //hoverAnimation(nullptr), unhoverAnimation(nullptr),
+        animation(nullptr),
         isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {
     };
 

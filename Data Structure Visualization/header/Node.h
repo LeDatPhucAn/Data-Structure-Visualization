@@ -3,12 +3,13 @@
 #include <raylib.h>
 
 using namespace std;
-
+class Animation;
 class Node {
 public:
     int data;
     Vector2 position;
-    int radius;
-    Node(int value,Vector2 pos, int r): data(value), position(pos), radius(r) {}
+    Animation* animation;
+    float radius;
+    Node(int value,Vector2 pos, float r): data(value), position(pos), radius(r), animation(nullptr) {}
     virtual ~Node() {}
 };

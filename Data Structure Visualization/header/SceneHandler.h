@@ -15,6 +15,7 @@ private:
         0.0f,  
         0.0f
     };
+
 protected:
     SceneManager* currentSceneObject;
 public:

@@ -1,22 +1,28 @@
-
 #include "../header/UI.h"
 #include "../header/HashTableUI.h"
 #include "../header/SceneHandler.h"
 #include "../header/Button.h"
+#include "../header/PseudoCode.h"
 
 void HashTableUI::init() {
     insertHashTable(10); // example
     insertHashTable(15);
     insertHashTable(7);
     insertHashTable(12);
-    
+
     initButtons();
 }
+
 void HashTableUI::initButtons() {
 
     /// Code Blocks
-    Button::insertHeadButton(CodeBlocks, new TextBox("Code Blocks:", UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4));
 
+    Button* OpenCodeBlocks = new TextBox("<");
+    OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
+    OpenCodeBlocks->rect.y = UI::screenHeight / 4;
+    OpenCodeBlocks->rect.height = 0;
+    OpenCodeBlocks->isActivated = true;
+    Button::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
 
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
@@ -31,6 +37,8 @@ void HashTableUI::initButtons() {
         if (value >= 0) {
             insertHashTable(value);
         }
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::HashTableInsert);
+
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Remove"));
@@ -44,6 +52,8 @@ void HashTableUI::initButtons() {
         if (value >= 0) {
             deleteHashTable(value);
         }
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::HashTableRemove);
+
         });
 
     Button::insertHeadButton(Buttons, new TextBox("Search"));
@@ -56,19 +66,19 @@ void HashTableUI::initButtons() {
         int value = ValueInput2->getNumber();
         bool found = findHashTable(value);
         cout << "Value " << value << " found: " << (found ? "Yes" : "No") << endl;
-        });
+        Button::insertPseudoCode(CodeBlocks, PseudoCode::HashTableSearch);
 
+        });
 }
 
 void HashTableUI::updateButtonPositions() {
-
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
 
     Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
-    Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight * 3 / 4);
-
+    Button::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
+
 void HashTableUI::drawHashTable() {
     for (int i = 0; i < size; ++i) {
         float bucketX = startX + i * (Width + spacing);
@@ -105,16 +115,13 @@ void HashTableUI::displayScene() {
     Button::drawButtons(Buttons);
     Button::drawButtons(CodeBlocks);
 }
+
 void HashTableUI::updateScene() {
-
     Button::isCollision = false;
-
 
     SceneHandler::MenuButton->update();
     Button::updateButtons(Buttons);
     Button::updateButtons(CodeBlocks);
 
-
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
-

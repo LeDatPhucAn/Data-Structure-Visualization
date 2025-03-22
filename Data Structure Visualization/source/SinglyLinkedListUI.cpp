@@ -84,13 +84,19 @@ void SinglyLinkedListUI::initButtons() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
-    Button::insertHeadButton(Buttons, new TextBox("Random"));
-    Buttons[3]->animation = new ButtonMoveYAnimation(Buttons[3], 2000, 0.7);
-
+    Button::insertHeadButton(Buttons, new TextBox("Clear"));
+    Buttons[3]->animation = new ButtonMoveXAnimation(Buttons[3], 0.5);
     Buttons[3]->onClick = [this]() {
         this->deletelist();
         this->deleteEdges();
-        srand(time(nullptr));
+        };
+
+    Button::insertHeadButton(Buttons, new TextBox("Random"));
+    Buttons[4]->animation = new ButtonMoveYAnimation(Buttons[4], 2000, 0.7);
+
+    Buttons[4]->onClick = [this]() {
+        this->deletelist();
+        this->deleteEdges();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;

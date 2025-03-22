@@ -1,6 +1,6 @@
 #include "../header/SinglyLinkedList.h"
 #include "../header/Edge.h"
-#include "../header/Animation.h"
+
 vector<Edge*> LinkedList::Edges;
 void LinkedList::adjustPos(LLNode* pHead) {
     LLNode* prev = nullptr;
@@ -25,7 +25,7 @@ bool LinkedList::remove(int x) {
             adjustPos(head);
             Edge::removeEdge(Edges, del, head);
         }
-        delete del->animation;
+
         delete del;
         del = nullptr;
         return true;
@@ -41,7 +41,6 @@ bool LinkedList::remove(int x) {
             adjustPos(cur);
             Edge::removeEdge(Edges, cur, temp);
             Edge::addEdge(Edges,cur, cur->next);
-            delete temp->animation;
             delete temp;
             temp = nullptr;
             return true;
@@ -72,17 +71,13 @@ void LinkedList::deletelist() {
     while (head) {
         LLNode* del = head;
         head = head->next;
-        delete del->animation;
         delete del;
     }
-    cout << "DELETED\n";
-    head = nullptr;
 }
 void LinkedList::deleteEdges() {
     for (auto edge : Edges) {
         delete edge;
     }
-    Edges.clear();
 }
 void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
@@ -90,7 +85,6 @@ void LinkedList::insertnode(int x, int pos) {
     }
     if (pos == 1 || !head) {
         LLNode* temp = new LLNode(x,100,100);
-		temp->animation = new NodeInitialAnimation(temp, 1);
         temp->next = head;
         adjustPos(temp);
         Edge::addEdge(Edges, temp, head);
@@ -98,13 +92,11 @@ void LinkedList::insertnode(int x, int pos) {
         return;
     }
     LLNode* cur = head;
-    for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
+    for (int i = 1; i < pos - 1 && cur; i++) {
         cur = cur->next;
     }
-
+    if (!cur) return;
     LLNode* newnode = new LLNode(x,cur->position.x + 200, cur->position.y);
-    newnode->animation = new NodeInitialAnimation(newnode, 1);
-
     newnode->next = cur->next;
     Edge::addEdge(Edges, newnode, cur->next);
     Edge::removeEdge(Edges, cur, cur->next);

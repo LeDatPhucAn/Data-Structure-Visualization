@@ -3,7 +3,6 @@
 #include "raylib.h"
 #include "UI.h"
 #include <sstream>
-class Animation;
 class Button {
 public:
     static const int padding;
@@ -15,33 +14,25 @@ public:
     bool isActivated;
     bool isHovered;
     bool isClicked;
-    Animation* animation;
     std::function<void()> onClick;
     Button* head;
     Button* next; // Pointer to the next button
 
-    Button(Rectangle r) : rect(r), TextColor(WHITE), FillColor(BLUE), OutLineColor(DARKGRAY),
-        animation(nullptr),
-        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {
-    };
+    Button(Rectangle r) : rect(r), TextColor(WHITE), FillColor(BLUE), OutLineColor(DARKGRAY), isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {}
+    Button(Rectangle r, Color tc, Color fc, Color olc) : rect(r), TextColor(tc), FillColor(fc), OutLineColor(olc), isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {}
+    
 
-    Button(Rectangle r, Color tc, Color fc, Color olc) : rect(r), TextColor(tc), FillColor(fc), OutLineColor(olc),
-        animation(nullptr),
-        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {
-    };
-
-    virtual ~Button() = default;
     virtual int getNumber() const { return 0; }
-
+    
     virtual void setPosition(float x, float y);
     virtual void setSubPosition();
 
     static void setHeadPosition(vector<Button*>& Buttons, float x, float y);
     static void setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y);
-
     static void insertHeadButton(vector<Button*>& Buttons, Button* button);
     static void insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock);
     static void insertPseudoCode(vector<Button*>& CodeBlocks, const char* pseudocode);
+
 
     static void drawButtons(vector<Button*>& Buttons);
     static void updateButtons(vector<Button*>& Buttons);
@@ -100,22 +91,22 @@ private:
 public:
 
     // default Number Input Box
-    NumberInputBox(int maxCh) : InputBox(maxCh), inputNumber(0) {
+    NumberInputBox(int maxCh) : InputBox(maxCh), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
-    NumberInputBox(int maxCh, Color tc, Color fc, Color olc) : InputBox(maxCh, tc, fc, olc), inputNumber(0) {
+    NumberInputBox(int maxCh, Color tc, Color fc, Color olc) : InputBox(maxCh,tc, fc, olc), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
-    NumberInputBox(float x, float y, int maxCh) : InputBox(x, y, maxCh), inputNumber(0) {
+    NumberInputBox(float x, float y, int maxCh) : InputBox(x, y, maxCh), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
-    NumberInputBox(float x, float y, int maxCh, Color tc, Color fc, Color olc) : InputBox(x, y, maxCh, tc, fc, olc), inputNumber(0) {
+    NumberInputBox(float x, float y, int maxCh, Color tc, Color fc, Color olc) : InputBox(x, y, maxCh, tc, fc, olc), inputNumber(0){
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
@@ -133,7 +124,7 @@ class TextBox : public Button {
 public:
     std::string Text;
 
-    TextBox(string t) : Text(t), Button({ 0,0,0,0 }){
+    TextBox(string t) : Text(t), Button({ 0,0,0,0 }) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { 0, 0, tsize.x + padding, tsize.y + padding };
     }
@@ -153,14 +144,13 @@ public:
     void draw() override;
     void update() override;
 };
-class CodeBlock : public TextBox {
+class CodeBlock : public TextBox{
 public:
-    static constexpr Color CodeColor = { 232,232,232,180 };
-    CodeBlock(string t) : TextBox(t, DARKGRAY, CodeColor, CodeColor) {
+    CodeBlock(string t) : TextBox(t, GRAY, RAYWHITE, RAYWHITE) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { 0, 0, tsize.x + padding, tsize.y + padding };
     }
-    CodeBlock(string t, float x, float y) : TextBox(t, x, y, DARKGRAY, CodeColor, CodeColor) {
+    CodeBlock(string t, float x, float y) : TextBox(t, x, y,GRAY, RAYWHITE, RAYWHITE) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { x, y, tsize.x + padding, tsize.y + padding };
     }

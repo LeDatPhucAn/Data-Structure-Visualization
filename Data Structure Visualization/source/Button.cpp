@@ -38,6 +38,7 @@ void Button::setSubPosition() {
     Button* cur = this->next;
     while (cur) {
         cur->setPosition(prev->rect.x + prev->rect.width + padding / 2, prev->rect.y);
+		if (cur->animation)cur->animation->HandleResize();
         prev = cur;
         cur = cur->next;
     }
@@ -52,7 +53,7 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
     // Update the first head
     Buttons[0]->setPosition(x, y);
     Buttons[0]->setSubPosition();
-
+	if (Buttons[0]->animation)Buttons[0]->animation->HandleResize();
     for (int i = 1; i < Buttons.size(); i++) {
         // update the group Head Buttons
         Button* prevHead = Buttons[i - 1];
@@ -61,6 +62,7 @@ void Button::setHeadPosition(vector<Button*>&Buttons, float x, float y) {
             prevHead->rect.x,
             prevHead->rect.y + prevHead->rect.height
         );
+		if (curHead->animation)curHead->animation->HandleResize();
         // update the Sub Buttons
         Buttons[i]->setSubPosition();
     }

@@ -13,6 +13,7 @@ public:
     Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
     virtual ~Animation() = default;
 
+    virtual void HandleResize() = 0;
     virtual void update(float deltaTime) = 0;
     bool isCompleted() {
         return completed;
@@ -46,56 +47,51 @@ public:
         if (t >= 1.0f) { t = 1.0f; completed = true; }
         button->rect.width = EaseCubicIn(elapsed, startWidth, endWidth - startWidth, duration);
         button->rect.height = EaseCubicIn(elapsed, startHeight, endHeight - startHeight, duration);
-
     }
+	void HandleResize() override {
+		startWidth = 0;
+		startHeight = 0;
+		endWidth = button->rect.width;
+		endHeight = button->rect.height;
+	}
 };
-class ButtonMoveXAnimation : public Animation {
+
+class ButtonMoveAnimation : public Animation {
 private:
+    
+protected:
     Button* button;
-    float startX;
-    float endX;
+    float startX, startY;
+    float endX, endY;
 public:
-    ButtonMoveXAnimation(Button* btn, float duration)
+
+    virtual void HandleResize() override;
+	virtual ~ButtonMoveAnimation() = default;
+    ButtonMoveAnimation(Button* btn, float duration)
         : Animation(duration), button(btn) {
         startX = 0;
-        endX = btn->rect.x;
-    }
-    ButtonMoveXAnimation(Button* btn, float sX, float duration)
-        : Animation(duration), startX(sX), button(btn) {
-        endX = btn->rect.x;
-    }
-    void update(float deltaTime) override {
-        if (completed) return;
-        elapsed += deltaTime;
-        float t = elapsed / duration;
-        if (t >= 1.0f) { t = 1.0f; completed = true; }
-        button->rect.x = EaseBounceOut(elapsed, startX, endX - startX, duration);
-
-    }
-};
-class ButtonMoveYAnimation : public Animation {
-private:
-    Button* button;
-    float startY;
-    float endY;
-public:
-    ButtonMoveYAnimation(Button* btn, float duration)
-        : Animation(duration), button(btn) {
         startY = 0;
+        endX = btn->rect.x;
         endY = btn->rect.y;
     }
-    ButtonMoveYAnimation(Button* btn, float sY, float duration)
-        : Animation(duration), startY(sY), button(btn) {
+    ButtonMoveAnimation(Button* btn, float sX, float sY, float duration)
+        : Animation(duration), startX(sX), startY(sY), button(btn) {
+        endX = btn->rect.x;
         endY = btn->rect.y;
     }
-    void update(float deltaTime) override {
-        if (completed) return;
-        elapsed += deltaTime;
-        float t = elapsed / duration;
-        if (t >= 1.0f) { t = 1.0f; completed = true; }
-        button->rect.y = EaseBounceOut(elapsed, startY, endY - startY, duration);
-
-    }
+    void update(float deltaTime) override;
+};
+class ButtonMoveXAnimation : public ButtonMoveAnimation {
+public:
+    ButtonMoveXAnimation(Button* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
+	ButtonMoveXAnimation(Button* btn, float sX, float duration) : ButtonMoveAnimation(btn, sX, 0, duration) {};
+    void update(float deltaTime) override;
+};
+class ButtonMoveYAnimation : public ButtonMoveAnimation {
+public:
+    ButtonMoveYAnimation(Button* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
+    ButtonMoveYAnimation(Button* btn, float sX, float duration) : ButtonMoveAnimation(btn, sX, 0, duration) {};
+    void update(float deltaTime) override;
 };
 class AnimatedNode : public Node {
 private:

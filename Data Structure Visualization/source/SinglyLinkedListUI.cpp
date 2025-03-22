@@ -38,6 +38,8 @@ void SinglyLinkedListUI::initButtons() {
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
 	Buttons[0]->animation = new ButtonMoveYAnimation(Buttons[0], 0.5);
+
+
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
     Button* Pos = new TextBox("Pos:");
@@ -103,6 +105,7 @@ void SinglyLinkedListUI::initButtons() {
 void SinglyLinkedListUI::updateButtonPositions() {
 
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+    SceneHandler::MenuButton->animation->HandleResize();
 
     Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 

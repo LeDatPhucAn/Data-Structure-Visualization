@@ -95,13 +95,13 @@ public:
     void update(float deltaTime) override;
 };
 
-class NodeInitialAnimation : public Animation {
+class NodeInitializeAnimation : public Animation {
 private:
 	Node* node;
 	float startRadius;
 	float endRadius;
 public:
-	NodeInitialAnimation(Node* n, float duration) : node(n), Animation(duration) {
+	NodeInitializeAnimation(Node* n, float duration) : node(n), Animation(duration) {
 		startRadius = 0;
         endRadius = node->radius;
     };
@@ -117,6 +117,7 @@ private:
     bool highlighted;
 
 public:
+    AnimatedNode(Node n) : Node(n) {};
     AnimatedNode(int val, Vector2 pos, float r) : Node(val,pos,r) {};
 
     void setPosition(Vector2 pos);
@@ -149,18 +150,11 @@ public:
 
 class AnimationManager : public SceneManager {
 private:
-    std::vector<std::unique_ptr<AnimatedNode>> nodes;
-    std::vector<std::unique_ptr<AnimatedEdge>> edges;
-    std::vector<std::unique_ptr<Animation>> animations;
+    std::vector<AnimatedNode*> Nodes;
+    std::vector<AnimatedEdge*> Edges;
+    std::vector<Animation*> Animations;
     float speed;
     bool paused;
-    Camera* camera;
-    bool useCamera;
-
-    // Utility functions
-    Vector2 calculateCircularPosition(int totalNodes, int nodeIndex, float centerX, float centerY, float radius);
-    void drawArrowHead(Vector2 start, Vector2 end, float length, float angle, Color color);
-    void drawAnimationElements();
 
 public:
     AnimationManager();
@@ -174,12 +168,11 @@ public:
     void updateButtonPositions() override;
 
     // Animation control
-    void addAnimation(std::unique_ptr<Animation> animation);
+    void addAnimation(vector<Animation*> Animations);
     void clearAnimations();
     void setPaused(bool pause);
     void setSpeed(float newSpeed);
     bool isAnimating() const;
-    void setCamera(Camera* cameraComponent);
 
     // Node management
     AnimatedNode* createNode(int value, Vector2 position);
@@ -189,8 +182,8 @@ public:
 
     // Circular linked list animations
     void setupCircularLinkedList(const std::vector<int>& values, float centerX, float centerY, float radius);
-    void insertNodeToCLL(int value, int position = -1);
-    void removeNodeFromCLL(int position);
+    void insertNodeToSLL(int value, int position = -1);
+    void removeNodeFromSLL(int position);
     void highlightNodeAtPosition(int position, float duration = 0.5f);
     void animateTraversal(float duration = 0.5f);
     int searchValue(int value);

@@ -11,9 +11,9 @@ void Animation::Animate(float deltaTime) {
        completed = true; 
    }
 }
-void NodeInitialAnimation::update(float deltaTime) {
+void NodeInitializeAnimation::update(float deltaTime) {
     Animate(deltaTime);
-	node->radius = EaseElasticOut(elapsed, startRadius, endRadius - startRadius, duration);
+	node->radius = EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration);
 }
 void ButtonMoveAnimation::HandleResize() {
 	endX = button->rect.x;

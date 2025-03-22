@@ -92,7 +92,7 @@ void SinglyLinkedListUI::initButtons() {
         };
 
     Button::insertHeadButton(Buttons, new TextBox("Random"));
-    Buttons[4]->animation = new ButtonMoveYAnimation(Buttons[4], 2000, 0.7);
+    Buttons[4]->animation = new ButtonMoveYAnimation(Buttons[4],UI::screenHeight, 0.5);
 
     Buttons[4]->onClick = [this]() {
         this->deletelist();

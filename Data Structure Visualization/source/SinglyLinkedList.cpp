@@ -89,7 +89,7 @@ void LinkedList::insertnode(int x, int pos) {
     }
     if (pos == 1 || !head) {
         LLNode* temp = new LLNode(x,100,100);
-		temp->animation = new NodeInitialAnimation(temp, 1);
+		temp->animation = new NodeInitializeAnimation(temp, 1);
         temp->next = head;
         adjustPos(temp);
         Edge::addEdge(Edges, temp, head);
@@ -102,7 +102,7 @@ void LinkedList::insertnode(int x, int pos) {
     }
 
     LLNode* newnode = new LLNode(x,cur->position.x + 200, cur->position.y);
-    newnode->animation = new NodeInitialAnimation(newnode, 1);
+    newnode->animation = new NodeInitializeAnimation(newnode, 1);
 
     newnode->next = cur->next;
     Edge::addEdge(Edges, newnode, cur->next);

@@ -36,7 +36,7 @@ void SinglyLinkedListUI::initButtons() {
 
 
     /// Buttons
-    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
 	Buttons[0]->animation = new ButtonMoveYAnimation(Buttons[0], 0.5);
 
 
@@ -113,7 +113,7 @@ void SinglyLinkedListUI::updateButtonPositions() {
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
     SceneHandler::MenuButton->animation->HandleResize();
 
-    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
+    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
 
     Button::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 

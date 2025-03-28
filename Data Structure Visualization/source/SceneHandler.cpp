@@ -112,8 +112,6 @@ void SceneHandler::displayCurrentScene() {
             DrawGrid(1000, 100);
             rlPopMatrix();
 
-            // Draw a reference circle
-            DrawCircle(GetScreenWidth() / 2, GetScreenHeight() / 2, 50, MAROON);
             currentSceneObject->displaySceneInCamera();
             EndMode2D();
 

@@ -23,7 +23,15 @@ void Button::updateButtons(vector<Button*>& Buttons) {
         button->update();
     }
 }
+void Button::resetSubAni() {
+    Button* cur = this;
+    cur = cur->next;
 
+    while (cur) {
+        if (cur->animation)cur->animation->reset();
+        cur = cur->next;
+    }
+}
 void Button::setPosition(float x, float y) {
     rect.x = x;
     rect.y = y;
@@ -123,6 +131,8 @@ void Button::insertSubButton(Button* button) {
     cur->next = button;
     button->head = this;
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
+    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.5);
+
 }
 
 void Button::insertSubButton(Button* button, std::function<void()> function) {
@@ -134,6 +144,8 @@ void Button::insertSubButton(Button* button, std::function<void()> function) {
     button->head = this;
     button->onClick = function;
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
+    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.5);
+
 }
 
 void Button::insertCodeBlock(vector<Button*>& CodeBlocks, Button* codeblock) {
@@ -190,17 +202,24 @@ void InputBox::draw() {
 
 void InputBox::update() {
     if (!head || head->isActivated) {
+
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
+                if (!head && isActivated) {
+                    resetSubAni();
+                }
+
             }
             Button::isCollision = true;
         }
         else {
             unhover();
         }
+        if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
     }
 
     // Recursively update the next button
@@ -251,17 +270,23 @@ void NumberInputBox::unhover() {
 
 void NumberInputBox::update() {
     if (!head || head->isActivated) {
+
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
+                if (!head && isActivated) {
+                    resetSubAni();
+                }
             }
             Button::isCollision = true;
         }
         else {
             unhover();
         }
+        if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
     }
 
     // Recursively update the next button
@@ -329,12 +354,15 @@ void NumberInputBox::clear(){
 }
 
 void Button::update() {
-    // Head button logic: Toggle activation on click
     if(!head || head->isActivated){
+
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
+                if (!head && isActivated) {
+                    resetSubAni();
+                }
                 if (onClick) onClick();
             }
             Button::isCollision = true;
@@ -342,6 +370,8 @@ void Button::update() {
         else {
             unhover();
         }
+        if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
     }
 
     // Recursively update the next button
@@ -351,11 +381,16 @@ void Button::update() {
 }
 void TextBox::update() {
     if(!head || head->isActivated){
+        if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated; // Toggle state
+                if (!head && isActivated) {
+                    resetSubAni();
+                }
                 if (onClick) onClick();
             }
             Button::isCollision = true;

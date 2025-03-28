@@ -99,7 +99,7 @@ void TreapUI::drawTreapNode(TreapNode* curr) {
     Vector2 pos = curr->position;
 
     DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, { 255, 203, 203, 255 });
-    DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, { 69, 180, 238, 255 });
+    DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, { 69, 180, 238, 145 });
 
     DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
     DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
@@ -110,7 +110,7 @@ void TreapUI::drawTreapNode(TreapNode* curr) {
     Vector2 priorityTextSize = MeasureTextEx(GetFontDefault(), priority.c_str(), 20.0f, 2.0f);
 
     DrawText(value.c_str(), pos.x - width / 2 + dataWidth / 2 - valueTextSize.x / 2, pos.y - valueTextSize.y / 2, 30, DARKGRAY);
-    DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 20, DARKPURPLE);
+    DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 20, MAROON);
 }
 
 void TreapUI::drawTreapLink(Edge* edge) {
@@ -152,7 +152,7 @@ void TreapUI::initButtons() {
 
 
     /// Buttons
-    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
+    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
     Button* Value = new TextBox("Value:");
     Button* ValueInput = new NumberInputBox(3);
     Button* Priority = new TextBox("Priority:");
@@ -196,12 +196,21 @@ void TreapUI::initButtons() {
         this->loadFromFile();
     };
 
-
-    Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, { 214, 102, 49, 255 }, DARKGRAY));
+    Button::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->onClick = [this]() {
+        this->clear();
+        int n = rand() % 10;
+        for (int i = 0; i < n; ++i) {
+            int x = rand() % 100;
+            this->insert(x);
+        }
+        };
+    Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, { 214, 102, 49, 255 }, DARKGRAY));
+    Buttons[5]->onClick = [this]() {
         this->clear();
         };
 
+    updateButtonPositions();
 }
 
 void TreapUI::displayScene() {
@@ -213,7 +222,7 @@ void TreapUI::updateButtonPositions() {
 
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
 
-    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
+    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
 
     Button::setHeadPosition(CodeBlocks, UI::screenWidth * 5 / 8, UI::screenHeight / 4);
 

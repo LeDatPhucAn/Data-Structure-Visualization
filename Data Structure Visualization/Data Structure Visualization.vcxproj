@@ -23,16 +23,13 @@
     <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
-    <ClCompile Include="source\GraphUI.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\HashTableUI.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
-    <ClCompile Include="source\PseudoCode.cpp" />
     <ClCompile Include="source\SceneHandler.cpp" />
     <ClCompile Include="source\SinglyLinkedList.cpp" />
     <ClCompile Include="source\SinglyLinkedListUI.cpp" />
-    <ClCompile Include="source\tinyfiledialogs.c" />
     <ClCompile Include="source\Treap.cpp" />
     <ClCompile Include="source\TreapUI.cpp" />
     <ClCompile Include="source\UI.cpp" />
@@ -49,12 +46,10 @@
     <ClInclude Include="header\Menu.h" />
     <ClInclude Include="header\Node.h" />
     <ClInclude Include="header\PseudoCode.h" />
-    <ClInclude Include="header\reasings.h" />
     <ClInclude Include="header\SceneManager.h" />
     <ClInclude Include="header\SceneHandler.h" />
     <ClInclude Include="header\SinglyLinkedList.h" />
     <ClInclude Include="header\SinglyLinkedListUI.h" />
-    <ClInclude Include="header\tinyfiledialogs.h" />
     <ClInclude Include="header\Treap.h" />
     <ClInclude Include="header\TreapUI.h" />
     <ClInclude Include="header\UI.h" />
@@ -163,7 +158,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

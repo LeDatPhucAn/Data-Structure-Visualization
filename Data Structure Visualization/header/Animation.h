@@ -212,11 +212,9 @@ public:
 };
 
 class EdgeHighlightAnimation : public Animation {
-private:
-    AnimatedEdge* edge;
-    Color highlightColor;
 
+private:
 public:
-    EdgeHighlightAnimation(AnimatedEdge* edge, Color highlightColor, float duration);
-    void update(float deltaTime) override;
+	
+	void AnimateSprite(float X, float Y, Texture2D texture, int numframes, float frameindex);
 };

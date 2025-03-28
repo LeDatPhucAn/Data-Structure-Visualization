@@ -1,6 +1,5 @@
 #include "../header/SceneHandler.h"
-#include "../header/reasings.h"
-#include "../header/Animation.h"
+
 Button* SceneHandler::MenuButton = nullptr;
 
 SceneHandler::SceneHandler() {
@@ -10,7 +9,7 @@ SceneHandler::SceneHandler() {
     MenuButton->onClick = [this]() {
         this->changeScene(MENU);
         };
-	MenuButton->animation = new ButtonMoveXAnimation(MenuButton, 0.5);
+
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
@@ -19,7 +18,6 @@ SceneHandler::SceneHandler() {
     scenes[HASHTABLE] = new HashTableUI();
     scenes[TREAP] = new TreapUI();
     scenes[GRAPH] = new GraphUI();
-
     // Initialize other scenes as needed
     changeScene(MENU);
 }
@@ -36,10 +34,10 @@ int SceneHandler::getCurrentScene() {
 }
 
 void SceneHandler::changeScene(Scene newScene) {
-    if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
-    currentSceneObject->CurrentScene = newScene;
-    
+    if (currentSceneObject) {
+        currentSceneObject->CurrentScene = newScene;
+    }
 }
 
 void SceneHandler::updateCamera() {
@@ -93,6 +91,7 @@ void SceneHandler::updateCurrentScene() {
         if (getCurrentScene() != MENU) {
 
             updateCamera();
+        
         }
 
         currentSceneObject->updateScene();
@@ -122,11 +121,9 @@ void SceneHandler::displayCurrentScene() {
             UI::drawBackground();
 
             UI::drawLogo();
-
-            
         }
 
-        
+
         // display permanent objects
         currentSceneObject->displayScene();
     }

@@ -216,7 +216,7 @@ void TreapUI::initButtons() {
     Buttons[5]->onClick = [this]() {
         this->clear();
         };
-    
+    updateButtonPositions();
 }
 
 void TreapUI::displayScene() {

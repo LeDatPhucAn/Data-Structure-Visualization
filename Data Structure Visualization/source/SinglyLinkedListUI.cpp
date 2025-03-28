@@ -14,14 +14,14 @@ void SinglyLinkedListUI::drawlinkedlist() {
 void SinglyLinkedListUI::resetAnimations() {
 	SceneHandler::MenuButton->animation->reset();
 	for (auto& button : Buttons) {
-		if (button->animation) {
-			button->animation->reset();
-		}
+        if (button->animation) {
+            button->animation->reset();
+        }
 	}
 	for (auto& button : CodeBlocks) {
-		if (button->animation) {
-			button->animation->reset();
-		}
+        if (button->animation) {
+            button->animation->reset();
+        }
 	}
 }
 void SinglyLinkedListUI::initButtons() {
@@ -46,6 +46,7 @@ void SinglyLinkedListUI::initButtons() {
     Button* PosInput = new NumberInputBox(2);
     Button* Enter = new TextBox(">");
 
+    cout << Value->rect.width;
     Buttons[0]->insertSubButton(Value);
     Buttons[0]->insertSubButton(ValueInput);
     Buttons[0]->insertSubButton(Pos);
@@ -105,7 +106,7 @@ void SinglyLinkedListUI::initButtons() {
         }
     };
     
-
+    updateButtonPositions();
 }
 
 void SinglyLinkedListUI::updateButtonPositions() {
@@ -151,7 +152,6 @@ void SinglyLinkedListUI::updateScene() {
         cur = cur->next;
     }
     SceneHandler::MenuButton->update();
-	SceneHandler::MenuButton->animation->update(GetFrameTime());
     Button::updateButtons(Buttons);
     Button::updateButtons(CodeBlocks);
 

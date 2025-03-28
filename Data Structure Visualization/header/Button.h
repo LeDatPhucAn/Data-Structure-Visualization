@@ -47,6 +47,7 @@ public:
     static void updateButtons(vector<Button*>& Buttons);
     static void deleteButtons(vector<Button*>& Buttons);
 
+    virtual void resetSubAni();
     virtual void insertSubButton(Button* button);
     virtual void insertSubButton(Button* button, std::function<void()> function);
     virtual void update();

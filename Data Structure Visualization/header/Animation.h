@@ -16,14 +16,15 @@ public:
     virtual void Animate(float deltaTime);
     virtual void HandleResize() = 0;
     virtual void update(float deltaTime) = 0;
-    bool isCompleted() {
+    virtual bool isCompleted() {
         return completed;
     }
-    void reset() {
-		elapsed = 0.0f;
+    virtual void reset() {
+        elapsed = 0.0f;
         completed = false;
+
     }
-    float getProgress() const {
+    virtual float getProgress() const {
         return elapsed;
     }
     

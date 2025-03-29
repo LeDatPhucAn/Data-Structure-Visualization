@@ -17,6 +17,7 @@ public:
 	virtual void resetAnimations() = 0;
 	virtual void updateButtonPositions() = 0;
 	virtual void updateScene() = 0;
+	virtual void updateSceneInCamera(Camera2D cam) = 0;
 	virtual void displayScene() = 0;
 	virtual void displaySceneInCamera() = 0;
     virtual ~SceneManager() = default;

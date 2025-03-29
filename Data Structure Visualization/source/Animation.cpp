@@ -27,7 +27,7 @@ void ButtonMoveAnimation::update(float deltaTime) {
 }
 void ButtonMoveXAnimation::update(float deltaTime)  {
     Animate(deltaTime);
-    button->rect.x = EaseBounceOut(elapsed, startX, endX - startX, duration);
+    button->rect.x = EaseExpoOut(elapsed, startX, endX - startX, duration);
 }
 void ButtonMoveYAnimation::update(float deltaTime)  {
     Animate(deltaTime);

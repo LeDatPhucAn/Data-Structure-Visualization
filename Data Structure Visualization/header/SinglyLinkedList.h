@@ -1,5 +1,5 @@
 #pragma once
-#include "LinkedListNode.h"
+#include "LLNode.h"
 #include "Edge.h"
 #include <vector>
 

@@ -7,7 +7,9 @@ void LinkedList::adjustPos(LLNode* pHead) {
     while (pHead) {
         if (prev) {
             pHead->position.x = prev->position.x + 200;
+            pHead->clickBox->setCenterX(pHead->position.x);
         }
+
         prev = pHead;
         pHead = pHead->next;
     }
@@ -22,6 +24,7 @@ bool LinkedList::remove(int x) {
         if(head){
             // adjusting position
             head->position.x = 100;
+            head->clickBox->setCenterX(100);
             adjustPos(head);
             Edge::removeEdge(Edges, del, head);
         }
@@ -89,7 +92,6 @@ void LinkedList::insertnode(int x, int pos) {
     }
     if (pos == 1 || !head) {
         LLNode* temp = new LLNode(x,100,100);
-		temp->animation = new NodeInitializeAnimation(temp, 1);
         temp->next = head;
         adjustPos(temp);
         Edge::addEdge(Edges, temp, head);
@@ -102,7 +104,6 @@ void LinkedList::insertnode(int x, int pos) {
     }
 
     LLNode* newnode = new LLNode(x,cur->position.x + 200, cur->position.y);
-    newnode->animation = new NodeInitializeAnimation(newnode, 1);
 
     newnode->next = cur->next;
     Edge::addEdge(Edges, newnode, cur->next);

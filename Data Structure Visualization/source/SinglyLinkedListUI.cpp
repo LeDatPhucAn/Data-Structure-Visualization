@@ -4,6 +4,7 @@
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
     while (cur) {
+        cur->clickBox->draw();
         UI::drawNode(cur);
         cur = cur->next;
     }
@@ -24,6 +25,7 @@ void SinglyLinkedListUI::resetAnimations() {
         }
 	}
 }
+
 void SinglyLinkedListUI::initButtons() {
     
     /// Code Blocks
@@ -37,7 +39,7 @@ void SinglyLinkedListUI::initButtons() {
 
     /// Buttons
     Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
-	Buttons[0]->animation = new ButtonMoveYAnimation(Buttons[0], 0.5);
+	Buttons[0]->animation = new ButtonMoveXAnimation(Buttons[0], 0.5);
 
 
     Button* Value = new TextBox("Value:");
@@ -46,7 +48,6 @@ void SinglyLinkedListUI::initButtons() {
     Button* PosInput = new NumberInputBox(2);
     Button* Enter = new TextBox(">");
 
-    cout << Value->rect.width;
     Buttons[0]->insertSubButton(Value);
     Buttons[0]->insertSubButton(ValueInput);
     Buttons[0]->insertSubButton(Pos);
@@ -93,7 +94,7 @@ void SinglyLinkedListUI::initButtons() {
         };
 
     Button::insertHeadButton(Buttons, new TextBox("Random"));
-    Buttons[4]->animation = new ButtonMoveYAnimation(Buttons[4],UI::screenHeight, 0.5);
+    Buttons[4]->animation = new ButtonMoveXAnimation(Buttons[4], 0.5);
 
     Buttons[4]->onClick = [this]() {
         this->deletelist();
@@ -119,6 +120,7 @@ void SinglyLinkedListUI::updateButtonPositions() {
     Button::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 
 }
+
 void SinglyLinkedListUI::init() {
 
     srand(time(nullptr));
@@ -142,9 +144,18 @@ void SinglyLinkedListUI::displayScene() {
     Button::drawButtons(Buttons);
     Button::drawButtons(CodeBlocks);
 }
+void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
+    Button::isCollision = false;
+
+    LLNode* cur = this->head;
+    while (cur) {
+        cur->clickBox->setCamera(cam);
+        cur->clickBox->update();
+        cur = cur->next;
+    }
+}
 void SinglyLinkedListUI::updateScene() {
 
-    Button::isCollision = false;
 
     LLNode* cur = this->head;
     while (cur) {
@@ -158,3 +169,4 @@ void SinglyLinkedListUI::updateScene() {
     
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
+

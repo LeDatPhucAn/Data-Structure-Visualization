@@ -70,6 +70,7 @@ void SceneHandler::updateCamera() {
         // limit the values of zoom
         camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
     }
+
 }
 
 
@@ -93,9 +94,12 @@ void SceneHandler::updateCurrentScene() {
         if (getCurrentScene() != MENU) {
 
             updateCamera();
+            currentSceneObject->updateSceneInCamera(camera);
+
         }
 
         currentSceneObject->updateScene();
+
     }
 }
 
@@ -112,8 +116,8 @@ void SceneHandler::displayCurrentScene() {
             rlRotatef(90, 1, 0, 0);
             DrawGrid(1000, 100);
             rlPopMatrix();
-
             currentSceneObject->displaySceneInCamera();
+
             EndMode2D();
 
             

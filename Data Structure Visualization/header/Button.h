@@ -100,6 +100,8 @@ private:
     int inputNumber;
 public:
 
+    NumberInputBox() : InputBox(0), inputNumber(0) {
+    }
     // default Number Input Box
     NumberInputBox(int maxCh) : InputBox(maxCh), inputNumber(0) {
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
@@ -107,6 +109,16 @@ public:
         rect.height = textSize.y + padding;
     }
     NumberInputBox(int maxCh, Color tc, Color fc, Color olc) : InputBox(maxCh, tc, fc, olc), inputNumber(0) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+    NumberInputBox(Vector2 pos, int maxCh) : InputBox(pos.x,pos.y,maxCh), inputNumber(0) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    
+    }NumberInputBox(Vector2 pos, int maxCh, Color tc, Color fc, Color olc) : InputBox(pos.x,pos.y,maxCh, tc, fc, olc), inputNumber(0) {
         Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
@@ -121,12 +133,13 @@ public:
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
+    void setNumber(int x) {
+        inputNumber = x;
+    }
     int getNumber() const override {
         return inputNumber;
     };
     void update() override;
-    void hover() override;
-    void unhover() override;
     void clear() override;
 };
 
@@ -134,7 +147,7 @@ class TextBox : public Button {
 public:
     std::string Text;
 
-    TextBox(string t) : Text(t), Button({ 0,0,0,0 }){
+    TextBox(string t) : Text(t), Button({ 0,0,0,0 }) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect = { 0, 0, tsize.x + padding, tsize.y + padding };
     }
@@ -166,3 +179,120 @@ public:
         rect = { x, y, tsize.x + padding, tsize.y + padding };
     }
 };
+
+
+class CircleButton {
+protected:
+    Vector2 center;
+    float radius;
+public:
+    Color TextColor;
+    Color FillColor;
+    Color RingColor;
+    bool isActivated;
+    bool isHovered;
+    bool isClicked;
+    Animation* animation;
+    std::function<void()> onClick;
+
+    // default color
+    CircleButton(Vector2 cent, float r) : center(cent), radius(r), TextColor(BLUE), FillColor(RAYWHITE), RingColor(BLUE),
+        animation(nullptr),
+        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
+    };
+
+    CircleButton(Vector2 cent, float r, Color tc, Color fc, Color rc) : center(cent), radius(r), TextColor(tc), FillColor(fc), RingColor(rc),
+        animation(nullptr),
+        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
+    };
+    virtual void setRadius(int r) {
+        radius = r;
+    }
+    virtual void update();
+    virtual void draw() = 0;
+    virtual void hover();
+    virtual void unhover();
+    virtual void click();
+    virtual void unclick();
+};
+
+
+
+class InputCircle : public CircleButton {
+public:
+    double lastDeletedTime;
+    int maxChars;
+    int framesCounter;
+    bool Texting;
+    std::string inputText;
+
+    InputCircle(int maxCh) : CircleButton({ 0,0 }, 50.0f), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
+
+    }
+    InputCircle(int maxCh, Color tc, Color fc, Color rc) : CircleButton({ 0,0 }, 50.0f, tc, fc, rc), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
+    }
+
+    // input Circle best ones
+
+    InputCircle(Vector2 cent, float r, int maxCh) : CircleButton(cent, r), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
+    }
+    InputCircle(Vector2 cent, float r, int maxCh, Color tc, Color fc, Color rc) : CircleButton(cent, r, tc, fc, rc), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
+    }
+    void update() override;
+    void draw() override;
+    virtual void clear();
+};
+class NumberInputCircle : public InputCircle {
+public:
+    int inputNumber;
+
+    // default Number Input Box
+    NumberInputCircle(int maxCh)
+        : InputCircle(maxCh), inputNumber(0) {
+    }
+    NumberInputCircle(int maxCh, Color tc, Color fc, Color rc)
+        : InputCircle(maxCh, tc, fc, rc), inputNumber(0) {
+    }
+    NumberInputCircle(Vector2 cent, float r, int maxCh)
+        : InputCircle(cent, r, maxCh), inputNumber(0) {
+    }
+    NumberInputCircle(Vector2 cent, float r, int maxCh, Color tc, Color fc, Color rc)
+        : InputCircle(cent, r, maxCh, tc, fc, rc), inputNumber(0) {
+    }
+    virtual void setCenterX(int x) {
+        center.x = x;
+    }
+    virtual void setNumber(int x) {
+        inputNumber = x;
+        inputText = to_string(x);
+    }
+    virtual int getNumber() const {
+        return inputNumber;
+    };
+    void update() override;
+    void clear() override;
+};
+class NumberInputCircleInCamera : public NumberInputCircle {
+private:
+    Camera2D camera;
+public:
+    // default Number Input Box
+    NumberInputCircleInCamera(int maxCh)
+        : NumberInputCircle(maxCh) {
+    }
+    NumberInputCircleInCamera(int maxCh, Color tc, Color fc, Color rc)
+        : NumberInputCircle(maxCh, tc, fc, rc) {
+    }
+    NumberInputCircleInCamera(Vector2 cent, float r, int maxCh)
+        : NumberInputCircle(cent, r, maxCh) {
+    }
+    NumberInputCircleInCamera(Vector2 cent, float r, int maxCh, Color tc, Color fc, Color rc)
+        : NumberInputCircle(cent, r, maxCh, tc, fc, rc) {
+    }
+    void setCamera(Camera2D cam) {
+        camera = cam;
+    }
+    void update() override;
+};
+
+

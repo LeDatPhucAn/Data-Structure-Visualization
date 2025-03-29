@@ -110,113 +110,113 @@ public:
     void HandleResize() {};
 };
 
-class AnimatedNode : public Node {
-private:
-    Color color;
-    Color outlineColor;
-    Color textColor;
-    bool highlighted;
+//class AnimatedNode : public Node {
+//private:
+//    Color color;
+//    Color outlineColor;
+//    Color textColor;
+//    bool highlighted;
+//
+//public:
+//    AnimatedNode(Node n) : Node(n) {};
+//    AnimatedNode(int val, Vector2 pos, float r) : Node(val,pos,r) {};
+//
+//    void setPosition(Vector2 pos);
+//    void setHighlighted(bool highlight);
+//
+//    Vector2 getPosition() const;
+//    int getValue() const;
+//    float getRadius() const;
+//};
+//
+//class AnimatedEdge {
+//private:
+//    AnimatedNode* from;
+//    AnimatedNode* to;
+//    Color color;
+//    bool highlighted;
+//    bool directed;
+//
+//public:
+//    AnimatedEdge(AnimatedNode* from, AnimatedNode* to,
+//        Color color = GRAY, bool directed = true);
+//
+//    void setHighlighted(bool highlight);
+//
+//    AnimatedNode* getSource();
+//    AnimatedNode* getTarget();
+//};
 
-public:
-    AnimatedNode(Node n) : Node(n) {};
-    AnimatedNode(int val, Vector2 pos, float r) : Node(val,pos,r) {};
-
-    void setPosition(Vector2 pos);
-    void setHighlighted(bool highlight);
-
-    Vector2 getPosition() const;
-    int getValue() const;
-    float getRadius() const;
-};
-
-class AnimatedEdge {
-private:
-    AnimatedNode* from;
-    AnimatedNode* to;
-    Color color;
-    bool highlighted;
-    bool directed;
-
-public:
-    AnimatedEdge(AnimatedNode* from, AnimatedNode* to,
-        Color color = GRAY, bool directed = true);
-
-    void setHighlighted(bool highlight);
-
-    AnimatedNode* getSource();
-    AnimatedNode* getTarget();
-};
 
 
-
-class AnimationManager : public SceneManager {
-private:
-    std::vector<AnimatedNode*> Nodes;
-    std::vector<AnimatedEdge*> Edges;
-    std::vector<Animation*> Animations;
-    float speed;
-    bool paused;
-
-public:
-    AnimationManager();
-
-    // SceneComponent interface
-    void init() override;
-    void initButtons() override;
-    void updateScene() override;
-    void displayScene() override;
-    void displaySceneInCamera() override;
-    void updateButtonPositions() override;
-
-    // Animation control
-    void addAnimation(vector<Animation*> Animations);
-    void clearAnimations();
-    void setPaused(bool pause);
-    void setSpeed(float newSpeed);
-    bool isAnimating() const;
-
-    // Node management
-    AnimatedNode* createNode(int value, Vector2 position);
-    void removeNode(AnimatedNode* node);
-    AnimatedEdge* createEdge(AnimatedNode* from, AnimatedNode* to, bool directed = true);
-    void removeEdge(AnimatedEdge* edge);
-
-    // Circular linked list animations
-    void setupCircularLinkedList(const std::vector<int>& values, float centerX, float centerY, float radius);
-    void insertNodeToSLL(int value, int position = -1);
-    void removeNodeFromSLL(int position);
-    void highlightNodeAtPosition(int position, float duration = 0.5f);
-    void animateTraversal(float duration = 0.5f);
-    int searchValue(int value);
-};
-
-class NodeMoveAnimation : public Animation {
-private:
-    AnimatedNode* Node;
-    Vector2 startPos;
-    Vector2 endPos;
-
-public:
-    NodeMoveAnimation(AnimatedNode* node, Vector2 end, float duration) : Animation(duration), Node(node), endPos(end) {};
-    void update(float deltaTime) override;
-};
-
-class NodeHighlightAnimation : public Animation {
-private:
-    AnimatedNode* node;
-    Color highlightColor;
-
-public:
-    NodeHighlightAnimation(AnimatedNode* node, Color highlightColor, float duration);
-    void update(float deltaTime) override;
-};
-
-class EdgeHighlightAnimation : public Animation {
-private:
-    AnimatedEdge* edge;
-    Color highlightColor;
-
-public:
-    EdgeHighlightAnimation(AnimatedEdge* edge, Color highlightColor, float duration);
-    void update(float deltaTime) override;
-};
+//class AnimationManager : public SceneManager {
+//private:
+//    std::vector<AnimatedNode*> Nodes;
+//    std::vector<AnimatedEdge*> Edges;
+//    std::vector<Animation*> Animations;
+//    float speed;
+//    bool paused;
+//
+//public:
+//    AnimationManager();
+//
+//    // SceneComponent interface
+//    void init() override;
+//    void initButtons() override;
+//    void updateScene() override;
+//    void displayScene() override;
+//    void displaySceneInCamera() override;
+//    void updateButtonPositions() override;
+//
+//    // Animation control
+//    void addAnimation(vector<Animation*> Animations);
+//    void clearAnimations();
+//    void setPaused(bool pause);
+//    void setSpeed(float newSpeed);
+//    bool isAnimating() const;
+//
+//    // Node management
+//    AnimatedNode* createNode(int value, Vector2 position);
+//    void removeNode(AnimatedNode* node);
+//    AnimatedEdge* createEdge(AnimatedNode* from, AnimatedNode* to, bool directed = true);
+//    void removeEdge(AnimatedEdge* edge);
+//
+//    // Circular linked list animations
+//    void setupCircularLinkedList(const std::vector<int>& values, float centerX, float centerY, float radius);
+//    void insertNodeToSLL(int value, int position = -1);
+//    void removeNodeFromSLL(int position);
+//    void highlightNodeAtPosition(int position, float duration = 0.5f);
+//    void animateTraversal(float duration = 0.5f);
+//    int searchValue(int value);
+//};
+//
+//class NodeMoveAnimation : public Animation {
+//private:
+//    AnimatedNode* Node;
+//    Vector2 startPos;
+//    Vector2 endPos;
+//
+//public:
+//    NodeMoveAnimation(AnimatedNode* node, Vector2 end, float duration) : Animation(duration), Node(node), endPos(end) {};
+//    void update(float deltaTime) override;
+//};
+//
+//class NodeHighlightAnimation : public Animation {
+//private:
+//    AnimatedNode* node;
+//    Color highlightColor;
+//
+//public:
+//    NodeHighlightAnimation(AnimatedNode* node, Color highlightColor, float duration);
+//    void update(float deltaTime) override;
+//};
+//
+//class EdgeHighlightAnimation : public Animation {
+//private:
+//    AnimatedEdge* edge;
+//    Color highlightColor;
+//
+//public:
+//    EdgeHighlightAnimation(AnimatedEdge* edge, Color highlightColor, float duration);
+//    void update(float deltaTime) override;
+//};

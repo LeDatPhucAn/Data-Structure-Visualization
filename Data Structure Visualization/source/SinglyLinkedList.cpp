@@ -1,5 +1,6 @@
 #include "../header/SinglyLinkedList.h"
 #include "../header/Edge.h"
+
 #include "../header/Animation.h"
 vector<CBEdge*> LinkedList::Edges;
 void LinkedList::adjustPos(LLNode* pHead) {
@@ -27,6 +28,7 @@ bool LinkedList::remove(int x) {
             head->setCenterX(100);
             adjustPos(head);
         }
+
         delete del;
         del = nullptr;
         return true;
@@ -72,13 +74,11 @@ void LinkedList::deletelist() {
         head = head->next;
         delete del;
     }
-    head = nullptr;
 }
 void LinkedList::deleteEdges() {
     for (auto edge : Edges) {
         delete edge;
     }
-    Edges.clear();
 }
 void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
@@ -93,12 +93,10 @@ void LinkedList::insertnode(int x, int pos) {
         return;
     }
     LLNode* cur = head;
-    for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
+    for (int i = 1; i < pos - 1 && cur; i++) {
         cur = cur->next;
     }
-
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
-
     newnode->next = cur->next;
     CBEdge::addEdge(Edges, newnode, cur->next);
     CBEdge::removeEdge(Edges, cur, cur->next);

@@ -1,19 +1,14 @@
 #pragma once
 #include "SceneManager.h"
-#include "SceneHandler.h"
-#include "Button.h"
 #include "Graph.h" // Assuming you have this class
 
-class GraphUI : public SceneManager, public Graph {
-protected:
-    vector<Button*> CodeBlocks;
-    vector<Button*> buttonsOnGraph;
+class GraphUI : public SceneManager {
 public:
-    GraphUI() : Graph(0) {
-        init();
+    GraphUI() {
+        // Default constructor
+        std::cout << "GraphUI Scene Created" << std::endl;
     }
 
-    
     void init() override;
     void drawEdge();
     void initButtons() override;
@@ -26,8 +21,15 @@ public:
     void displayScene() override;
     void displaySceneInCamera() override;
 
-    void drawGraph();
-    //void drawNodeOnGraph(Node* node, Vector2 position);
-    ~GraphUI() {}
+    void updateScene() override {
+        // Implement the update logic for the graph scene
+    }
 
+    void displayScene() override {
+        // Implement the display logic for the graph scene
+    }
+    void displaySceneInCamera() override {
+        // Implement the display logic for the graph scene
+    }
+    
 };

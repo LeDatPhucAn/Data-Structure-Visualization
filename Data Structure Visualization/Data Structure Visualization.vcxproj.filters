@@ -114,12 +114,6 @@
     <ClInclude Include="header\PseudoCode.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="header\tinyfiledialogs.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\reasings.h">
-      <Filter>header</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="source">

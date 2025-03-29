@@ -3,7 +3,7 @@
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
     while (cur) {
-        cur->draw();
+        cur->clickBox->draw();
         cur = cur->next;
     }
     for (auto& edge : Edges) {
@@ -138,15 +138,23 @@ void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
 
     LLNode* cur = this->head;
     while (cur) {
-        cur->setCamera(cam);
-        cur->update();
+        cur->clickBox->setCamera(cam);
+        cur->clickBox->update();
         cur = cur->next;
     }
 }
 void SinglyLinkedListUI::updateScene() {
 
 
+<<<<<<< HEAD
 
+=======
+    LLNode* cur = this->head;
+    while (cur) {
+        if (cur->clickBox->animation)cur->clickBox->animation->update(GetFrameTime());
+        cur = cur->next;
+    }
+>>>>>>> parent of c596338 (updating linkedlist nodes to be buttons)
     SceneHandler::MenuButton->update();
     Button::updateButtons(Buttons);
     Button::updateButtons(CodeBlocks);

@@ -6,7 +6,7 @@
 class LinkedList : public LLNode {
 public:
     LLNode* head;
-    static std::vector<CBEdge*> Edges;
+    static std::vector<Edge*> Edges;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);
     }

@@ -2,13 +2,13 @@
 #include "../header/Edge.h"
 
 #include "../header/Animation.h"
-vector<CBEdge*> LinkedList::Edges;
+vector<Edge*> LinkedList::Edges;
 void LinkedList::adjustPos(LLNode* pHead) {
     LLNode* prev = nullptr;
     while (pHead) {
         if (prev) {
-            pHead->setCenterX(prev->getCenterX() + 200);
-            pHead->setCenterX(pHead->getCenterX());
+            pHead->position.x = prev->position.x + 200;
+            pHead->clickBox->setCenterX(pHead->position.x);
         }
 
         prev = pHead;
@@ -18,15 +18,16 @@ void LinkedList::adjustPos(LLNode* pHead) {
 
 bool LinkedList::remove(int x) {
     if (!head) return false;
-    if (head && head->getNumber() == x) {
+    if (head && head->data == x) {
         LLNode* del = head;
         head = head->next;
 
         if(head){
-            CBEdge::removeEdge(Edges, del, head);
             // adjusting position
-            head->setCenterX(100);
+            head->position.x = 100;
+            head->clickBox->setCenterX(100);
             adjustPos(head);
+            Edge::removeEdge(Edges, del, head);
         }
 
         delete del;
@@ -35,13 +36,15 @@ bool LinkedList::remove(int x) {
     }
     LLNode* cur = head;
     while (cur->next) {
-        if (cur->next->getNumber() == x) {
-            CBEdge::removeEdge(Edges, cur, cur->next);
+        if (cur->next->data == x) {
+            Edge::removeEdge(Edges, cur, cur->next);
             LLNode* temp = cur->next;
-            CBEdge::removeEdge(Edges, temp, temp->next);
+            Edge::removeEdge(Edges, temp, temp->next);
             cur->next = temp->next;
-            CBEdge::addEdge(Edges, cur, cur->next);
+            Edge::addEdge(Edges, cur, cur->next);
             adjustPos(cur);
+            Edge::removeEdge(Edges, cur, temp);
+            Edge::addEdge(Edges,cur, cur->next);
             delete temp;
             temp = nullptr;
             return true;
@@ -54,7 +57,7 @@ bool LinkedList::remove(int x) {
 void LinkedList::printlist() {
     LLNode* cur = head;
     while (cur) {
-        cout << cur->getNumber() << " ";
+        cout << cur->data << " ";
         cur = cur->next;
     }
     cout << endl;
@@ -62,7 +65,7 @@ void LinkedList::printlist() {
 bool LinkedList::search(int x) {
     LLNode* cur = head;
     while (cur) {
-        if (cur->getNumber() == x)return true;
+        if (cur->data == x)return true;
         cur = cur->next;
 
     }
@@ -88,7 +91,7 @@ void LinkedList::insertnode(int x, int pos) {
         LLNode* temp = new LLNode(x,100,100);
         temp->next = head;
         adjustPos(temp);
-        CBEdge::addEdge(Edges, temp, head);
+        Edge::addEdge(Edges, temp, head);
         head = temp;
         return;
     }
@@ -96,11 +99,17 @@ void LinkedList::insertnode(int x, int pos) {
     for (int i = 1; i < pos - 1 && cur; i++) {
         cur = cur->next;
     }
+<<<<<<< HEAD
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
+=======
+
+    LLNode* newnode = new LLNode(x,cur->position.x + 200, cur->position.y);
+
+>>>>>>> parent of c596338 (updating linkedlist nodes to be buttons)
     newnode->next = cur->next;
-    CBEdge::addEdge(Edges, newnode, cur->next);
-    CBEdge::removeEdge(Edges, cur, cur->next);
+    Edge::addEdge(Edges, newnode, cur->next);
+    Edge::removeEdge(Edges, cur, cur->next);
     cur->next = newnode;
     adjustPos(newnode);
-    CBEdge::addEdge(Edges, cur, newnode);
+    Edge::addEdge(Edges, cur, newnode);
 }

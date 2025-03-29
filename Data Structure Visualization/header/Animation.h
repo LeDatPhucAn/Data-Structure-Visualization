@@ -163,46 +163,39 @@ public:
 
 
 
-//class AnimationManager : public SceneManager {
-//private:
-//    std::vector<AnimatedNode*> Nodes;
-//    std::vector<AnimatedEdge*> Edges;
-//    std::vector<Animation*> Animations;
-//    float speed;
-//    bool paused;
-//
-//public:
-//    AnimationManager();
-//
-//    // SceneComponent interface
-//    void init() override;
-//    void initButtons() override;
-//    void updateScene() override;
-//    void displayScene() override;
-//    void displaySceneInCamera() override;
-//    void updateButtonPositions() override;
-//
-//    // Animation control
-//    void addAnimation(vector<Animation*> Animations);
-//    void clearAnimations();
-//    void setPaused(bool pause);
-//    void setSpeed(float newSpeed);
-//    bool isAnimating() const;
-//
-//    // Node management
-//    AnimatedNode* createNode(int value, Vector2 position);
-//    void removeNode(AnimatedNode* node);
-//    AnimatedEdge* createEdge(AnimatedNode* from, AnimatedNode* to, bool directed = true);
-//    void removeEdge(AnimatedEdge* edge);
-//
-//    // Circular linked list animations
-//    void setupCircularLinkedList(const std::vector<int>& values, float centerX, float centerY, float radius);
-//    void insertNodeToSLL(int value, int position = -1);
-//    void removeNodeFromSLL(int position);
-//    void highlightNodeAtPosition(int position, float duration = 0.5f);
-//    void animateTraversal(float duration = 0.5f);
-//    int searchValue(int value);
-//};
+class AnimationManager : public SceneManager {
+private:
+    std::vector<Node*> Nodes;
+    std::vector<Edge*> Edges;
+    std::vector<Animation*> Animations;
+    float speed;
+    bool paused;
+
+public:
+    AnimationManager();
+
+    // SceneComponent interface
+    void init() override;
+    void initButtons() override;
+    void updateScene() override;
+    void displayScene() override;
+    void displaySceneInCamera() override;
+    void updateButtonPositions() override;
+
+    // Animation control
+    void addAnimation(vector<Animation*> Animations);
+    void clearAnimations();
+    void setPaused(bool pause);
+    void setSpeed(float newSpeed);
+    bool isAnimating() const;
+
+
+    void insertNodeToSLL(int value, int position = -1);
+    void removeNodeFromSLL(int position);
+    void highlightNodeAtPosition(int position, float duration = 0.5f);
+    void animateTraversal(float duration = 0.5f);
+    int searchValue(int value);
+};
 //
 //class NodeMoveAnimation : public Animation {
 //private:

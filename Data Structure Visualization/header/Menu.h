@@ -32,6 +32,7 @@ public:
     void updateButtonPositions() {};
 
     void updateScene() override;
+    void updateSceneInCamera(Camera2D cam) {};
 
     void displayScene() override;
 

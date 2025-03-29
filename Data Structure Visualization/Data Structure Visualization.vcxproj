@@ -25,8 +25,11 @@
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\HashTableUI.cpp" />
+    <ClCompile Include="source\LLNode.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
+    <ClCompile Include="source\Node.cpp" />
+    <ClCompile Include="source\PseudoCode.cpp" />
     <ClCompile Include="source\SceneHandler.cpp" />
     <ClCompile Include="source\SinglyLinkedList.cpp" />
     <ClCompile Include="source\SinglyLinkedListUI.cpp" />
@@ -42,7 +45,7 @@
     <ClInclude Include="header\GraphUI.h" />
     <ClInclude Include="header\HashTable.h" />
     <ClInclude Include="header\HashTableUI.h" />
-    <ClInclude Include="header\LinkedListNode.h" />
+    <ClInclude Include="header\LLNode.h" />
     <ClInclude Include="header\Menu.h" />
     <ClInclude Include="header\Node.h" />
     <ClInclude Include="header\PseudoCode.h" />

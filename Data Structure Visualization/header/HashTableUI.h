@@ -30,6 +30,10 @@ public:
     void drawHashTable();
 
     void updateScene() override;
+    void updateSceneInCamera(Camera2D cam) {};
+
+
+    void resetAnimations() {};
 
     void displayScene() override;
     void displaySceneInCamera() override;

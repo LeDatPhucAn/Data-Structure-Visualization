@@ -30,7 +30,9 @@ public:
         isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {
     };
 
-    virtual ~Button() = default;
+    virtual ~Button() {
+        if (animation)delete animation;
+    }
     virtual int getNumber() const { return 0; }
 
     virtual void setPosition(float x, float y);
@@ -205,8 +207,14 @@ public:
         animation(nullptr),
         isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
     };
+    virtual ~CircleButton(){
+        if (animation)delete animation;
+    }
     virtual void setRadius(int r) {
         radius = r;
+    }
+    virtual float getRadius() const{
+        return radius;
     }
     virtual void update();
     virtual void draw() = 0;

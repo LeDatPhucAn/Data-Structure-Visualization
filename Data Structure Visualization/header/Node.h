@@ -10,5 +10,7 @@ public:
     Animation* animation;
     float radius;
     Node(int value, Vector2 pos, float r);
-    virtual ~Node() {}
+    virtual ~Node() {
+        if (animation)delete animation;
+    }
 };

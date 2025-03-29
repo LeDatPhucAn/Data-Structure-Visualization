@@ -5,7 +5,6 @@ void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
     while (cur) {
         cur->clickBox->draw();
-        UI::drawNode(cur);
         cur = cur->next;
     }
     for (auto& edge : Edges) {
@@ -159,7 +158,7 @@ void SinglyLinkedListUI::updateScene() {
 
     LLNode* cur = this->head;
     while (cur) {
-        if (cur->animation)cur->animation->update(GetFrameTime());
+        if (cur->clickBox->animation)cur->clickBox->animation->update(GetFrameTime());
         cur = cur->next;
     }
     SceneHandler::MenuButton->update();

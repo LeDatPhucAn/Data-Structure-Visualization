@@ -28,7 +28,6 @@ bool LinkedList::remove(int x) {
             adjustPos(head);
             Edge::removeEdge(Edges, del, head);
         }
-        delete del->animation;
         delete del;
         del = nullptr;
         return true;
@@ -44,7 +43,6 @@ bool LinkedList::remove(int x) {
             adjustPos(cur);
             Edge::removeEdge(Edges, cur, temp);
             Edge::addEdge(Edges,cur, cur->next);
-            delete temp->animation;
             delete temp;
             temp = nullptr;
             return true;
@@ -75,7 +73,6 @@ void LinkedList::deletelist() {
     while (head) {
         LLNode* del = head;
         head = head->next;
-        delete del->animation;
         delete del;
     }
     head = nullptr;

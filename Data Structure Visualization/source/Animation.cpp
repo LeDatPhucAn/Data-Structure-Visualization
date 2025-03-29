@@ -11,6 +11,10 @@ void Animation::Animate(float deltaTime) {
        completed = true; 
    }
 }
+void CircleButtonInitializeAnimation::update(float deltaTime) {
+    Animate(deltaTime);
+	button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
+}
 void NodeInitializeAnimation::update(float deltaTime) {
     Animate(deltaTime);
 	node->radius = EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration);

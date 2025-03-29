@@ -6,7 +6,6 @@ const int Button::padding = UI::fontSize;
 void Button::deleteButtons(vector<Button*>& Buttons) {
     for (auto button : Buttons) {
         while (button) {
-            if (button->animation)delete button->animation;
             Button* del = button;
             button = button->next;
             delete del;
@@ -25,6 +24,7 @@ void Button::updateButtons(vector<Button*>& Buttons) {
         button->update();
     }
 }
+
 void Button::resetSubAni() {
     Button* cur = this;
     cur = cur->next;

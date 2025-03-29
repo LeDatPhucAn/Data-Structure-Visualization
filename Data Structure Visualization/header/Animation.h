@@ -96,6 +96,19 @@ public:
     void update(float deltaTime) override;
 };
 
+class CircleButtonInitializeAnimation : public Animation {
+private:
+    CircleButton* button;
+    float startRadius;
+    float endRadius;
+public:
+    CircleButtonInitializeAnimation(CircleButton* btn, float duration) : button(btn), Animation(duration) {
+        startRadius = 0;
+        endRadius = btn->getRadius();
+    };
+    void update(float deltaTime) override;
+    void HandleResize() {};
+};
 class NodeInitializeAnimation : public Animation {
 private:
 	Node* node;
@@ -109,6 +122,7 @@ public:
     void update(float deltaTime) override;
     void HandleResize() {};
 };
+
 
 //class AnimatedNode : public Node {
 //private:

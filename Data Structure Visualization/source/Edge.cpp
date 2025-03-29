@@ -53,7 +53,6 @@ void Edge::drawArrowEdge()
 
 	DrawTriangle({toX,toY}, arrowPoint1, arrowPoint2, BLACK);
 }
-
 void Edge::drawTreapEdge() {
 	if (!from || !to) return;
 
@@ -78,6 +77,52 @@ void Edge::removeEdge(vector<Edge*>& Edges, Node* from, Node* to) {
 	for (int i = 0; i < Edges.size(); i++) {
 		if (Edges[i]->from == from && Edges[i]->to == to) {
 			Edges.erase(Edges.begin() + i);
+			return;
+		}
+	}
+}
+#include "../header/Button.h"
+void CBEdge::drawArrowEdge()
+{
+	if (!from || !to) return;
+	float dx = to->getCenterX() - from->getCenterX();
+	float dy = to->getCenterY() - from->getCenterY();
+	float arrowHeadAngle = PI / 6;
+	float arrowHeadLength = thickness*5;
+
+	float theta = atan2(dy, dx);
+
+	float fromX = from->getRadius() * cos(theta) + from->getCenterX();
+	float fromY = from->getRadius() * sin(theta) + from->getCenterY();
+	float toX =  to->getCenterX() - to->getRadius() * cos(theta);
+	float toY =  to->getCenterY() - to->getRadius() * sin(theta);
+
+	float EdgeEndX = toX - arrowHeadLength * cos(arrowHeadAngle);
+	float EdgeEndY = toY - arrowHeadLength * sin(theta);
+	//draw edge
+	
+	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, BLACK);
+
+	//draw arrow head
+
+	float theta1 = theta + arrowHeadAngle;
+	float theta2 = theta - arrowHeadAngle;
+
+	Vector2 arrowPoint1 = { toX - arrowHeadLength * cos(theta1), toY - arrowHeadLength * sin(theta1) };
+	Vector2 arrowPoint2 = { toX - arrowHeadLength * cos(theta2), toY - arrowHeadLength * sin(theta2) };
+
+	DrawTriangle({toX,toY}, arrowPoint1, arrowPoint2, BLACK);
+}
+void CBEdge::addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
+	Edges.push_back(new CBEdge(from, to));
+}
+void CBEdge::removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
+	for (int i = 0; i < Edges.size(); i++) {
+		if (Edges[i]->from == from && Edges[i]->to == to) {
+			CBEdge* del = Edges[i];
+			Edges.erase(Edges.begin() + i);
+			delete del;
+			del = nullptr;
 			return;
 		}
 	}

@@ -68,6 +68,7 @@ void UI::drawNode(Node* node) {
 	if (!node)return;
 	string message = to_string(node->data);
 	DrawRing(node->position, node->radius * 4 / 5, node->radius, 0, 360, 100, BLUE);
+	drawtext2(to_string(node->data), node->position.x, node->position.y, BLUE);
 }
 void UI::drawlink(int X, int Y) {
 	DrawTexture(Icons[0], X, Y, WHITE);

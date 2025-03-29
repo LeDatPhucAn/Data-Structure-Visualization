@@ -198,15 +198,9 @@ public:
     std::function<void()> onClick;
 
     // default color
-    CircleButton(Vector2 cent, float r) : center(cent), radius(r), TextColor(BLUE), FillColor(RAYWHITE), RingColor(BLUE),
-        animation(nullptr),
-        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
-    };
+    CircleButton(Vector2 cent, float r);
 
-    CircleButton(Vector2 cent, float r, Color tc, Color fc, Color rc) : center(cent), radius(r), TextColor(tc), FillColor(fc), RingColor(rc),
-        animation(nullptr),
-        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
-    };
+    CircleButton(Vector2 cent, float r, Color tc, Color fc, Color rc);
     virtual ~CircleButton(){
         if (animation)delete animation;
     }
@@ -215,6 +209,19 @@ public:
     }
     virtual float getRadius() const{
         return radius;
+    }
+    virtual void setCenterX(int x) {
+        center.x = x;
+    }
+    virtual int getCenterX() const {
+        return center.x;
+    }
+
+    virtual void setCenterY(int y) {
+        center.y = y;
+    }
+    virtual int getCenterY() const {
+        return center.y;
     }
     virtual void update();
     virtual void draw() = 0;
@@ -254,22 +261,22 @@ class NumberInputCircle : public InputCircle {
 public:
     int inputNumber;
 
-    // default Number Input Box
+    // default Number Input Circle
     NumberInputCircle(int maxCh)
         : InputCircle(maxCh), inputNumber(0) {
     }
     NumberInputCircle(int maxCh, Color tc, Color fc, Color rc)
         : InputCircle(maxCh, tc, fc, rc), inputNumber(0) {
     }
-    NumberInputCircle(Vector2 cent, float r, int maxCh)
-        : InputCircle(cent, r, maxCh), inputNumber(0) {
+    NumberInputCircle(Vector2 cent, float r, int input, int maxCh)
+        : InputCircle(cent, r, maxCh) {
+        setNumber(input);
     }
-    NumberInputCircle(Vector2 cent, float r, int maxCh, Color tc, Color fc, Color rc)
-        : InputCircle(cent, r, maxCh, tc, fc, rc), inputNumber(0) {
+    NumberInputCircle(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
+        : InputCircle(cent, r, maxCh, tc, fc, rc) {
+        setNumber(input);
     }
-    virtual void setCenterX(int x) {
-        center.x = x;
-    }
+    
     virtual void setNumber(int x) {
         inputNumber = x;
         inputText = to_string(x);
@@ -291,11 +298,11 @@ public:
     NumberInputCircleInCamera(int maxCh, Color tc, Color fc, Color rc)
         : NumberInputCircle(maxCh, tc, fc, rc) {
     }
-    NumberInputCircleInCamera(Vector2 cent, float r, int maxCh)
-        : NumberInputCircle(cent, r, maxCh) {
+    NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh)
+        : NumberInputCircle(cent, r, input, maxCh) {
     }
-    NumberInputCircleInCamera(Vector2 cent, float r, int maxCh, Color tc, Color fc, Color rc)
-        : NumberInputCircle(cent, r, maxCh, tc, fc, rc) {
+    NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
+        : NumberInputCircle(cent, r, input, maxCh, tc, fc, rc) {
     }
     void setCamera(Camera2D cam) {
         camera = cam;

@@ -456,6 +456,14 @@ void TextBox::draw() {
     }
 }
 
+CircleButton::CircleButton(Vector2 cent, float r) : center(cent), radius(r), TextColor(BLUE), FillColor(RAYWHITE), RingColor(BLUE),
+isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
+    animation = new CircleButtonInitializeAnimation(this, 1);
+};
+CircleButton::CircleButton(Vector2 cent, float r, Color tc, Color fc, Color rc) : center(cent), radius(r), TextColor(tc), FillColor(fc), RingColor(rc),
+isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
+    animation = new CircleButtonInitializeAnimation(this, 1);
+};
 void CircleButton::hover() {
     RingColor = RED;
     TextColor = RED;

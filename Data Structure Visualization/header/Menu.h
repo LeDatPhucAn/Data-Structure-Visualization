@@ -36,6 +36,5 @@ public:
 
     void displayScene() override;
 
-    void resetAnimations() {};
     void displaySceneInCamera() {}
 };

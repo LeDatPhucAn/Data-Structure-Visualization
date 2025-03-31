@@ -1,5 +1,6 @@
 #include "../header/Button.h"
 #include "../header/Animation.h"
+#include "../header/SceneHandler.h"
 bool Button::isCollision = false;
 const int Button::padding = UI::fontSize;
 
@@ -472,7 +473,6 @@ void CircleButton::hover() {
 void CircleButton::unhover() {
     RingColor = BLUE;
     TextColor = BLUE;
-
 }
 
 void CircleButton::click() {
@@ -644,11 +644,10 @@ void NumberInputCircleInCamera::update() {
     if (animation && !animation->isCompleted())animation->update(GetFrameTime());
 
     framesCounter++;
-    Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
     if (GetGestureDetected() == GESTURE_TAP) {
         Texting = 0;
     }
-    if (CheckCollisionPointCircle(mouseWorldPos, center, radius)) {
+    if (CheckCollisionPointCircle(SceneHandler::mouseWorldPos, center, radius)) {
 
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
 

@@ -289,7 +289,6 @@ public:
 };
 class NumberInputCircleInCamera : public NumberInputCircle {
 private:
-    Camera2D camera;
 public:
     // default Number Input Box
     NumberInputCircleInCamera(int maxCh)
@@ -303,9 +302,6 @@ public:
     }
     NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
         : NumberInputCircle(cent, r, input, maxCh, tc, fc, rc) {
-    }
-    void setCamera(Camera2D cam) {
-        camera = cam;
     }
     void update() override;
 };

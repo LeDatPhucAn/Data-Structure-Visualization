@@ -144,20 +144,21 @@ void SinglyLinkedListUI::displayScene() {
     Button::drawButtons(CodeBlocks);
 }
 void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
+    /*Button::isCollision = false;
+
+    LLNode* cur = this->head;
+    while (cur) {
+        cur->update();
+        cur = cur->next;
+    }*/
+}
+void SinglyLinkedListUI::updateScene() {
+
     Button::isCollision = false;
 
     LLNode* cur = this->head;
     while (cur) {
-        cur->setCamera(cam);
         cur->update();
-        cur = cur->next;
-    }
-}
-void SinglyLinkedListUI::updateScene() {
-
-
-    LLNode* cur = this->head;
-    while (cur) {
         if (cur->animation)cur->animation->update(GetFrameTime());
         cur = cur->next;
     }

@@ -321,7 +321,7 @@ void NumberInputBox::update() {
         }
         else {
             unhover();
-        }
+        }    
         if (animation && !animation->isCompleted())animation->update(GetFrameTime());
 
     }
@@ -390,7 +390,84 @@ void NumberInputBox::clear(){
     InputBox::clear();
     inputNumber = 0;
 }
+void NumberInputBoxInCamera::update() {
+    if (!head || head->isActivated) {
 
+        if (CheckCollisionPointRec(SceneHandler::mouseWorldPos, rect)) {
+            hover();
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                isActivated = !isActivated; // Toggle state
+                if (!head && isActivated) {
+                    resetSubAni();
+                }
+            }
+            Button::isCollision = true;
+        }
+        else {
+            unhover();
+        }
+        if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
+    }
+
+    // Recursively update the next button
+    if (next) {
+        next->update();
+    }
+
+    if (!head || head->isActivated) {
+        framesCounter++;
+        if (GetGestureDetected() == GESTURE_TAP) {
+            Texting = 0;
+        }
+        if (CheckCollisionPointRec(SceneHandler::mouseWorldPos, rect))
+        {
+            hover();
+
+            // Set the window's cursor to the I-Beam
+            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+            if (GetGestureDetected() == GESTURE_TAP) {
+                Texting = 1;
+            }
+        }
+        if (Texting) {
+
+            // Get char pressed (unicode character) on the queue
+            int key = GetCharPressed();
+
+            // Check if more characters have been pressed on the same frame
+            while (key > 0)
+            {
+                // NOTE: Only numbers
+                if (key >= '0' && key <= '9' && (inputText.size() < maxChars))
+                {
+                    inputText.push_back(key);
+                }
+
+                key = GetCharPressed();  // Check next character in the queue
+            }
+
+            double currenttime = GetTime();
+            if (IsKeyDown(KEY_BACKSPACE) && currenttime - lastDeletedTime >= 0.1 && inputText.size() != 0)
+            {
+                inputText.pop_back();
+                lastDeletedTime = currenttime;
+            }
+
+            if (!inputText.empty()) {
+                inputNumber = stoi(inputText);
+            }
+            else {
+                inputNumber = 0;
+            }
+
+            if (IsKeyPressed(KEY_ENTER)) {
+                if (onClick)onClick();
+            }
+        }
+    }
+}
 void Button::update() {
     if(!head || head->isActivated){
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {

@@ -91,11 +91,16 @@ void SinglyLinkedListUI::initButtons() {
         this->deletelist();
         this->deleteEdges();
         };
+    Button::insertHeadButton(Buttons, new TextBox("LoadFile"));
+    Buttons[4]->animation = new ButtonMoveXAnimation(Buttons[4], 0.5);
+    Buttons[4]->onClick = [this]() {
+        this->loadFromFile();
+        };
 
     Button::insertHeadButton(Buttons, new TextBox("Random"));
-    Buttons[4]->animation = new ButtonMoveXAnimation(Buttons[4], 0.5);
+    Buttons[5]->animation = new ButtonMoveXAnimation(Buttons[5], 0.5);
 
-    Buttons[4]->onClick = [this]() {
+    Buttons[5]->onClick = [this]() {
         this->deletelist();
         this->deleteEdges();
         int n = rand() % 10;

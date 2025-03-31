@@ -99,6 +99,7 @@ public:
 
 class NumberInputBox : public InputBox {
 private:
+protected:
     int inputNumber;
 public:
 
@@ -135,7 +136,7 @@ public:
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
-    void setNumber(int x) {
+    virtual void setNumber(int x) {
         inputNumber = x;
     }
     int getNumber() const override {
@@ -143,6 +144,44 @@ public:
     };
     void update() override;
     void clear() override;
+};
+class NumberInputBoxInCamera : public NumberInputBox {
+public:
+
+    NumberInputBoxInCamera() : NumberInputBox(0) {
+    }
+    // default Number Input Box
+    NumberInputBoxInCamera(int maxCh) : NumberInputBox(maxCh) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+    NumberInputBoxInCamera(int maxCh, Color tc, Color fc, Color olc) : NumberInputBox(maxCh, tc, fc, olc) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+    NumberInputBoxInCamera(Vector2 pos, int maxCh) : NumberInputBox(pos.x,pos.y,maxCh) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    
+    }NumberInputBoxInCamera(Vector2 pos, int maxCh, Color tc, Color fc, Color olc) : NumberInputBox(pos.x,pos.y,maxCh, tc, fc, olc) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+    NumberInputBoxInCamera(float x, float y, int maxCh) : NumberInputBox(x, y, maxCh) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+    NumberInputBoxInCamera(float x, float y, int maxCh, Color tc, Color fc, Color olc) : NumberInputBox(x, y, maxCh, tc, fc, olc) {
+        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+    void update() override;
 };
 
 class TextBox : public Button {

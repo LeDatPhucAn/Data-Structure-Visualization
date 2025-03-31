@@ -1,7 +1,39 @@
 #include "../header/SinglyLinkedList.h"
 #include "../header/Edge.h"
 #include "../header/Animation.h"
+#include "../header/tinyfiledialogs.h"
+#include <fstream>
 vector<CBEdge*> LinkedList::Edges;
+
+void LinkedList::loadFromFile() {
+    const char* filter[] = { "*.txt" };
+    const char* filePath = tinyfd_openFileDialog(
+        "Select a text file", // Title
+        "", // Default path (empty = open from last used folder)
+        1, // Number of filter patterns
+        filter, // Filter patterns
+        "Text file (*.txt)", // Filter description
+        0 // Single file seclection mode
+    );
+
+    if (filePath) {
+        cout << "Trying to open the file: " << filePath << "\n";
+        ifstream fin(filePath);
+        if (fin.is_open()) {
+            deletelist();
+            deleteEdges();
+            string line;
+            int pos = 1;
+            int key = 0;
+            while (fin>>key) {
+                insertnode(key,pos);
+                pos++;
+            }
+        }
+        else cerr << "Error: Can not open file\n";
+        fin.close();
+    }
+}
 void LinkedList::adjustPos(LLNode* pHead) {
     LLNode* prev = nullptr;
     while (pHead) {

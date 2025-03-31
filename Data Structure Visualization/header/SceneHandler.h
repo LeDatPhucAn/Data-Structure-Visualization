@@ -19,6 +19,7 @@ private:
 protected:
     SceneManager* currentSceneObject;
 public:
+    static Vector2 mouseWorldPos;
     static Button* MenuButton;
     SceneHandler();
     ~SceneHandler();

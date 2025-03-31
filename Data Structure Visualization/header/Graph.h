@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <set>
+#include <algorithm>
 #include "Edge.h"
 #include "Node.h"
 #include "raylib.h"

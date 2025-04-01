@@ -43,6 +43,21 @@
     <ClCompile Include="source\HashTableUI.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\PseudoCode.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tinyfiledialogs.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GraphUI.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\LLNode.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Node.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\HashTable.h">
@@ -51,7 +66,7 @@
     <ClInclude Include="header\Graph.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="header\LinkedListNode.h">
+    <ClInclude Include="header\LLNode.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="header\Node.h">

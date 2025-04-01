@@ -29,6 +29,7 @@ public:
     void displayScene() override;
     void displaySceneInCamera() override;
     void updateScene() override;
+    void updateSceneInCamera(Camera2D cam) override;
 };
 
 

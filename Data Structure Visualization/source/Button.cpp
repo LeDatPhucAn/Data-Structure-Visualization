@@ -1,4 +1,6 @@
 #include "../header/Button.h"
+#include "../header/Animation.h"
+#include "../header/SceneHandler.h"
 bool Button::isCollision = false;
 const int Button::padding = UI::fontSize;
 
@@ -23,6 +25,7 @@ void Button::updateButtons(vector<Button*>& Buttons) {
         button->update();
     }
 }
+
 void Button::resetSubAni() {
     Button* cur = this;
     cur = cur->next;
@@ -32,6 +35,7 @@ void Button::resetSubAni() {
         cur = cur->next;
     }
 }
+
 void Button::setPosition(float x, float y) {
     rect.x = x;
     rect.y = y;
@@ -104,6 +108,7 @@ void Button::unclick() {
     }
 }
 
+
 void Button::insertHeadButton(vector<Button*>& Buttons, Button* button) {
     if (Buttons.empty()) {
         Buttons.push_back(button);
@@ -131,7 +136,7 @@ void Button::insertSubButton(Button* button) {
     cur->next = button;
     button->head = this;
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
-    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.5);
+    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.3);
 
 }
 
@@ -144,7 +149,7 @@ void Button::insertSubButton(Button* button, std::function<void()> function) {
     button->head = this;
     button->onClick = function;
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
-    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.5);
+    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.3);
 
 }
 
@@ -189,9 +194,11 @@ void InputBox::unhover() {
 void InputBox::draw() {
     if(!head || head->isActivated) {
         DrawRectangleRec(rect, FillColor);
-        DrawText(inputText.c_str(), (int)rect.x + 5, (int)rect.y + 8, UI::fontSize, TextColor);
+        UI::drawtext2(inputText, rect.x + rect.width/2, rect.y+rect.height/2, TextColor);
         if (Texting && (framesCounter / 20) % 2 == 0) {
-            DrawText("_", (int)rect.x + 8 + MeasureText(inputText.c_str(), UI::fontSize), (int)rect.y + 12, UI::fontSize, TextColor);
+            Vector2 textSize = MeasureTextEx(UI::font, inputText.c_str(), UI::fontSize, UI::spacing);
+            string underscore = inputText + "_";
+            DrawText(underscore.c_str(), rect.x + rect.width / 2 - textSize.x / 2 , rect.y + rect.height / 2 - UI::fontSize / 2,  UI::fontSize, TextColor);
         }
         DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
     }
@@ -260,13 +267,6 @@ void InputBox::clear(){
     inputText.clear();
 }
 
-void NumberInputBox::hover() {
-    InputBox::hover();
-}
-
-void NumberInputBox::unhover() {
-    InputBox::unhover();
-}
 
 void NumberInputBox::update() {
     if (!head || head->isActivated) {
@@ -348,6 +348,7 @@ void NumberInputBox::update() {
 }
 
 
+
 void NumberInputBox::clear(){
     InputBox::clear();
     inputNumber = 0;
@@ -355,7 +356,6 @@ void NumberInputBox::clear(){
 
 void Button::update() {
     if(!head || head->isActivated){
-
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             hover();
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
@@ -416,3 +416,249 @@ void TextBox::draw() {
         next->draw();
     }
 }
+
+CircleButton::CircleButton(Vector2 cent, float r) : center(cent), radius(r), TextColor(BLUE), FillColor(RAYWHITE), RingColor(BLUE),
+isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
+    animation = new CircleButtonInitializeAnimation(this, 1);
+};
+CircleButton::CircleButton(Vector2 cent, float r, Color tc, Color fc, Color rc) : center(cent), radius(r), TextColor(tc), FillColor(fc), RingColor(rc),
+isActivated(false), isHovered(false), isClicked(false), onClick(nullptr) {
+    animation = new CircleButtonInitializeAnimation(this, 1);
+};
+void CircleButton::hover() {
+    RingColor = RED;
+    TextColor = RED;
+}
+
+void CircleButton::unhover() {
+    RingColor = BLUE;
+    TextColor = BLUE;
+}
+
+void CircleButton::click() {
+    if (!isClicked) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(TextColor, 30);
+        isClicked = true;
+    }
+}
+
+void CircleButton::unclick() {
+    if (isClicked) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(TextColor, 30);
+        isClicked = false;
+    }
+}
+
+void CircleButton::update() {
+    if (CheckCollisionPointCircle(GetMousePosition(),center,radius)) {
+        hover();
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated; // Toggle state
+            if (onClick) onClick();
+        }
+        Button::isCollision = true;
+    }
+    else {
+        unhover();
+    }
+    if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+}
+
+void InputCircle::update() {
+    
+    if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
+    framesCounter++;
+    if (GetGestureDetected() == GESTURE_TAP) {
+        Texting = 0;
+    }
+    if (CheckCollisionPointCircle(GetMousePosition(), center,radius)) {
+
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+        Button::isCollision = true;
+
+        hover();
+        if (GetGestureDetected() == GESTURE_TAP) {
+            Texting = 1;
+        }
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated; // Toggle state
+        }
+    }
+    else {
+        unhover();
+    }
+
+    if (Texting) {
+        int key = GetCharPressed();
+        while (key > 0) {
+            if ((key >= 32) && (key <= 125) && (inputText.size() < maxChars)) {
+                inputText += static_cast<char>(key);
+            }
+            key = GetCharPressed();
+        }
+        double currenttime = GetTime();
+        if (IsKeyPressed(KEY_BACKSPACE) && currenttime - lastDeletedTime >= 0.1 && !inputText.empty()) {
+            inputText.pop_back();
+            lastDeletedTime = currenttime;
+        }
+
+        if (IsKeyPressed(KEY_ENTER)) {
+            if (onClick)onClick();
+        }
+    }
+}
+
+void InputCircle::draw() {
+    //draw the filled circle
+    DrawCircleV(center, radius * 4 / 5, FillColor);
+
+    //draw the ring
+    DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, RingColor);
+    
+    UI::drawtext2(inputText, center.x,center.y, TextColor);
+    if (Texting && (framesCounter / 20) % 2 == 0) {
+        Vector2 textSize = MeasureTextEx(UI::font, inputText.c_str(), UI::fontSize, UI::spacing);
+        string underscore = inputText + "_";
+        
+        DrawText(underscore.c_str(), center.x - textSize.x / 2, center.y - UI::fontSize / 2, UI::fontSize, TextColor);
+
+    }
+}
+void InputCircle::clear() {
+    inputText.clear();
+}
+
+
+void NumberInputCircle::update() {
+    if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
+    framesCounter++;
+    if (GetGestureDetected() == GESTURE_TAP) {
+        Texting = 0;
+    }
+    if (CheckCollisionPointCircle(GetMousePosition(), center, radius)) {
+
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+        Button::isCollision = true;
+
+        hover();
+        if (GetGestureDetected() == GESTURE_TAP) {
+            Texting = 1;
+        }
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated; // Toggle state
+        }
+    }
+    else {
+        unhover();
+    }
+
+    if (Texting) {
+
+        // Get char pressed (unicode character) on the queue
+        int key = GetCharPressed();
+
+        // Check if more characters have been pressed on the same frame
+        while (key > 0)
+        {
+            // NOTE: Only numbers
+            if (key >= '0' && key <= '9' && (inputText.size() < maxChars))
+            {
+                inputText.push_back(key);
+            }
+
+            key = GetCharPressed();  // Check next character in the queue
+        }
+
+        double currenttime = GetTime();
+        if (IsKeyDown(KEY_BACKSPACE) && currenttime - lastDeletedTime >= 0.1 && inputText.size() != 0)
+        {
+            inputText.pop_back();
+            lastDeletedTime = currenttime;
+        }
+
+        if (!inputText.empty()) {
+            inputNumber = stoi(inputText);
+        }
+        else {
+            inputNumber = 0;
+        }
+
+        if (IsKeyPressed(KEY_ENTER)) {
+            if (onClick)onClick();
+        }
+    }
+}
+
+void NumberInputCircle::clear() {
+    InputCircle::clear();
+    inputNumber = 0;
+}
+void NumberInputCircleInCamera::update() {
+    if (animation && !animation->isCompleted())animation->update(GetFrameTime());
+
+    framesCounter++;
+    if (GetGestureDetected() == GESTURE_TAP) {
+        Texting = 0;
+    }
+    if (CheckCollisionPointCircle(SceneHandler::mouseWorldPos, center, radius)) {
+
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+        Button::isCollision = true;
+
+        hover();
+        if (GetGestureDetected() == GESTURE_TAP) {
+            Texting = 1;
+        }
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated; // Toggle state
+        }
+    }
+    else {
+        unhover();
+    }
+
+    if (Texting) {
+
+        // Get char pressed (unicode character) on the queue
+        int key = GetCharPressed();
+
+        // Check if more characters have been pressed on the same frame
+        while (key > 0)
+        {
+            // NOTE: Only numbers
+            if (key >= '0' && key <= '9' && (inputText.size() < maxChars))
+            {
+                inputText.push_back(key);
+            }
+
+            key = GetCharPressed();  // Check next character in the queue
+        }
+
+        double currenttime = GetTime();
+        if (IsKeyDown(KEY_BACKSPACE) && currenttime - lastDeletedTime >= 0.1 && inputText.size() != 0)
+        {
+            inputText.pop_back();
+            lastDeletedTime = currenttime;
+        }
+
+        if (!inputText.empty()) {
+            inputNumber = stoi(inputText);
+        }
+        else {
+            inputNumber = 0;
+        }
+
+        if (IsKeyPressed(KEY_ENTER)) {
+            if (onClick)onClick();
+        }
+    }
+}
+

@@ -1,7 +1,7 @@
 #include "../header/SceneHandler.h"
 
 Button* SceneHandler::MenuButton = nullptr;
-
+Vector2 SceneHandler::mouseWorldPos = GetMousePosition();
 SceneHandler::SceneHandler() {
 
     // initialize menu button
@@ -53,7 +53,8 @@ void SceneHandler::updateCamera() {
     float wheel = GetMouseWheelMove();
     if (wheel != 0) {
         // Get the world point that is under the mouse
-        Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+        mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+
         // Set the offset to where the mouse is
         camera.offset = GetMousePosition();
 
@@ -67,7 +68,11 @@ void SceneHandler::updateCamera() {
 
         // limit the values of zoom
         camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
+
+
     }
+    mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+
 }
 
 
@@ -91,10 +96,12 @@ void SceneHandler::updateCurrentScene() {
         if (getCurrentScene() != MENU) {
 
             updateCamera();
-        
+            currentSceneObject->updateSceneInCamera(camera);
+
         }
 
         currentSceneObject->updateScene();
+
     }
 }
 
@@ -111,8 +118,8 @@ void SceneHandler::displayCurrentScene() {
             rlRotatef(90, 1, 0, 0);
             DrawGrid(1000, 100);
             rlPopMatrix();
-
             currentSceneObject->displaySceneInCamera();
+
             EndMode2D();
 
             

@@ -1,6 +1,5 @@
 #include "../header/Animation.h"
 
-
 void Animation::Animate(float deltaTime) {
    if (completed) return;
    elapsed += deltaTime;

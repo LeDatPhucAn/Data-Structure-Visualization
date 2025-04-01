@@ -10,7 +10,7 @@ SceneHandler::SceneHandler() {
     MenuButton->onClick = [this]() {
         this->changeScene(MENU);
         };
-	MenuButton->animation = new ButtonMoveXAnimation(MenuButton, 0.5);
+
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
@@ -19,7 +19,6 @@ SceneHandler::SceneHandler() {
     scenes[HASHTABLE] = new HashTableUI();
     scenes[TREAP] = new TreapUI();
     scenes[GRAPH] = new GraphUI();
-
     // Initialize other scenes as needed
     changeScene(MENU);
 }
@@ -36,10 +35,10 @@ int SceneHandler::getCurrentScene() {
 }
 
 void SceneHandler::changeScene(Scene newScene) {
-    if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
-    currentSceneObject->CurrentScene = newScene;
-    
+    if (currentSceneObject) {
+        currentSceneObject->CurrentScene = newScene;
+    }
 }
 
 void SceneHandler::updateCamera() {
@@ -94,7 +93,7 @@ void SceneHandler::updateCurrentScene() {
             UI::lastScreenHeight = UI::screenHeight;
         }
 
-        
+
         if (getCurrentScene() != MENU) {
 
             updateCamera();
@@ -124,17 +123,15 @@ void SceneHandler::displayCurrentScene() {
 
             EndMode2D();
 
-            
+
         }
         else {
             UI::drawBackground();
 
             UI::drawLogo();
-
-            
         }
 
-        
+
         // display permanent objects
         currentSceneObject->displayScene();
     }
@@ -142,5 +139,5 @@ void SceneHandler::displayCurrentScene() {
     // Draw mouse reference
     DrawCircleV(GetMousePosition(), 4, DARKGRAY);
     DrawTextEx(GetFontDefault(), TextFormat("[%i, %i]", GetMouseX(), GetMouseY()),
-    Vector2Add(GetMousePosition(), { -44, -24 }), 20, 2, BLACK);
+        Vector2Add(GetMousePosition(), { -44, -24 }), 20, 2, BLACK);
 }

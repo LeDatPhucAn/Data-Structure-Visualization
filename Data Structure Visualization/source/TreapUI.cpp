@@ -1,19 +1,19 @@
 #include "../header/TreapUI.h"
 #include "../header/PseudoCode.h"
-
 const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
 
 TreapUI::TreapUI() : root(nullptr) {
     init();
 }
 
+
 void TreapUI::insert(int key, int priority) {
     root = treap.insert(root, ROOT_POS, key, priority);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
-void TreapUI::loadFromFile(){
-    const char* filter[] = {"*.txt"};
+void TreapUI::loadFromFile() {
+    const char* filter[] = { "*.txt" };
     const char* filePath = tinyfd_openFileDialog(
         "Select a text file", // Title
         "", // Default path (empty = open from last used folder)
@@ -23,17 +23,17 @@ void TreapUI::loadFromFile(){
         0 // Single file seclection mode
     );
 
-    if(filePath){
+    if (filePath) {
         cout << "Trying to open the file: " << filePath << endl;
         ifstream fin(filePath);
-        if(fin.is_open()){
+        if (fin.is_open()) {
             clear();
             string line;
-            while(getline(fin, line)){
+            while (getline(fin, line)) {
                 istringstream iss(line);
                 int key = 0, priority = 0;
-                if(iss >> key){
-                    if(iss >> priority) insert(key, priority);
+                if (iss >> key) {
+                    if (iss >> priority) insert(key, priority);
                     else insert(key);
                 }
             }
@@ -44,7 +44,7 @@ void TreapUI::loadFromFile(){
 
 void TreapUI::search(int key) {
     TreapNode* curr = treap.getRoot();
-    
+
 }
 
 void TreapUI::remove(int key) {
@@ -56,6 +56,7 @@ void TreapUI::clear() {
     treap.Treap::clear();
     this->root = nullptr;
 }
+
 
 void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
     if (!root) return;
@@ -77,6 +78,7 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
         reposition(static_cast<TreapNode*> (root->rightEdge->to), rightPos, newXOffset, yOffset);
     }
 }
+
 
 void TreapUI::drawTreapNode(TreapNode* curr) {
     if (!curr) return;
@@ -137,12 +139,12 @@ void TreapUI::init() {
 
 void TreapUI::initButtons() {
 
-    /// Code Blocks
     RectButton* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
     OpenCodeBlocks->rect.y = UI::screenHeight / 4;
     OpenCodeBlocks->rect.height = 0;
     OpenCodeBlocks->isActivated = true;
+    RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
     RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
 
     /// Buttons
@@ -160,7 +162,7 @@ void TreapUI::initButtons() {
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PriorityInput]() {
         if (PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
-        else this->insert(ValueInput->getNumber());
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PriorityInput)->clear();
@@ -174,7 +176,7 @@ void TreapUI::initButtons() {
     Buttons[1]->insertSubButton(Value1);
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
-        this->remove(ValueInput1->getNumber());
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
@@ -187,7 +189,7 @@ void TreapUI::initButtons() {
     Buttons[2]->insertSubButton(Value2);
     Buttons[2]->insertSubButton(ValueInput2);
     Buttons[2]->insertSubButton(Enter2, [this, ValueInput2]() {
-        this->search(ValueInput2->getNumber());
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
@@ -207,7 +209,7 @@ void TreapUI::initButtons() {
         }
         };
 
-    RectButton::insertHeadButton(Buttons, new TextBox(" Clear ",0,0, WHITE, { 214, 102, 49, 255 }, DARKGRAY));
+    RectButton::insertHeadButton(Buttons, new TextBox(" Clear ", 0, 0, WHITE, { 214, 102, 49, 255 }, DARKGRAY));
     Buttons[5]->onClick = [this]() {
         this->clear();
         };
@@ -221,21 +223,23 @@ void TreapUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
 }
-
 void TreapUI::updateButtonPositions() {
+
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
 
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
-
+    RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
-
 void TreapUI::updateScene() {
+
     Button::isCollision = false;
+
 
     SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
+
 
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

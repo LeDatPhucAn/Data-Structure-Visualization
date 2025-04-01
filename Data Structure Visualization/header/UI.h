@@ -13,7 +13,7 @@ class UI {
 public:
 	static Font font;
 	static constexpr float spacing = 2.0f;
-	static constexpr float fontSize = 30.0f;
+	static constexpr float fontSize = 20.0f;
 	UI();
 
 	bool menuhovered = false;
@@ -25,7 +25,6 @@ public:
 	static vector <Texture2D> Buttons;
 	static vector<Texture2D> selectedButtons;
 	void initTextures();
-	
 	
 	static void drawBackground();
 	static void drawLogo();

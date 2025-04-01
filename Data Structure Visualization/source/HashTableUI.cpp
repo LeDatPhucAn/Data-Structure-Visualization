@@ -1,8 +1,8 @@
+
 #include "../header/UI.h"
 #include "../header/HashTableUI.h"
 #include "../header/SceneHandler.h"
 #include "../header/Button.h"
-#include "../header/PseudoCode.h"
 
 void HashTableUI::init() {
     insertHashTable(10); // example
@@ -12,7 +12,6 @@ void HashTableUI::init() {
 
     initButtons();
 }
-
 void HashTableUI::initButtons() {
 
     /// Code Blocks
@@ -22,6 +21,7 @@ void HashTableUI::initButtons() {
     OpenCodeBlocks->rect.height = 0;
     OpenCodeBlocks->isActivated = true;
     RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
+
 
     /// Buttons
     RectButton* InsertButton = new TextBox("Insert", 100, UI::screenHeight * 3 / 4);
@@ -74,13 +74,13 @@ void HashTableUI::initButtons() {
 
 
 void HashTableUI::updateButtonPositions() {
+
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
 
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
-
 void HashTableUI::drawHashTable() {
     for (int i = 0; i < size; ++i) {
         float bucketX = startX + i * (Width + spacing);
@@ -117,13 +117,16 @@ void HashTableUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
 }
-
 void HashTableUI::updateScene() {
+
     Button::isCollision = false;
+
 
     SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 
+
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
+

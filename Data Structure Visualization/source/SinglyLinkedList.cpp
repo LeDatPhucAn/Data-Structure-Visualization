@@ -104,13 +104,11 @@ void LinkedList::deletelist() {
         head = head->next;
         delete del;
     }
-    head = nullptr;
 }
 void LinkedList::deleteEdges() {
     for (auto edge : Edges) {
         delete edge;
     }
-    Edges.clear();
 }
 void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
@@ -125,7 +123,7 @@ void LinkedList::insertnode(int x, int pos) {
         return;
     }
     LLNode* cur = head;
-    for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
+    for (int i = 1; i < pos - 1 && cur; i++) {
         cur = cur->next;
     }
 

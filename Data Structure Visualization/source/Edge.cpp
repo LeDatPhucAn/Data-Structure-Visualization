@@ -15,7 +15,7 @@ void Edge::drawEdge() {
 	float fromX = from->radius * cos(theta) + from->position.x;
 	float fromY = from->radius * sin(theta) + from->position.y;
 	float toX = -to->radius * cos(theta) + to->position.x;
-	float toY = -to->radius * sin(theta) + to->position.y;
+	float toY = to->radius * sin(theta) + to->position.y;
 	DrawLineEx({fromX,fromY}, {toX,toY}, thickness, BLACK);
 }
 //---------------------------------------------------------------------

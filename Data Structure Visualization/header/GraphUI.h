@@ -1,7 +1,5 @@
 #pragma once
 #include "SceneManager.h"
-#include "SceneHandler.h"
-#include "Button.h"
 #include "Graph.h" // Assuming you have this class
 
 class GraphUI : public SceneManager, public Graph {
@@ -9,13 +7,14 @@ protected:
     vector<RectButton*> CodeBlocks;
     vector<RectButton*> buttonsOnGraph;
 public:
-    GraphUI() : Graph(0) {
-        init();
+    GraphUI() {
+        // Default constructor
+        std::cout << "GraphUI Scene Created" << std::endl;
     }
     ~GraphUI() {
         Button::deleteButtons<RectButton>(buttonsOnGraph);
     }
-    
+
     void init() override;
     void drawEdge();
     void initButtons() override;

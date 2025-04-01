@@ -6,13 +6,15 @@
 
 class GraphUI : public SceneManager, public Graph {
 protected:
-    vector<Button*> CodeBlocks;
-    vector<Button*> buttonsOnGraph;
+    vector<RectButton*> CodeBlocks;
+    vector<RectButton*> buttonsOnGraph;
 public:
     GraphUI() : Graph(0) {
         init();
     }
-
+    ~GraphUI() {
+        Button::deleteButtons<RectButton>(buttonsOnGraph);
+    }
     
     void init() override;
     void drawEdge();
@@ -28,6 +30,5 @@ public:
 
     void drawGraph();
     //void drawNodeOnGraph(Node* node, Vector2 position);
-    ~GraphUI() {}
 
 };

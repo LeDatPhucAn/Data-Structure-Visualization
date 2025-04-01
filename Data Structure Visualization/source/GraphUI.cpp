@@ -6,18 +6,18 @@ void GraphUI::init() {
 }
 void GraphUI::displayScene() {
 	SceneHandler::MenuButton->draw();
-	Button::drawButtons(buttonsOnGraph);
+	Button::drawButtons<RectButton>(buttonsOnGraph);
 
 
 }
 void GraphUI::updateScene() {
 	Button::isCollision = false;
 	SceneHandler::MenuButton->update();
-	Button::updateButtons(buttonsOnGraph);
+	Button::updateButtons<RectButton>(buttonsOnGraph);
 	if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 void GraphUI::initButtons() {
-	Button::insertHeadButton(buttonsOnGraph, 
+	RectButton::insertHeadButton(buttonsOnGraph, 
 		new TextBox("Add Node", 100, UI::screenHeight * 3 / 4));
 	//buttonsOnGraph[0]->onClick = [this]
 }

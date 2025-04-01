@@ -1,7 +1,7 @@
 #include "../header/SceneHandler.h"
 #include "../header/reasings.h"
 #include "../header/Animation.h"
-Button* SceneHandler::MenuButton = nullptr;
+RectButton* SceneHandler::MenuButton = nullptr;
 Vector2 SceneHandler::mouseWorldPos = GetMousePosition();
 SceneHandler::SceneHandler() {
 

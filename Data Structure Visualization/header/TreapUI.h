@@ -13,8 +13,8 @@ class TreapUI : public SceneManager {
 private:
     Treap treap;
     TreapNode* root = nullptr;
-    vector<Button*>Buttons;
-    vector<Button*>CodeBlocks;
+    vector<RectButton*>Buttons;
+    vector<RectButton*>CodeBlocks;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 5;
@@ -22,7 +22,6 @@ private:
     void drawTreapNode(TreapNode* curr);
     void drawTreapLink(Edge* edge);
     void drawTreap(TreapNode* curr);
-    void deleteButtons();
 public:
     void insert(int key, int priority = rand());
     void loadFromFile();
@@ -32,8 +31,8 @@ public:
 
     TreapUI();
     ~TreapUI() {
-        Button::deleteButtons(Buttons);
-        Button::deleteButtons(CodeBlocks);
+        Button::deleteButtons<RectButton>(Buttons);
+        Button::deleteButtons<RectButton>(CodeBlocks);
     }
     void init() override;
     void initButtons() override;

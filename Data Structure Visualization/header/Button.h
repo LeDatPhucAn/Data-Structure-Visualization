@@ -3,89 +3,169 @@
 #include "raylib.h"
 #include "UI.h"
 #include <sstream>
+#include <memory>
+// ### InputHandler Class
+class InputHandler {
+protected:
+    std::string inputText;
+    bool texting;
+    double lastDeletedTime;
+    int maxChars;
+    int framesCounter;
+
+public:
+    InputHandler(int maxCh)
+        : inputText(""), texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
+    }
+
+    virtual ~InputHandler() = default;
+
+    virtual bool isAllowedChar(char c) const { return c >= 32 && c <= 125; } // Printable ASCII
+
+    void update() {
+        framesCounter++;
+        if (!texting) return;
+
+        int key = GetCharPressed();
+        while (key > 0) {
+            if (isAllowedChar(static_cast<char>(key)) && inputText.size() < maxChars) {
+                inputText += static_cast<char>(key);
+            }
+            key = GetCharPressed();
+        }
+
+        double currentTime = GetTime();
+        if (IsKeyPressed(KEY_BACKSPACE) && currentTime - lastDeletedTime >= 0.1 && !inputText.empty()) {
+            inputText.pop_back();
+            lastDeletedTime = currentTime;
+        }
+    }
+    void setText(string s) { inputText = s; }
+    const std::string& getText() const { return inputText; }
+    bool isTexting() const { return texting; }
+    void setTexting(bool state) { texting = state; }
+    virtual void clear() { inputText.clear(); }
+    int getFramesCounter() const { return framesCounter; }
+};
+
+// ### NumericInputHandler Subclass
+class NumericInputHandler : public InputHandler {
+public:
+    NumericInputHandler(int maxCh) : InputHandler(maxCh) {}
+
+    bool isAllowedChar(char c) const override { return c >= '0' && c <= '9'; }
+
+    int getNumber() const { return inputText.empty() ? 0 : std::stoi(inputText); }
+};
 class Animation;
 class Button {
 public:
-    static const int padding;
-    static bool isCollision;
-    Rectangle rect;
     Color TextColor;
     Color FillColor;
     Color OutLineColor;
-    bool isActivated;
+    Animation* animation;
     bool isHovered;
     bool isClicked;
-    Animation* animation;
+    static bool isCollision;
     std::function<void()> onClick;
-    Button* head;
-    Button* next; // Pointer to the next button
-
-    Button(Rectangle r) : rect(r), TextColor(WHITE), FillColor(BLUE), OutLineColor(DARKGRAY),
-        animation(nullptr),
-        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {
-    };
-
-    Button(Rectangle r, Color tc, Color fc, Color olc) : rect(r), TextColor(tc), FillColor(fc), OutLineColor(olc),
-        animation(nullptr),
-        isActivated(false), isHovered(false), isClicked(false), onClick(nullptr), head(nullptr), next(nullptr) {
-    };
-
-    virtual ~Button() {
-        if (animation)delete animation;
+    Button(Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
+        : TextColor(tc), FillColor(fc), OutLineColor(olc),
+        animation(nullptr), isHovered(false), isClicked(false) {
     }
-    virtual int getNumber() const { return 0; }
+    virtual Vector2 getMousePos() const { return GetMousePosition(); }
+    /**
+     * Deletes all buttons in the provided vector and clears the vector.
+     * @tparam T Type of the button, must be derived from Button.
+     * @param buttons Vector of pointers to buttons to be deleted.
+     */
+    template <typename T>
+    static void deleteButtons(std::vector<T*>& Buttons) {
+        static_assert(std::is_base_of<Button, T>::value, "T must be derived from Button");
+        for (auto btn : Buttons) {
+            delete btn;
+        }
+        Buttons.clear();
+    }
 
-    virtual void setPosition(float x, float y);
-    virtual void setSubPosition();
+    /**
+     * Draws all buttons in the provided vector.
+     * @tparam T Type of the button, must be derived from Button.
+     * @param buttons Vector of pointers to buttons to be drawn.
+     */
+    template <typename T>
+    static void drawButtons(const std::vector<T*>& Buttons) {
+        static_assert(std::is_base_of<Button, T>::value, "T must be derived from Button");
+        for (auto btn : Buttons) {
+            btn->draw();
+        }
+    }
 
-    static void setHeadPosition(vector<Button*>& Buttons, float x, float y);
-    static void setCodeBlockPosition(vector<Button*>& CodeBlocks, float x, float y);
-
-    static void insertHeadButton(vector<Button*>& Buttons, Button* button);
-    static void insertCodeBlock(vector<Button*>& Buttons, Button* button);
-    static void insertPseudoCode(vector<Button*>& CodeBlocks, string pseudocode);
-
-    static void drawButtons(vector<Button*>& Buttons);
-    static void updateButtons(vector<Button*>& Buttons);
-    static void deleteButtons(vector<Button*>& Buttons);
-
-    virtual void resetSubAni();
-    virtual void insertSubButton(Button* button);
-    virtual void insertSubButton(Button* button, std::function<void()> function);
-    virtual void update();
+    /**
+     * Updates all buttons in the provided vector.
+     * @tparam T Type of the button, must be derived from Button.
+     * @param buttons Vector of pointers to buttons to be updated.
+     */
+    template <typename T>
+    static void updateButtons(std::vector<T*>& Buttons) {
+        static_assert(std::is_base_of<Button, T>::value, "T must be derived from Button");
+        for (auto btn : Buttons) {
+            btn->update();
+        }
+    }
     virtual void draw() = 0;
+    virtual void update() = 0;
     virtual void hover();
     virtual void unhover();
     virtual void click();
     virtual void unclick();
 };
-
-class InputBox : public Button {
+class RectButton : public Button {
 public:
-    double lastDeletedTime;
-    int maxChars;
-    int framesCounter;
-    bool Texting;
-    std::string inputText;
+    static const int padding;
+    Rectangle rect;
+    bool isActivated;
 
-    // default input box best one
-    InputBox(int maxCh) : Button({ 0,0,0,0 }, MAROON, LIGHTGRAY, DARKGRAY), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars - 1, 'W').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
+    RectButton* head;
+    RectButton* next; // Pointer to the next button
+
+    RectButton(float x = 0, float y = 0, float w = 0, float h = 0,
+        Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
+        : Button(tc, fc, olc), rect{ x, y, w, h }
+        , isActivated(false), head(nullptr), next(nullptr) {
     }
-    InputBox(int maxCh, Color tc, Color fc, Color olc) : Button({ 0, 0, 0, 0 }, tc, fc, olc), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars - 1, 'W').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
+
+    virtual ~RectButton() {
+        if (animation)delete animation;
+        if(next) delete next;
     }
-    InputBox(float x, float y, int maxCh) : Button({ x, y, 0, 0 }, MAROON, LIGHTGRAY, DARKGRAY), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars - 1, 'W').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    InputBox(float x, float y, int maxCh, Color tc, Color fc, Color olc) : Button({ x, y, 0, 0 }, tc, fc, olc), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars - 1, 'W').c_str(), UI::fontSize, UI::spacing);
+    void update() override;
+    void draw() override;
+    virtual int getNumber() const { return 0; }
+    virtual void setPosition(float x, float y);
+    virtual void setSubPosition();
+
+    static void setHeadPosition(vector<RectButton*>& Buttons, float x, float y);
+    static void setCodeBlockPosition(vector<RectButton*>& CodeBlocks, float x, float y);
+    static void insertHeadButton(vector<RectButton*>& Buttons, RectButton* button);
+    static void insertCodeBlock(vector<RectButton*>& Buttons, RectButton* button);
+    static void insertPseudoCode(vector<RectButton*>& CodeBlocks, string pseudocode);
+    
+
+    virtual void resetSubAni();
+    virtual void insertSubButton(RectButton* button);
+    virtual void insertSubButton(RectButton* button, std::function<void()> function);
+    
+
+};
+
+class InputBox : public RectButton {
+public:
+    std::unique_ptr<InputHandler> inputHandler;
+    InputBox(int maxCh, float x = 0, float y = 0,
+        Color tc = MAROON, Color fc = LIGHTGRAY, Color olc = DARKGRAY)
+        : RectButton(x, y, 0, 0, tc, fc, olc), 
+        inputHandler(std::make_unique<InputHandler>(maxCh)) {
+        Vector2 textSize = UI::getMaxTextSize(maxCh - 1);
         rect.width = textSize.x + padding;
         rect.height = textSize.y + padding;
     }
@@ -94,152 +174,75 @@ public:
     void draw() override;
     void hover() override;
     void unhover() override;
-    virtual void clear();
+    virtual void clear() {
+        inputHandler->clear();
+    }
 };
 
 class NumberInputBox : public InputBox {
-private:
-protected:
-    int inputNumber;
 public:
+    NumberInputBox(int maxCh, float x = 0, float y = 0,
+        Color tc = MAROON, Color fc = LIGHTGRAY, Color olc = DARKGRAY)
+        : InputBox(maxCh, x, y, tc, fc, olc) {
+        inputHandler = std::make_unique<NumericInputHandler>(maxCh);
+        Vector2 textSize = UI::getMaxTextSize(maxCh+2);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
 
-    NumberInputBox() : InputBox(0), inputNumber(0) {
+    int getNumber() const { return dynamic_cast<NumericInputHandler*>(inputHandler.get())->getNumber(); }
+    void clear() override {
+        inputHandler->clear();
     }
-    // default Number Input Box
-    NumberInputBox(int maxCh) : InputBox(maxCh), inputNumber(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBox(int maxCh, Color tc, Color fc, Color olc) : InputBox(maxCh, tc, fc, olc), inputNumber(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBox(Vector2 pos, int maxCh) : InputBox(pos.x,pos.y,maxCh), inputNumber(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    
-    }NumberInputBox(Vector2 pos, int maxCh, Color tc, Color fc, Color olc) : InputBox(pos.x,pos.y,maxCh, tc, fc, olc), inputNumber(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBox(float x, float y, int maxCh) : InputBox(x, y, maxCh), inputNumber(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBox(float x, float y, int maxCh, Color tc, Color fc, Color olc) : InputBox(x, y, maxCh, tc, fc, olc), inputNumber(0) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    virtual void setNumber(int x) {
-        inputNumber = x;
-    }
-    int getNumber() const override {
-        return inputNumber;
-    };
-    void update() override;
-    void clear() override;
 };
+
 class NumberInputBoxInCamera : public NumberInputBox {
 public:
+    NumberInputBoxInCamera(int maxCh, float x = 0, float y = 0,
+        Color tc = MAROON, Color fc = LIGHTGRAY, Color olc = DARKGRAY)
+        : NumberInputBox(maxCh, x, y, tc, fc, olc) {
+    }
 
-    NumberInputBoxInCamera() : NumberInputBox(0) {
-    }
-    // default Number Input Box
-    NumberInputBoxInCamera(int maxCh) : NumberInputBox(maxCh) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBoxInCamera(int maxCh, Color tc, Color fc, Color olc) : NumberInputBox(maxCh, tc, fc, olc) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBoxInCamera(Vector2 pos, int maxCh) : NumberInputBox(pos.x,pos.y,maxCh) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    
-    }NumberInputBoxInCamera(Vector2 pos, int maxCh, Color tc, Color fc, Color olc) : NumberInputBox(pos.x,pos.y,maxCh, tc, fc, olc) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBoxInCamera(float x, float y, int maxCh) : NumberInputBox(x, y, maxCh) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    NumberInputBoxInCamera(float x, float y, int maxCh, Color tc, Color fc, Color olc) : NumberInputBox(x, y, maxCh, tc, fc, olc) {
-        Vector2 textSize = MeasureTextEx(UI::font, string(maxChars + 1, '0').c_str(), UI::fontSize, UI::spacing);
-        rect.width = textSize.x + padding;
-        rect.height = textSize.y + padding;
-    }
-    void update() override;
+    Vector2 getMousePos() const override;
 };
 
-class TextBox : public Button {
+class TextBox : public RectButton {
 public:
     std::string Text;
-
-    TextBox(string t) : Text(t), Button({ 0,0,0,0 }) {
+    TextBox(string t, float x = 0, float y = 0,
+        Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
+        : RectButton(x, y, 0, 0, tc, fc, olc), Text(t){
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
-        rect = { 0, 0, tsize.x + padding, tsize.y + padding };
+        rect.width = tsize.x + padding;
+        rect.height = tsize.y + padding;
     }
-    TextBox(string t, Color tc, Color fc, Color olc) : Text(t), Button({ 0,0,0,0 }, tc, fc, olc) {
-        Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
-        rect = { 0, 0, tsize.x + padding, tsize.y + padding };
-    }
-    TextBox(string t, float x, float y) : Text(t), Button({ x,y,0,0 }) {
-        Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
-        rect = { x, y, tsize.x + padding, tsize.y + padding };
-    }
-    TextBox(string t, float x, float y, Color tc, Color fc, Color olc) : Text(t), Button({ x,y,0,0 }, tc, fc, olc) {
-        Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
-        rect = { x, y, tsize.x + padding, tsize.y + padding };
-    }
-
     void draw() override;
-    void update() override;
 };
 class CodeBlock : public TextBox {
-public:
+private:
     static constexpr Color CodeColor = { 232,232,232,180 };
-    CodeBlock(string t) : TextBox(t, DARKGRAY, CodeColor, CodeColor) {
+public:
+    CodeBlock(string t, float x = 0, float y = 0,
+        Color tc = DARKGRAY, Color fc = CodeColor, Color olc = CodeColor)
+        : TextBox(t,x,y, tc, fc, olc) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
-        rect = { 0, 0, tsize.x + padding, tsize.y + padding };
-    }
-    CodeBlock(string t, float x, float y) : TextBox(t, x, y, DARKGRAY, CodeColor, CodeColor) {
-        Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
-        rect = { x, y, tsize.x + padding, tsize.y + padding };
+        rect.width = tsize.x + padding;
+        rect.height = tsize.y + padding;
     }
 };
 
 
-class CircleButton {
+class CircleButton : public Button {
 protected:
     Vector2 center;
     float radius;
 public:
-    Color TextColor;
-    Color FillColor;
-    Color RingColor;
     bool isActivated;
-    bool isHovered;
-    bool isClicked;
-    Animation* animation;
-    std::function<void()> onClick;
 
     // default color
-    CircleButton(Vector2 cent, float r);
-
-    CircleButton(Vector2 cent, float r, Color tc, Color fc, Color rc);
+    CircleButton(Vector2 cent, float r,
+        Color tc, Color fc, Color rc);
+    
     virtual ~CircleButton(){
         if (animation)delete animation;
     }
@@ -264,67 +267,69 @@ public:
     }
     virtual void update();
     virtual void draw() = 0;
-    virtual void hover();
-    virtual void unhover();
-    virtual void click();
-    virtual void unclick();
+    void hover() override;
+    void unhover() override;
 };
 
 
 
 class InputCircle : public CircleButton {
 public:
-    double lastDeletedTime;
-    int maxChars;
-    int framesCounter;
-    bool Texting;
-    std::string inputText;
+    std::unique_ptr<InputHandler> inputHandler;
 
-    InputCircle(int maxCh) : CircleButton({ 0,0 }, 50.0f), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-
-    }
-    InputCircle(int maxCh, Color tc, Color fc, Color rc) : CircleButton({ 0,0 }, 50.0f, tc, fc, rc), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
+    InputCircle(int maxCh, Vector2 cent = { 0, 0 }, float r = 50.0f,
+        Color tc = BLUE, Color fc = RAYWHITE, Color rc = BLUE)
+        : CircleButton(cent, r, tc, fc, rc),
+        inputHandler(std::make_unique<InputHandler>(maxCh)) {
     }
 
-    // input Circle best ones
-
-    InputCircle(Vector2 cent, float r, int maxCh) : CircleButton(cent, r), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-    }
-    InputCircle(Vector2 cent, float r, int maxCh, Color tc, Color fc, Color rc) : CircleButton(cent, r, tc, fc, rc), inputText(""), Texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-    }
     void update() override;
+
     void draw() override;
-    virtual void clear();
+
+    virtual void clear() {
+        inputHandler->clear();
+    }
 };
 class NumberInputCircle : public InputCircle {
 public:
     int inputNumber;
 
-    // default Number Input Circle
+    // Constructor with minimal parameters
     NumberInputCircle(int maxCh)
         : InputCircle(maxCh), inputNumber(0) {
+        inputHandler = std::make_unique<NumericInputHandler>(maxCh);
     }
     NumberInputCircle(int maxCh, Color tc, Color fc, Color rc)
-        : InputCircle(maxCh, tc, fc, rc), inputNumber(0) {
+        : InputCircle(maxCh, { 0, 0 }, 50.0f,  tc, fc, rc), inputNumber(0) {
+        inputHandler = std::make_unique<NumericInputHandler>(maxCh);
     }
+
+    // Constructor with position and radius, no colors
     NumberInputCircle(Vector2 cent, float r, int input, int maxCh)
-        : InputCircle(cent, r, maxCh) {
+        : InputCircle(maxCh, cent, r, BLUE, RAYWHITE, BLUE), inputNumber(0) {
+        inputHandler = std::make_unique<NumericInputHandler>(maxCh);
         setNumber(input);
     }
+
+    // Full constructor with all parameters
     NumberInputCircle(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
-        : InputCircle(cent, r, maxCh, tc, fc, rc) {
+        : InputCircle(maxCh, cent, r, tc, fc, rc), inputNumber(0) {
+        inputHandler = std::make_unique<NumericInputHandler>(maxCh);
         setNumber(input);
     }
-    
     virtual void setNumber(int x) {
         inputNumber = x;
-        inputText = to_string(x);
+        inputHandler->setText(std::to_string(x));
     }
+
     virtual int getNumber() const {
         return inputNumber;
-    };
-    void update() override;
-    void clear() override;
+    }
+    void clear() override {
+        inputHandler->clear();
+        
+    }
 };
 class NumberInputCircleInCamera : public NumberInputCircle {
 private:
@@ -342,7 +347,7 @@ public:
     NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
         : NumberInputCircle(cent, r, input, maxCh, tc, fc, rc) {
     }
-    void update() override;
+    Vector2 getMousePos() const override;
 };
 
 

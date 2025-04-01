@@ -20,7 +20,7 @@ protected:
     SceneManager* currentSceneObject;
 public:
     static Vector2 mouseWorldPos;
-    static Button* MenuButton;
+    static RectButton* MenuButton;
     SceneHandler();
     ~SceneHandler();
     int getCurrentScene();

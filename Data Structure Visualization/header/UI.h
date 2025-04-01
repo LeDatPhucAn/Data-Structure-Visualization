@@ -33,6 +33,10 @@ public:
 	static void drawlink(int X, int Y);
 	static void drawtext2(string message, int X, int Y, Color color);
 
+	static Vector2 getMaxTextSize(int charCount) {
+		std::string sampleText(charCount, 'W'); // Use 'W' as widest character
+		return MeasureTextEx(UI::font, sampleText.c_str(), UI::fontSize, UI::spacing);
+	}
 	static Color interpolateColors(Color& color1, Color& color2, float t) {
 		color1.r = (unsigned char)(color1.r + (color2.r - color1.r) * t);
 		color1.g = (unsigned char)(color1.g + (color2.g - color1.g) * t);

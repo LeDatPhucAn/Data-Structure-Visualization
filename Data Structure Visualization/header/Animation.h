@@ -29,54 +29,26 @@ public:
     }
     
 };
-class ButtonScaleAnimation : public Animation {
-private:
-    Button* button;
-    float startWidth, startHeight;
-    float endWidth, endHeight;
-public:
-    ButtonScaleAnimation(Button* btn, float duration)
-        : Animation(duration), button(btn) {
-        startWidth = 0;
-        startHeight = 0;
-        endWidth = btn->rect.width;
-        endHeight = btn->rect.height;
-    }
-    void update(float deltaTime) override {
-        if (completed) return;
-        elapsed += deltaTime;
-        float t = elapsed / duration;
-        if (t >= 1.0f) { t = 1.0f; completed = true; }
-        button->rect.width = EaseCubicIn(elapsed, startWidth, endWidth - startWidth, duration);
-        button->rect.height = EaseCubicIn(elapsed, startHeight, endHeight - startHeight, duration);
-    }
-	void HandleResize() override {
-		startWidth = 0;
-		startHeight = 0;
-		endWidth = button->rect.width;
-		endHeight = button->rect.height;
-	}
-};
 
 class ButtonMoveAnimation : public Animation {
 private:
     
 protected:
-    Button* button;
+    RectButton* button;
     float startX, startY;
     float endX, endY;
 public:
 
     virtual void HandleResize() override;
 	virtual ~ButtonMoveAnimation() = default;
-    ButtonMoveAnimation(Button* btn, float duration)
+    ButtonMoveAnimation(RectButton* btn, float duration)
         : Animation(duration), button(btn) {
         startX = 0;
         startY = 0;
         endX = btn->rect.x;
         endY = btn->rect.y;
     }
-    ButtonMoveAnimation(Button* btn, float sX, float sY, float duration)
+    ButtonMoveAnimation(RectButton* btn, float sX, float sY, float duration)
         : Animation(duration), startX(sX), startY(sY), button(btn) {
         endX = btn->rect.x;
         endY = btn->rect.y;
@@ -85,14 +57,14 @@ public:
 };
 class ButtonMoveXAnimation : public ButtonMoveAnimation {
 public:
-    ButtonMoveXAnimation(Button* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
-	ButtonMoveXAnimation(Button* btn, float sX, float duration) : ButtonMoveAnimation(btn, sX, 0, duration) {};
+    ButtonMoveXAnimation(RectButton* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
+	ButtonMoveXAnimation(RectButton* btn, float sX, float duration) : ButtonMoveAnimation(btn, sX, 0, duration) {};
     void update(float deltaTime) override;
 };
 class ButtonMoveYAnimation : public ButtonMoveAnimation {
 public:
-    ButtonMoveYAnimation(Button* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
-    ButtonMoveYAnimation(Button* btn, float sY, float duration) : ButtonMoveAnimation(btn, 0, sY, duration) {};
+    ButtonMoveYAnimation(RectButton* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
+    ButtonMoveYAnimation(RectButton* btn, float sY, float duration) : ButtonMoveAnimation(btn, 0, sY, duration) {};
     void update(float deltaTime) override;
 };
 
@@ -163,7 +135,7 @@ public:
 
 
 
-class AnimationManager : public SceneManager {
+class AnimationManager {
 private:
     std::vector<Node*> Nodes;
     std::vector<Edge*> Edges;
@@ -175,12 +147,12 @@ public:
     AnimationManager();
 
     // SceneComponent interface
-    void init() override;
+    /*void init() override;
     void initButtons() override;
     void updateScene() override;
     void displayScene() override;
     void displaySceneInCamera() override;
-    void updateButtonPositions() override;
+    void updateButtonPositions() override;*/
 
     // Animation control
     void addAnimation(vector<Animation*> Animations);

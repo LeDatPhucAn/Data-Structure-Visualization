@@ -2,8 +2,6 @@
 #include "../header/Button.h"  
 #include "../header/Animation.h"  
 
-LLNode::LLNode() : NumberInputCircleInCamera(3), next(nullptr) {}
-
 LLNode::LLNode(int value) : NumberInputCircleInCamera({ 0,0 }, 50, value, 3), next(nullptr) {
 }
 

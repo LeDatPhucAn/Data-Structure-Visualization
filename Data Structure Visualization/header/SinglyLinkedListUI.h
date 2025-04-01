@@ -10,15 +10,15 @@ private:
     static constexpr int headY = 450;
     static constexpr int radius = 50;
 protected:
-    vector<Button*> Buttons;
-    vector<Button*> CodeBlocks;
+    vector<RectButton*> Buttons;
+    vector<RectButton*> CodeBlocks;
 public:
     SinglyLinkedListUI() {
         init();
     }
     ~SinglyLinkedListUI() {
-        Button::deleteButtons(Buttons);
-        Button::deleteButtons(CodeBlocks);
+        Button::deleteButtons<RectButton>(Buttons);
+        Button::deleteButtons<RectButton>(CodeBlocks);
     }
 
     void drawlinkedlist();

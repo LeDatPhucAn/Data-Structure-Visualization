@@ -14,15 +14,15 @@ private:
     static constexpr int nodeRadius = 30;
     static constexpr int spacing = 20;
 protected:
-    std::vector<Button*> Buttons;
-    std::vector<Button*> CodeBlocks;
+    std::vector<RectButton*> Buttons;
+    std::vector<RectButton*> CodeBlocks;
 public:
     HashTableUI() : HashTable(5) {  // Initial size: 5
         init();
     }
     ~HashTableUI() {
-        Button::deleteButtons(Buttons);
-        Button::deleteButtons(CodeBlocks);
+        Button::deleteButtons<RectButton>(Buttons);
+        Button::deleteButtons<RectButton>(CodeBlocks);
     }
     void init() override;
     void initButtons() override;

@@ -7,16 +7,6 @@ TreapUI::TreapUI() : root(nullptr) {
     init();
 }
 
-void TreapUI::deleteButtons() {
-    for (auto button : Buttons) {
-        while (button) {
-            Button* del = button;
-            button = button->next;
-            delete del;
-        }
-    }
-}
-
 void TreapUI::insert(int key, int priority) {
     root = treap.insert(root, ROOT_POS, key, priority);
     reposition(root, ROOT_POS, xOffset, yOffset);
@@ -148,20 +138,20 @@ void TreapUI::init() {
 void TreapUI::initButtons() {
 
     /// Code Blocks
-    Button* OpenCodeBlocks = new TextBox("<");
+    RectButton* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
     OpenCodeBlocks->rect.y = UI::screenHeight / 4;
     OpenCodeBlocks->rect.height = 0;
     OpenCodeBlocks->isActivated = true;
-    Button::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
+    RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
 
     /// Buttons
-    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
-    Button* Value = new TextBox("Value:");
-    Button* ValueInput = new NumberInputBox(3);
-    Button* Priority = new TextBox("Priority:");
-    Button* PriorityInput = new NumberInputBox(3);
-    Button* Enter = new TextBox(">");
+    RectButton::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
+    RectButton* Value = new TextBox("Value:");
+    RectButton* ValueInput = new NumberInputBox(3);
+    RectButton* Priority = new TextBox("Priority:");
+    RectButton* PriorityInput = new NumberInputBox(3);
+    RectButton* Enter = new TextBox(">");
 
     Buttons[0]->insertSubButton(Value);
     Buttons[0]->insertSubButton(ValueInput);
@@ -171,39 +161,43 @@ void TreapUI::initButtons() {
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PriorityInput]() {
         if (PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
         else this->insert(ValueInput->getNumber());
-        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PriorityInput)->clear();
         });
 
-    Button::insertHeadButton(Buttons, new TextBox("Remove"));
-    Button* Value1 = new TextBox("Value:");
-    Button* ValueInput1 = new NumberInputBox(3);
-    Button* Enter1 = new TextBox(">");
+    RectButton::insertHeadButton(Buttons, new TextBox("Remove"));
+    RectButton* Value1 = new TextBox("Value:");
+    RectButton* ValueInput1 = new NumberInputBox(3);
+    RectButton* Enter1 = new TextBox(">");
+
     Buttons[1]->insertSubButton(Value1);
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
-        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
 
-    Button::insertHeadButton(Buttons, new TextBox("Search"));
-    Buttons[2]->insertSubButton(new TextBox("Value:"));
-    Button* ValueInput2 = new NumberInputBox(3);
+    RectButton::insertHeadButton(Buttons, new TextBox("Search"));
+    RectButton* Value2 = new TextBox("Value:");
+    RectButton* ValueInput2 = new NumberInputBox(3);
+    RectButton* Enter2 = new TextBox(">");
+
+    Buttons[2]->insertSubButton(Value2);
     Buttons[2]->insertSubButton(ValueInput2);
-    Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
+    Buttons[2]->insertSubButton(Enter2, [this, ValueInput2]() {
         this->search(ValueInput2->getNumber());
-        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
-    
-    Button::insertHeadButton(Buttons, new TextBox("LoadFile"));
-    Buttons[3]->onClick = [this](){
-        this->loadFromFile();
-    };
 
-    Button::insertHeadButton(Buttons, new TextBox("Random"));
+    RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
+    Buttons[3]->onClick = [this]() {
+        this->loadFromFile();
+        };
+
+    RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->onClick = [this]() {
         this->clear();
         int n = rand() % 10;
@@ -212,33 +206,36 @@ void TreapUI::initButtons() {
             this->insert(x);
         }
         };
-    Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, { 214, 102, 49, 255 }, DARKGRAY));
+
+    RectButton::insertHeadButton(Buttons, new TextBox(" Clear ",0,0, WHITE, { 214, 102, 49, 255 }, DARKGRAY));
     Buttons[5]->onClick = [this]() {
         this->clear();
         };
+
     updateButtonPositions();
 }
 
+
 void TreapUI::displayScene() {
     SceneHandler::MenuButton->draw();
-    Button::drawButtons(Buttons);
-    Button::drawButtons(CodeBlocks);
+    Button::drawButtons<RectButton>(Buttons);
+    Button::drawButtons<RectButton>(CodeBlocks);
 }
 
 void TreapUI::updateButtonPositions() {
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
 
-    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
+    RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
 
-    Button::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
+    RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
 
 void TreapUI::updateScene() {
     Button::isCollision = false;
 
     SceneHandler::MenuButton->update();
-    Button::updateButtons(Buttons);
-    Button::updateButtons(CodeBlocks);
+    Button::updateButtons<RectButton>(Buttons);
+    Button::updateButtons<RectButton>(CodeBlocks);
 
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

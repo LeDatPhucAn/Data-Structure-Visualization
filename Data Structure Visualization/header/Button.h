@@ -22,7 +22,7 @@ public:
 
     virtual bool isAllowedChar(char c) const { return c >= 32 && c <= 125; } // Printable ASCII
 
-    void update() {
+    virtual void update() {
         framesCounter++;
         if (!texting) return;
 
@@ -52,10 +52,10 @@ public:
 class NumericInputHandler : public InputHandler {
 public:
     NumericInputHandler(int maxCh) : InputHandler(maxCh) {}
-
     bool isAllowedChar(char c) const override { return c >= '0' && c <= '9'; }
 
-    int getNumber() const { return inputText.empty() ? 0 : std::stoi(inputText); }
+    int getNumber() const { 
+        return getText().empty() ? 0 : std::stoi(getText()); }
 };
 class Animation;
 class Button {
@@ -293,39 +293,34 @@ public:
 };
 class NumberInputCircle : public InputCircle {
 public:
-    int inputNumber;
 
     // Constructor with minimal parameters
     NumberInputCircle(int maxCh)
-        : InputCircle(maxCh), inputNumber(0) {
+        : InputCircle(maxCh) {
         inputHandler = std::make_unique<NumericInputHandler>(maxCh);
     }
     NumberInputCircle(int maxCh, Color tc, Color fc, Color rc)
-        : InputCircle(maxCh, { 0, 0 }, 50.0f,  tc, fc, rc), inputNumber(0) {
+        : InputCircle(maxCh, { 0, 0 }, 50.0f,  tc, fc, rc) {
         inputHandler = std::make_unique<NumericInputHandler>(maxCh);
     }
 
     // Constructor with position and radius, no colors
     NumberInputCircle(Vector2 cent, float r, int input, int maxCh)
-        : InputCircle(maxCh, cent, r, BLUE, RAYWHITE, BLUE), inputNumber(0) {
+        : InputCircle(maxCh, cent, r, BLUE, RAYWHITE, BLUE) {
         inputHandler = std::make_unique<NumericInputHandler>(maxCh);
         setNumber(input);
     }
 
     // Full constructor with all parameters
     NumberInputCircle(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
-        : InputCircle(maxCh, cent, r, tc, fc, rc), inputNumber(0) {
+        : InputCircle(maxCh, cent, r, tc, fc, rc) {
         inputHandler = std::make_unique<NumericInputHandler>(maxCh);
         setNumber(input);
     }
     virtual void setNumber(int x) {
-        inputNumber = x;
         inputHandler->setText(std::to_string(x));
     }
-
-    virtual int getNumber() const {
-        return inputNumber;
-    }
+    virtual int getNumber() const { return dynamic_cast<NumericInputHandler*>(inputHandler.get())->getNumber(); }
     void clear() override {
         inputHandler->clear();
         

@@ -3,7 +3,7 @@
 #include <raylib.h>
 
 using namespace std;
-class Animation;
+
 class Node {
 public:
     int data;

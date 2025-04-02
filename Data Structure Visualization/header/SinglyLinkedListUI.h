@@ -10,7 +10,6 @@ protected:
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
     vector<CircleButton*> Circles;
-    vector<Animation*> animations;
 public:
     SinglyLinkedListUI() {
         init();

@@ -30,7 +30,41 @@ public:
     }
     
 };
-
+class CircleHighLightAnim : public Animation {
+protected:
+    CircleButton* button;
+    Color startTC,endTC;
+    Color startFC,endFC;
+    Color startRC,endRC;
+public:
+    virtual ~CircleHighLightAnim() = default;
+    CircleHighLightAnim(
+        CircleButton* btn, float duration,
+        Color eTC = ORANGE, 
+        Color eFC = RAYWHITE, 
+        Color eRC = ORANGE
+        )
+        : Animation(duration),
+        endTC(eTC), endFC(eFC), endRC(eRC), button(btn) {
+        startTC = btn->TextColor;
+        startFC = btn->FillColor;
+        startRC = btn->OutLineColor;
+    }
+    void HandleReposition() {}
+    void update(float deltaTime) override;
+};
+class CircleHighLightAnimReverse : public CircleHighLightAnim {
+    
+public:
+    CircleHighLightAnimReverse(
+        CircleButton* btn, float duration,
+        Color eTC = BLUE,
+        Color eFC = RAYWHITE,
+        Color eRC = BLUE
+        )
+        : CircleHighLightAnim(btn, duration, eTC, eFC, eRC){
+    }
+};
 class CircleMoveAnim : public Animation {
 private:
     
@@ -87,33 +121,7 @@ public:
     }
     void update(float deltaTime) override;
 };
-//class CircleMoveAnimInCamera : public Animation {
-//private:
-//    
-//protected:
-//    CircleButton* button;
-//    float startX, startY;
-//    float endX, endY;
-//public:
-//	virtual ~CircleMoveAnimInCamera() = default;
-//    CircleMoveAnimInCamera(CircleButton* btn, float duration)
-//        : Animation(duration), button(btn) {
-//        startX = 0;
-//        startY = 0;
-//        endX = btn->getCenterX();
-//        endY = btn->getCenterY();
-//    }
-//    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float duration)
-//        : Animation(duration), startX(sX), startY(sY), button(btn) {
-//        endX = btn->getCenterX();
-//        endY = btn->getCenterY();
-//    }
-//    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
-//        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
-//    }
-//    
-//    void update(float deltaTime) override;
-//};
+
 class RectMoveAnim : public Animation {
 private:
     

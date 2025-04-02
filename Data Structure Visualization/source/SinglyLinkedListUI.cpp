@@ -1,6 +1,7 @@
 #include "../header/SinglyLinkedListUI.h"
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
+
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = this->head;
     while (cur) {
@@ -57,10 +58,11 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
         this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
         if (PosInput->getNumber() == 1) RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertHead);
+        else if (PosInput->getNumber() == 0) return;
         else RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertPos);
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PosInput)->clear();
-        });
+     });
 
     RectButton::insertHeadButton(Buttons, new TextBox("Remove"));
     Buttons[1]->animation = new RectMoveXAnim(Buttons[1], 0.5);
@@ -82,7 +84,9 @@ void SinglyLinkedListUI::initButtons() {
     RectButton* ValueInput2 = new NumberInputBox(3);
     Buttons[2]->insertSubButton(ValueInput2);
     Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
-        this->search(ValueInput2->getNumber());
+        if (!this->search(ValueInput2->getNumber())) {
+            cout << "NOT FOUND\n";
+        }
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLSearch);
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
@@ -90,8 +94,7 @@ void SinglyLinkedListUI::initButtons() {
     RectButton::insertHeadButton(Buttons, new TextBox("Clear"));
     Buttons[3]->animation = new RectMoveXAnim(Buttons[3], 0.5);
     Buttons[3]->onClick = [this]() {
-        this->deletelist();
-        this->deleteEdges();
+        this->clear();
         };
     RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
     Buttons[4]->animation = new RectMoveXAnim(Buttons[4], 0.5);
@@ -103,8 +106,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[5]->animation = new RectMoveXAnim(Buttons[5], 0.5);
 
     Buttons[5]->onClick = [this]() {
-        this->deletelist();
-        this->deleteEdges();
+        this->clear();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;
@@ -120,7 +122,8 @@ void SinglyLinkedListUI::updateButtonPositions() {
 
     SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
     SceneHandler::MenuButton->animation->HandleResize();
-
+    Circles[0]->animation->HandleResize();
+    Circles[0]->setCenter(UI::screenWidth / 2,UI::screenHeight - 100);
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
 
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
@@ -165,12 +168,17 @@ void SinglyLinkedListUI::updateScene() {
 
     Button::isCollision = false;
 
+    if (!animations.empty()) {
+        if(animations.front())animations.front()->update(GetFrameTime());
+        if (!animations.front() || animations.front()->isCompleted()) animations.pop();
+    }
     LLNode* cur = this->head;
     while (cur) {
         cur->update();
         if (cur->animation)cur->animation->update(GetFrameTime());
         cur = cur->next;
     }
+    
     SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);

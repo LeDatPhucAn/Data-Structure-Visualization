@@ -10,8 +10,6 @@
 bool Button::isCollision = false;
 const int RectButton::padding = UI::fontSize;
 
-
-
 // ### Button Utility Functions
 
 void Button::hover() {
@@ -49,9 +47,11 @@ void Button::update() {
     if (checkCollision()) {
         hover();
         setCursor();
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) click();
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             isActivated = !isActivated;
             if (onClick) onClick();
+            unclick();
         }
         Button::isCollision = true;
     }
@@ -287,8 +287,22 @@ void CircleButton::hover() {
 }
 
 void CircleButton::unhover() {
-    OutLineColor = BLUE;
-    TextColor = BLUE;
+    OutLineColor = OgOutLineColor;
+    TextColor = OgTextColor;
+}
+void CircleButton::click() {
+    if (!isClicked) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(TextColor, 30);
+        isClicked = true;
+    }
+}
+void CircleButton::unclick() {
+    if (isClicked) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(TextColor, 30);
+        isClicked = false;
+    }
 }
 CircleButton::CircleButton(Vector2 cent = { 0, 0 }, float r = 50.0f,
     Color tc = BLUE, Color fc = RAYWHITE, Color rc = BLUE)
@@ -299,12 +313,12 @@ void CircleButton::update() {
     Button::update();
 }
 void TextCircle::unhover() {
-    OutLineColor = RED;
-    FillColor = RED;
+    OutLineColor = OgOutLineColor;
+    FillColor = OgFillColor;
 }
 
 void TextCircle::hover() {
-    OutLineColor = GREEN;
+    OutLineColor = DARKGREEN;
     FillColor = GREEN;
 }
 void TextCircle::draw() {
@@ -314,11 +328,11 @@ void TextCircle::draw() {
 }
 void TextureCircle::unhover() {
     OutLineColor = RED;
-    FillColor = RED;
+    FillColor = ORANGE;
 }
 
 void TextureCircle::hover() {
-    OutLineColor = GREEN;
+    OutLineColor = DARKGREEN;
     FillColor = GREEN;
 }
 void TextureCircle::draw() {

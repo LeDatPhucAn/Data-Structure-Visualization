@@ -16,7 +16,7 @@
 struct FunctionTask {
     int priority;
     function<void()> task;
-    bool operator<(const FunctionTask& other) const {
+    bool operator>(const FunctionTask& other) const {
         return priority > other.priority;
     }
 };

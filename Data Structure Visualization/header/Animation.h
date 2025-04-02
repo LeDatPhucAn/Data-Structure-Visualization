@@ -46,24 +46,35 @@ public:
         )
         : Animation(duration),
         endTC(eTC), endFC(eFC), endRC(eRC), button(btn) {
-        startTC = btn->TextColor;
-        startFC = btn->FillColor;
-        startRC = btn->OutLineColor;
+        startTC = btn->OgTextColor;
+        startFC = btn->OgFillColor;
+        startRC = btn->OgOutLineColor;
     }
     void HandleReposition() {}
     void update(float deltaTime) override;
 };
-class CircleHighLightAnimReverse : public CircleHighLightAnim {
-    
+class CircleHighLightAnimReverse : public Animation {
+protected:
+    CircleButton* button;
+    Color startTC,endTC;
+    Color startFC,endFC;
+    Color startRC,endRC;
 public:
+    virtual ~CircleHighLightAnimReverse() = default;
     CircleHighLightAnimReverse(
         CircleButton* btn, float duration,
-        Color eTC = BLUE,
-        Color eFC = RAYWHITE,
-        Color eRC = BLUE
+        Color sTC = ORANGE, 
+        Color sFC = RAYWHITE, 
+        Color sRC = ORANGE
         )
-        : CircleHighLightAnim(btn, duration, eTC, eFC, eRC){
+        : Animation(duration),
+        startTC(sTC), startFC(sFC), startRC(sRC), button(btn) {
+        endTC = btn->OgTextColor;
+        endFC = btn->OgFillColor;
+        endRC = btn->OgOutLineColor;
     }
+    void HandleReposition() {}
+    void update(float deltaTime);
 };
 class CircleMoveAnim : public Animation {
 private:

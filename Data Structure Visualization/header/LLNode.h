@@ -6,18 +6,6 @@
 class LLNode : public NumberInputCircleInCamera {
 public:
     LLNode* next;
-    queue<Animation*> animQueue;
-    stack<Animation*> animStack;
-    ~LLNode() {
-        while (!animQueue.empty()) {
-            delete animQueue.front();
-            animQueue.pop();
-        }
-        while (!animStack.empty()) {
-            delete animStack.top();
-            animQueue.pop();
-        }
-    }
     LLNode() : NumberInputCircleInCamera(3), next(nullptr) {}
     LLNode(int value);
     LLNode(int value, Vector2 pos);

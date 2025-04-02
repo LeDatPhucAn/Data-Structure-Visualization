@@ -221,7 +221,7 @@ public:
 
 class AnimationManager {
 private:
-    std::vector<Node*> Nodes;
+    std::vector<Button*> Nodes;
     std::vector<Edge*> Edges;
     std::vector<Animation*> Animations;
     float speed;

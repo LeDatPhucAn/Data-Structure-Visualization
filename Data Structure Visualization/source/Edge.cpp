@@ -97,8 +97,8 @@ void CBEdge::drawArrowEdge()
 	float toX =  to->getCenterX() - to->getRadius() * cos(theta);
 	float toY =  to->getCenterY() - to->getRadius() * sin(theta);
 
-	float EdgeEndX = toX - arrowHeadLength * cos(theta);
-	float EdgeEndY = toY - arrowHeadLength * sin(theta);
+	float EdgeEndX = toX - arrowHeadLength * cos(theta) * sqrt(3)/2;
+	float EdgeEndY = toY - arrowHeadLength * sin(theta) * sqrt(3)/2;
 	//draw edge
 	
 	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, BLACK);

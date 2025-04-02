@@ -30,7 +30,61 @@ public:
     
 };
 
-class ButtonMoveAnimation : public Animation {
+class CircleMoveAnim : public Animation {
+private:
+    
+protected:
+    CircleButton* button;
+    float startX, startY;
+    float endX, endY;
+public:
+	virtual ~CircleMoveAnim() = default;
+    CircleMoveAnim(CircleButton* btn, float duration)
+        : Animation(duration), button(btn) {
+        startX = 0;
+        startY = 0;
+        endX = btn->getCenterX();
+        endY = btn->getCenterY();
+    }
+    CircleMoveAnim(CircleButton* btn, float sX, float sY, float duration)
+        : Animation(duration), startX(sX), startY(sY), button(btn) {
+        endX = btn->getCenterX();
+        endY = btn->getCenterY();
+    }
+    CircleMoveAnim(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
+        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
+    }
+    
+    void update(float deltaTime) override;
+};
+class CircleMoveAnimInCamera : public Animation {
+private:
+    
+protected:
+    CircleButton* button;
+    float startX, startY;
+    float endX, endY;
+public:
+	virtual ~CircleMoveAnimInCamera() = default;
+    CircleMoveAnimInCamera(CircleButton* btn, float duration)
+        : Animation(duration), button(btn) {
+        startX = 0;
+        startY = 0;
+        endX = btn->getCenterX();
+        endY = btn->getCenterY();
+    }
+    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float duration)
+        : Animation(duration), startX(sX), startY(sY), button(btn) {
+        endX = btn->getCenterX();
+        endY = btn->getCenterY();
+    }
+    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
+        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
+    }
+    
+    void update(float deltaTime) override;
+};
+class RectMoveAnim : public Animation {
 private:
     
 protected:
@@ -40,41 +94,41 @@ protected:
 public:
 
     virtual void HandleResize() override;
-	virtual ~ButtonMoveAnimation() = default;
-    ButtonMoveAnimation(RectButton* btn, float duration)
+	virtual ~RectMoveAnim() = default;
+    RectMoveAnim(RectButton* btn, float duration)
         : Animation(duration), button(btn) {
         startX = 0;
         startY = 0;
         endX = btn->rect.x;
         endY = btn->rect.y;
     }
-    ButtonMoveAnimation(RectButton* btn, float sX, float sY, float duration)
+    RectMoveAnim(RectButton* btn, float sX, float sY, float duration)
         : Animation(duration), startX(sX), startY(sY), button(btn) {
         endX = btn->rect.x;
         endY = btn->rect.y;
     }
     void update(float deltaTime) override;
 };
-class ButtonMoveXAnimation : public ButtonMoveAnimation {
+class RectMoveXAnim : public RectMoveAnim {
 public:
-    ButtonMoveXAnimation(RectButton* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
-	ButtonMoveXAnimation(RectButton* btn, float sX, float duration) : ButtonMoveAnimation(btn, sX, 0, duration) {};
+    RectMoveXAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
+    RectMoveXAnim(RectButton* btn, float sX, float duration) : RectMoveAnim(btn, sX, 0, duration) {};
     void update(float deltaTime) override;
 };
-class ButtonMoveYAnimation : public ButtonMoveAnimation {
+class RectMoveYAnim : public RectMoveAnim {
 public:
-    ButtonMoveYAnimation(RectButton* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
-    ButtonMoveYAnimation(RectButton* btn, float sY, float duration) : ButtonMoveAnimation(btn, 0, sY, duration) {};
+    RectMoveYAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
+    RectMoveYAnim(RectButton* btn, float sY, float duration) : RectMoveAnim(btn, 0, sY, duration) {};
     void update(float deltaTime) override;
 };
 
-class CircleButtonInitializeAnimation : public Animation {
+class CircleInitializeAnim : public Animation {
 private:
     CircleButton* button;
     float startRadius;
     float endRadius;
 public:
-    CircleButtonInitializeAnimation(CircleButton* btn, float duration) : button(btn), Animation(duration) {
+    CircleInitializeAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
         startRadius = 0;
         endRadius = btn->getRadius();
     };

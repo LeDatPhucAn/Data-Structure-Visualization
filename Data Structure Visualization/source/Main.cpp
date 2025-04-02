@@ -14,7 +14,7 @@ using namespace std;
 int main()
 {
 	InitWindow(UI::screenWidth, UI::screenHeight, "Bruh");
-	SetWindowState(FLAG_WINDOW_RESIZABLE);
+	SetWindowState(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
 	SetTargetFPS(60);
 	UI ui;
 	ui.initTextures();

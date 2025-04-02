@@ -191,9 +191,6 @@ public:
     }
 
     int getNumber() const { return dynamic_cast<NumericInputHandler*>(inputHandler.get())->getNumber(); }
-    void clear() override {
-        inputHandler->clear();
-    }
 };
 
 class NumberInputBoxInCamera : public NumberInputBox {
@@ -251,6 +248,13 @@ public:
     }
     virtual float getRadius() const{
         return radius;
+    }
+    virtual Vector2 getCenter() const {
+        return center;
+    }
+    virtual void setCenter(int x, int y) {
+        center.x = x;
+        center.y = y;
     }
     virtual void setCenterX(int x) {
         center.x = x;

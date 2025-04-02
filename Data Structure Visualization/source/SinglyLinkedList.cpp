@@ -118,6 +118,9 @@ void LinkedList::insertnode(int x, int pos) {
     }
     if (pos == 1 || !head) {
         LLNode* temp = new LLNode(x,100,100);
+        temp->onClick = [temp]() {
+            cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
+            };
         temp->next = head;
         adjustPos(temp);
         CBEdge::addEdge(Edges, temp, head);
@@ -130,7 +133,9 @@ void LinkedList::insertnode(int x, int pos) {
     }
 
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
-
+    newnode->onClick = [newnode]() {
+        cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
+        };
     newnode->next = cur->next;
     CBEdge::addEdge(Edges, newnode, cur->next);
     CBEdge::removeEdge(Edges, cur, cur->next);

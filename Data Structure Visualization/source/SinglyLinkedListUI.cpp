@@ -37,7 +37,7 @@ void SinglyLinkedListUI::initButtons() {
 
     /// Buttons
     RectButton::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
-    Buttons[0]->animation = new ButtonMoveXAnimation(Buttons[0], 0.5);
+    Buttons[0]->animation = new RectMoveXAnim(Buttons[0], 0.5);
 
     RectButton* Value = new TextBox("Value:");
     RectButton* ValueInput = new NumberInputBox(3);
@@ -59,7 +59,7 @@ void SinglyLinkedListUI::initButtons() {
         });
 
     RectButton::insertHeadButton(Buttons, new TextBox("Remove"));
-    Buttons[1]->animation = new ButtonMoveXAnimation(Buttons[1], 0.5);
+    Buttons[1]->animation = new RectMoveXAnim(Buttons[1], 0.5);
 
     RectButton* Value1 = new TextBox("Value:");
     RectButton* ValueInput1 = new NumberInputBox(3);
@@ -73,7 +73,7 @@ void SinglyLinkedListUI::initButtons() {
         });
 
     RectButton::insertHeadButton(Buttons, new TextBox("Search"));
-    Buttons[2]->animation = new ButtonMoveXAnimation(Buttons[2], 0.5);
+    Buttons[2]->animation = new RectMoveXAnim(Buttons[2], 0.5);
     Buttons[2]->insertSubButton(new TextBox("Value:"));
     RectButton* ValueInput2 = new NumberInputBox(3);
     Buttons[2]->insertSubButton(ValueInput2);
@@ -84,19 +84,19 @@ void SinglyLinkedListUI::initButtons() {
         });
 
     RectButton::insertHeadButton(Buttons, new TextBox("Clear"));
-    Buttons[3]->animation = new ButtonMoveXAnimation(Buttons[3], 0.5);
+    Buttons[3]->animation = new RectMoveXAnim(Buttons[3], 0.5);
     Buttons[3]->onClick = [this]() {
         this->deletelist();
         this->deleteEdges();
         };
     RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
-    Buttons[4]->animation = new ButtonMoveXAnimation(Buttons[4], 0.5);
+    Buttons[4]->animation = new RectMoveXAnim(Buttons[4], 0.5);
     Buttons[4]->onClick = [this]() {
         this->loadFromFile();
         };
 
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
-    Buttons[5]->animation = new ButtonMoveXAnimation(Buttons[5], 0.5);
+    Buttons[5]->animation = new RectMoveXAnim(Buttons[5], 0.5);
 
     Buttons[5]->onClick = [this]() {
         this->deletelist();
@@ -147,13 +147,14 @@ void SinglyLinkedListUI::displayScene() {
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
-    /*Button::isCollision = false;
+    Button::isCollision = false;
 
     LLNode* cur = this->head;
-    while (cur) {
-        cur->update();
-        cur = cur->next;
-    }*/
+    Vector2 camPos = GetWorldToScreen2D(cur->getCenter(), cam);
+    if (IsKeyPressed(KEY_ENTER)) {
+        cout << "camPos: " << camPos.x << " " << camPos.y << "\n";
+    }
+    
 }
 void SinglyLinkedListUI::updateScene() {
 

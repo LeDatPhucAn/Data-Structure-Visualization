@@ -10,7 +10,7 @@ SceneHandler::SceneHandler() {
     MenuButton->onClick = [this]() {
         this->changeScene(MENU);
         };
-	MenuButton->animation = new ButtonMoveXAnimation(MenuButton, 0.5);
+	MenuButton->animation = new RectMoveXAnim(MenuButton, 0.5);
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();

@@ -131,7 +131,7 @@ void RectButton::insertSubButton(RectButton* button) {
     cur->next = button;
     button->head = this;
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
-    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.3);
+    button->animation = new RectMoveXAnim(button, this->rect.x, 0.3);
 }
 
 void RectButton::insertSubButton(RectButton* button, std::function<void()> function) {
@@ -295,7 +295,7 @@ void CircleButton::unhover() {
 CircleButton::CircleButton(Vector2 cent = { 0, 0 }, float r = 50.0f,
     Color tc = BLUE, Color fc = RAYWHITE, Color rc = BLUE)
     : Button(tc, fc, rc), center(cent), radius(r), isActivated(false) {
-    animation = new CircleButtonInitializeAnimation(this, 1);
+    animation = new CircleInitializeAnim(this, 1);
 }
 void CircleButton::update() {
     if (CheckCollisionPointCircle(getMousePos(), center, radius)) {

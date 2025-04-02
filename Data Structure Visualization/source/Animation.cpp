@@ -11,7 +11,7 @@ void Animation::Animate(float deltaTime) {
        completed = true; 
    }
 }
-void CircleButtonInitializeAnimation::update(float deltaTime) {
+void CircleInitializeAnim::update(float deltaTime) {
     Animate(deltaTime);
 	button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
 }
@@ -19,21 +19,26 @@ void NodeInitializeAnimation::update(float deltaTime) {
     Animate(deltaTime);
 	node->radius = EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration);
 }
-void ButtonMoveAnimation::HandleResize() {
+void CircleMoveAnim::update(float deltaTime) {
+    Animate(deltaTime);
+    button->setCenterX(EaseElasticIn(elapsed, startX, endX - startX, duration));
+    button->setCenterY(EaseElasticIn(elapsed, startY, endY - startY, duration));
+}
+void RectMoveAnim::HandleResize() {
 	endX = button->rect.x;
 	endY = button->rect.y;
 }
 
-void ButtonMoveAnimation::update(float deltaTime) {
+void RectMoveAnim::update(float deltaTime) {
     Animate(deltaTime);
     button->rect.x = EaseSineOut(elapsed, startX, endX - startX, duration);
     button->rect.y = EaseSineOut(elapsed, startY, endY - startY, duration);
 }
-void ButtonMoveXAnimation::update(float deltaTime)  {
+void RectMoveXAnim::update(float deltaTime)  {
     Animate(deltaTime);
     button->rect.x = EaseExpoOut(elapsed, startX, endX - startX, duration);
 }
-void ButtonMoveYAnimation::update(float deltaTime)  {
+void RectMoveYAnim::update(float deltaTime)  {
     Animate(deltaTime);
     button->rect.y = EaseBounceOut(elapsed, startY, endY - startY, duration);
 }

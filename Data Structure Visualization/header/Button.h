@@ -273,6 +273,8 @@ public:
     virtual void draw() = 0;
     void hover() override;
     void unhover() override;
+    void click() override;
+    void unclick() override;
 };
 
 class TextCircle : public CircleButton {
@@ -291,7 +293,7 @@ class TextureCircle : public CircleButton {
 public:
     Texture2D Texture;
     TextureCircle(Texture2D t, Vector2 cent = { 0, 0 }, float r = 50.0f,
-        Color tc = RAYWHITE, Color fc = GREEN, Color rc = GREEN)
+        Color tc = RAYWHITE, Color fc = GREEN, Color rc = DARKGREEN)
         : CircleButton(cent, r, tc, fc, rc), Texture(t) {
     }
     void draw() override;

@@ -186,8 +186,10 @@ void RectButton::update() {
         if (CheckCollisionPointRec(getMousePos(), rect)) {
             hover();
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) click();
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated;
+                unclick();
                 if (!head && isActivated) resetSubAni();
                 if (onClick) onClick();
             }
@@ -222,10 +224,12 @@ void InputBox::update() {
     if (!head || head->isActivated) {
         if (CheckCollisionPointRec(getMousePos(), rect)) {
             hover();
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) click();
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 isActivated = !isActivated;
                 if (!head && isActivated) resetSubAni();
                 if (onClick) onClick();
+                unclick();
             }
             Button::isCollision = true;
         }
@@ -301,9 +305,11 @@ void CircleButton::update() {
     if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
         hover();
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) click();
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             isActivated = !isActivated;
             if (onClick) onClick();
+            unclick();
         }
         Button::isCollision = true;
     }
@@ -330,9 +336,11 @@ void TextCircle::update() {
     if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
         hover();
         SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) click();
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             isActivated = !isActivated;
             if (onClick) onClick();
+            unclick();
         }
         Button::isCollision = true;
     }
@@ -342,13 +350,27 @@ void TextCircle::update() {
     if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
 }
 void TextureCircle::unhover() {
-    OutLineColor = RED;
+    OutLineColor = ORANGE;
     FillColor = RED;
 }
 
 void TextureCircle::hover() {
-    OutLineColor = GREEN;
+    OutLineColor = YELLOW;
     FillColor = GREEN;
+}
+void CircleButton::click() {
+    if (isClicked) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(OutLineColor, 30);
+        isClicked = false;
+    }
+}
+void CircleButton::unclick() {
+    if (!isClicked) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(OutLineColor, 30);
+        isClicked = true;
+    }
 }
 void TextureCircle::draw() {
     float RingRadius = radius * 4 / 5;
@@ -365,9 +387,11 @@ void TextureCircle::update() {
     if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
         hover();
         SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) click();
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             isActivated = !isActivated;
             if (onClick) onClick();
+            unclick();
         }
         Button::isCollision = true;
     }
@@ -383,7 +407,11 @@ void InputCircle::update() {
     if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
         hover();
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) inputHandler->setTexting(true);
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) click();
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            unclick();
+            inputHandler->setTexting(true);
+        }
         Button::isCollision = true;
     }
     else {

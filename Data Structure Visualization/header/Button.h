@@ -205,7 +205,7 @@ public:
 
 class TextBox : public RectButton {
 public:
-    std::string Text;
+    string Text;
     TextBox(string t, float x = 0, float y = 0,
         Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : RectButton(x, y, 0, 0, tc, fc, olc), Text(t){
@@ -275,7 +275,30 @@ public:
     void unhover() override;
 };
 
-
+class TextCircle : public CircleButton {
+public:
+    string Text;
+    TextCircle(string t, Vector2 cent = { 0, 0 }, float r = 50.0f,
+        Color tc = RAYWHITE, Color fc = GREEN, Color rc = GREEN)
+        : CircleButton(cent, r, tc, fc, rc), Text(t) {
+    }
+    void draw() override;
+    void update() override;
+    void hover() override;
+    void unhover() override;
+};
+class TextureCircle : public CircleButton {
+public:
+    Texture2D Texture;
+    TextureCircle(Texture2D t, Vector2 cent = { 0, 0 }, float r = 50.0f,
+        Color tc = RAYWHITE, Color fc = GREEN, Color rc = GREEN)
+        : CircleButton(cent, r, tc, fc, rc), Texture(t) {
+    }
+    void draw() override;
+    void update() override;
+    void hover() override;
+    void unhover() override;
+};
 
 class InputCircle : public CircleButton {
 public:

@@ -312,7 +312,70 @@ void CircleButton::update() {
     }
     if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
 }
+void TextCircle::unhover() {
+    OutLineColor = RED;
+    FillColor = RED;
+}
 
+void TextCircle::hover() {
+    OutLineColor = GREEN;
+    FillColor = GREEN;
+}
+void TextCircle::draw() {
+    DrawCircleV(center, radius * 4 / 5 +1, FillColor);
+    DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, OutLineColor);
+    UI::drawtext2(Text, center.x, center.y, TextColor);
+}
+void TextCircle::update() {
+    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
+        hover();
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated;
+            if (onClick) onClick();
+        }
+        Button::isCollision = true;
+    }
+    else {
+        unhover();
+    }
+    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
+}
+void TextureCircle::unhover() {
+    OutLineColor = RED;
+    FillColor = RED;
+}
+
+void TextureCircle::hover() {
+    OutLineColor = GREEN;
+    FillColor = GREEN;
+}
+void TextureCircle::draw() {
+    float RingRadius = radius * 4 / 5;
+    DrawCircleV(center, RingRadius +1, FillColor);
+    DrawRing(center, RingRadius, radius, 0, 360, 100, OutLineColor);
+
+    DrawTexturePro(Texture,
+        { 0,0,(float)Texture.width,(float)Texture.height },
+        { center.x - RingRadius,center.y - RingRadius,RingRadius*2,RingRadius*2},
+        { 0,0 }, 0, TextColor
+    );
+}
+void TextureCircle::update() {
+    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
+        hover();
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated;
+            if (onClick) onClick();
+        }
+        Button::isCollision = true;
+    }
+    else {
+        unhover();
+    }
+    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
+}
 // ### InputCircle Methods
 void InputCircle::update() {
     if (animation && !animation->isCompleted()) animation->update(GetFrameTime());

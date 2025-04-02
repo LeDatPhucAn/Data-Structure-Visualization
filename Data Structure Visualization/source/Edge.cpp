@@ -37,8 +37,8 @@ void Edge::drawArrowEdge()
 	float toX =  to->position.x - to->radius * cos(theta);
 	float toY =  to->position.y - to->radius * sin(theta);
 
-	float EdgeEndX = toX - arrowHeadLength * cos(arrowHeadAngle);
-	float EdgeEndY = toY - arrowHeadLength * sin(theta);
+	float EdgeEndX = toX - arrowHeadLength * cos(theta) * sqrt(3) / 2;
+	float EdgeEndY = toY - arrowHeadLength * sin(theta) * sqrt(3) / 2;
 	//draw edge
 	
 	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, BLACK);

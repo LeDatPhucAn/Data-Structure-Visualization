@@ -181,6 +181,9 @@
     <Image Include="assets\Buttons\menu-treap-selected.png">
       <Filter>assets\Buttons</Filter>
     </Image>
+    <Image Include="assets\Icons\Pause.png">
+      <Filter>assets\Icons</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\Fonts\JetBrainsMono-BoldItalic.ttf">

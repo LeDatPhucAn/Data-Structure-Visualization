@@ -27,6 +27,10 @@ void SinglyLinkedListUI::resetAnimations() {
 
 void SinglyLinkedListUI::initButtons() {
 
+    // Circles
+    CircleButton* Pause = new TextureCircle(UI::Icons[4], {(float)UI::screenWidth / 2 , (float)UI::screenHeight - 100}, 60.0f);
+    Circles.push_back(Pause);
+
     /// Code Blocks
     RectButton* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
@@ -145,6 +149,7 @@ void SinglyLinkedListUI::displayScene() {
     SceneHandler::MenuButton->draw();
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
+    Button::drawButtons<CircleButton>(Circles);
 }
 void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
     /*Button::isCollision = false;
@@ -169,6 +174,7 @@ void SinglyLinkedListUI::updateScene() {
     SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
+    Button::updateButtons<CircleButton>(Circles);
 
     
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);

@@ -9,6 +9,7 @@ private:
 protected:
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
+    vector<CircleButton*> Circles;
     vector<Animation*> animations;
 public:
     SinglyLinkedListUI() {
@@ -17,6 +18,7 @@ public:
     ~SinglyLinkedListUI() {
         Button::deleteButtons<RectButton>(Buttons);
         Button::deleteButtons<RectButton>(CodeBlocks);
+        Button::deleteButtons<CircleButton>(Circles);
     }
 
     void drawlinkedlist();

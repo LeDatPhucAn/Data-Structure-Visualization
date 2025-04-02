@@ -44,7 +44,8 @@ void TreapUI::loadFromFile(){
 
 void TreapUI::search(int key) {
     TreapNode* curr = treap.getRoot();
-    
+    if (!curr) return;
+
 }
 
 void TreapUI::remove(int key) {
@@ -251,4 +252,40 @@ void TreapUI::processAnimations() {
         task.task();
         this_thread::sleep_for(chrono::milliseconds(500));
     }
+}
+
+void TreapUI::drawHighlightedNode(TreapNode* node) {
+    if (!node) return;
+
+    static const float width = 140.0f; 
+    static const float height = 120.0f; 
+    static const float dataWidth = 100.0f;
+    static const float priorityWidth = 40.0f;
+
+    Vector2 pos = node->position;
+
+    // Draw highlighted rectangle
+    DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, { 255, 203, 203, 255 });
+    DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, { 69, 180, 238, 145 });
+
+    // Draw the outline of the rectangle
+    DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, RED);
+    DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
+
+    string value = to_string(node->data).substr(0, 5);
+    Vector2 valueTextSize = MeasureTextEx(GetFontDefault(), value.c_str(), 30.0f, 2.0f);
+    string priority = to_string(node->priority);
+    Vector2 priorityTextSize = MeasureTextEx(GetFontDefault(), priority.c_str(), 20.0f, 2.0f);
+
+    DrawText(value.c_str(), pos.x - width / 2 + dataWidth / 2 - valueTextSize.x / 2, pos.y - valueTextSize.y / 2, 30, DARKGRAY);
+    DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 20, MAROON);
+}
+
+void TreapUI::drawHighlightedEdge(Edge* edge) {
+    if (!edge || !edge->from || !edge->to) return;
+
+    // Draw the highlighted edge with a thicker line
+    Vector2 fromPos = edge->from->position;
+    Vector2 toPos = edge->to->position;
+    DrawLineEx(fromPos, toPos, 5.0f, RED);
 }

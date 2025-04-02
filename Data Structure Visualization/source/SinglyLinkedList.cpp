@@ -92,8 +92,8 @@ bool LinkedList::search(int x) {
     LLNode* cur = head;
     while (cur) {
         if (cur->getNumber() == x) {
-            animations.push(new CircleHighLightAnim(cur, 0.5f,GREEN,RAYWHITE,GREEN));
-            animations.push(new CircleHighLightAnimReverse(cur, 0.5f));
+            animations.push(new CircleHighLightAnim(cur, 2.0f,GREEN,RAYWHITE,GREEN));
+            animations.push(new CircleHighLightAnimReverse(cur, 2.0f,GREEN, RAYWHITE,GREEN));
             return true;
         }
         animations.push(new CircleHighLightAnim(cur,0.5f));

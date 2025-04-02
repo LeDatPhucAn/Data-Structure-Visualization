@@ -20,7 +20,7 @@ void TreapUI::loadFromFile(){
         1, // Number of filter patterns
         filter, // Filter patterns
         "Text file (*.txt)", // Filter description
-        0 // Single file seclection mode
+        0 // Single file selection mode
     );
 
     if(filePath){
@@ -238,4 +238,17 @@ void TreapUI::updateScene() {
     Button::updateButtons<RectButton>(CodeBlocks);
 
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+}
+
+void TreapUI::addAnimationStep(int priority, function<void()> func) {
+    animationQueue.push({ priority, func });
+}
+
+void TreapUI::processAnimations() {
+    while (!animationQueue.empty()) {
+        auto task = animationQueue.top();
+        animationQueue.pop();
+        task.task();
+        this_thread::sleep_for(chrono::milliseconds(500));
+    }
 }

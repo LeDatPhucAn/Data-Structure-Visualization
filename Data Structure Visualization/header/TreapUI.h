@@ -8,6 +8,18 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <functional>
+#include <queue>
+#include <thread>
+
+
+struct FunctionTask {
+    int priority;
+    function<void()> task;
+    bool operator<(const FunctionTask& other) const {
+        return priority > other.priority;
+    }
+};
 
 class TreapUI : public SceneManager {
 private:
@@ -15,6 +27,7 @@ private:
     TreapNode* root = nullptr;
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
+    priority_queue<FunctionTask, vector<FunctionTask>, greater<FunctionTask>> animationQueue;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 5;
@@ -22,6 +35,8 @@ private:
     void drawTreapNode(TreapNode* curr);
     void drawTreapLink(Edge* edge);
     void drawTreap(TreapNode* curr);
+    void addAnimationStep(int priority, function<void()> func);
+    void processAnimations();
 public:
     void insert(int key, int priority = rand());
     void loadFromFile();

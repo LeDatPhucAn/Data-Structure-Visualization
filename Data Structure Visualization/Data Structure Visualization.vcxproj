@@ -72,6 +72,7 @@
     <Image Include="assets\Buttons\menu-sll-selected.png" />
     <Image Include="assets\Buttons\menu-treap-normal.png" />
     <Image Include="assets\Buttons\menu-treap-selected.png" />
+    <Image Include="assets\Icons\Pause.png" />
     <Image Include="assets\Icons\rightarrow.png" />
     <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>

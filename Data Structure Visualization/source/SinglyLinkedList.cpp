@@ -20,8 +20,7 @@ void LinkedList::loadFromFile() {
         cout << "Trying to open the file: " << filePath << "\n";
         ifstream fin(filePath);
         if (fin.is_open()) {
-            deletelist();
-            deleteEdges();
+            clear();
             string line;
             int pos = 1;
             int key = 0;
@@ -92,11 +91,23 @@ void LinkedList::printlist() {
 bool LinkedList::search(int x) {
     LLNode* cur = head;
     while (cur) {
-        if (cur->getNumber() == x)return true;
+        if (cur->getNumber() == x) {
+            animations.push(new CircleHighLightAnim(cur, 0.5f,GREEN,RAYWHITE,GREEN));
+            animations.push(new CircleHighLightAnimReverse(cur, 0.5f));
+            return true;
+        }
+        animations.push(new CircleHighLightAnim(cur,0.5f));
+        animations.push(new CircleHighLightAnimReverse(cur, 0.5f));
         cur = cur->next;
 
     }
     return false;
+}
+void LinkedList::deleteAnimations() {
+    while (!animations.empty()) {
+        if (animations.front())delete animations.front();
+        animations.pop();
+    }
 }
 void LinkedList::deletelist() {
     while (head) {
@@ -111,6 +122,11 @@ void LinkedList::deleteEdges() {
         delete edge;
     }
     Edges.clear();
+}
+void LinkedList::clear() {
+    deleteAnimations();
+    deletelist();
+    deleteEdges();
 }
 void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
@@ -142,4 +158,5 @@ void LinkedList::insertnode(int x, int pos) {
     cur->next = newnode;
     adjustPos(newnode);
     CBEdge::addEdge(Edges, cur, newnode);
+    //animations.push(new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 0.5));
 }

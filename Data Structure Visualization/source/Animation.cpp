@@ -11,6 +11,14 @@ void Animation::Animate(float deltaTime) {
        completed = true; 
    }
 }
+void CircleHighLightAnim::update(float deltaTime) {
+    Animate(deltaTime);
+    float easedT = EaseElasticInOut(elapsed / duration, 0.0f, 1.0f, duration);
+    Color tc = UI::interpolateColors(startTC, endTC, easedT);
+    Color fc = UI::interpolateColors(startFC, endFC, easedT);
+    Color rc = UI::interpolateColors(startRC, endRC, easedT);
+    button->setOgColors(tc, fc, rc);
+}
 void CircleInitializeAnim::update(float deltaTime) {
     Animate(deltaTime);
 	button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
@@ -21,8 +29,12 @@ void NodeInitializeAnimation::update(float deltaTime) {
 }
 void CircleMoveAnim::update(float deltaTime) {
     Animate(deltaTime);
-    button->setCenterX(EaseElasticIn(elapsed, startX, endX - startX, duration));
-    button->setCenterY(EaseElasticIn(elapsed, startY, endY - startY, duration));
+    button->setCenterX(EaseExpoOut(elapsed, startX, endX - startX, duration));
+    button->setCenterY(EaseExpoOut(elapsed, startY, endY - startY, duration));
+}
+void CircleMoveXAnim::update(float deltaTime) {
+    Animate(deltaTime);
+    button->setCenterX(EaseExpoOut(elapsed, startX, endX - startX, duration));
 }
 void RectMoveAnim::HandleResize() {
 	endX = button->rect.x;

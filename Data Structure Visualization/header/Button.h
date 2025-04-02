@@ -60,17 +60,22 @@ public:
 class Animation;
 class Button {
 public:
+    Color OgTextColor;
+    Color OgFillColor;
+    Color OgOutLineColor;
     Color TextColor;
     Color FillColor;
     Color OutLineColor;
     Animation* animation;
     bool isHovered;
     bool isClicked;
+    bool isActivated;
     static bool isCollision;
     std::function<void()> onClick;
     Button(Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : TextColor(tc), FillColor(fc), OutLineColor(olc),
-        animation(nullptr), isHovered(false), isClicked(false) {
+        OgTextColor(tc), OgFillColor(fc), OgOutLineColor(olc),
+        animation(nullptr), isHovered(false), isClicked(false), isActivated(false) {
     }
     virtual Vector2 getMousePos() const { return GetMousePosition(); }
     /**
@@ -113,17 +118,25 @@ public:
         }
     }
     virtual void draw() = 0;
-    virtual void update() = 0;
+    virtual void update();
     virtual void hover();
     virtual void unhover();
     virtual void click();
     virtual void unclick();
+    virtual bool checkCollision() = 0;
+    virtual void setOgColors(Color tc, Color fc, Color olc) {
+        OgTextColor = tc;
+        OgFillColor = fc;
+        OgOutLineColor = olc;
+    }
+    virtual void setCursor() {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+    }
 };
 class RectButton : public Button {
 public:
     static const int padding;
     Rectangle rect;
-    bool isActivated;
 
     RectButton* head;
     RectButton* next; // Pointer to the next button
@@ -131,7 +144,7 @@ public:
     RectButton(float x = 0, float y = 0, float w = 0, float h = 0,
         Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : Button(tc, fc, olc), rect{ x, y, w, h }
-        , isActivated(false), head(nullptr), next(nullptr) {
+        , head(nullptr), next(nullptr) {
     }
 
     virtual ~RectButton() {
@@ -140,6 +153,7 @@ public:
     }
     void update() override;
     void draw() override;
+    bool checkCollision() override;
     virtual int getNumber() const { return 0; }
     virtual void setPosition(float x, float y);
     virtual void setSubPosition();
@@ -154,8 +168,6 @@ public:
     virtual void resetSubAni();
     virtual void insertSubButton(RectButton* button);
     virtual void insertSubButton(RectButton* button, std::function<void()> function);
-    
-
 };
 
 class InputBox : public RectButton {
@@ -176,6 +188,9 @@ public:
     void unhover() override;
     virtual void clear() {
         inputHandler->clear();
+    }
+    void setCursor() override {
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
 };
 
@@ -205,7 +220,7 @@ public:
 
 class TextBox : public RectButton {
 public:
-    std::string Text;
+    string Text;
     TextBox(string t, float x = 0, float y = 0,
         Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : RectButton(x, y, 0, 0, tc, fc, olc), Text(t){
@@ -234,12 +249,10 @@ protected:
     Vector2 center;
     float radius;
 public:
-    bool isActivated;
 
     // default color
     CircleButton(Vector2 cent, float r,
         Color tc, Color fc, Color rc);
-    
     virtual ~CircleButton(){
         if (animation)delete animation;
     }
@@ -252,30 +265,54 @@ public:
     virtual Vector2 getCenter() const {
         return center;
     }
-    virtual void setCenter(int x, int y) {
+    virtual void setCenter(float x, float y) {
         center.x = x;
         center.y = y;
     }
-    virtual void setCenterX(int x) {
+    virtual void setCenterX(float x) {
         center.x = x;
     }
     virtual int getCenterX() const {
         return center.x;
     }
 
-    virtual void setCenterY(int y) {
+    virtual void setCenterY(float y) {
         center.y = y;
     }
     virtual int getCenterY() const {
         return center.y;
     }
+    bool checkCollision() override;
     virtual void update();
     virtual void draw() = 0;
     void hover() override;
     void unhover() override;
+    void click() override;
+    void unclick() override;
 };
 
-
+class TextCircle : public CircleButton {
+public:
+    string Text;
+    TextCircle(string t, Vector2 cent = { 0, 0 }, float r = 50.0f,
+        Color tc = RAYWHITE, Color fc = GREEN, Color rc = GREEN)
+        : CircleButton(cent, r, tc, fc, rc), Text(t) {
+    }
+    void draw() override;
+    void hover() override;
+    void unhover() override;
+};
+class TextureCircle : public CircleButton {
+public:
+    Texture2D Texture;
+    TextureCircle(Texture2D t, Vector2 cent = { 0, 0 }, float r = 50.0f,
+        Color tc = RAYWHITE, Color fc = GREEN, Color rc = DARKGREEN)
+        : CircleButton(cent, r, tc, fc, rc), Texture(t) {
+    }
+    void draw() override;
+    void hover() override;
+    void unhover() override;
+};
 
 class InputCircle : public CircleButton {
 public:
@@ -293,6 +330,9 @@ public:
 
     virtual void clear() {
         inputHandler->clear();
+    }
+    void setCursor() override {
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
 };
 class NumberInputCircle : public InputCircle {

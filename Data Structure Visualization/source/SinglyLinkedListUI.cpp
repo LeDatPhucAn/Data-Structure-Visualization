@@ -147,13 +147,13 @@ void SinglyLinkedListUI::displayScene() {
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
-    Button::isCollision = false;
+    /*Button::isCollision = false;
 
     LLNode* cur = this->head;
     Vector2 camPos = GetWorldToScreen2D(cur->getCenter(), cam);
     if (IsKeyPressed(KEY_ENTER)) {
         cout << "camPos: " << camPos.x << " " << camPos.y << "\n";
-    }
+    }*/
     
 }
 void SinglyLinkedListUI::updateScene() {

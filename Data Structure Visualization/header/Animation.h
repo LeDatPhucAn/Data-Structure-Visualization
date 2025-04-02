@@ -14,7 +14,8 @@ public:
     virtual ~Animation() = default;
 
     virtual void Animate(float deltaTime);
-    virtual void HandleResize() = 0;
+    virtual void HandleResize() {};
+    virtual void HandleReposition() {};
     virtual void update(float deltaTime) = 0;
     virtual bool isCompleted() {
         return completed;
@@ -54,36 +55,65 @@ public:
     CircleMoveAnim(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
         : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
     }
-    
+    void HandleReposition() override {
+        endX = button->getCenterX();
+        endY = button->getCenterY();
+    }
     void update(float deltaTime) override;
 };
-class CircleMoveAnimInCamera : public Animation {
+class CircleMoveXAnim : public Animation {
 private:
     
 protected:
     CircleButton* button;
-    float startX, startY;
-    float endX, endY;
+    float startX;
+    float endX;
 public:
-	virtual ~CircleMoveAnimInCamera() = default;
-    CircleMoveAnimInCamera(CircleButton* btn, float duration)
+	virtual ~CircleMoveXAnim() = default;
+    CircleMoveXAnim(CircleButton* btn, float duration)
         : Animation(duration), button(btn) {
         startX = 0;
-        startY = 0;
         endX = btn->getCenterX();
-        endY = btn->getCenterY();
     }
-    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float duration)
-        : Animation(duration), startX(sX), startY(sY), button(btn) {
+    CircleMoveXAnim(CircleButton* btn, float sX, float duration)
+        : Animation(duration), startX(sX), button(btn) {
         endX = btn->getCenterX();
-        endY = btn->getCenterY();
     }
-    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
-        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
+    CircleMoveXAnim(CircleButton* btn, float sX, float eX, float duration)
+        : Animation(duration), startX(sX), endX(eX), button(btn) {
     }
-    
+    void HandleReposition() override{
+        endX = button->getCenterX();
+    }
     void update(float deltaTime) override;
 };
+//class CircleMoveAnimInCamera : public Animation {
+//private:
+//    
+//protected:
+//    CircleButton* button;
+//    float startX, startY;
+//    float endX, endY;
+//public:
+//	virtual ~CircleMoveAnimInCamera() = default;
+//    CircleMoveAnimInCamera(CircleButton* btn, float duration)
+//        : Animation(duration), button(btn) {
+//        startX = 0;
+//        startY = 0;
+//        endX = btn->getCenterX();
+//        endY = btn->getCenterY();
+//    }
+//    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float duration)
+//        : Animation(duration), startX(sX), startY(sY), button(btn) {
+//        endX = btn->getCenterX();
+//        endY = btn->getCenterY();
+//    }
+//    CircleMoveAnimInCamera(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
+//        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
+//    }
+//    
+//    void update(float deltaTime) override;
+//};
 class RectMoveAnim : public Animation {
 private:
     
@@ -93,7 +123,7 @@ protected:
     float endX, endY;
 public:
 
-    virtual void HandleResize() override;
+    void HandleResize() override;
 	virtual ~RectMoveAnim() = default;
     RectMoveAnim(RectButton* btn, float duration)
         : Animation(duration), button(btn) {

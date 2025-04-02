@@ -21,8 +21,12 @@ void NodeInitializeAnimation::update(float deltaTime) {
 }
 void CircleMoveAnim::update(float deltaTime) {
     Animate(deltaTime);
-    button->setCenterX(EaseElasticIn(elapsed, startX, endX - startX, duration));
-    button->setCenterY(EaseElasticIn(elapsed, startY, endY - startY, duration));
+    button->setCenterX(EaseExpoOut(elapsed, startX, endX - startX, duration));
+    button->setCenterY(EaseExpoOut(elapsed, startY, endY - startY, duration));
+}
+void CircleMoveXAnim::update(float deltaTime) {
+    Animate(deltaTime);
+    button->setCenterX(EaseExpoOut(elapsed, startX, endX - startX, duration));
 }
 void RectMoveAnim::HandleResize() {
 	endX = button->rect.x;

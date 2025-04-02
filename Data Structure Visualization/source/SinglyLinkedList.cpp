@@ -40,6 +40,7 @@ void LinkedList::adjustPos(LLNode* pHead) {
         if (prev) {
             pHead->setCenterX(prev->getCenterX() + 200);
             pHead->setCenterX(pHead->getCenterX());
+            pHead->animation->HandleReposition();
         }
 
         prev = pHead;
@@ -142,4 +143,9 @@ void LinkedList::insertnode(int x, int pos) {
     cur->next = newnode;
     adjustPos(newnode);
     CBEdge::addEdge(Edges, cur, newnode);
+    if (newnode->animation) {
+        newnode->animQueue.push(new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 10));
+        delete newnode->animation;
+        newnode->animation = new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 10);
+    }
 }

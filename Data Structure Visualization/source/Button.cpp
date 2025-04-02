@@ -45,7 +45,21 @@ void Button::unclick() {
         isClicked = false;
     }
 }
-
+void Button::update() {
+    if (checkCollision()) {
+        hover();
+        setCursor();
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated;
+            if (onClick) onClick();
+        }
+        Button::isCollision = true;
+    }
+    else {
+        unhover();
+    }
+    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
+}
 // ### RectButton Methods
 void RectButton::resetSubAni() {
     RectButton* cur = this->next;
@@ -180,23 +194,17 @@ void RectButton::insertPseudoCode(std::vector<RectButton*>& CodeBlocks, std::str
         insertCodeBlock(CodeBlocks, new CodeBlock(line.c_str()));
     }
 }
-
+bool RectButton::checkCollision() {
+    return CheckCollisionPointRec(getMousePos(), rect);
+}
 void RectButton::update() {
     if (!head || head->isActivated) {
-        if (CheckCollisionPointRec(getMousePos(), rect)) {
-            hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        Button::update();
+        if (checkCollision()) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                isActivated = !isActivated;
                 if (!head && isActivated) resetSubAni();
-                if (onClick) onClick();
             }
-            Button::isCollision = true;
         }
-        else {
-            unhover();
-        }
-        if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
     }
     if (next) next->update();
 }
@@ -219,34 +227,21 @@ void InputBox::unhover() {
 }
 
 void InputBox::update() {
-    if (!head || head->isActivated) {
-        if (CheckCollisionPointRec(getMousePos(), rect)) {
-            hover();
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                isActivated = !isActivated;
-                if (!head && isActivated) resetSubAni();
-                if (onClick) onClick();
-            }
-            Button::isCollision = true;
-        }
-        else {
-            unhover();
-        }
-        if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
-    }
-    if (next) next->update();
-
     if (GetGestureDetected() == GESTURE_TAP) {
         inputHandler->setTexting(false);
     }
     if (!head || head->isActivated) {
-        if (CheckCollisionPointRec(getMousePos(), rect)) {
-            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+        Button::update();
+        if (checkCollision()) {
             if (GetGestureDetected() == GESTURE_TAP) inputHandler->setTexting(true);
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                if (!head && isActivated) resetSubAni();
+            }
         }
         inputHandler->update();
         if (inputHandler->isTexting() && IsKeyPressed(KEY_ENTER) && onClick) onClick();
     }
+    if (next) next->update();
 }
 
 void InputBox::draw() {
@@ -283,6 +278,9 @@ void TextBox::draw() {
 }
 
 // ### CircleButton Methods
+bool CircleButton::checkCollision() {
+    return CheckCollisionPointCircle(getMousePos(), center, radius);
+}
 void CircleButton::hover() {
     OutLineColor = RED;
     TextColor = RED;
@@ -294,23 +292,11 @@ void CircleButton::unhover() {
 }
 CircleButton::CircleButton(Vector2 cent = { 0, 0 }, float r = 50.0f,
     Color tc = BLUE, Color fc = RAYWHITE, Color rc = BLUE)
-    : Button(tc, fc, rc), center(cent), radius(r), isActivated(false) {
+    : Button(tc, fc, rc), center(cent), radius(r) {
     animation = new CircleInitializeAnim(this, 1);
 }
 void CircleButton::update() {
-    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
-        hover();
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            isActivated = !isActivated;
-            if (onClick) onClick();
-        }
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
-    }
-    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
+    Button::update();
 }
 void TextCircle::unhover() {
     OutLineColor = RED;
@@ -325,21 +311,6 @@ void TextCircle::draw() {
     DrawCircleV(center, radius * 4 / 5 +1, FillColor);
     DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, OutLineColor);
     UI::drawtext2(Text, center.x, center.y, TextColor);
-}
-void TextCircle::update() {
-    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
-        hover();
-        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            isActivated = !isActivated;
-            if (onClick) onClick();
-        }
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
-    }
-    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
 }
 void TextureCircle::unhover() {
     OutLineColor = RED;
@@ -361,33 +332,12 @@ void TextureCircle::draw() {
         { 0,0 }, 0, TextColor
     );
 }
-void TextureCircle::update() {
-    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
-        hover();
-        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            isActivated = !isActivated;
-            if (onClick) onClick();
-        }
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
-    }
-    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
-}
 // ### InputCircle Methods
 void InputCircle::update() {
-    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
     if (GetGestureDetected() == GESTURE_TAP) inputHandler->setTexting(false);
-    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
-        hover();
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    Button::update();
+    if (checkCollision()) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) inputHandler->setTexting(true);
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
     }
     inputHandler->update();
     if (inputHandler->isTexting() && IsKeyPressed(KEY_ENTER) && onClick) onClick();

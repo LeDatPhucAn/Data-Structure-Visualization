@@ -14,18 +14,16 @@ void Animation::Animate(float deltaTime) {
 void CircleHighLightAnim::update(float deltaTime) {
     Animate(deltaTime);
     float easedT = EaseSineIn(elapsed / duration, 0.0f, 1.0f, duration);
-    Color tc = UI::interpolateColors(startTC, endTC, easedT);
-    Color fc = UI::interpolateColors(startFC, endFC, easedT);
-    Color rc = UI::interpolateColors(startRC, endRC, easedT);
-    button->setOgColors(tc, fc, rc);
+    button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
+    button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
+    button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
 }
 void CircleHighLightAnimReverse::update(float deltaTime) {
     Animate(deltaTime);
     float easedT = EaseSineIn(elapsed / duration, 0.0f, 1.0f, duration);
-    Color tc = UI::interpolateColors(startTC, endTC, easedT);
-    Color fc = UI::interpolateColors(startFC, endFC, easedT);
-    Color rc = UI::interpolateColors(startRC, endRC, easedT);
-    button->setOgColors(tc, fc, rc);
+    button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
+    button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
+    button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
 }
 void CircleInitializeAnim::update(float deltaTime) {
     Animate(deltaTime);

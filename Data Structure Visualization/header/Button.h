@@ -124,11 +124,6 @@ public:
     virtual void click();
     virtual void unclick();
     virtual bool checkCollision() = 0;
-    virtual void setOgColors(Color tc, Color fc, Color olc) {
-        OgTextColor = tc;
-        OgFillColor = fc;
-        OgOutLineColor = olc;
-    }
     virtual void setCursor() {
         SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
     }

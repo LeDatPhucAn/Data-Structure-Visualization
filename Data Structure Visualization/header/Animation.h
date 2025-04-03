@@ -29,7 +29,22 @@ public:
     virtual float getProgress() const {
         return elapsed;
     }
-    
+    // Set the animation to a specific time and apply the state immediately
+    virtual void setTime(float t) {
+        elapsed = t;
+        if (elapsed >= duration) {
+            elapsed = duration;
+            completed = true;
+        }
+        else if (elapsed <= 0) {
+            elapsed = 0;
+            completed = false;
+        }
+        else {
+            completed = false;
+        }
+        //applyState();
+    }
 };
 class CircleHighLightAnim : public Animation {
 protected:

@@ -3,11 +3,13 @@
 class Animation;
 class AnimationManager {
 private:
-    std::vector<Animation*> animations; // Pointers to animations owned elsewhere
-    float speed = 1.0f;                 // Speed multiplier (1.0 = normal)
-    bool paused = false;                // Pause state
-    int direction = 1;                  // 1 = forward, -1 = backward
-
+    std::vector<Animation*> animations; // List of animations in the sequence
+    std::vector<float> startTimes;      // Start time of each animation on the timeline
+    float totalDuration = 0;            // Total duration of the sequence
+    float currentTime = 0;              // Current position on the timeline
+    float speed = 1.0f;                 // Playback speed (default 1x)
+    bool paused = true;                 // Playback state
+    int direction = 1;                  // 1 for forward, -1 for backward
 public:
     AnimationManager() {
         speed = 1.0f;
@@ -48,4 +50,13 @@ public:
 
     // Seek to a specific progress (0.0 to 1.0)
     void seek(float progress);
+
+    // Go to the start of the next animation
+    void goToNext();
+
+    // Go to the start of the previous animation
+    void goToPrevious();
+private:
+    // Update the state of the active animation based on currentTime
+    void updateActiveAnimation();
 };

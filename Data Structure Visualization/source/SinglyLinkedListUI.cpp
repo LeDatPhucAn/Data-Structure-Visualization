@@ -111,7 +111,7 @@ void SinglyLinkedListUI::initButtons() {
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;
             int pos = rand() % 10;
-            this->insertnode(x, pos);
+            this->randominsert(x, pos);
         }
         };
 
@@ -131,13 +131,12 @@ void SinglyLinkedListUI::updateButtonPositions() {
 }
 
 void SinglyLinkedListUI::init() {
-
     srand(time(nullptr));
     int n = rand() % 10;
     for (int i = 0; i < n; ++i) {
         int x = rand() % 100;
         int pos = rand() % 10;
-        this->insertnode(x,pos);
+        this->randominsert(x,pos);
     }
 
     initButtons();
@@ -169,15 +168,15 @@ void SinglyLinkedListUI::updateScene() {
     Button::isCollision = false;
 
     if (!animations.empty()) {
-        if(animations.front())animations.front()->update(GetFrameTime());
         if (!animations.front() || animations.front()->isCompleted()) animations.pop();
+        else animations.front()->update(GetFrameTime());
     }
-    LLNode* cur = this->head;
-    while (cur) {
-        cur->update();
-        if (cur->animation)cur->animation->update(GetFrameTime());
-        cur = cur->next;
-    }
+   LLNode* cur = this->head;
+   while (cur) {
+       cur->update();
+       if (cur->animation)cur->animation->update(GetFrameTime());
+       cur = cur->next;
+   }
     
     SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);

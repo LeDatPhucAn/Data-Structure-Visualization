@@ -17,6 +17,7 @@ public:
     }
     void adjustPos(LLNode* head);
     void insertnode(int x, int pos);
+    void randominsert(int x, int pos);
     void loadFromFile();
     bool remove(int x);
     bool search(int x);

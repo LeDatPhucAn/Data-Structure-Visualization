@@ -15,18 +15,15 @@ private:
         0.0f,  
         0.0f
     };
-
+    vector<Button*>SceneButtons;
 protected:
     SceneManager* currentSceneObject;
 public:
     static Vector2 mouseWorldPos;
-    RectButton* MenuButton;
-    CircleButton* Pause;
-    CircleButton* Forward;
-    CircleButton* Backward;
     SceneHandler();
     ~SceneHandler();
     int getCurrentScene();
+    void initButtons();
     void updateCamera();
     void changeScene(Scene newScene);
     void updateCurrentScene();

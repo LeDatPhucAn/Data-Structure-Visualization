@@ -117,6 +117,18 @@ public:
             btn->update();
         }
     }
+    /**
+     * Reset all animations in buttons in the provided vector.
+     * @tparam T Type of the button, must be derived from Button.
+     * @param buttons Vector of pointers to buttons to be updated.
+     */
+    template <typename T>
+    static void resetButtonsAnimations(std::vector<T*>& Buttons) {
+        static_assert(std::is_base_of<Button, T>::value, "T must be derived from Button");
+        for (auto btn : Buttons) {
+            if(btn->animation)btn->animation->reset();
+        }
+    }
     virtual void draw() = 0;
     virtual void update();
     virtual void hover();
@@ -267,14 +279,14 @@ public:
     virtual void setCenterX(float x) {
         center.x = x;
     }
-    virtual int getCenterX() const {
+    virtual float getCenterX() const {
         return center.x;
     }
 
     virtual void setCenterY(float y) {
         center.y = y;
     }
-    virtual int getCenterY() const {
+    virtual float getCenterY() const {
         return center.y;
     }
     bool checkCollision() override;

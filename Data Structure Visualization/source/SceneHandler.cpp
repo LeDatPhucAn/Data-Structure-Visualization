@@ -4,15 +4,14 @@
 Vector2 SceneHandler::mouseWorldPos = GetMousePosition();
 SceneHandler::SceneHandler() {
 
-    // initialize menu button
-    MenuButton = new TextBox("Menu", UI::screenWidth / 100, UI::screenHeight / 100);
-    MenuButton->onClick = [this]() {
-        this->changeScene(MENU);
-        };
-	MenuButton->animation = new RectMoveXAnim(MenuButton, 0.5);
+    // initialize Scene Buttons
+    initButtons();
+
+
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
+
     scenes[MENU] = new Menu(this);
     scenes[LINKEDLIST] = new SinglyLinkedListUI();
     scenes[HASHTABLE] = new HashTableUI();
@@ -27,15 +26,54 @@ SceneHandler::~SceneHandler() {
     for (int i = 0; i < 5; ++i) {
         delete scenes[i];
     }
-    delete MenuButton;
+    Button::deleteButtons<Button>(SceneButtons);
 }
 
+void SceneHandler::initButtons() {
+    Button* MenuButton = new TextBox("Menu", UI::screenWidth / 100, UI::screenHeight / 100);
+    MenuButton->onClick = [this]() {
+        this->changeScene(MENU);
+        };
+    MenuButton->animation = new RectMoveXAnim(dynamic_cast<RectButton*>(MenuButton), 0.5);
+    SceneButtons.push_back(MenuButton);
+    
+    
+    CircleButton* Pause = new TextureCircle(UI::Icons[4], { (float)UI::screenWidth / 2 , (float)UI::screenHeight - 100 }, 60.0f);
+    Pause->onClick = [this]() {
+        if (!currentSceneObject->animManager.isPaused())currentSceneObject->animManager.pause();
+        else currentSceneObject->animManager.resume();
+        };
+    SceneButtons.push_back(Pause);
+
+
+    CircleButton* Back = new TextCircle("<",
+        {
+            Pause->getCenterX() - Pause->getRadius() - 50,
+            Pause->getCenterY()
+        },
+        50.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
+    Back->onClick = [this]() {
+        currentSceneObject->animManager.playBackward();
+        };
+    SceneButtons.push_back(Back);
+    
+    CircleButton* Forward = new TextCircle(">",
+        {
+            Pause->getCenterX() + Pause->getRadius() + 50,
+            Pause->getCenterY()
+        },
+        50.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
+    Forward->onClick = [this]() {
+        currentSceneObject->animManager.playForward();
+        };
+    SceneButtons.push_back(Forward);
+}
 int SceneHandler::getCurrentScene() {
     return currentSceneObject->CurrentScene;
 }
 
 void SceneHandler::changeScene(Scene newScene) {
-    MenuButton->animation->reset();
+    Button::resetButtonsAnimations<Button>(SceneButtons);
     if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
     currentSceneObject->CurrentScene = newScene;
@@ -85,8 +123,8 @@ void SceneHandler::updateCurrentScene() {
         // update The Positions of all Scenes when there is a Window Resize
         if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
 
-            MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
-            MenuButton->animation->HandleResize();
+            dynamic_cast<RectButton*>(SceneButtons[0])->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+            //MenuButton->animation->HandleResize();
             for (int i = 1; i < 5; i++) {
                 scenes[i]->updateButtonPositions();
             }
@@ -104,8 +142,9 @@ void SceneHandler::updateCurrentScene() {
         }
 
         Button::isCollision = false;
-        MenuButton->update();
+        Button::updateButtons<Button>(SceneButtons);
 
+        currentSceneObject->animManager.update(GetFrameTime());
         currentSceneObject->updateScene();
 
     }
@@ -128,7 +167,7 @@ void SceneHandler::displayCurrentScene() {
 
             EndMode2D();
 
-            MenuButton->draw();
+            Button::drawButtons<Button>(SceneButtons);
         }
         else {
             UI::drawBackground();

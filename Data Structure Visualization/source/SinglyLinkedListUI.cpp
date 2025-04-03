@@ -10,6 +10,12 @@ void SinglyLinkedListUI::remove(int x) {
     linkedlist.remove(x);
 }
 bool SinglyLinkedListUI::search(int x) {
+    LLNode* cur = linkedlist.head;
+    while (cur) {
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5));
+        animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5));
+        cur = cur->next;
+    }
     return linkedlist.search(x);
 }
 void SinglyLinkedListUI::drawlinkedlist() {
@@ -173,8 +179,7 @@ void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
     
 }
 void SinglyLinkedListUI::updateScene() {
-
-   linkedlist.animManager.update(GetFrameTime());
+    
    LLNode* cur = linkedlist.head;
    while (cur) {
        cur->update();

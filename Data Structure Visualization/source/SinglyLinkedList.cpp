@@ -38,8 +38,6 @@ void LinkedList::adjustPos(LLNode* pHead) {
     while (pHead) {
         if (prev) {
             pHead->setCenterX(prev->getCenterX() + 200);
-            animations.push(new CircleMoveXAnim(pHead,prev->getCenterX(), pHead->getCenterX(), 0.2f));
-            //pHead->setCenterX(pHead->getCenterX());
         }
 
         prev = pHead;
@@ -95,10 +93,14 @@ bool LinkedList::search(int x) {
         if (cur->getNumber() == x) {
             animations.push(new CircleHighLightAnim(cur, 2.0f,GREEN,RAYWHITE,GREEN));
             animations.push(new CircleHighLightAnimReverse(cur, 2.0f,GREEN, RAYWHITE,GREEN));
+            animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
+            animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f, GREEN, RAYWHITE, GREEN));
             return true;
         }
         animations.push(new CircleHighLightAnim(cur,0.5f));
         animations.push(new CircleHighLightAnimReverse(cur, 0.5f));
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f));
         cur = cur->next;
 
     }
@@ -148,11 +150,14 @@ void LinkedList::insertnode(int x, int pos) {
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         animations.push(new CircleHighLightAnim(cur, 0.5f));
         animations.push(new CircleHighLightAnimReverse(cur, 0.5f));
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f));
         cur = cur->next;
     }
     animations.push(new CircleHighLightAnim(cur, 0.5f,GREEN,RAYWHITE,GREEN));
     animations.push(new CircleHighLightAnimReverse(cur, 0.5f, GREEN,RAYWHITE,GREEN));
-
+    animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
+    animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f, GREEN, RAYWHITE, GREEN));
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
     newnode->onClick = [newnode]() {
         cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Animation.cpp" />
+    <ClCompile Include="source\AnimationManager.cpp" />
     <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
@@ -41,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Animation.h" />
+    <ClInclude Include="header\AnimationManager.h" />
     <ClInclude Include="header\Button.h" />
     <ClInclude Include="header\Edge.h" />
     <ClInclude Include="header\Graph.h" />

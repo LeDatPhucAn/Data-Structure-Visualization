@@ -2,13 +2,25 @@
 
 
 void Animation::Animate(float deltaTime) {
-   if (completed) return;
+   //if (completed) return;
    elapsed += deltaTime;
-   float t = elapsed / duration;
-   if (t >= 1.0f) { 
-       t = 1.0f; 
-       elapsed = duration;
-       completed = true; 
+   if (deltaTime >= 0) { // Playing forward
+       if (elapsed >= duration) {
+           elapsed = duration;
+           completed = true;
+       }
+       else {
+           completed = false;
+       }
+   }
+   else { // Playing backward
+       if (elapsed <= 0) {
+           elapsed = 0;
+           completed = false;
+       }
+       else {
+           completed = false;
+       }
    }
 }
 void CircleHighLightAnim::update(float deltaTime) {

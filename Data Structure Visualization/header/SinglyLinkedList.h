@@ -2,13 +2,14 @@
 #include "LLNode.h"
 #include "Edge.h"
 #include <vector>
-
+#include <memory>
+#include "AnimationManager.h"
 class LinkedList : public LLNode {
 public:
     LLNode* head;
     static vector<CBEdge*> Edges;
     queue<Animation*> animations;
-
+    AnimationManager animManager;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);
     }

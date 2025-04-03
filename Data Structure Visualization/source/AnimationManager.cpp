@@ -94,11 +94,4 @@ void AnimationManager::goToPrevious() {
         seek(0);
     }
 }
-//void AnimationManager::seek(float progress) {
-//    float clampedProgress = std::max(0.0f, std::min(1.0f, progress));
-//    for (Animation* anim : animations) {
-//        anim->elapsed = clampedProgress * anim->duration;
-//        anim->completed = (clampedProgress >= 1.0f);
-//        anim->update(0);
-//    }
-//}
+

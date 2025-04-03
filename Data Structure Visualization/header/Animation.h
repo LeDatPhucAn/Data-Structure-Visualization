@@ -17,7 +17,8 @@ public:
     virtual void Animate(float deltaTime);
     virtual void HandleResize() {};
     virtual void HandleReposition() {};
-    virtual void update(float deltaTime) = 0;
+    virtual void update(float deltaTime);
+    virtual void applyState() = 0;
     virtual bool isCompleted() {
         return completed;
     }
@@ -29,9 +30,7 @@ public:
     virtual float getProgress() const {
         return elapsed;
     }
-    // Set the animation to a specific time and apply the state immediately
-    virtual void setTime(float t) {
-        elapsed = t;
+    virtual void clamp() {
         if (elapsed >= duration) {
             elapsed = duration;
             completed = true;
@@ -43,8 +42,9 @@ public:
         else {
             completed = false;
         }
-        //applyState();
     }
+    // Set the animation to a specific time and apply the state immediately
+    virtual void setTime(float t);
 };
 class CircleHighLightAnim : public Animation {
 protected:
@@ -67,7 +67,7 @@ public:
         startRC = btn->OgOutLineColor;
     }
     void HandleReposition() {}
-    void update(float deltaTime) override;
+    void applyState() override;
 };
 class CircleHighLightAnimReverse : public Animation {
 protected:
@@ -90,7 +90,7 @@ public:
         endRC = btn->OgOutLineColor;
     }
     void HandleReposition() {}
-    void update(float deltaTime);
+    void applyState() override;
 };
 class CircleMoveAnim : public Animation {
 private:
@@ -120,7 +120,7 @@ public:
         endX = button->getCenterX();
         endY = button->getCenterY();
     }
-    void update(float deltaTime) override;
+    void applyState() override;
 };
 class CircleMoveXAnim : public Animation {
 private:
@@ -146,7 +146,7 @@ public:
     void HandleReposition() override{
         endX = button->getCenterX();
     }
-    void update(float deltaTime) override;
+    void applyState() override;
 };
 
 class RectMoveAnim : public Animation {
@@ -172,19 +172,19 @@ public:
         endX = btn->rect.x;
         endY = btn->rect.y;
     }
-    void update(float deltaTime) override;
+    void applyState() override;
 };
 class RectMoveXAnim : public RectMoveAnim {
 public:
     RectMoveXAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
     RectMoveXAnim(RectButton* btn, float sX, float duration) : RectMoveAnim(btn, sX, 0, duration) {};
-    void update(float deltaTime) override;
+    void applyState() override;
 };
 class RectMoveYAnim : public RectMoveAnim {
 public:
     RectMoveYAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
     RectMoveYAnim(RectButton* btn, float sY, float duration) : RectMoveAnim(btn, 0, sY, duration) {};
-    void update(float deltaTime) override;
+    void applyState() override;
 };
 
 class CircleInitializeAnim : public Animation {
@@ -197,8 +197,8 @@ public:
         startRadius = 0;
         endRadius = btn->getRadius();
     };
-    void update(float deltaTime) override;
     void HandleResize() {};
+    void applyState() override;
 };
 class NodeInitializeAnimation : public Animation {
 private:
@@ -210,8 +210,8 @@ public:
 		startRadius = 0;
         endRadius = node->radius;
     };
-    void update(float deltaTime) override;
     void HandleResize() {};
+    void applyState() override;
 };
 
 

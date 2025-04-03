@@ -91,17 +91,10 @@ bool LinkedList::search(int x) {
     LLNode* cur = head;
     while (cur) {
         if (cur->getNumber() == x) {
-            animations.push(new CircleHighLightAnim(cur, 2.0f,GREEN,RAYWHITE,GREEN));
-            animations.push(new CircleHighLightAnimReverse(cur, 2.0f,GREEN, RAYWHITE,GREEN));
-            
             animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
             animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f, GREEN, RAYWHITE, GREEN));
             return true;
         }
-        animations.push(new CircleHighLightAnim(cur,0.5f));
-        animations.push(new CircleHighLightAnimReverse(cur, 0.5f));
-
-
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f));
         cur = cur->next;
@@ -110,10 +103,10 @@ bool LinkedList::search(int x) {
     return false;
 }
 void LinkedList::deleteAnimations() {
-    while (!animations.empty()) {
-        if (animations.front())delete animations.front();
-        animations.pop();
-    }
+    //while (!animations.empty()) {
+    //    if (animations.front())delete animations.front();
+    //    animations.pop();
+    //}
 }
 void LinkedList::deletelist() {
     while (head) {
@@ -151,14 +144,10 @@ void LinkedList::insertnode(int x, int pos) {
     }
     LLNode* cur = head;
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
-        animations.push(new CircleHighLightAnim(cur, 0.5f));
-        animations.push(new CircleHighLightAnimReverse(cur, 0.5f));
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f));
         cur = cur->next;
     }
-    animations.push(new CircleHighLightAnim(cur, 0.5f,GREEN,RAYWHITE,GREEN));
-    animations.push(new CircleHighLightAnimReverse(cur, 0.5f, GREEN,RAYWHITE,GREEN));
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
     animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f, GREEN, RAYWHITE, GREEN));
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
@@ -169,7 +158,8 @@ void LinkedList::insertnode(int x, int pos) {
     CBEdge::addEdge(Edges, newnode, cur->next);
     CBEdge::removeEdge(Edges, cur, cur->next);
     cur->next = newnode;
-    animations.push(new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 5));
+    //animations.push(new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 5));
+    animManager.addAnimation(new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 5));
     adjustPos(newnode);
     CBEdge::addEdge(Edges, cur, newnode);
 }

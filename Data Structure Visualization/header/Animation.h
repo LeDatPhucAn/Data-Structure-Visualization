@@ -13,8 +13,6 @@ public:
 	Animation() : duration(0), elapsed(0), completed(false) {};
     Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
     virtual ~Animation() = default;
-
-    virtual void Animate(float deltaTime);
     virtual void HandleResize() {};
     virtual void HandleReposition() {};
     virtual void update(float deltaTime);

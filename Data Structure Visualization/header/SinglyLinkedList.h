@@ -8,7 +8,7 @@ class LinkedList : public LLNode {
 public:
     LLNode* head;
     static vector<CBEdge*> Edges;
-    queue<Animation*> animations;
+    //queue<Animation*> animations;
     AnimationManager animManager;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);

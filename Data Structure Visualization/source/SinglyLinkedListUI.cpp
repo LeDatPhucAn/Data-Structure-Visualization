@@ -167,10 +167,11 @@ void SinglyLinkedListUI::updateScene() {
 
     Button::isCollision = false;
 
-    if (!animations.empty()) {
-        if (!animations.front() || animations.front()->isCompleted()) animations.pop();
-        else animations.front()->update(GetFrameTime());
-    }
+    //if (!animations.empty()) {
+    //    if (!animations.front() || animations.front()->isCompleted()) animations.pop();
+    //    else animations.front()->update(GetFrameTime());
+    //}
+    animManager.update(GetFrameTime());
    LLNode* cur = this->head;
    while (cur) {
        cur->update();

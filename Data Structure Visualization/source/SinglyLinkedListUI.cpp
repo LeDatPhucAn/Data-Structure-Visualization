@@ -2,18 +2,27 @@
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
 
+
+void SinglyLinkedListUI::insert(int x, int pos) {
+    linkedlist.insertnode(x, pos);
+}
+void SinglyLinkedListUI::remove(int x) {
+    linkedlist.remove(x);
+}
+bool SinglyLinkedListUI::search(int x) {
+    return linkedlist.search(x);
+}
 void SinglyLinkedListUI::drawlinkedlist() {
-    LLNode* cur = this->head;
+    LLNode* cur = linkedlist.head;
     while (cur) {
         cur->draw();
         cur = cur->next;
     }
-    for (auto& edge : Edges) {
+    for (auto& edge : linkedlist.Edges) {
         edge->drawArrowEdge();
     }
 }
 void SinglyLinkedListUI::resetAnimations() {
-	SceneHandler::MenuButton->animation->reset();
 	for (auto& button : Buttons) {
         if (button->animation) {
             button->animation->reset();
@@ -31,7 +40,10 @@ void SinglyLinkedListUI::initButtons() {
     // Circles
     CircleButton* Pause = new TextureCircle(UI::Icons[4], {(float)UI::screenWidth / 2 , (float)UI::screenHeight - 100}, 60.0f);
     Circles.push_back(Pause);
-
+    Pause->onClick = [this]() {
+        if (!linkedlist.animManager.isPaused())linkedlist.animManager.pause();
+        else linkedlist.animManager.resume();
+        };
     /// Code Blocks
     RectButton* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
@@ -56,7 +68,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[0]->insertSubButton(PosInput);
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
-        this->insertnode(ValueInput->getNumber(), PosInput->getNumber());
+        linkedlist.insertnode(ValueInput->getNumber(), PosInput->getNumber());
         if (PosInput->getNumber() == 1) RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertHead);
         else if (PosInput->getNumber() == 0) return;
         else RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertPos);
@@ -73,7 +85,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[1]->insertSubButton(Value1);
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
-        this->remove(ValueInput1->getNumber());
+        linkedlist.remove(ValueInput1->getNumber());
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
@@ -84,7 +96,7 @@ void SinglyLinkedListUI::initButtons() {
     RectButton* ValueInput2 = new NumberInputBox(3);
     Buttons[2]->insertSubButton(ValueInput2);
     Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
-        if (!this->search(ValueInput2->getNumber())) {
+        if (!search(ValueInput2->getNumber())) {
             cout << "NOT FOUND\n";
         }
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLSearch);
@@ -94,24 +106,24 @@ void SinglyLinkedListUI::initButtons() {
     RectButton::insertHeadButton(Buttons, new TextBox("Clear"));
     Buttons[3]->animation = new RectMoveXAnim(Buttons[3], 0.5);
     Buttons[3]->onClick = [this]() {
-        this->clear();
+        linkedlist.clear();
         };
     RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
     Buttons[4]->animation = new RectMoveXAnim(Buttons[4], 0.5);
     Buttons[4]->onClick = [this]() {
-        this->loadFromFile();
+        linkedlist.loadFromFile();
         };
 
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[5]->animation = new RectMoveXAnim(Buttons[5], 0.5);
 
     Buttons[5]->onClick = [this]() {
-        this->clear();
+        linkedlist.clear();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;
             int pos = rand() % 10;
-            this->randominsert(x, pos);
+            linkedlist.randominsert(x, pos);
         }
         };
 
@@ -120,8 +132,6 @@ void SinglyLinkedListUI::initButtons() {
 
 void SinglyLinkedListUI::updateButtonPositions() {
 
-    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
-    SceneHandler::MenuButton->animation->HandleResize();
     Circles[0]->animation->HandleResize();
     Circles[0]->setCenter(UI::screenWidth / 2,UI::screenHeight - 100);
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
@@ -136,7 +146,7 @@ void SinglyLinkedListUI::init() {
     for (int i = 0; i < n; ++i) {
         int x = rand() % 100;
         int pos = rand() % 10;
-        this->randominsert(x,pos);
+        linkedlist.randominsert(x,pos);
     }
 
     initButtons();
@@ -148,7 +158,6 @@ void SinglyLinkedListUI::displaySceneInCamera() {
     
 }
 void SinglyLinkedListUI::displayScene() {
-    SceneHandler::MenuButton->draw();
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
     Button::drawButtons<CircleButton>(Circles);
@@ -156,7 +165,7 @@ void SinglyLinkedListUI::displayScene() {
 void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
     /*Button::isCollision = false;
 
-    LLNode* cur = this->head;
+    LLNode* cur = linkedlist.head;
     Vector2 camPos = GetWorldToScreen2D(cur->getCenter(), cam);
     if (IsKeyPressed(KEY_ENTER)) {
         cout << "camPos: " << camPos.x << " " << camPos.y << "\n";
@@ -165,21 +174,15 @@ void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
 }
 void SinglyLinkedListUI::updateScene() {
 
-    Button::isCollision = false;
-
-    //if (!animations.empty()) {
-    //    if (!animations.front() || animations.front()->isCompleted()) animations.pop();
-    //    else animations.front()->update(GetFrameTime());
-    //}
-    animManager.update(GetFrameTime());
-   LLNode* cur = this->head;
+   linkedlist.animManager.update(GetFrameTime());
+   LLNode* cur = linkedlist.head;
    while (cur) {
        cur->update();
        if (cur->animation)cur->animation->update(GetFrameTime());
        cur = cur->next;
    }
     
-    SceneHandler::MenuButton->update();
+    //SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
     Button::updateButtons<CircleButton>(Circles);

@@ -4,9 +4,10 @@
 #include "SceneHandler.h"
 #include "Button.h"
 
-class SinglyLinkedListUI : public LinkedList, public SceneManager {
+class SinglyLinkedListUI : public SceneManager {
 private:
 protected:
+    LinkedList linkedlist;
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
     vector<CircleButton*> Circles;
@@ -22,7 +23,9 @@ public:
 
 
     void drawlinkedlist();
-
+    void insert(int x, int pos);
+    void remove(int x);
+    bool search(int x);
     void init() override;
     void initButtons() override;
 	void resetAnimations() override;

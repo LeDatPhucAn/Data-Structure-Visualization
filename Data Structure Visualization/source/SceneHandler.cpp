@@ -1,7 +1,6 @@
 #include "../header/SceneHandler.h"
 #include "../header/reasings.h"
 #include "../header/Animation.h"
-RectButton* SceneHandler::MenuButton = nullptr;
 Vector2 SceneHandler::mouseWorldPos = GetMousePosition();
 SceneHandler::SceneHandler() {
 
@@ -36,6 +35,7 @@ int SceneHandler::getCurrentScene() {
 }
 
 void SceneHandler::changeScene(Scene newScene) {
+    MenuButton->animation->reset();
     if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
     currentSceneObject->CurrentScene = newScene;
@@ -85,7 +85,8 @@ void SceneHandler::updateCurrentScene() {
         // update The Positions of all Scenes when there is a Window Resize
         if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
 
-
+            MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+            MenuButton->animation->HandleResize();
             for (int i = 1; i < 5; i++) {
                 scenes[i]->updateButtonPositions();
             }
@@ -101,6 +102,9 @@ void SceneHandler::updateCurrentScene() {
             currentSceneObject->updateSceneInCamera(camera);
 
         }
+
+        Button::isCollision = false;
+        MenuButton->update();
 
         currentSceneObject->updateScene();
 
@@ -124,7 +128,7 @@ void SceneHandler::displayCurrentScene() {
 
             EndMode2D();
 
-            
+            MenuButton->draw();
         }
         else {
             UI::drawBackground();

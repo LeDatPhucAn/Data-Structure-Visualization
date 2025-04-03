@@ -30,6 +30,9 @@ public:
     // Update all animations with adjusted deltaTime
     void update(float deltaTime);
 
+
+    bool isPaused() const { return paused; };
+
     // Pause playback
     void pause();
 

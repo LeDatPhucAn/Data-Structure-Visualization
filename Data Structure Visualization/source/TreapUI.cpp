@@ -217,23 +217,17 @@ void TreapUI::initButtons() {
 
 
 void TreapUI::displayScene() {
-    SceneHandler::MenuButton->draw();
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 
 void TreapUI::updateButtonPositions() {
-    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
-
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
 
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
 
 void TreapUI::updateScene() {
-    Button::isCollision = false;
-
-    SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 

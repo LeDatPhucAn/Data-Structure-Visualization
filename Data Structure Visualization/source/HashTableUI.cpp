@@ -74,7 +74,6 @@ void HashTableUI::initButtons() {
 
 
 void HashTableUI::updateButtonPositions() {
-    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
 
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
 
@@ -113,15 +112,11 @@ void HashTableUI::displaySceneInCamera() {
 }
 
 void HashTableUI::displayScene() {
-    SceneHandler::MenuButton->draw();
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 
 void HashTableUI::updateScene() {
-    Button::isCollision = false;
-
-    SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 

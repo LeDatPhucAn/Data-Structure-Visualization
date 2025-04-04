@@ -3,7 +3,7 @@
 #include "../header/SceneHandler.h"
 #include "../header/Button.h"
 #include "../header/PseudoCode.h"
-
+#include "../header/Animation.h"
 void HashTableUI::init() {
     insertHashTable(10); // example
     insertHashTable(15);
@@ -72,7 +72,10 @@ void HashTableUI::initButtons() {
         });
 }
 
-
+void HashTableUI::resetAnimations() {
+	Button::resetButtonsAnimations<RectButton>(Buttons);
+	Button::resetButtonsAnimations<RectButton>(CodeBlocks);
+}
 void HashTableUI::updateButtonPositions() {
 
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
@@ -91,7 +94,7 @@ void HashTableUI::drawHashTable() {
 
         for (int j = 0; j < data[i].size(); ++j) {
             Vector2 nodePos = { bucketX + Width / 2, bucketY + Height + (j + 1) * (nodeRadius * 2 + 10) };
-            Node* node = new Node(data[i][j], nodePos, nodeRadius);
+            Node* node = new Node(data[i][j]->data, nodePos, nodeRadius);
             drawNode(node);
 
             if (j == 0) {

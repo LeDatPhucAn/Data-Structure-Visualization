@@ -39,16 +39,8 @@ void SinglyLinkedListUI::drawlinkedlist() {
     }
 }
 void SinglyLinkedListUI::resetAnimations() {
-	for (auto& button : Buttons) {
-        if (button->animation) {
-            button->animation->reset();
-        }
-	}
-	for (auto& button : CodeBlocks) {
-        if (button->animation) {
-            button->animation->reset();
-        }
-	}
+	Button::resetButtonsAnimations<RectButton>(Buttons);
+	Button::resetButtonsAnimations<RectButton>(CodeBlocks);
 }
 
 void SinglyLinkedListUI::initButtons() {

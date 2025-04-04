@@ -34,7 +34,7 @@ void Graph::removeNode(int id) {
 				edge->to->data == id;
 		}),
 		edges.end());
-	
+
 	auto posIt = position.begin();
 	for (size_t i = 0; i < nodes.size(); ++i) {
 		if (nodes[i]->data == id) {
@@ -105,7 +105,7 @@ void Graph::printGraph() {
 			cout << "no edges";
 		}
 		cout << endl;
-		
+
 	}
 	cout << endl;
 }

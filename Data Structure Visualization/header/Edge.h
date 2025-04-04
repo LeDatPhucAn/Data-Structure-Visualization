@@ -46,4 +46,5 @@ public:
 	static void addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	static void removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	void drawArrowEdge();
+        void drawHashTableEdge();
 };

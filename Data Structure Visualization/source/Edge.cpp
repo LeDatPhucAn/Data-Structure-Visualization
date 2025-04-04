@@ -113,6 +113,38 @@ void CBEdge::drawArrowEdge()
 
 	DrawTriangle({toX,toY}, arrowPoint1, arrowPoint2, edgeColor);
 }
+void CBEdge::drawHashTableEdge() {
+	if (!from || !to) return;
+
+	float fromX = from->getCenterX();
+	float fromY = from->getCenterY();
+	float toX = to->getCenterX();
+	float toY = to->getCenterY();
+
+	float arrowHeadLength = thickness * 5;
+	float arrowHeadAngle = PI / 6;
+
+	float startY = fromY + from->getRadius();
+	float headY = toY - to->getRadius();
+	float endY = headY - 5;
+
+	DrawLineEx({ fromX, startY }, { toX, endY }, thickness, BLACK);
+
+	float dx = toX - fromX;
+	float dy = toY - fromY;
+	float theta = atan2(dy, dx);
+
+	float headX = toX;
+
+	float theta1 = theta + arrowHeadAngle;
+	float theta2 = theta - arrowHeadAngle;
+
+	Vector2 arrowPoint1 = { headX - arrowHeadLength * cos(theta1), headY - arrowHeadLength * sin(theta1) };
+	Vector2 arrowPoint2 = { headX - arrowHeadLength * cos(theta2), headY - arrowHeadLength * sin(theta2) };
+
+	DrawTriangle({ headX, headY }, arrowPoint1, arrowPoint2, BLACK);
+}
+
 void CBEdge::addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
 	Edges.push_back(new CBEdge(from, to));
 }

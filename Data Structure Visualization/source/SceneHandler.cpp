@@ -87,9 +87,9 @@ void SceneHandler::initButtons() {
     PlayBackward->onClick = [this]() {
         currentSceneObject->animManager.playBackward();
         };
+	RectButton::insertHeadButton(rightSideButtons, PlayBackward);
     PlayBackward->animation = new RectMoveXAnim(PlayBackward, (float)UI::screenWidth, 0.5f);
 
-	RectButton::insertHeadButton(rightSideButtons, PlayBackward);
 
 }
 int SceneHandler::getCurrentScene() {

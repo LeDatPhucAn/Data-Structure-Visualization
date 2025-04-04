@@ -92,11 +92,9 @@ bool LinkedList::search(int x) {
     while (cur) {
         if (cur->getNumber() == x) {
             animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
-            animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f, GREEN, RAYWHITE, GREEN));
             return true;
         }
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
-        animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f));
         cur = cur->next;
 
     }
@@ -145,11 +143,9 @@ void LinkedList::insertnode(int x, int pos) {
     LLNode* cur = head;
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
-        animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f));
         cur = cur->next;
     }
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
-    animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5f, GREEN, RAYWHITE, GREEN));
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
     newnode->onClick = [newnode]() {
         cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";

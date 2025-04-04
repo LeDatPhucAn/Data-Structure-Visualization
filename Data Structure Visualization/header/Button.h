@@ -129,6 +129,18 @@ public:
             if(btn->animation)btn->animation->reset();
         }
     }
+    /**
+     * Reset all animations in buttons in the provided vector.
+     * @tparam T Type of the button, must be derived from Button.
+     * @param buttons Vector of pointers to buttons to be updated.
+     */
+    template <typename T>
+    static void handleButtonsAnimReposition(std::vector<T*>& Buttons) {
+        static_assert(std::is_base_of<Button, T>::value, "T must be derived from Button");
+        for (auto btn : Buttons) {
+            if(btn->animation)btn->animation->handleReposition();
+        }
+    }
     virtual void draw() = 0;
     virtual void update();
     virtual void hover();
@@ -302,7 +314,7 @@ class TextCircle : public CircleButton {
 public:
     string Text;
     TextCircle(string t, Vector2 cent = { 0, 0 }, float r = 50.0f,
-        Color tc = RAYWHITE, Color fc = GREEN, Color rc = GREEN)
+        Color tc = RAYWHITE, Color fc = ORANGE, Color rc = RED)
         : CircleButton(cent, r, tc, fc, rc), Text(t) {
     }
     void draw() override;
@@ -313,7 +325,7 @@ class TextureCircle : public CircleButton {
 public:
     Texture2D Texture;
     TextureCircle(Texture2D t, Vector2 cent = { 0, 0 }, float r = 50.0f,
-        Color tc = RAYWHITE, Color fc = GREEN, Color rc = DARKGREEN)
+        Color tc = RAYWHITE, Color fc = ORANGE, Color rc = RED)
         : CircleButton(cent, r, tc, fc, rc), Texture(t) {
     }
     void draw() override;

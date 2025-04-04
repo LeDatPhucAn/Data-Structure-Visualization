@@ -74,7 +74,8 @@ void AnimationManager::seek(float time) {
 
 // Go to the start of the next animation
 void AnimationManager::goToNext() {
-    for (size_t i = 0; i < animations.size() - 1; ++i) {
+    if (animations.empty())return;
+    for (int i = 0; i < animations.size() - 1; ++i) {
         if (currentTime < startTimes[i + 1]) {
             seek(startTimes[i + 1]);
             return;
@@ -84,7 +85,8 @@ void AnimationManager::goToNext() {
 
 // Go to the start of the previous animation
 void AnimationManager::goToPrevious() {
-    for (size_t i = 1; i < animations.size(); ++i) {
+	if (animations.empty())return;  
+    for (int i = 1; i < animations.size(); ++i) {
         if (currentTime <= startTimes[i]) {
             seek(startTimes[i - 1]);
             return;

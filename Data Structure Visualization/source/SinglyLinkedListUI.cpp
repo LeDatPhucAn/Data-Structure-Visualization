@@ -12,11 +12,16 @@ void SinglyLinkedListUI::remove(int x) {
 bool SinglyLinkedListUI::search(int x) {
     LLNode* cur = linkedlist.head;
     while (cur) {
-        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5));
-        animManager.addAnimation(new CircleHighLightAnimReverse(cur, 0.5));
+		if (cur->getNumber() == x) {
+            animManager.addAnimation(new CircleHighLightAnim(cur, 1, GREEN, RAYWHITE, GREEN));
+            //animManager.addAnimation(new CircleHighLightAnimReverse(cur, 1, GREEN, RAYWHITE, GREEN));
+            return true;
+		}
+        animManager.addAnimation(new CircleHighLightAnim(cur, 2));
+        //animManager.addAnimation(new CircleHighLightAnimReverse(cur, 2));
         cur = cur->next;
     }
-    return linkedlist.search(x);
+    return false;
 }
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = linkedlist.head;
@@ -43,13 +48,6 @@ void SinglyLinkedListUI::resetAnimations() {
 
 void SinglyLinkedListUI::initButtons() {
 
-    // Circles
-    CircleButton* Pause = new TextureCircle(UI::Icons[4], {(float)UI::screenWidth / 2 , (float)UI::screenHeight - 100}, 60.0f);
-    Circles.push_back(Pause);
-    Pause->onClick = [this]() {
-        if (!linkedlist.animManager.isPaused())linkedlist.animManager.pause();
-        else linkedlist.animManager.resume();
-        };
     /// Code Blocks
     RectButton* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
@@ -138,8 +136,6 @@ void SinglyLinkedListUI::initButtons() {
 
 void SinglyLinkedListUI::updateButtonPositions() {
 
-    Circles[0]->animation->HandleResize();
-    Circles[0]->setCenter(UI::screenWidth / 2,UI::screenHeight - 100);
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
 
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
@@ -166,7 +162,6 @@ void SinglyLinkedListUI::displaySceneInCamera() {
 void SinglyLinkedListUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
-    Button::drawButtons<CircleButton>(Circles);
 }
 void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
     /*Button::isCollision = false;
@@ -190,7 +185,6 @@ void SinglyLinkedListUI::updateScene() {
     //SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
-    Button::updateButtons<CircleButton>(Circles);
 
     
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);

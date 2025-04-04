@@ -8,6 +8,7 @@
 #include "Button.h"
 class SceneHandler : public UI {
 private:
+    vector<Button*>SceneButtons;
     SceneManager* scenes[5];
     Camera2D camera = { 
         {static_cast<float> (UI::screenWidth) / 2, static_cast<float> (UI::screenHeight) / 5},  
@@ -15,7 +16,6 @@ private:
         0.0f,  
         0.0f
     };
-    vector<Button*>SceneButtons;
 protected:
     SceneManager* currentSceneObject;
 public:

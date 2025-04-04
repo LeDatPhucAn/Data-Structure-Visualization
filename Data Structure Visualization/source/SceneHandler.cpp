@@ -30,6 +30,8 @@ SceneHandler::~SceneHandler() {
 }
 
 void SceneHandler::initButtons() {
+
+    // menu button
     Button* MenuButton = new TextBox("Menu", UI::screenWidth / 100, UI::screenHeight / 100);
     MenuButton->onClick = [this]() {
         this->changeScene(MENU);
@@ -37,7 +39,7 @@ void SceneHandler::initButtons() {
     MenuButton->animation = new RectMoveXAnim(dynamic_cast<RectButton*>(MenuButton), 0.5);
     SceneButtons.push_back(MenuButton);
     
-    
+	// Pause animations
     CircleButton* Pause = new TextureCircle(UI::Icons[4], { (float)UI::screenWidth / 2 , (float)UI::screenHeight - 100 }, 60.0f);
     Pause->onClick = [this]() {
         if (!currentSceneObject->animManager.isPaused())currentSceneObject->animManager.pause();
@@ -45,28 +47,55 @@ void SceneHandler::initButtons() {
         };
     SceneButtons.push_back(Pause);
 
-
-    CircleButton* Back = new TextCircle("<",
+    // go to the previous animation
+    CircleButton* GoPrevious = new TextCircle("<",
         {
             Pause->getCenterX() - Pause->getRadius() - 50,
             Pause->getCenterY()
         },
         50.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
-    Back->onClick = [this]() {
-        currentSceneObject->animManager.playBackward();
-        };
-    SceneButtons.push_back(Back);
     
-    CircleButton* Forward = new TextCircle(">",
+    GoPrevious->onClick = [this]() {
+        currentSceneObject->animManager.goToPrevious();
+        };
+    SceneButtons.push_back(GoPrevious);
+    
+	// go to the next animation
+    CircleButton* GoNext = new TextCircle(">",
         {
             Pause->getCenterX() + Pause->getRadius() + 50,
             Pause->getCenterY()
         },
         50.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
-    Forward->onClick = [this]() {
+    
+    GoNext->onClick = [this]() {
+        currentSceneObject->animManager.goToNext();
+        };
+    SceneButtons.push_back(GoNext);
+
+    // play forward
+	CircleButton* PlayForward = new TextCircle("->>",
+		{
+			GoNext->getCenterX() + GoNext->getRadius() + 50,
+			GoNext->getCenterY()
+		},
+		40.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
+    PlayForward->onClick = [this]() {
         currentSceneObject->animManager.playForward();
         };
-    SceneButtons.push_back(Forward);
+	SceneButtons.push_back(PlayForward);
+	// play backward
+	CircleButton* PlayBackward = new TextCircle("<<-",
+		{
+			GoPrevious->getCenterX() - GoPrevious->getRadius() - 50,
+			GoPrevious->getCenterY()
+		},
+		40.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
+    PlayBackward->onClick = [this]() {
+        currentSceneObject->animManager.playBackward();
+        };
+    SceneButtons.push_back(PlayBackward);
+
 }
 int SceneHandler::getCurrentScene() {
     return currentSceneObject->CurrentScene;
@@ -122,9 +151,30 @@ void SceneHandler::updateCurrentScene() {
         // update font size
         // update The Positions of all Scenes when there is a Window Resize
         if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
-
+            
+            //Button::handleButtonsAnimReposition<Button>(SceneButtons);
+            Button::resetButtonsAnimations<Button>(SceneButtons);
             dynamic_cast<RectButton*>(SceneButtons[0])->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
-            //MenuButton->animation->HandleResize();
+            dynamic_cast<CircleButton*>(SceneButtons[1])->setCenter(
+                (float)UI::screenWidth / 2,
+                (float)UI::screenHeight - 100
+            );
+			dynamic_cast<CircleButton*>(SceneButtons[2])->setCenter(
+                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() - dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() - 50,
+                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterY()
+			);
+			dynamic_cast<CircleButton*>(SceneButtons[3])->setCenter(
+                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() + dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() + 50,
+                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterY()
+			);
+			dynamic_cast<CircleButton*>(SceneButtons[4])->setCenter(
+				dynamic_cast<CircleButton*>(SceneButtons[2])->getCenterX() - dynamic_cast<CircleButton*>(SceneButtons[2])->getRadius() - 50,
+				dynamic_cast<CircleButton*>(SceneButtons[2])->getCenterY()
+			);
+			dynamic_cast<CircleButton*>(SceneButtons[5])->setCenter(
+				dynamic_cast<CircleButton*>(SceneButtons[3])->getCenterX() + dynamic_cast<CircleButton*>(SceneButtons[3])->getRadius() + 50,
+				dynamic_cast<CircleButton*>(SceneButtons[3])->getCenterY()
+			);
             for (int i = 1; i < 5; i++) {
                 scenes[i]->updateButtonPositions();
             }

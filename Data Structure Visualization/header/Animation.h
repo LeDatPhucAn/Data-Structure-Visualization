@@ -13,8 +13,7 @@ public:
 	Animation() : duration(0), elapsed(0), completed(false) {};
     Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
     virtual ~Animation() = default;
-    virtual void HandleResize() {};
-    virtual void HandleReposition() {};
+    virtual void handleReposition() {};
     virtual void update(float deltaTime);
     virtual void applyState() = 0;
     virtual bool isCompleted() {
@@ -64,7 +63,6 @@ public:
         startFC = btn->OgFillColor;
         startRC = btn->OgOutLineColor;
     }
-    void HandleReposition() {}
     void applyState() override;
 };
 class CircleHighLightAnimReverse : public Animation {
@@ -87,7 +85,6 @@ public:
         endFC = btn->OgFillColor;
         endRC = btn->OgOutLineColor;
     }
-    void HandleReposition() {}
     void applyState() override;
 };
 class CircleMoveAnim : public Animation {
@@ -114,7 +111,7 @@ public:
     CircleMoveAnim(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
         : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
     }
-    void HandleReposition() override {
+    void handleReposition() override {
         endX = button->getCenterX();
         endY = button->getCenterY();
     }
@@ -141,7 +138,7 @@ public:
     CircleMoveXAnim(CircleButton* btn, float sX, float eX, float duration)
         : Animation(duration), startX(sX), endX(eX), button(btn) {
     }
-    void HandleReposition() override{
+    void handleReposition() override{
         endX = button->getCenterX();
     }
     void applyState() override;
@@ -156,7 +153,10 @@ protected:
     float endX, endY;
 public:
 
-    void HandleResize() override;
+    void handleReposition() override {
+        endX = button->rect.x;
+        endY = button->rect.y;
+    }
 	virtual ~RectMoveAnim() = default;
     RectMoveAnim(RectButton* btn, float duration)
         : Animation(duration), button(btn) {
@@ -195,7 +195,6 @@ public:
         startRadius = 0;
         endRadius = btn->getRadius();
     };
-    void HandleResize() {};
     void applyState() override;
 };
 class NodeInitializeAnimation : public Animation {
@@ -208,7 +207,6 @@ public:
 		startRadius = 0;
         endRadius = node->radius;
     };
-    void HandleResize() {};
     void applyState() override;
 };
 

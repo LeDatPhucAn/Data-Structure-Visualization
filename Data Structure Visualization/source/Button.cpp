@@ -79,7 +79,7 @@ void RectButton::setSubPosition() {
     RectButton* cur = this->next;
     while (cur) {
         cur->setPosition(prev->rect.x + prev->rect.width + padding / 2, prev->rect.y);
-        if (cur->animation) cur->animation->HandleResize();
+        if (cur->animation) cur->animation->handleReposition();
         prev = cur;
         cur = cur->next;
     }
@@ -92,12 +92,12 @@ void RectButton::setHeadPosition(std::vector<RectButton*>& buttons, float x, flo
     }
     buttons[0]->setPosition(x, y);
     buttons[0]->setSubPosition();
-    if (buttons[0]->animation) buttons[0]->animation->HandleResize();
+    if (buttons[0]->animation) buttons[0]->animation->handleReposition();
     for (size_t i = 1; i < buttons.size(); ++i) {
         RectButton* prevHead = buttons[i - 1];
         RectButton* curHead = buttons[i];
         curHead->setPosition(prevHead->rect.x, prevHead->rect.y + prevHead->rect.height);
-        if (curHead->animation) curHead->animation->HandleResize();
+        if (curHead->animation) curHead->animation->handleReposition();
         curHead->setSubPosition();
     }
 }
@@ -321,20 +321,21 @@ void TextCircle::hover() {
     OutLineColor = DARKGREEN;
     FillColor = GREEN;
 }
-void TextCircle::draw() {
-    DrawCircleV(center, radius * 4 / 5 +1, FillColor);
-    DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, OutLineColor);
-    UI::drawtext2(Text, center.x, center.y, TextColor);
-}
 void TextureCircle::unhover() {
-    OutLineColor = RED;
-    FillColor = ORANGE;
+    OutLineColor = OgOutLineColor;
+    FillColor = OgFillColor;
 }
 
 void TextureCircle::hover() {
     OutLineColor = DARKGREEN;
     FillColor = GREEN;
 }
+void TextCircle::draw() {
+    DrawCircleV(center, radius * 4 / 5 +1, FillColor);
+    DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, OutLineColor);
+    UI::drawtext2(Text, center.x, center.y, TextColor);
+}
+
 void TextureCircle::draw() {
     float RingRadius = radius * 4 / 5;
     DrawCircleV(center, RingRadius +1, FillColor);

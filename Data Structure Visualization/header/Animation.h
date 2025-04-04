@@ -65,28 +65,6 @@ public:
     }
     void applyState() override;
 };
-class CircleHighLightAnimReverse : public Animation {
-protected:
-    CircleButton* button;
-    Color startTC,endTC;
-    Color startFC,endFC;
-    Color startRC,endRC;
-public:
-    virtual ~CircleHighLightAnimReverse() = default;
-    CircleHighLightAnimReverse(
-        CircleButton* btn, float duration,
-        Color sTC = ORANGE, 
-        Color sFC = RAYWHITE, 
-        Color sRC = ORANGE
-        )
-        : Animation(duration),
-        startTC(sTC), startFC(sFC), startRC(sRC), button(btn) {
-        endTC = btn->OgTextColor;
-        endFC = btn->OgFillColor;
-        endRC = btn->OgOutLineColor;
-    }
-    void applyState() override;
-};
 class CircleMoveAnim : public Animation {
 private:
     

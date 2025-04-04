@@ -18,24 +18,20 @@ void CircleHighLightAnim::applyState() {
     if(elapsed<=duration/2)
     {
         float easedT = EaseSineIn(elapsed / (duration/2), 0.0f, 1.0f, duration/2);
+        cout << easedT << "\n";
         button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
         button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
         button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
     }
     else {
-		float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+        float easedT = EaseSineIn((elapsed-duration/2) / (duration/2), 0.0f, 1.0f, duration/2);
+		cout << easedT << "\n";
 		button->OgTextColor = UI::interpolateColors(endTC, startTC, easedT);
 		button->OgFillColor = UI::interpolateColors(endFC, startFC, easedT);
 		button->OgOutLineColor = UI::interpolateColors(endRC, startRC, easedT);
     }
 }
 
-void CircleHighLightAnimReverse::applyState() {
-    float easedT = EaseSineIn(elapsed / duration, 0.0f, 1.0f, duration);
-    button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
-    button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
-    button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
-}
 
 void CircleInitializeAnim::applyState() {
     button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));

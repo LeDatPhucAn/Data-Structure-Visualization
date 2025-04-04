@@ -13,12 +13,19 @@ bool SinglyLinkedListUI::search(int x) {
     LLNode* cur = linkedlist.head;
     while (cur) {
 		if (cur->getNumber() == x) {
-            animManager.addAnimation(new CircleHighLightAnim(cur, 4, GREEN, RAYWHITE, GREEN));
+            animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
             return true;
 		}
         animManager.addAnimation(new CircleHighLightAnim(cur, 2));
+        for (auto& edge : linkedlist.Edges) {
+            if (edge->from == cur) {
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 2));
+				break;
+            }
+        }
         cur = cur->next;
     }
+	
     return false;
 }
 void SinglyLinkedListUI::drawlinkedlist() {

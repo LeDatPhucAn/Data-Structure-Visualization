@@ -43,6 +43,22 @@ public:
     // Set the animation to a specific time and apply the state immediately
     virtual void setTime(float t);
 };
+class CBEdgeHighLightAnim : public Animation {
+protected:
+	CBEdge* edge;
+	Color startC, endC;
+public:
+	virtual ~CBEdgeHighLightAnim() = default;
+    CBEdgeHighLightAnim(
+        CBEdge* e, float duration,
+		Color eC = ORANGE
+	)
+		: Animation(duration),
+		endC(eC), edge(e) {
+        startC = e->edgeColor;
+	}
+	void applyState() override;
+};
 class CircleHighLightAnim : public Animation {
 protected:
     CircleButton* button;

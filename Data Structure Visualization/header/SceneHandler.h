@@ -9,6 +9,7 @@
 class SceneHandler : public UI {
 private:
     vector<Button*>SceneButtons;
+    vector<RectButton*> rightSideButtons;
     SceneManager* scenes[5];
     Camera2D camera = { 
         {static_cast<float> (UI::screenWidth) / 2, static_cast<float> (UI::screenHeight) / 5},  

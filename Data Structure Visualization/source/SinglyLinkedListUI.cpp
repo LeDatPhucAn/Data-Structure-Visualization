@@ -16,10 +16,10 @@ bool SinglyLinkedListUI::search(int x) {
             animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
             return true;
 		}
-        animManager.addAnimation(new CircleHighLightAnim(cur, 2));
+        animManager.addAnimation(new CircleHighLightAnim(cur, 1));
         for (auto& edge : linkedlist.Edges) {
             if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 2));
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 1));
 				break;
             }
         }

@@ -91,20 +91,12 @@ bool LinkedList::search(int x) {
     LLNode* cur = head;
     while (cur) {
         if (cur->getNumber() == x) {
-            animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
             return true;
         }
-        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         cur = cur->next;
 
     }
     return false;
-}
-void LinkedList::deleteAnimations() {
-    //while (!animations.empty()) {
-    //    if (animations.front())delete animations.front();
-    //    animations.pop();
-    //}
 }
 void LinkedList::deletelist() {
     while (head) {
@@ -121,7 +113,6 @@ void LinkedList::deleteEdges() {
     Edges.clear();
 }
 void LinkedList::clear() {
-    deleteAnimations();
     deletelist();
     deleteEdges();
 }
@@ -154,8 +145,7 @@ void LinkedList::insertnode(int x, int pos) {
     CBEdge::addEdge(Edges, newnode, cur->next);
     CBEdge::removeEdge(Edges, cur, cur->next);
     cur->next = newnode;
-    //animations.push(new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 5));
-    animManager.addAnimation(new CircleMoveAnim(newnode, cur->getCenterX(), 800, newnode->getCenterX(), newnode->getCenterY(), 5));
+
     adjustPos(newnode);
     CBEdge::addEdge(Edges, cur, newnode);
 }

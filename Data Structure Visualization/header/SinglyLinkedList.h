@@ -24,7 +24,6 @@ public:
     void printlist();
     void deletelist();
     void deleteEdges();
-    void deleteAnimations();
     void clear();
 };
 

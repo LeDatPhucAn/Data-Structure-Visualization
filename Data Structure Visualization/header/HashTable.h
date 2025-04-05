@@ -1,41 +1,27 @@
 #pragma once
-#include <vector>
-#include <iostream>
-#include "Node.h"
+#include "HashTableNode.h"
 #include "Edge.h"
-#include "Button.h"
-
+#include <vector>
+#include "AnimationManager.h"
+using namespace std;
 class HashTable {
-protected:
-    std::vector<std::vector<Node*>> data;
-    int size;
-    static std::vector<Edge*> Edges;
-
 public:
-    HashTable() {
-        std::cout << "HashTable Created" << std::endl;
-    }
-    HashTable(int s) : size(s) {
-        data.resize(size);
-        Edges.reserve(100);
-    }
-    ~HashTable() {
-        for (int i = 0; i < size; ++i) {
-            for (auto node : data[i]) {
-                delete node;
-            }
-            data[i].clear();
-        }
-        for (auto edge : Edges) {
-            delete edge;
-        }
-        Edges.clear();
-    }
+    vector<HashTableNode*> buckets;
+    static vector<CBEdge*> Edges;
+    AnimationManager animManager;
+    int bucketCount;
 
-    void insertHashTable(int value);
-    bool findHashTable(int value);
-    void deleteHashTable(int value);
-    void display();
-    void adjustPos(int bucketIndex);
+    HashTable(int size = 5);
+    ~HashTable();
+
+    void adjustPos(HashTableNode* head, int bucketIdx);
+    void insertNode(int x);
+    void randomInsert(int x);
+    bool remove(int x);
+    bool removeFromBucket(int x, int bucketIdx);
+    bool search(int x);
+    void clear();
+    void resize(int newSize);
+    int hashFunction(int x) { return x % bucketCount; }
     void deleteEdges();
 };

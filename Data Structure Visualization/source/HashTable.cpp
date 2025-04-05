@@ -1,73 +1,143 @@
 #include "../header/HashTable.h"
 #include "../header/Animation.h"
 using namespace std;
-vector<Edge*> HashTable::Edges;
+vector<CBEdge*> HashTable::Edges;
 
-void HashTable::insertHashTable(int value) {
-    int index = value % size;
-    Vector2 pos = { 0, 0 };
-    Node* newNode = new Node(value, pos, 30);
-    newNode->animation = new NodeInitializeAnimation(newNode, 0.5f);
-    data[index].push_back(newNode);
-
-    if (data[index].size() > 1) {
-        Edge::addEdge(Edges, data[index][data[index].size() - 2], newNode);
-    }
-    adjustPos(index);
+HashTable::HashTable(int size) : bucketCount(size) {
+    buckets.resize(size, nullptr);
+    Edges.reserve(100);
 }
 
-bool HashTable::findHashTable(int value) {
-    int index = value % size;
-    for (auto node : data[index]) {
-        if (node->data == value) {
+HashTable::~HashTable() {
+    clear();
+}
+
+void HashTable::adjustPos(HashTableNode* head, int bucketIdx) {
+    HashTableNode* prev = nullptr;
+    float startX = 100 + bucketIdx * 200;
+    float startY = 200;
+    while (head) {
+        if (!prev) {
+            head->setCenter(startX, startY);
+        }
+        else {
+            head->setCenterY(prev->getCenterY() + 150);
+            head->setCenterX(startX);
+        }
+        prev = head;
+        head = head->next;
+    }
+}
+
+void HashTable::insertNode(int x) {
+    int idx = hashFunction(x);
+    HashTableNode* newNode = new HashTableNode(x, 100 + idx * 200, 200);
+
+    if (!buckets[idx]) {
+        buckets[idx] = newNode;
+    }
+    else {
+        HashTableNode* cur = buckets[idx];
+        while (cur->next) {
+            cur = cur->next;
+        }
+        cur->next = newNode;
+        CBEdge::addEdge(Edges, cur, newNode);
+    }
+    adjustPos(buckets[idx], idx);
+}
+
+void HashTable::randomInsert(int x) {
+    int idx = hashFunction(x);
+    HashTableNode* newNode = new HashTableNode(x, 100 + idx * 200, 200);
+
+    if (!buckets[idx]) {
+        buckets[idx] = newNode;
+    }
+    else {
+        HashTableNode* cur = buckets[idx];
+        while (cur->next) {
+            cur = cur->next;
+        }
+        cur->next = newNode;
+        CBEdge::addEdge(Edges, cur, newNode);
+    }
+    adjustPos(buckets[idx], idx);
+}
+
+bool HashTable::remove(int x) {
+    int idx = hashFunction(x);
+    return removeFromBucket(x, idx);
+}
+
+bool HashTable::removeFromBucket(int x, int bucketIdx) {
+    HashTableNode* cur = buckets[bucketIdx];
+    if (!cur) return false;
+
+    if (cur->getNumber() == x) {
+        buckets[bucketIdx] = cur->next;
+        CBEdge::removeEdge(Edges, cur, cur->next);
+        delete cur;
+        adjustPos(buckets[bucketIdx], bucketIdx);
+        return true;
+    }
+
+    while (cur->next) {
+        if (cur->next->getNumber() == x) {
+            HashTableNode* temp = cur->next;
+            CBEdge::removeEdge(Edges, cur, temp);
+            CBEdge::removeEdge(Edges, temp, temp->next);
+            cur->next = temp->next;
+            CBEdge::addEdge(Edges, cur, cur->next);
+            delete temp;
+            adjustPos(buckets[bucketIdx], bucketIdx);
             return true;
         }
+        cur = cur->next;
     }
     return false;
 }
 
-void HashTable::deleteHashTable(int value) {
-    int index = value % size;
-    for (auto it = data[index].begin(); it != data[index].end(); ++it) {
-        if ((*it)->data == value) {
-            Node* delNode = *it;
-            if (data[index].size() > 1) {
-                if (it == data[index].begin()) {
-                    Edge::removeEdge(Edges, delNode, *(it + 1));
-                }
-                else if (it == data[index].end() - 1) {
-                    Edge::removeEdge(Edges, *(it - 1), delNode);
-                }
-                else {
-                    Edge::removeEdge(Edges, *(it - 1), delNode);
-                    Edge::removeEdge(Edges, delNode, *(it + 1));
-                    Edge::addEdge(Edges, *(it - 1), *(it + 1));
-                }
-            }
-            data[index].erase(it);
-            delete delNode;
-            adjustPos(index);
-            return;
-        }
+bool HashTable::search(int x) {
+    int idx = hashFunction(x);
+    HashTableNode* cur = buckets[idx];
+    while (cur) {
+        if (cur->getNumber() == x) return true;
+        cur = cur->next;
     }
+    return false;
 }
 
-void HashTable::display() {
-    for (int i = 0; i < size; ++i) {
-        std::cout << "Bucket " << i << ": ";
-        for (auto node : data[i]) {
-            std::cout << node->data << " ";
+void HashTable::clear() {
+    for (int i = 0; i < bucketCount; i++) {
+        while (buckets[i]) {
+            HashTableNode* temp = buckets[i];
+            buckets[i] = buckets[i]->next;
+            delete temp;
         }
-        std::cout << std::endl;
     }
+    deleteEdges();
 }
 
-void HashTable::adjustPos(int bucketIndex) {
-    float bucketX = 100 + bucketIndex * (100 + 20);
-    float bucketY = 200 + 80;
-    for (int j = 0; j < data[bucketIndex].size(); ++j) {
-        Vector2 newPos = { bucketX + 50, bucketY + (j + 1) * (60 + 10) };
-        data[bucketIndex][j]->position = newPos;
+void HashTable::resize(int newSize) {
+    vector<HashTableNode*> oldBuckets = buckets;
+    int oldSize = bucketCount;
+    bucketCount = newSize;
+    buckets.clear();
+    buckets.resize(newSize, nullptr);
+    deleteEdges();
+
+    for (int i = 0; i < oldSize; i++) {
+        HashTableNode* cur = oldBuckets[i];
+        while (cur) {
+            HashTableNode* next = cur->next;
+            cur->next = nullptr;
+            insertNode(cur->getNumber());
+            cur = next;
+        }
+    }
+    for (int i = 0; i < oldSize; i++) {
+        delete oldBuckets[i];
     }
 }
 

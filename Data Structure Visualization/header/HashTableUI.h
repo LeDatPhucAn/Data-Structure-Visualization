@@ -8,7 +8,7 @@ private:
     HashTable hashtable;
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
-    HashTableNode* selectedNode = nullptr;
+    LLNode* selectedNode = nullptr;
     int selectedBucketIdx = -1;
 
 protected:

@@ -12,8 +12,8 @@ HashTable::~HashTable() {
     clear();
 }
 
-void HashTable::adjustPos(HashTableNode* head, int bucketIdx) {
-    HashTableNode* prev = nullptr;
+void HashTable::adjustPos(LLNode* head, int bucketIdx) {
+    LLNode* prev = nullptr;
     float startX = 100 + bucketIdx * 200;
     float startY = 200;
     while (head) {
@@ -31,13 +31,13 @@ void HashTable::adjustPos(HashTableNode* head, int bucketIdx) {
 
 void HashTable::insertNode(int x) {
     int idx = hashFunction(x);
-    HashTableNode* newNode = new HashTableNode(x, 100 + idx * 200, 200);
+    LLNode* newNode = new LLNode(x, 100 + idx * 200, 200);
 
     if (!buckets[idx]) {
         buckets[idx] = newNode;
     }
     else {
-        HashTableNode* cur = buckets[idx];
+        LLNode* cur = buckets[idx];
         while (cur->next) {
             cur = cur->next;
         }
@@ -49,13 +49,13 @@ void HashTable::insertNode(int x) {
 
 void HashTable::randomInsert(int x) {
     int idx = hashFunction(x);
-    HashTableNode* newNode = new HashTableNode(x, 100 + idx * 200, 200);
+    LLNode* newNode = new LLNode(x, 100 + idx * 200, 200);
 
     if (!buckets[idx]) {
         buckets[idx] = newNode;
     }
     else {
-        HashTableNode* cur = buckets[idx];
+        LLNode* cur = buckets[idx];
         while (cur->next) {
             cur = cur->next;
         }
@@ -71,7 +71,7 @@ bool HashTable::remove(int x) {
 }
 
 bool HashTable::removeFromBucket(int x, int bucketIdx) {
-    HashTableNode* cur = buckets[bucketIdx];
+    LLNode* cur = buckets[bucketIdx];
     if (!cur) return false;
 
     if (cur->getNumber() == x) {
@@ -84,7 +84,7 @@ bool HashTable::removeFromBucket(int x, int bucketIdx) {
 
     while (cur->next) {
         if (cur->next->getNumber() == x) {
-            HashTableNode* temp = cur->next;
+            LLNode* temp = cur->next;
             CBEdge::removeEdge(Edges, cur, temp);
             CBEdge::removeEdge(Edges, temp, temp->next);
             cur->next = temp->next;
@@ -100,7 +100,7 @@ bool HashTable::removeFromBucket(int x, int bucketIdx) {
 
 bool HashTable::search(int x) {
     int idx = hashFunction(x);
-    HashTableNode* cur = buckets[idx];
+    LLNode* cur = buckets[idx];
     while (cur) {
         if (cur->getNumber() == x) return true;
         cur = cur->next;
@@ -111,7 +111,7 @@ bool HashTable::search(int x) {
 void HashTable::clear() {
     for (int i = 0; i < bucketCount; i++) {
         while (buckets[i]) {
-            HashTableNode* temp = buckets[i];
+            LLNode* temp = buckets[i];
             buckets[i] = buckets[i]->next;
             delete temp;
         }
@@ -120,7 +120,7 @@ void HashTable::clear() {
 }
 
 void HashTable::resize(int newSize) {
-    vector<HashTableNode*> oldBuckets = buckets;
+    vector<LLNode*> oldBuckets = buckets;
     int oldSize = bucketCount;
     bucketCount = newSize;
     buckets.clear();
@@ -128,9 +128,9 @@ void HashTable::resize(int newSize) {
     deleteEdges();
 
     for (int i = 0; i < oldSize; i++) {
-        HashTableNode* cur = oldBuckets[i];
+        LLNode* cur = oldBuckets[i];
         while (cur) {
-            HashTableNode* next = cur->next;
+            LLNode* next = cur->next;
             cur->next = nullptr;
             insertNode(cur->getNumber());
             cur = next;

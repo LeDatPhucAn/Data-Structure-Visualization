@@ -9,7 +9,7 @@ void HashTableUI::drawHashTable() {
         DrawRectangleLines(bucketRect.x, bucketRect.y, bucketRect.width, bucketRect.height, DARKGRAY);
         UI::drawtext2(std::to_string(i), bucketRect.x + bucketRect.width / 2, bucketRect.y + bucketRect.height / 2, BLACK);
 
-        HashTableNode* cur = hashtable.buckets[i];
+        LLNode* cur = hashtable.buckets[i];
         while (cur) {
             cur->draw();
             cur = cur->next;
@@ -30,7 +30,7 @@ void HashTableUI::remove(int x) {
 
 bool HashTableUI::search(int x) {
     int idx = hashtable.hashFunction(x);
-    HashTableNode* cur = hashtable.buckets[idx];
+    LLNode* cur = hashtable.buckets[idx];
     while (cur) {
         if (cur->getNumber() == x) {
             animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
@@ -162,7 +162,7 @@ void HashTableUI::displayScene() {
 
 void HashTableUI::updateScene() {
     for (int i = 0; i < hashtable.bucketCount; i++) {
-        HashTableNode* cur = hashtable.buckets[i];
+        LLNode* cur = hashtable.buckets[i];
         while (cur) {
             cur->update();
             if (cur->animation) cur->animation->update(GetFrameTime());

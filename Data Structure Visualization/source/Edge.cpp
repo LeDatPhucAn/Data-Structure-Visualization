@@ -37,8 +37,8 @@ void Edge::drawArrowEdge()
 	float toX =  to->position.x - to->radius * cos(theta);
 	float toY =  to->position.y - to->radius * sin(theta);
 
-	float EdgeEndX = toX - arrowHeadLength * cos(arrowHeadAngle);
-	float EdgeEndY = toY - arrowHeadLength * sin(theta);
+	float EdgeEndX = toX - arrowHeadLength * cos(theta) * sqrt(3) / 2;
+	float EdgeEndY = toY - arrowHeadLength * sin(theta) * sqrt(3) / 2;
 	//draw edge
 	
 	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, BLACK);
@@ -97,11 +97,11 @@ void CBEdge::drawArrowEdge()
 	float toX =  to->getCenterX() - to->getRadius() * cos(theta);
 	float toY =  to->getCenterY() - to->getRadius() * sin(theta);
 
-	float EdgeEndX = toX - arrowHeadLength * cos(arrowHeadAngle);
-	float EdgeEndY = toY - arrowHeadLength * sin(theta);
+	float EdgeEndX = toX - arrowHeadLength * cos(theta) * sqrt(3)/2;
+	float EdgeEndY = toY - arrowHeadLength * sin(theta) * sqrt(3)/2;
 	//draw edge
 	
-	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, BLACK);
+	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, edgeColor);
 
 	//draw arrow head
 
@@ -111,7 +111,7 @@ void CBEdge::drawArrowEdge()
 	Vector2 arrowPoint1 = { toX - arrowHeadLength * cos(theta1), toY - arrowHeadLength * sin(theta1) };
 	Vector2 arrowPoint2 = { toX - arrowHeadLength * cos(theta2), toY - arrowHeadLength * sin(theta2) };
 
-	DrawTriangle({toX,toY}, arrowPoint1, arrowPoint2, BLACK);
+	DrawTriangle({toX,toY}, arrowPoint1, arrowPoint2, edgeColor);
 }
 void CBEdge::addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
 	Edges.push_back(new CBEdge(from, to));

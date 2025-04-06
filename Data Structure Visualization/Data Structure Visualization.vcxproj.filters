@@ -58,6 +58,12 @@
     <ClCompile Include="source\Node.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\AnimationManager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HashTableNode.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\HashTable.h">
@@ -120,6 +126,12 @@
     <ClInclude Include="header\reasings.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="header\AnimationManager.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\HashTableNode.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="source">
@@ -180,6 +192,9 @@
     </Image>
     <Image Include="assets\Buttons\menu-treap-selected.png">
       <Filter>assets\Buttons</Filter>
+    </Image>
+    <Image Include="assets\Icons\Pause.png">
+      <Filter>assets\Icons</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

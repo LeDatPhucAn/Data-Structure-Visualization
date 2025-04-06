@@ -8,6 +8,8 @@
 #include "Button.h"
 class SceneHandler : public UI {
 private:
+    vector<Button*>SceneButtons;
+    vector<RectButton*> rightSideButtons;
     SceneManager* scenes[5];
     Camera2D camera = { 
         {static_cast<float> (UI::screenWidth) / 2, static_cast<float> (UI::screenHeight) / 5},  
@@ -15,15 +17,14 @@ private:
         0.0f,  
         0.0f
     };
-
 protected:
     SceneManager* currentSceneObject;
 public:
     static Vector2 mouseWorldPos;
-    static RectButton* MenuButton;
     SceneHandler();
     ~SceneHandler();
     int getCurrentScene();
+    void initButtons();
     void updateCamera();
     void changeScene(Scene newScene);
     void updateCurrentScene();

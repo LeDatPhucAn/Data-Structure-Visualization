@@ -37,11 +37,11 @@ TreapNode* Treap::rotateRight(TreapNode* root) {
     return newRoot;
 }
 
-void Treap::clear(TreapNode* root){
-    if(!root) return;
+void Treap::clear(TreapNode* root) {
+    if (!root) return;
 
-    if(root->leftEdge) clear(static_cast<TreapNode*>(root->leftEdge->to));
-    if(root->rightEdge) clear(static_cast<TreapNode*>(root->rightEdge->to));
+    if (root->leftEdge) clear(static_cast<TreapNode*>(root->leftEdge->to));
+    if (root->rightEdge) clear(static_cast<TreapNode*>(root->rightEdge->to));
 
     delete root;
 }
@@ -120,13 +120,13 @@ TreapNode* Treap::remove(TreapNode* root, int key) {
         if (static_cast<TreapNode*> (root->leftEdge->to)->priority > static_cast<TreapNode*> (root->rightEdge->to)->priority) {
             root = rotateRight(root);
             TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
-            if(root->rightEdge) delete root->rightEdge;
+            if (root->rightEdge) delete root->rightEdge;
             root->rightEdge = newRight ? new Edge(root, newRight) : nullptr;
         }
         else {
             root = rotateLeft(root);
             TreapNode* newLeft = remove(static_cast<TreapNode*>(root->leftEdge->to), key);
-            if(root->leftEdge) delete root->leftEdge;
+            if (root->leftEdge) delete root->leftEdge;
             root->leftEdge = newLeft ? new Edge(root, newLeft) : nullptr;
         }
     }
@@ -135,7 +135,7 @@ TreapNode* Treap::remove(TreapNode* root, int key) {
     return root;
 }
 
-void Treap::clear(){
+void Treap::clear() {
     clear(root);
 }
 
@@ -154,6 +154,6 @@ void Treap::updateSubtreeWidth(TreapNode* curr) {
     }
 }
 
-TreapNode* Treap::getRoot(){
+TreapNode* Treap::getRoot() {
     return root;
 }

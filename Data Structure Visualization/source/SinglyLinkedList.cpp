@@ -20,13 +20,12 @@ void LinkedList::loadFromFile() {
         cout << "Trying to open the file: " << filePath << "\n";
         ifstream fin(filePath);
         if (fin.is_open()) {
-            deletelist();
-            deleteEdges();
+            clear();
             string line;
             int pos = 1;
             int key = 0;
             while (fin>>key) {
-                insertnode(key,pos);
+                randominsert(key,pos);
                 pos++;
             }
         }
@@ -39,7 +38,6 @@ void LinkedList::adjustPos(LLNode* pHead) {
     while (pHead) {
         if (prev) {
             pHead->setCenterX(prev->getCenterX() + 200);
-            pHead->setCenterX(pHead->getCenterX());
         }
 
         prev = pHead;
@@ -92,7 +90,9 @@ void LinkedList::printlist() {
 bool LinkedList::search(int x) {
     LLNode* cur = head;
     while (cur) {
-        if (cur->getNumber() == x)return true;
+        if (cur->getNumber() == x) {
+            return true;
+        }
         cur = cur->next;
 
     }
@@ -112,12 +112,52 @@ void LinkedList::deleteEdges() {
     }
     Edges.clear();
 }
+void LinkedList::clear() {
+    deletelist();
+    deleteEdges();
+}
 void LinkedList::insertnode(int x, int pos) {
     if (pos < 1) {
         return;
     }
     if (pos == 1 || !head) {
         LLNode* temp = new LLNode(x,100,100);
+        temp->onClick = [temp]() {
+            cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
+            };
+        temp->next = head;
+        adjustPos(temp);
+        CBEdge::addEdge(Edges, temp, head);
+        head = temp;
+        return;
+    }
+    LLNode* cur = head;
+    for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        cur = cur->next;
+    }
+    animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
+    LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
+    newnode->onClick = [newnode]() {
+        cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
+        };
+    newnode->next = cur->next;
+    CBEdge::addEdge(Edges, newnode, cur->next);
+    CBEdge::removeEdge(Edges, cur, cur->next);
+    cur->next = newnode;
+
+    adjustPos(newnode);
+    CBEdge::addEdge(Edges, cur, newnode);
+}
+void LinkedList::randominsert(int x, int pos) {
+    if (pos < 1) {
+        return;
+    }
+    if (pos == 1 || !head) {
+        LLNode* temp = new LLNode(x,100,100);
+        temp->onClick = [temp]() {
+            cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
+            };
         temp->next = head;
         adjustPos(temp);
         CBEdge::addEdge(Edges, temp, head);
@@ -130,7 +170,9 @@ void LinkedList::insertnode(int x, int pos) {
     }
 
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
-
+    newnode->onClick = [newnode]() {
+        cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
+        };
     newnode->next = cur->next;
     CBEdge::addEdge(Edges, newnode, cur->next);
     CBEdge::removeEdge(Edges, cur, cur->next);

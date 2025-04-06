@@ -4,18 +4,18 @@
 #include "Button.h"
 class Animation {
 protected:
+
+
+public:
     float duration;
     float elapsed;
     bool completed;
-
-public:
 	Animation() : duration(0), elapsed(0), completed(false) {};
     Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
     virtual ~Animation() = default;
-
-    virtual void Animate(float deltaTime);
-    virtual void HandleResize() = 0;
-    virtual void update(float deltaTime) = 0;
+    virtual void handleReposition() {};
+    virtual void update(float deltaTime);
+    virtual void applyState() = 0;
     virtual bool isCompleted() {
         return completed;
     }
@@ -27,10 +27,118 @@ public:
     virtual float getProgress() const {
         return elapsed;
     }
+    virtual void clamp() {
+        if (elapsed >= duration) {
+            elapsed = duration;
+            completed = true;
+        }
+        else if (elapsed <= 0) {
+            elapsed = 0;
+            completed = false;
+        }
+        else {
+            completed = false;
+        }
+    }
+    // Set the animation to a specific time and apply the state immediately
+    virtual void setTime(float t);
+};
+class CBEdgeHighLightAnim : public Animation {
+protected:
+	CBEdge* edge;
+	Color startC, endC;
+public:
+	virtual ~CBEdgeHighLightAnim() = default;
+    CBEdgeHighLightAnim(
+        CBEdge* e, float duration,
+		Color eC = ORANGE
+	)
+		: Animation(duration),
+		endC(eC), edge(e) {
+        startC = e->edgeColor;
+	}
+	void applyState() override;
+};
+class CircleHighLightAnim : public Animation {
+protected:
+    CircleButton* button;
+    Color startTC,endTC;
+    Color startFC,endFC;
+    Color startRC,endRC;
+public:
+    virtual ~CircleHighLightAnim() = default;
+    CircleHighLightAnim(
+        CircleButton* btn, float duration,
+        Color eTC = ORANGE, 
+        Color eFC = RAYWHITE, 
+        Color eRC = ORANGE
+        )
+        : Animation(duration),
+        endTC(eTC), endFC(eFC), endRC(eRC), button(btn) {
+        startTC = btn->OgTextColor;
+        startFC = btn->OgFillColor;
+        startRC = btn->OgOutLineColor;
+    }
+    void applyState() override;
+};
+class CircleMoveAnim : public Animation {
+private:
     
+protected:
+    CircleButton* button;
+    float startX, startY;
+    float endX, endY;
+public:
+	virtual ~CircleMoveAnim() = default;
+    CircleMoveAnim(CircleButton* btn, float duration)
+        : Animation(duration), button(btn) {
+        startX = 0;
+        startY = 0;
+        endX = btn->getCenterX();
+        endY = btn->getCenterY();
+    }
+    CircleMoveAnim(CircleButton* btn, float sX, float sY, float duration)
+        : Animation(duration), startX(sX), startY(sY), button(btn) {
+        endX = btn->getCenterX();
+        endY = btn->getCenterY();
+    }
+    CircleMoveAnim(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
+        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
+    }
+    void handleReposition() override {
+        endX = button->getCenterX();
+        endY = button->getCenterY();
+    }
+    void applyState() override;
+};
+class CircleMoveXAnim : public Animation {
+private:
+    
+protected:
+    CircleButton* button;
+    float startX;
+    float endX;
+public:
+	virtual ~CircleMoveXAnim() = default;
+    CircleMoveXAnim(CircleButton* btn, float duration)
+        : Animation(duration), button(btn) {
+        startX = 0;
+        endX = btn->getCenterX();
+    }
+    CircleMoveXAnim(CircleButton* btn, float sX, float duration)
+        : Animation(duration), startX(sX), button(btn) {
+        endX = btn->getCenterX();
+    }
+    CircleMoveXAnim(CircleButton* btn, float sX, float eX, float duration)
+        : Animation(duration), startX(sX), endX(eX), button(btn) {
+    }
+    void handleReposition() override{
+        endX = button->getCenterX();
+    }
+    void applyState() override;
 };
 
-class ButtonMoveAnimation : public Animation {
+class RectMoveAnim : public Animation {
 private:
     
 protected:
@@ -39,47 +147,49 @@ protected:
     float endX, endY;
 public:
 
-    virtual void HandleResize() override;
-	virtual ~ButtonMoveAnimation() = default;
-    ButtonMoveAnimation(RectButton* btn, float duration)
+    void handleReposition() override {
+        endX = button->rect.x;
+        endY = button->rect.y;
+    }
+	virtual ~RectMoveAnim() = default;
+    RectMoveAnim(RectButton* btn, float duration)
         : Animation(duration), button(btn) {
         startX = 0;
         startY = 0;
         endX = btn->rect.x;
         endY = btn->rect.y;
     }
-    ButtonMoveAnimation(RectButton* btn, float sX, float sY, float duration)
+    RectMoveAnim(RectButton* btn, float sX, float sY, float duration)
         : Animation(duration), startX(sX), startY(sY), button(btn) {
         endX = btn->rect.x;
         endY = btn->rect.y;
     }
-    void update(float deltaTime) override;
+    void applyState() override;
 };
-class ButtonMoveXAnimation : public ButtonMoveAnimation {
+class RectMoveXAnim : public RectMoveAnim {
 public:
-    ButtonMoveXAnimation(RectButton* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
-	ButtonMoveXAnimation(RectButton* btn, float sX, float duration) : ButtonMoveAnimation(btn, sX, 0, duration) {};
-    void update(float deltaTime) override;
+    RectMoveXAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
+    RectMoveXAnim(RectButton* btn, float sX, float duration) : RectMoveAnim(btn, sX, 0, duration) {};
+    void applyState() override;
 };
-class ButtonMoveYAnimation : public ButtonMoveAnimation {
+class RectMoveYAnim : public RectMoveAnim {
 public:
-    ButtonMoveYAnimation(RectButton* btn, float duration) : ButtonMoveAnimation(btn, duration) {};
-    ButtonMoveYAnimation(RectButton* btn, float sY, float duration) : ButtonMoveAnimation(btn, 0, sY, duration) {};
-    void update(float deltaTime) override;
+    RectMoveYAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
+    RectMoveYAnim(RectButton* btn, float sY, float duration) : RectMoveAnim(btn, 0, sY, duration) {};
+    void applyState() override;
 };
 
-class CircleButtonInitializeAnimation : public Animation {
+class CircleInitializeAnim : public Animation {
 private:
     CircleButton* button;
     float startRadius;
     float endRadius;
 public:
-    CircleButtonInitializeAnimation(CircleButton* btn, float duration) : button(btn), Animation(duration) {
+    CircleInitializeAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
         startRadius = 0;
         endRadius = btn->getRadius();
     };
-    void update(float deltaTime) override;
-    void HandleResize() {};
+    void applyState() override;
 };
 class NodeInitializeAnimation : public Animation {
 private:
@@ -91,111 +201,8 @@ public:
 		startRadius = 0;
         endRadius = node->radius;
     };
-    void update(float deltaTime) override;
-    void HandleResize() {};
+    void applyState() override;
 };
 
 
-//class AnimatedNode : public Node {
-//private:
-//    Color color;
-//    Color outlineColor;
-//    Color textColor;
-//    bool highlighted;
-//
-//public:
-//    AnimatedNode(Node n) : Node(n) {};
-//    AnimatedNode(int val, Vector2 pos, float r) : Node(val,pos,r) {};
-//
-//    void setPosition(Vector2 pos);
-//    void setHighlighted(bool highlight);
-//
-//    Vector2 getPosition() const;
-//    int getValue() const;
-//    float getRadius() const;
-//};
-//
-//class AnimatedEdge {
-//private:
-//    AnimatedNode* from;
-//    AnimatedNode* to;
-//    Color color;
-//    bool highlighted;
-//    bool directed;
-//
-//public:
-//    AnimatedEdge(AnimatedNode* from, AnimatedNode* to,
-//        Color color = GRAY, bool directed = true);
-//
-//    void setHighlighted(bool highlight);
-//
-//    AnimatedNode* getSource();
-//    AnimatedNode* getTarget();
-//};
 
-
-
-class AnimationManager {
-private:
-    std::vector<Node*> Nodes;
-    std::vector<Edge*> Edges;
-    std::vector<Animation*> Animations;
-    float speed;
-    bool paused;
-
-public:
-    AnimationManager();
-
-    // SceneComponent interface
-    /*void init() override;
-    void initButtons() override;
-    void updateScene() override;
-    void displayScene() override;
-    void displaySceneInCamera() override;
-    void updateButtonPositions() override;*/
-
-    // Animation control
-    void addAnimation(vector<Animation*> Animations);
-    void clearAnimations();
-    void setPaused(bool pause);
-    void setSpeed(float newSpeed);
-    bool isAnimating() const;
-
-
-    void insertNodeToSLL(int value, int position = -1);
-    void removeNodeFromSLL(int position);
-    void highlightNodeAtPosition(int position, float duration = 0.5f);
-    void animateTraversal(float duration = 0.5f);
-    int searchValue(int value);
-};
-//
-//class NodeMoveAnimation : public Animation {
-//private:
-//    AnimatedNode* Node;
-//    Vector2 startPos;
-//    Vector2 endPos;
-//
-//public:
-//    NodeMoveAnimation(AnimatedNode* node, Vector2 end, float duration) : Animation(duration), Node(node), endPos(end) {};
-//    void update(float deltaTime) override;
-//};
-//
-//class NodeHighlightAnimation : public Animation {
-//private:
-//    AnimatedNode* node;
-//    Color highlightColor;
-//
-//public:
-//    NodeHighlightAnimation(AnimatedNode* node, Color highlightColor, float duration);
-//    void update(float deltaTime) override;
-//};
-//
-//class EdgeHighlightAnimation : public Animation {
-//private:
-//    AnimatedEdge* edge;
-//    Color highlightColor;
-//
-//public:
-//    EdgeHighlightAnimation(AnimatedEdge* edge, Color highlightColor, float duration);
-//    void update(float deltaTime) override;
-//};

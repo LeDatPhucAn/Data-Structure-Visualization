@@ -5,14 +5,11 @@ void GraphUI::init() {
 	initButtons();
 }
 void GraphUI::displayScene() {
-	SceneHandler::MenuButton->draw();
 	Button::drawButtons<RectButton>(buttonsOnGraph);
 
 
 }
 void GraphUI::updateScene() {
-	Button::isCollision = false;
-	SceneHandler::MenuButton->update();
 	Button::updateButtons<RectButton>(buttonsOnGraph);
 	if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

@@ -10,8 +10,6 @@
 bool Button::isCollision = false;
 const int RectButton::padding = UI::fontSize;
 
-
-
 // ### Button Utility Functions
 
 void Button::hover() {
@@ -45,7 +43,23 @@ void Button::unclick() {
         isClicked = false;
     }
 }
-
+void Button::update() {
+    if (checkCollision()) {
+        hover();
+        setCursor();
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) click();
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            isActivated = !isActivated;
+            if (onClick) onClick();
+            unclick();
+        }
+        Button::isCollision = true;
+    }
+    else {
+        unhover();
+    }
+    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
+}
 // ### RectButton Methods
 void RectButton::resetSubAni() {
     RectButton* cur = this->next;
@@ -65,7 +79,7 @@ void RectButton::setSubPosition() {
     RectButton* cur = this->next;
     while (cur) {
         cur->setPosition(prev->rect.x + prev->rect.width + padding / 2, prev->rect.y);
-        if (cur->animation) cur->animation->HandleResize();
+        if (cur->animation) cur->animation->handleReposition();
         prev = cur;
         cur = cur->next;
     }
@@ -78,12 +92,12 @@ void RectButton::setHeadPosition(std::vector<RectButton*>& buttons, float x, flo
     }
     buttons[0]->setPosition(x, y);
     buttons[0]->setSubPosition();
-    if (buttons[0]->animation) buttons[0]->animation->HandleResize();
+    if (buttons[0]->animation) buttons[0]->animation->handleReposition();
     for (size_t i = 1; i < buttons.size(); ++i) {
         RectButton* prevHead = buttons[i - 1];
         RectButton* curHead = buttons[i];
         curHead->setPosition(prevHead->rect.x, prevHead->rect.y + prevHead->rect.height);
-        if (curHead->animation) curHead->animation->HandleResize();
+        if (curHead->animation) curHead->animation->handleReposition();
         curHead->setSubPosition();
     }
 }
@@ -131,7 +145,7 @@ void RectButton::insertSubButton(RectButton* button) {
     cur->next = button;
     button->head = this;
     button->rect = { cur->rect.x + cur->rect.width + padding / 2, cur->rect.y, button->rect.width, button->rect.height };
-    button->animation = new ButtonMoveXAnimation(button, this->rect.x, 0.3);
+    button->animation = new RectMoveXAnim(button, this->rect.x, 0.3);
 }
 
 void RectButton::insertSubButton(RectButton* button, std::function<void()> function) {
@@ -180,23 +194,17 @@ void RectButton::insertPseudoCode(std::vector<RectButton*>& CodeBlocks, std::str
         insertCodeBlock(CodeBlocks, new CodeBlock(line.c_str()));
     }
 }
-
+bool RectButton::checkCollision() {
+    return CheckCollisionPointRec(getMousePos(), rect);
+}
 void RectButton::update() {
     if (!head || head->isActivated) {
-        if (CheckCollisionPointRec(getMousePos(), rect)) {
-            hover();
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        Button::update();
+        if (checkCollision()) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                isActivated = !isActivated;
                 if (!head && isActivated) resetSubAni();
-                if (onClick) onClick();
             }
-            Button::isCollision = true;
         }
-        else {
-            unhover();
-        }
-        if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
     }
     if (next) next->update();
 }
@@ -219,34 +227,21 @@ void InputBox::unhover() {
 }
 
 void InputBox::update() {
-    if (!head || head->isActivated) {
-        if (CheckCollisionPointRec(getMousePos(), rect)) {
-            hover();
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                isActivated = !isActivated;
-                if (!head && isActivated) resetSubAni();
-                if (onClick) onClick();
-            }
-            Button::isCollision = true;
-        }
-        else {
-            unhover();
-        }
-        if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
-    }
-    if (next) next->update();
-
     if (GetGestureDetected() == GESTURE_TAP) {
         inputHandler->setTexting(false);
     }
     if (!head || head->isActivated) {
-        if (CheckCollisionPointRec(getMousePos(), rect)) {
-            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+        Button::update();
+        if (checkCollision()) {
             if (GetGestureDetected() == GESTURE_TAP) inputHandler->setTexting(true);
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                if (!head && isActivated) resetSubAni();
+            }
         }
         inputHandler->update();
         if (inputHandler->isTexting() && IsKeyPressed(KEY_ENTER) && onClick) onClick();
     }
+    if (next) next->update();
 }
 
 void InputBox::draw() {
@@ -283,48 +278,81 @@ void TextBox::draw() {
 }
 
 // ### CircleButton Methods
+bool CircleButton::checkCollision() {
+    return CheckCollisionPointCircle(getMousePos(), center, radius);
+}
 void CircleButton::hover() {
     OutLineColor = RED;
     TextColor = RED;
 }
 
 void CircleButton::unhover() {
-    OutLineColor = BLUE;
-    TextColor = BLUE;
+    OutLineColor = OgOutLineColor;
+    TextColor = OgTextColor;
+}
+void CircleButton::click() {
+    if (!isClicked) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(TextColor, 30);
+        isClicked = true;
+    }
+}
+void CircleButton::unclick() {
+    if (isClicked) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(TextColor, 30);
+        isClicked = false;
+    }
 }
 CircleButton::CircleButton(Vector2 cent = { 0, 0 }, float r = 50.0f,
     Color tc = BLUE, Color fc = RAYWHITE, Color rc = BLUE)
-    : Button(tc, fc, rc), center(cent), radius(r), isActivated(false) {
-    animation = new CircleButtonInitializeAnimation(this, 1);
+    : Button(tc, fc, rc), center(cent), radius(r) {
+    animation = new CircleInitializeAnim(this, 1);
 }
 void CircleButton::update() {
-    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
-        hover();
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            isActivated = !isActivated;
-            if (onClick) onClick();
-        }
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
-    }
-    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
+    Button::update();
+}
+void TextCircle::unhover() {
+    OutLineColor = OgOutLineColor;
+    FillColor = OgFillColor;
 }
 
+void TextCircle::hover() {
+    OutLineColor = DARKGREEN;
+    FillColor = GREEN;
+}
+void TextureCircle::unhover() {
+    OutLineColor = OgOutLineColor;
+    FillColor = OgFillColor;
+}
+
+void TextureCircle::hover() {
+    OutLineColor = DARKGREEN;
+    FillColor = GREEN;
+}
+void TextCircle::draw() {
+    DrawCircleV(center, radius * 4 / 5 +1, FillColor);
+    DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, OutLineColor);
+    UI::drawtext2(Text, center.x, center.y, TextColor);
+}
+
+void TextureCircle::draw() {
+    float RingRadius = radius * 4 / 5;
+    DrawCircleV(center, RingRadius +1, FillColor);
+    DrawRing(center, RingRadius, radius, 0, 360, 100, OutLineColor);
+
+    DrawTexturePro(Texture,
+        { 0,0,(float)Texture.width,(float)Texture.height },
+        { center.x - RingRadius,center.y - RingRadius,RingRadius*2,RingRadius*2},
+        { 0,0 }, 0, TextColor
+    );
+}
 // ### InputCircle Methods
 void InputCircle::update() {
-    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
     if (GetGestureDetected() == GESTURE_TAP) inputHandler->setTexting(false);
-    if (CheckCollisionPointCircle(getMousePos(), center, radius)) {
-        hover();
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    Button::update();
+    if (checkCollision()) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) inputHandler->setTexting(true);
-        Button::isCollision = true;
-    }
-    else {
-        unhover();
     }
     inputHandler->update();
     if (inputHandler->isTexting() && IsKeyPressed(KEY_ENTER) && onClick) onClick();

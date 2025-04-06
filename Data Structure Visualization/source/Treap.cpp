@@ -1,4 +1,5 @@
 #include "../header/Treap.h"
+#include "../header/SceneHandler.h"
 
 #include <math.h>
 
@@ -156,4 +157,8 @@ void Treap::updateSubtreeWidth(TreapNode* curr) {
 
 TreapNode* Treap::getRoot() {
     return root;
+}
+
+Vector2 TreapNode::getMousePos() const {
+    return SceneHandler::mouseWorldPos;
 }

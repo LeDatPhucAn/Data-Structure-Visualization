@@ -32,13 +32,9 @@ private:
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 5;
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
-    void drawHighlightedNode(TreapNode* node);
     void drawTreapNode(TreapNode* curr);
-    void drawHighlightedEdge(Edge* edge);
     void drawTreapLink(Edge* edge);
     void drawTreap(TreapNode* curr);
-    void addAnimationStep(int priority, function<void()> func);
-    void processAnimations();
 public:
     void insert(int key, int priority = rand());
     void loadFromFile();

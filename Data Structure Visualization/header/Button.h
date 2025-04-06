@@ -225,6 +225,9 @@ public:
     }
 
     int getNumber() const { return dynamic_cast<NumericInputHandler*>(inputHandler.get())->getNumber(); }
+    void setNumber(int x) {
+        inputHandler->setText(std::to_string(x));
+    }
 };
 
 class NumberInputBoxInCamera : public NumberInputBox {

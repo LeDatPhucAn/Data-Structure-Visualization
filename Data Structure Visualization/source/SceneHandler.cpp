@@ -1,7 +1,7 @@
 #include "../header/SceneHandler.h"
 #include "../header/reasings.h"
 #include "../header/Animation.h"
-Vector2 SceneHandler::mouseWorldPos = GetMousePosition();
+Vector2 SceneHandler::mouseWorldPos = { 0, 0 };
 SceneHandler::SceneHandler() {
 
     // initialize Scene Buttons
@@ -105,43 +105,37 @@ void SceneHandler::changeScene(Scene newScene) {
 }
 
 void SceneHandler::updateCamera() {
-
-    // Translate based on mouse right click
+    // Move camera with drag
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         Vector2 delta = GetMouseDelta();
         delta = Vector2Scale(delta, -1.0f / camera.zoom);
         camera.target = Vector2Add(camera.target, delta);
     }
 
-    // Zoom based on mouse wheel
+    // Handle zoom with scroll wheel
     float wheel = GetMouseWheelMove();
     if (wheel != 0) {
-        // Get the world point that is under the mouse
-        mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
-
-        // Set the offset to where the mouse is
+        SceneHandler::mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera); // update position
         camera.offset = GetMousePosition();
+        camera.target = SceneHandler::mouseWorldPos;
 
-        // Set the target to match, so that the camera maps the world space point 
-        // under the cursor to the screen space point under the cursor at any zoom
-        camera.target = mouseWorldPos;
-
-        // Zoom increment
         float scaleFactor = 1.0f + (0.25f * fabsf(wheel));
         if (wheel < 0) scaleFactor = 1.0f / scaleFactor;
-
-        // limit the values of zoom
         camera.zoom = Clamp(camera.zoom * scaleFactor, 0.25f, 10.0f);
-
-
     }
-    mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
 
+    // Always keep it up-to-date, even without zoom
+    SceneHandler::mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
 }
+
 
 
 void SceneHandler::updateCurrentScene() {
     if (currentSceneObject) {
+
+        if (getCurrentScene() != MENU) {
+            updateCamera();  // <-- move this up here
+        }
 
         // update font size
         // update The Positions of all Scenes when there is a Window Resize

@@ -1,5 +1,6 @@
 #include "../header/Edge.h"
 #include "../header/UI.h"
+#include "../header/Treap.h"
 
 void Edge::drawEdge() {
 	if (!from) {
@@ -56,20 +57,26 @@ void Edge::drawArrowEdge()
 void Edge::drawTreapEdge() {
 	if (!from || !to) return;
 
-	static const float nodeWidth = 120.0f;
-	static const float nodeHeight = 100.0f;
+	TreapNode* fromNode = dynamic_cast<TreapNode*>(from);
+	TreapNode* toNode = dynamic_cast<TreapNode*>(to);
+	if (!fromNode || !toNode) return;
 
-	Vector2 start = from->position;
-	Vector2 end = to->position;
+	Rectangle fromRect = fromNode->rect;
+	Rectangle toRect = toNode->rect;
 
-	if (start.x > end.x) start.x -= nodeWidth / 4;  // Left child
-	else start.x += nodeWidth / 4;  // Right child
-
-	start.y += nodeHeight / 2 - 2;
-	end.y -= nodeHeight / 2 - 2;
+	// Use the actual center of each box
+	Vector2 start = {
+		fromRect.x + fromRect.width / 2,
+		fromRect.y + fromRect.height       // bottom center of parent
+	};
+	Vector2 end = {
+		toRect.x + toRect.width / 2,
+		toRect.y                           // top center of child
+	};
 
 	DrawLineEx(start, end, thickness, BLACK);
 }
+
 void Edge::addEdge(vector<Edge*>& Edges, Node* from, Node* to) {
 	Edges.push_back(new Edge(from, to));
 }

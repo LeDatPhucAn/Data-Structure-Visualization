@@ -185,6 +185,7 @@ void SceneHandler::updateCurrentScene() {
         Button::isCollision = false;
         Button::updateButtons<Button>(SceneButtons);
 		Button::updateButtons<RectButton>(rightSideButtons);
+
         currentSceneObject->animManager.update(GetFrameTime());
         currentSceneObject->updateScene();
 

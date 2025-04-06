@@ -4,6 +4,16 @@
 
 
 void SinglyLinkedListUI::insert(int x, int pos) {
+    LLNode* cur = linkedlist.head;
+    int i = 1;
+    while (cur) {
+		if (i == pos) {
+            animManager.addAnimation(new CircleMoveAnim(cur, 1000, 1000, cur->getCenterX(), cur->getCenterY(), 2.0f));
+			break;
+		}
+        i++;
+        cur = cur->next;
+    }
     linkedlist.insertnode(x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
@@ -16,13 +26,17 @@ bool SinglyLinkedListUI::search(int x) {
             animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
             return true;
 		}
-        animManager.addAnimation(new CircleHighLightAnim(cur, 1));
+
+		// Highlight the current node
+        animManager.addAnimation(new CircleHighLightAnim(cur, 3));
+
         for (auto& edge : linkedlist.Edges) {
             if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 1));
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 1, PURPLE));
 				break;
             }
         }
+
         cur = cur->next;
     }
 	
@@ -69,7 +83,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[0]->insertSubButton(PosInput);
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PosInput]() {
-        linkedlist.insertnode(ValueInput->getNumber(), PosInput->getNumber());
+        insert(ValueInput->getNumber(), PosInput->getNumber());
         if (PosInput->getNumber() == 1) RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertHead);
         else if (PosInput->getNumber() == 0) return;
         else RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLInsertPos);
@@ -161,13 +175,6 @@ void SinglyLinkedListUI::displayScene() {
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
-    /*Button::isCollision = false;
-
-    LLNode* cur = linkedlist.head;
-    Vector2 camPos = GetWorldToScreen2D(cur->getCenter(), cam);
-    if (IsKeyPressed(KEY_ENTER)) {
-        cout << "camPos: " << camPos.x << " " << camPos.y << "\n";
-    }*/
     
 }
 void SinglyLinkedListUI::updateScene() {

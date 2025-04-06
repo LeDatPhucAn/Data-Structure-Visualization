@@ -321,6 +321,7 @@ public:
     void hover() override;
     void unhover() override;
 };
+
 class TextureCircle : public CircleButton {
 public:
     Texture2D Texture;

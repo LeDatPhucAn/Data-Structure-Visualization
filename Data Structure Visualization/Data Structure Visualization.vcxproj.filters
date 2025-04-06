@@ -61,9 +61,6 @@
     <ClCompile Include="source\AnimationManager.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\HashTableNode.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\HashTable.h">
@@ -127,9 +124,6 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="header\AnimationManager.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\HashTableNode.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

@@ -26,7 +26,6 @@
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\GraphUI.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
-    <ClCompile Include="source\HashTableNode.cpp" />
     <ClCompile Include="source\HashTableUI.cpp" />
     <ClCompile Include="source\LLNode.cpp" />
     <ClCompile Include="source\Main.cpp" />
@@ -49,7 +48,6 @@
     <ClInclude Include="header\Graph.h" />
     <ClInclude Include="header\GraphUI.h" />
     <ClInclude Include="header\HashTable.h" />
-    <ClInclude Include="header\HashTableNode.h" />
     <ClInclude Include="header\HashTableUI.h" />
     <ClInclude Include="header\LLNode.h" />
     <ClInclude Include="header\Menu.h" />

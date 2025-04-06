@@ -4,16 +4,6 @@
 
 
 void SinglyLinkedListUI::insert(int x, int pos) {
-    LLNode* cur = linkedlist.head;
-    int i = 1;
-    while (cur) {
-		if (i == pos) {
-            animManager.addAnimation(new CircleMoveAnim(cur, 1000, 1000, cur->getCenterX(), cur->getCenterY(), 2.0f));
-			break;
-		}
-        i++;
-        cur = cur->next;
-    }
     linkedlist.insertnode(x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {

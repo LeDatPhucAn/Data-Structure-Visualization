@@ -176,7 +176,6 @@ void SinglyLinkedListUI::updateScene() {
        cur = cur->next;
    }
     
-    //SceneHandler::MenuButton->update();
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 

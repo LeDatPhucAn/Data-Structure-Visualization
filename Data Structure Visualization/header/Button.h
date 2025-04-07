@@ -232,6 +232,9 @@ public:
     }
 
     int getNumber() const { return dynamic_cast<NumericInputHandler*>(inputHandler.get())->getNumber(); }
+    void setNumber(int x) {
+        inputHandler->setText(std::to_string(x));
+    }
 };
 
 // NumberInputBoxInCamera is NumberInputBox but uses the camera position to get the mouse position

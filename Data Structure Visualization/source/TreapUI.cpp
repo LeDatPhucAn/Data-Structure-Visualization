@@ -20,7 +20,7 @@ void TreapUI::loadFromFile(){
         1, // Number of filter patterns
         filter, // Filter patterns
         "Text file (*.txt)", // Filter description
-        0 // Single file seclection mode
+        0 // Single file selection mode
     );
 
     if(filePath){
@@ -44,7 +44,8 @@ void TreapUI::loadFromFile(){
 
 void TreapUI::search(int key) {
     TreapNode* curr = treap.getRoot();
-    
+    if (!curr) return;
+
 }
 
 void TreapUI::remove(int key) {
@@ -60,47 +61,30 @@ void TreapUI::clear() {
 void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
     if (!root) return;
 
-    root->position = pos;
+    // Position the visual button correctly by setting top-left corner
+    float rectX = pos.x - root->rect.width / 2;
+    float rectY = pos.y - root->rect.height / 2;
+    root->setVisualPosition(rectX, rectY);  // this will also update root->position
 
-    int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr);
-    int rightWidth = treap.getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*> (root->rightEdge->to) : nullptr);
+    int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
+    int rightWidth = treap.getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
 
-    int newXOffset = max((leftWidth + rightWidth + 1) * 60, 120);
+    int newXOffset = std::max((leftWidth + rightWidth + 1) * 40, 80);
 
     if (root->leftEdge) {
         Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
-        reposition(static_cast<TreapNode*> (root->leftEdge->to), leftPos, newXOffset, yOffset);
+        reposition(static_cast<TreapNode*>(root->leftEdge->to), leftPos, newXOffset, yOffset);
     }
 
     if (root->rightEdge) {
         Vector2 rightPos = { pos.x + newXOffset, pos.y + yOffset };
-        reposition(static_cast<TreapNode*> (root->rightEdge->to), rightPos, newXOffset, yOffset);
+        reposition(static_cast<TreapNode*>(root->rightEdge->to), rightPos, newXOffset, yOffset);
     }
 }
 
 void TreapUI::drawTreapNode(TreapNode* curr) {
     if (!curr) return;
-
-    static const float width = 120.0f;
-    static const float height = 100.0f;
-    static const float dataWidth = 80.0f;
-    static const float priorityWidth = 40.0f;
-
-    Vector2 pos = curr->position;
-
-    DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, { 255, 203, 203, 255 });
-    DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, { 69, 180, 238, 145 });
-
-    DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
-    DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
-
-    string value = to_string(curr->data).substr(0, 5);
-    Vector2 valueTextSize = MeasureTextEx(GetFontDefault(), value.c_str(), 30.0f, 2.0f);
-    string priority = to_string(curr->priority);
-    Vector2 priorityTextSize = MeasureTextEx(GetFontDefault(), priority.c_str(), 20.0f, 2.0f);
-
-    DrawText(value.c_str(), pos.x - width / 2 + dataWidth / 2 - valueTextSize.x / 2, pos.y - valueTextSize.y / 2, 30, DARKGRAY);
-    DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 20, MAROON);
+    curr->draw();
 }
 
 void TreapUI::drawTreapLink(Edge* edge) {
@@ -230,6 +214,15 @@ void TreapUI::updateButtonPositions() {
 void TreapUI::updateScene() {
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
+
+    // Update treap node buttons recursively
+    std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {
+        if (!node) return;
+        node->update();
+        if (node->leftEdge) updateTreapNodes(static_cast<TreapNode*>(node->leftEdge->to));
+        if (node->rightEdge) updateTreapNodes(static_cast<TreapNode*>(node->rightEdge->to));
+        };
+    updateTreapNodes(root);
 
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

@@ -1,29 +1,31 @@
 #pragma once
 
+#include "Button.h"
 #include "Node.h"
 #include "Edge.h"
 #include <cstdlib>
 #include <ctime>
-#include "Node.h"
-class TreapNode : public Node {
+
+class TreapNode : public NumberInputBox, public Node {
 public:
-	int priority;
-	Edge* leftEdge;
-	Edge* rightEdge;
-	int subtreeWidth;
+    int priority;
+    Edge* leftEdge;
+    Edge* rightEdge;
+    int subtreeWidth;
+    NumberInputBox* priorityBox = nullptr;
 
-	TreapNode(int data, int priority, Vector2 pos) : Node(data, pos, 0), priority(priority % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1) {}
+    TreapNode(int key, int priority, Vector2 pos);
+    ~TreapNode();
 
-	~TreapNode() {
-		if (leftEdge) {
-			delete leftEdge;
-			leftEdge = nullptr;
-		}
-		if (rightEdge) {
-			delete rightEdge;
-			rightEdge = nullptr;
-		}
-	}
+    int getKey() const;
+    void setKey(int key);
+    int getPriority() const;
+    void setPriority(int p);
+    void syncPosition();
+    void setVisualPosition(float x, float y);
+    void update() override;
+	void draw() override;
+    Vector2 getMousePos() const override;
 };
 
 class Treap {
@@ -48,5 +50,4 @@ public:
 	TreapNode* search(TreapNode* root, int key);
 	TreapNode* remove(TreapNode* root, int key);
 	void clear();
-
 };

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <memory>
 // ### InputHandler Class
+// used for inputText
 class InputHandler {
 protected:
     std::string inputText;
@@ -49,6 +50,7 @@ public:
 };
 
 // ### NumericInputHandler Subclass
+// used for inputNumber
 class NumericInputHandler : public InputHandler {
 public:
     NumericInputHandler(int maxCh) : InputHandler(maxCh) {}
@@ -152,6 +154,9 @@ public:
         SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
     }
 };
+
+// ### RectButton Class
+// Uses Rectangle in Raylib to create a button
 class RectButton : public Button {
 public:
     static const int padding;
@@ -189,6 +194,7 @@ public:
     virtual void insertSubButton(RectButton* button, std::function<void()> function);
 };
 
+// Uses RectButton and Input Handler to create a button with text
 class InputBox : public RectButton {
 public:
     std::unique_ptr<InputHandler> inputHandler;
@@ -213,6 +219,7 @@ public:
     }
 };
 
+// Uses RectButton and Number Input Handler to create a button with text
 class NumberInputBox : public InputBox {
 public:
     NumberInputBox(int maxCh, float x = 0, float y = 0,
@@ -230,6 +237,7 @@ public:
     }
 };
 
+// NumberInputBoxInCamera is NumberInputBox but uses the camera position to get the mouse position
 class NumberInputBoxInCamera : public NumberInputBox {
 public:
     NumberInputBoxInCamera(int maxCh, float x = 0, float y = 0,
@@ -240,6 +248,7 @@ public:
     Vector2 getMousePos() const override;
 };
 
+// RectButton with text
 class TextBox : public RectButton {
 public:
     string Text;
@@ -252,6 +261,8 @@ public:
     }
     void draw() override;
 };
+
+// RectButton but for displaying code blocks
 class CodeBlock : public TextBox {
 private:
     static constexpr Color CodeColor = { 232,232,232,180 };
@@ -265,7 +276,8 @@ public:
     }
 };
 
-
+// ### CircleButton Class
+// Uses Vector2 center and Radius in Raylib to create a button
 class CircleButton : public Button {
 protected:
     Vector2 center;
@@ -313,6 +325,7 @@ public:
     void unclick() override;
 };
 
+// CircleButton with text
 class TextCircle : public CircleButton {
 public:
     string Text;
@@ -324,6 +337,8 @@ public:
     void hover() override;
     void unhover() override;
 };
+
+// CircleButton with texture
 class TextureCircle : public CircleButton {
 public:
     Texture2D Texture;
@@ -336,6 +351,7 @@ public:
     void unhover() override;
 };
 
+// Uses CircleButton and Input Handler to create a button with text
 class InputCircle : public CircleButton {
 public:
     std::unique_ptr<InputHandler> inputHandler;
@@ -357,6 +373,8 @@ public:
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
 };
+
+// Uses CircleButton and Number Input Handler to create a button with text
 class NumberInputCircle : public InputCircle {
 public:
 
@@ -392,6 +410,8 @@ public:
         
     }
 };
+
+// NumberInputCircleInCamera is NumberInputCircle but uses the camera position to get the mouse position
 class NumberInputCircleInCamera : public NumberInputCircle {
 private:
 public:

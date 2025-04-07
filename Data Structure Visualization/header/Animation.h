@@ -43,12 +43,16 @@ public:
     // Set the animation to a specific time and apply the state immediately
     virtual void setTime(float t);
 };
+
+// HighLight CircleButton Edge
 class CBEdgeHighLightAnim : public Animation {
 protected:
 	CBEdge* edge;
 	Color startC, endC;
 public:
 	virtual ~CBEdgeHighLightAnim() = default;
+
+    // default color is orange
     CBEdgeHighLightAnim(
         CBEdge* e, float duration,
 		Color eC = ORANGE
@@ -59,6 +63,8 @@ public:
 	}
 	void applyState() override;
 };
+
+// HighLight Circle Button
 class CircleHighLightAnim : public Animation {
 protected:
     CircleButton* button;
@@ -67,6 +73,8 @@ protected:
     Color startRC,endRC;
 public:
     virtual ~CircleHighLightAnim() = default;
+
+    // default color is orange
     CircleHighLightAnim(
         CircleButton* btn, float duration,
         Color eTC = ORANGE, 
@@ -81,6 +89,8 @@ public:
     }
     void applyState() override;
 };
+
+// Move CircleButton in both x and y directions
 class CircleMoveAnim : public Animation {
 private:
     
@@ -97,12 +107,23 @@ public:
         endX = btn->getCenterX();
         endY = btn->getCenterY();
     }
-    CircleMoveAnim(CircleButton* btn, float sX, float sY, float duration)
+
+    // Constructor with start positions
+    // sX is the start x position
+    // sY is the start y position
+	// the ending position is the original center of the circle (or circle position)
+    CircleMoveAnim(CircleButton* btn, float duration, float sX, float sY)
         : Animation(duration), startX(sX), startY(sY), button(btn) {
         endX = btn->getCenterX();
         endY = btn->getCenterY();
     }
-    CircleMoveAnim(CircleButton* btn, float sX, float sY, float eX, float eY, float duration)
+
+	// Constructor with start and end positions
+	// sX is the start x position
+	// sY is the start y position
+	// eX is the end x position
+	// eY is the end y position
+    CircleMoveAnim(CircleButton* btn, float duration, float sX, float sY, float eX, float eY)
         : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
     }
     void handleReposition() override {
@@ -111,6 +132,8 @@ public:
     }
     void applyState() override;
 };
+
+// Move CircleButton in x direction
 class CircleMoveXAnim : public Animation {
 private:
     
@@ -125,11 +148,18 @@ public:
         startX = 0;
         endX = btn->getCenterX();
     }
-    CircleMoveXAnim(CircleButton* btn, float sX, float duration)
+	// Constructor with start position
+	// sX is the start x position
+	// the ending position is the original center of the circle (or circle position)
+    CircleMoveXAnim(CircleButton* btn, float duration, float sX)
         : Animation(duration), startX(sX), button(btn) {
         endX = btn->getCenterX();
     }
-    CircleMoveXAnim(CircleButton* btn, float sX, float eX, float duration)
+	// Constructor with start and end positions
+	// sX is the start x position
+	// eX is the end x position
+
+    CircleMoveXAnim(CircleButton* btn, float duration, float sX, float eX)
         : Animation(duration), startX(sX), endX(eX), button(btn) {
     }
     void handleReposition() override{
@@ -138,6 +168,7 @@ public:
     void applyState() override;
 };
 
+// Move RectButton in both x and y directions
 class RectMoveAnim : public Animation {
 private:
     
@@ -152,6 +183,8 @@ public:
         endY = button->rect.y;
     }
 	virtual ~RectMoveAnim() = default;
+
+
     RectMoveAnim(RectButton* btn, float duration)
         : Animation(duration), button(btn) {
         startX = 0;
@@ -159,6 +192,10 @@ public:
         endX = btn->rect.x;
         endY = btn->rect.y;
     }
+	// Constructor with start position
+	// sX is the start x position
+	// sY is the start y position
+	// the ending position is the original rect position
     RectMoveAnim(RectButton* btn, float sX, float sY, float duration)
         : Animation(duration), startX(sX), startY(sY), button(btn) {
         endX = btn->rect.x;
@@ -166,19 +203,31 @@ public:
     }
     void applyState() override;
 };
+
+// Move RectButton in x direction
 class RectMoveXAnim : public RectMoveAnim {
 public:
     RectMoveXAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
+	// Constructor with start position
+	// sX is the start x position
+	// the ending position is the original rect position
     RectMoveXAnim(RectButton* btn, float sX, float duration) : RectMoveAnim(btn, sX, 0, duration) {};
     void applyState() override;
 };
+
+// Move RectButton in y direction
 class RectMoveYAnim : public RectMoveAnim {
 public:
     RectMoveYAnim(RectButton* btn, float duration) : RectMoveAnim(btn, duration) {};
+
+	// Constructor with start position
+	// sY is the start y position
+	// the ending position is the original rect position
     RectMoveYAnim(RectButton* btn, float sY, float duration) : RectMoveAnim(btn, 0, sY, duration) {};
     void applyState() override;
 };
 
+// Make CircleButton grow from 0 to its original size
 class CircleInitializeAnim : public Animation {
 private:
     CircleButton* button;
@@ -191,6 +240,7 @@ public:
     };
     void applyState() override;
 };
+
 class NodeInitializeAnimation : public Animation {
 private:
 	Node* node;

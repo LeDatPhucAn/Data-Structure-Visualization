@@ -24,6 +24,7 @@ public:
 	void drawTreapEdge();
 };
 
+// Circle Button Edge used for Circle Buttons
 class CircleButton;
 class CBEdge {
 protected:

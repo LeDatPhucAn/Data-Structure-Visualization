@@ -69,7 +69,7 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
     int rightWidth = treap.getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
 
-    int newXOffset = std::max((leftWidth + rightWidth + 1) * 60, 120);
+    int newXOffset = std::max((leftWidth + rightWidth + 1) * 40, 80);
 
     if (root->leftEdge) {
         Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };

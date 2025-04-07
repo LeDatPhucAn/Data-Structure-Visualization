@@ -30,7 +30,7 @@ private:
     priority_queue<FunctionTask, vector<FunctionTask>, greater<FunctionTask>> animationQueue;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
-    const int yOffset = UI::screenHeight / 5;
+    const int yOffset = UI::screenHeight / 8;
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
     void drawTreapNode(TreapNode* curr);
     void drawTreapLink(Edge* edge);

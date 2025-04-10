@@ -51,6 +51,9 @@ void CBEdgeRemoveAnim::applyState() {
 void CircleInitializeAnim::applyState() {
     button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
 }
+void CircleRemoveAnim::applyState() {
+    button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
+}
 
 void NodeInitializeAnimation::applyState() {
     node->radius = EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration);

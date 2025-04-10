@@ -63,15 +63,46 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
     }
     LLNode* cur = head;
     while (cur->next) {
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        for (auto& edge : Edges) {
+            if (edge->from == cur) {
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
+                break;
+            }
+        }
         if (cur->next->getNumber() == x) {
-            CBEdge::removeEdge(Edges, cur, cur->next);
+
             LLNode* temp = cur->next;
-            CBEdge::removeEdge(Edges, temp, temp->next);
-            cur->next = temp->next;
-            CBEdge::addEdge(Edges, cur, cur->next);
-            adjustPos(cur);
-            delete temp;
-            temp = nullptr;
+
+            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
+
+            CBEdge::removeEdgeAndAnim(animManager,Edges, cur, temp);
+
+
+            CBEdge::removeEdgeAndAnim(animManager,Edges, temp, temp->next);
+
+            animManager.addAnimation(new Animation(0.5f, [this,&animManager,&cur, &temp]() {
+                cur->next = temp->next;
+                CBEdge::addEdgeAndAnim(animManager, Edges, cur, cur->next);
+                //reposition in accordance to animation
+                animManager.addAnimation(new Animation(0.5f, [this, cur, &temp]() {
+                    adjustPos(cur);
+                    delete temp;
+                    temp = nullptr;
+                    }));
+                }));
+
+            //cur->next = temp->next;
+
+            
+            ////reposition in accordance to animation
+            //animManager.addAnimation(new Animation(0.5f, [this, cur, &temp]() {
+            //    adjustPos(cur);
+            //    delete temp;
+            //    temp = nullptr;
+            //    }));
+            //
+            
             return true;
         }
         cur = cur->next;
@@ -127,7 +158,8 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
             };
         temp->next = head;
         adjustPos(temp);
-        CBEdge::addEdge(Edges, temp, head);
+		animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
+        CBEdge::addEdgeAndAnim(animManager,Edges, temp, head);
         head = temp;
         return;
     }
@@ -138,12 +170,14 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         for (auto& edge : Edges) {
             if (edge->from == cur) {
+                cout << cur->getNumber() << " ";
                 animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
                 break;
             }
         }
         cur = cur->next;
     }
+    cout << "\n";
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
 
 	// highlight the last node
@@ -151,8 +185,11 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
         LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, cur->getCenterY());
         cur->next = newnode;
         newnode->noDraw = true;
+
+
 		CBEdge::addEdgeAndAnim(animManager,Edges, cur, newnode);
 		Edges.back()->noDraw = true;
+        
         Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
         InsertNode->Function = [newnode]() {
             newnode->noDraw = false; // when we traverse to the desired position, we draw the inserted node outside the linked list
@@ -210,29 +247,16 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
     CBEdge::addEdgeAndAnim(animManager,Edges, newnode, next);
 	Edges.back()->noDraw = true;
 
-    // highlight the edge before removing it, Also Animate the removal
-    for (int i = 0; i < Edges.size(); i++) {
-        if (Edges[i]->from == cur && Edges[i]->to == next) {
-			//highlight the edge
-            animManager.addAnimation(new CBEdgeHighLightAnim(Edges[i], 1, RED));
 
-            //animate removal
-            animManager.addAnimation(new CBEdgeRemoveAnim(Edges[i], 1));
-            break;
-        }
-    }
-
-    // remove the edge before insertion
-    animManager.addAnimation(new Animation(0.5, [this, cur, next]() {
-        CBEdge::removeEdge(Edges, cur, next);
-        }));
-
+	// remove the edge between cur and next with animation done
+	CBEdge::removeEdgeAndAnim(animManager, Edges, cur, next);  
 
     // add the node in
     animManager.addAnimation(new CircleMoveAnim(newnode, 2, newnode->getCenterX(), 400, newnode->getCenterX(),cur->getCenterY()));
     
 
 }
+
 void LinkedList::randominsert(int x, int pos) {
     if (pos < 1) {
         return;

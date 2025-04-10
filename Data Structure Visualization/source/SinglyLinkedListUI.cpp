@@ -93,7 +93,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[1]->insertSubButton(Value1);
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
-        linkedlist.remove(ValueInput1->getNumber());
+        remove(ValueInput1->getNumber());
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });

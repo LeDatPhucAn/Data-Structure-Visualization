@@ -65,7 +65,7 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
     while (cur->next) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         for (auto& edge : Edges) {
-            if (edge->from == cur) {
+            if (edge->from == cur && edge->to == cur->next) {
                 animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
                 break;
             }
@@ -171,8 +171,6 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         for (auto& edge : Edges) {
             if (edge->from == cur && edge->to == cur->next){
-                cout << dynamic_cast<LLNode*>(edge->from)->getNumber() << " ";
-                if(edge->to) cout << dynamic_cast<LLNode*>(edge->to)->getNumber() << "\n";
                 animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
                 break;
             }

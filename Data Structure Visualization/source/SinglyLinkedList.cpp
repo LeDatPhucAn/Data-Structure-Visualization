@@ -163,21 +163,22 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
         head = temp;
         return;
     }
+
     LLNode* cur = head;
 
     //highlight traversal to pos
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         for (auto& edge : Edges) {
-            if (edge->from == cur) {
-                cout << cur->getNumber() << " ";
+            if (edge->from == cur && edge->to == cur->next){
+                cout << dynamic_cast<LLNode*>(edge->from)->getNumber() << " ";
+                if(edge->to) cout << dynamic_cast<LLNode*>(edge->to)->getNumber() << "\n";
                 animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
                 break;
             }
         }
         cur = cur->next;
     }
-    cout << "\n";
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
 
 	// highlight the last node

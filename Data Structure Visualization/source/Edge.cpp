@@ -1,7 +1,8 @@
 #include "../header/Edge.h"
 #include "../header/UI.h"
 #include "../header/Treap.h"
-
+#include "../header/Animation.h"
+#include "../header/AnimationManager.h"
 void Edge::drawEdge() {
 	if (!from) {
 		cout << "u done fucked up";
@@ -91,7 +92,7 @@ void Edge::removeEdge(vector<Edge*>& Edges, Node* from, Node* to) {
 #include "../header/Button.h"
 void CBEdge::drawArrowEdge()
 {
-	if (!from || !to) return;
+	if (noDraw || !from || !to) return;
 	float dx = to->getCenterX() - from->getCenterX();
 	float dy = to->getCenterY() - from->getCenterY();
 	float arrowHeadAngle = PI / 6;
@@ -130,6 +131,31 @@ void CBEdge::removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton
 			Edges.erase(Edges.begin() + i);
 			delete del;
 			del = nullptr;
+			return;
+		}
+	}
+}
+
+void CBEdge::addEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
+	Edges.push_back(new CBEdge(from, to));
+	animManager.addAnimation(new CBEdgeHighLightAnim(Edges.back(), 0.2f, PURPLE));
+	animManager.addAnimation(new CBEdgeAddAnim(Edges.back(), 1));
+
+
+}
+
+//unuseable right now
+void CBEdge::removeEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
+	for (int i = 0; i < Edges.size(); i++) {
+		if (Edges[i]->from == from && Edges[i]->to == to) {
+
+			animManager.addAnimation(new CBEdgeRemoveAnim(Edges[i], 0.5f));
+			animManager.addAnimation(new Animation(0.5f, [&Edges,i]() {
+				CBEdge* del = Edges[i];
+				Edges.erase(Edges.begin() + i);
+				delete del;
+				del = nullptr;
+				}));
 			return;
 		}
 	}

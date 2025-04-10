@@ -27,6 +27,8 @@ public:
     // Remove an animation
     void removeAnimation(Animation* anim);
 
+    // remove every animation
+	void clear();
     // Update all animations with adjusted deltaTime
     void update(float deltaTime);
 

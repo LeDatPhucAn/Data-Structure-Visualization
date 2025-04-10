@@ -210,6 +210,7 @@ void RectButton::update() {
 }
 
 void RectButton::draw() {
+    if (noDraw)return;
     if (!head || head->isActivated) {
         DrawRectangleRec(rect, FillColor);
         DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
@@ -245,6 +246,7 @@ void InputBox::update() {
 }
 
 void InputBox::draw() {
+	if (noDraw) return;
     if (!head || head->isActivated) {
         DrawRectangleRec(rect, FillColor);
         if (inputHandler->isTexting() && (inputHandler->getFramesCounter() / 20) % 2 == 0) {
@@ -268,6 +270,7 @@ void InputBox::draw() {
 
 // inherit update from RectBox
 void TextBox::draw() {
+	if (noDraw) return;
     if (!head || head->isActivated) {
         DrawRectangleRec(rect, FillColor);
         DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
@@ -331,14 +334,16 @@ void TextureCircle::hover() {
     FillColor = GREEN;
 }
 void TextCircle::draw() {
+	if (noDraw) return;
     DrawCircleV(center, radius * 4 / 5 +1, FillColor);
     DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, OutLineColor);
     UI::drawtext2(Text, center.x, center.y, TextColor);
 }
 
 void TextureCircle::draw() {
+	if (noDraw) return;
     float RingRadius = radius * 4 / 5;
-    DrawCircleV(center, RingRadius +1, FillColor);
+    DrawCircleV(center, RingRadius + 1, FillColor);
     DrawRing(center, RingRadius, radius, 0, 360, 100, OutLineColor);
 
     DrawTexturePro(Texture,
@@ -358,6 +363,7 @@ void InputCircle::update() {
     if (inputHandler->isTexting() && IsKeyPressed(KEY_ENTER) && onClick) onClick();
 }
 void InputCircle::draw() {
+	if (noDraw) return;
     DrawCircleV(center, radius * 4 / 5, FillColor);
     DrawRing(center, radius * 4 / 5, radius, 0, 360, 100, OutLineColor);
     UI::drawtext2(inputHandler->getText(), center.x, center.y, TextColor);

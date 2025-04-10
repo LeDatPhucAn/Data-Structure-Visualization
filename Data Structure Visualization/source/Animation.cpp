@@ -38,8 +38,12 @@ void CBEdgeHighLightAnim::applyState() {
     float easedT = EaseSineIn(elapsed, 0, 1.0f, duration);
     edge->edgeColor = UI::interpolateColors(startC, endC, easedT);
 }
+void CBEdgeAddAnim::applyState() {
+    edge->thickness = EaseElasticOut(elapsed, startT, endT-startT, duration);
+}
+
 void CBEdgeRemoveAnim::applyState() {
-    edge->thickness = EaseSineIn(elapsed, startT, endT-startT, duration);
+    edge->thickness = EaseElasticIn(elapsed, startT, endT-startT, duration);
 }
 
 

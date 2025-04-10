@@ -17,7 +17,7 @@ public:
     virtual ~Animation() = default;
     virtual void handleReposition() {};
     virtual void update(float deltaTime);
-    virtual void applyState() = 0;
+    virtual void applyState() {};
     virtual bool isCompleted() {
         return completed;
     }
@@ -51,6 +51,22 @@ public:
 		: Animation(duration),endC(eC), edge(e) 
     {
         startC = e->edgeColor;
+	}
+	void applyState() override;
+};
+class CBEdgeAddAnim : public Animation {
+protected:
+	CBEdge* edge;
+    int startT, endT;
+public:
+	virtual ~CBEdgeAddAnim() = default;
+
+    // default color is orange
+    CBEdgeAddAnim(CBEdge* e, float duration)
+		: Animation(duration) {
+		edge = e;
+		startT = 0;
+		endT = e->thickness;
 	}
 	void applyState() override;
 };

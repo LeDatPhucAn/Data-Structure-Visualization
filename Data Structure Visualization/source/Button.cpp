@@ -343,7 +343,7 @@ void TextCircle::draw() {
 void TextureCircle::draw() {
 	if (noDraw) return;
     float RingRadius = radius * 4 / 5;
-    DrawCircleV(center, RingRadius +1, FillColor);
+    DrawCircleV(center, RingRadius + 1, FillColor);
     DrawRing(center, RingRadius, radius, 0, 360, 100, OutLineColor);
 
     DrawTexturePro(Texture,

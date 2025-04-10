@@ -1,7 +1,8 @@
 #include "../header/Edge.h"
 #include "../header/UI.h"
 #include "../header/Treap.h"
-
+#include "../header/Animation.h"
+#include "../header/AnimationManager.h"
 void Edge::drawEdge() {
 	if (!from) {
 		cout << "u done fucked up";
@@ -127,6 +128,22 @@ void CBEdge::removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton
 	for (int i = 0; i < Edges.size(); i++) {
 		if (Edges[i]->from == from && Edges[i]->to == to) {
 			CBEdge* del = Edges[i];
+			Edges.erase(Edges.begin() + i);
+			delete del;
+			del = nullptr;
+			return;
+		}
+	}
+}
+void CBEdge::addEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
+	Edges.push_back(new CBEdge(from, to));
+	animManager.addAnimation(new CBEdgeHighLightAnim(Edges.back(), 0.5f, PURPLE));
+}
+void CBEdge::removeEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
+	for (int i = 0; i < Edges.size(); i++) {
+		if (Edges[i]->from == from && Edges[i]->to == to) {
+			CBEdge* del = Edges[i];
+			Animation* anim = new CBEdgeRemoveAnim(del, 0.5f);
 			Edges.erase(Edges.begin() + i);
 			delete del;
 			del = nullptr;

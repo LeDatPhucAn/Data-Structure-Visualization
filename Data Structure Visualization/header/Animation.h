@@ -10,8 +10,10 @@ public:
     float duration;
     float elapsed;
     bool completed;
+    std::function<void()> Function;
 	Animation() : duration(0), elapsed(0), completed(false) {};
-    Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
+    Animation(float dur) : duration(dur), elapsed(0), completed(false),Function(nullptr) {};
+	Animation(float dur, std::function<void()> func) : duration(dur), elapsed(0), completed(false), Function(func) {};
     virtual ~Animation() = default;
     virtual void handleReposition() {};
     virtual void update(float deltaTime);
@@ -45,13 +47,26 @@ public:
 	virtual ~CBEdgeHighLightAnim() = default;
 
     // default color is orange
-    CBEdgeHighLightAnim(
-        CBEdge* e, float duration,
-		Color eC = ORANGE
-	)
-		: Animation(duration),
-		endC(eC), edge(e) {
+    CBEdgeHighLightAnim( CBEdge* e, float duration,Color eC = ORANGE)
+		: Animation(duration),endC(eC), edge(e) 
+    {
         startC = e->edgeColor;
+	}
+	void applyState() override;
+};
+class CBEdgeRemoveAnim : public Animation {
+protected:
+	CBEdge* edge;
+    int startT, endT;
+public:
+	virtual ~CBEdgeRemoveAnim() = default;
+
+    // default color is orange
+    CBEdgeRemoveAnim(CBEdge* e, float duration)
+		: Animation(duration) {
+		edge = e;
+		startT = e->thickness;
+		endT = 0;
 	}
 	void applyState() override;
 };

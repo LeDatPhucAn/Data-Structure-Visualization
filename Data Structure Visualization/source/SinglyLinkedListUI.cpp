@@ -4,7 +4,6 @@
 
 
 void SinglyLinkedListUI::insert(int x, int pos) {
-    animManager.clear();
     linkedlist.insertnode(animManager,x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
@@ -113,6 +112,7 @@ void SinglyLinkedListUI::initButtons() {
     RectButton::insertHeadButton(Buttons, new TextBox("Clear"));
     Buttons[3]->animation = new RectMoveXAnim(Buttons[3], 0.5);
     Buttons[3]->onClick = [this]() {
+		animManager.clear();
         linkedlist.clear();
         };
     RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
@@ -126,6 +126,7 @@ void SinglyLinkedListUI::initButtons() {
 
     Buttons[5]->onClick = [this]() {
         linkedlist.clear();
+		animManager.clear();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;

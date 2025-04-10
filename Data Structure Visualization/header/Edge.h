@@ -26,6 +26,7 @@ public:
 
 // Circle Button Edge used for Circle Buttons
 class CircleButton;
+class AnimationManager;
 class CBEdge {
 protected:
 	
@@ -48,5 +49,7 @@ public:
 	CBEdge(int th, CircleButton* f, CircleButton* t, Color c = BLACK) : noDraw(false), thickness(th), from(f), to(t), edgeColor(c){}
 	static void addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	static void removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
+	static void addEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
+	static void removeEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	void drawArrowEdge();
 };

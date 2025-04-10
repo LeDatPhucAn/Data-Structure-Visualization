@@ -45,7 +45,7 @@ void LinkedList::adjustPos(LLNode* pHead) {
     }
 }
 
-bool LinkedList::remove(int x) {
+bool LinkedList::remove(AnimationManager& animManager, int x) {
     if (!head) return false;
     if (head && head->getNumber() == x) {
         LLNode* del = head;

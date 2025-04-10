@@ -24,22 +24,14 @@ public:
         completed = false;
 
     }
+	virtual void makeComplete() {
+		elapsed = duration;
+		completed = true;
+	}
     virtual float getProgress() const {
         return elapsed;
     }
-    virtual void clamp() {
-        if (elapsed >= duration) {
-            elapsed = duration;
-            completed = true;
-        }
-        else if (elapsed <= 0) {
-            elapsed = 0;
-            completed = false;
-        }
-        else {
-            completed = false;
-        }
-    }
+    virtual void clamp();
     // Set the animation to a specific time and apply the state immediately
     virtual void setTime(float t);
 };

@@ -72,12 +72,13 @@ public:
     bool isHovered;
     bool isClicked;
     bool isActivated;
+    bool noDraw;
     static bool isCollision;
     std::function<void()> onClick;
     Button(Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : TextColor(tc), FillColor(fc), OutLineColor(olc),
         OgTextColor(tc), OgFillColor(fc), OgOutLineColor(olc),
-        animation(nullptr), isHovered(false), isClicked(false), isActivated(false) {
+        animation(nullptr), isHovered(false), isClicked(false), isActivated(false),noDraw(false) {
     }
     virtual Vector2 getMousePos() const { return GetMousePosition(); }
     /**

@@ -1,5 +1,17 @@
 #include "../header/Animation.h"
-
+void Animation::clamp() {
+    if (elapsed >= duration) {
+        elapsed = duration;
+        completed = true;
+    }
+    else if (elapsed <= 0) {
+        elapsed = 0;
+        completed = false;
+    }
+    else {
+        completed = false;
+    }
+}
 void Animation::update(float deltaTime) {
     elapsed += deltaTime;
     clamp();
@@ -13,35 +25,49 @@ void Animation::setTime(float t) {
 
 
 void CircleHighLightAnim::applyState() {
-    // fade in
-    if(elapsed<=duration/2)
-    {
-        float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration/2);
+        float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+		//cout << "Circle: "<< elapsed / duration << " duration: "<< duration << " EasedT: " << easedT << "\n";
         button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
         button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
         button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
-    }
-    // fade out
-    else {
-        float easedT = EaseSineIn((elapsed - duration/2), 0.0f, 1.0f, duration/2);
-		button->OgTextColor = UI::interpolateColors(endTC, startTC, easedT);
-		button->OgFillColor = UI::interpolateColors(endFC, startFC, easedT);
-		button->OgOutLineColor = UI::interpolateColors(endRC, startRC, easedT);
-    }
 }
+//void CircleHighLightAnim::applyState() {
+//    // fade in
+//    if(elapsed<=duration/2)
+//    {
+//        float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration/2);
+//        button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
+//        button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
+//        button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
+//    }
+//    // fade out
+//    else {
+//        float easedT = EaseSineIn((elapsed - duration/2), 0.0f, 1.0f, duration/2);
+//		button->OgTextColor = UI::interpolateColors(endTC, startTC, easedT);
+//		button->OgFillColor = UI::interpolateColors(endFC, startFC, easedT);
+//		button->OgOutLineColor = UI::interpolateColors(endRC, startRC, easedT);
+//    }
+//}
 void CBEdgeHighLightAnim::applyState() {
-    // fade in
-    if(elapsed<=duration/2)
-    {
-        float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration/2);
-        edge->edgeColor = UI::interpolateColors(startC, endC, easedT);
-    }
-    // fade out
-    else {
-        float easedT = EaseSineIn((elapsed - duration/2), 0.0f, 1.0f, duration/2);
-        edge->edgeColor = UI::interpolateColors(endC,startC, easedT);
-    }
+	edge->noDraw = false; 
+    float easedT = EaseSineIn(elapsed, 0, 1.0f, duration);
+    //cout << "Edge: " << elapsed / duration << " duration: " << duration<< " EasedT: "<< easedT << "\n";
+    edge->edgeColor = UI::interpolateColors(startC, endC, easedT);
 }
+//void CBEdgeHighLightAnim::applyState() {
+//	edge->noDraw = false; 
+//    // fade in
+//    if(elapsed<=duration/2)
+//    {
+//        float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration/2);
+//        edge->edgeColor = UI::interpolateColors(startC, endC, easedT);
+//    }
+//    // fade out
+//    else {
+//        float easedT = EaseSineIn((elapsed - duration/2), 0.0f, 1.0f, duration/2);
+//        edge->edgeColor = UI::interpolateColors(endC,startC, easedT);
+//    }
+//}
 
 
 void CircleInitializeAnim::applyState() {
@@ -53,6 +79,7 @@ void NodeInitializeAnimation::applyState() {
 }
 
 void CircleMoveAnim::applyState() {
+	button->noDraw = false;
     button->setCenterX(EaseExpoOut(elapsed, startX, endX - startX, duration));
     button->setCenterY(EaseExpoOut(elapsed, startY, endY - startY, duration));
 }

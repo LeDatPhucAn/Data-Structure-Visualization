@@ -30,6 +30,7 @@ class CBEdge {
 protected:
 	
 public:
+	bool noDraw;
 	int thickness;
 	Color edgeColor;
 	CircleButton* from;
@@ -39,11 +40,12 @@ public:
 		thickness = 5;
 		from = nullptr;
 		to = nullptr;
+		noDraw = false;
 	}
-	CBEdge(CircleButton* f, CircleButton* t) : from(f), to(t), edgeColor(BLACK){
+	CBEdge(CircleButton* f, CircleButton* t) :noDraw(false), from(f), to(t), edgeColor(BLACK){
 		thickness = 5;
 	}
-	CBEdge(int th, CircleButton* f, CircleButton* t, Color c = BLACK) : thickness(th), from(f), to(t), edgeColor(c){}
+	CBEdge(int th, CircleButton* f, CircleButton* t, Color c = BLACK) : noDraw(false), thickness(th), from(f), to(t), edgeColor(c){}
 	static void addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	static void removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	void drawArrowEdge();

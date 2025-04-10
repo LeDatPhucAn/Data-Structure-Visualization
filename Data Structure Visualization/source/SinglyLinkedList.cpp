@@ -116,7 +116,7 @@ void LinkedList::clear() {
     deletelist();
     deleteEdges();
 }
-void LinkedList::insertnode(int x, int pos) {
+void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
     if (pos < 1) {
         return;
     }
@@ -134,20 +134,35 @@ void LinkedList::insertnode(int x, int pos) {
     LLNode* cur = head;
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        for (auto& edge : Edges) {
+            if (edge->from == cur) {
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
+                break;
+            }
+        }
         cur = cur->next;
     }
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
+
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
+    newnode->noDraw = true;
     newnode->onClick = [newnode]() {
         cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
         };
     newnode->next = cur->next;
     CBEdge::addEdge(Edges, newnode, cur->next);
+	Edges.back()->noDraw = true;
+    animManager.addAnimation(new CBEdgeHighLightAnim(Edges.back(), 0.5f, PURPLE));
+
     CBEdge::removeEdge(Edges, cur, cur->next);
     cur->next = newnode;
 
     adjustPos(newnode);
     CBEdge::addEdge(Edges, cur, newnode);
+    Edges.back()->noDraw = true;
+
+	animManager.addAnimation(new CircleMoveAnim(newnode,1,newnode->getCenterX(),2000));
+    animManager.addAnimation(new CBEdgeHighLightAnim(Edges.back(), 0.5f, PURPLE));
 }
 void LinkedList::randominsert(int x, int pos) {
     if (pos < 1) {

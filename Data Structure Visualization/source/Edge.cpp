@@ -91,7 +91,7 @@ void Edge::removeEdge(vector<Edge*>& Edges, Node* from, Node* to) {
 #include "../header/Button.h"
 void CBEdge::drawArrowEdge()
 {
-	if (!from || !to) return;
+	if (noDraw || !from || !to) return;
 	float dx = to->getCenterX() - from->getCenterX();
 	float dy = to->getCenterY() - from->getCenterY();
 	float arrowHeadAngle = PI / 6;

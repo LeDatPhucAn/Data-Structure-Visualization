@@ -2,8 +2,8 @@
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
 
-
 void SinglyLinkedListUI::insert(int x, int pos) {
+    animManager.clear();
     linkedlist.insertnode(animManager,x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
@@ -11,19 +11,20 @@ void SinglyLinkedListUI::remove(int x) {
 }
 
 bool SinglyLinkedListUI::search(int x) {
+    animManager.clear();
     LLNode* cur = linkedlist.head;
     while (cur) {
 		if (cur->getNumber() == x) {
-            animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
+            animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
             return true;
 		}
 
 		// Highlight the current node
-        animManager.addAnimation(new CircleHighLightAnim(cur, 1));
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
 
         for (auto& edge : linkedlist.Edges) {
             if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 1, PURPLE));
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
 				break;
             }
         }

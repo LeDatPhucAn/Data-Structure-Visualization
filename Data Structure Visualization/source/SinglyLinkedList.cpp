@@ -144,10 +144,29 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
         }
         cur = cur->next;
     }
-
-	//highlight the node before the inserted node
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
 
+	// highlight the last node
+    if (!cur->next) {
+        LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, cur->getCenterY());
+        cur->next = newnode;
+        newnode->noDraw = true;
+		CBEdge::addEdgeAndAnim(animManager,Edges, cur, newnode);
+		Edges.back()->noDraw = true;
+        Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
+        InsertNode->Function = [newnode]() {
+            newnode->noDraw = false; // when we traverse to the desired position, we draw the inserted node outside the linked list
+            newnode->animation->reset();
+         };
+
+        // highlight inserted node
+        animManager.addAnimation(InsertNode);
+        return;
+    }
+
+
+
+	//// highlight the current node
 
     /// the node to be inserted
     LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, 400);

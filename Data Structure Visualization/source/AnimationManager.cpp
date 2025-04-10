@@ -41,6 +41,7 @@ void AnimationManager::update(float deltaTime) {
 
 void AnimationManager::clear() {
 	for (auto anim : animations) {
+        anim->resetColor();
 		delete anim;
 	}
 	animations.clear();

@@ -33,6 +33,8 @@ public:
     virtual float getProgress() const {
         return elapsed;
     }
+	virtual void resetColor() {};
+    //clamp elapsed to duration
     virtual void clamp();
     // Set the animation to a specific time and apply the state immediately
     virtual void setTime(float t);
@@ -51,6 +53,9 @@ public:
 		: Animation(duration),endC(eC), edge(e) 
     {
         startC = e->edgeColor;
+	}
+	void resetColor() override{
+		edge->edgeColor = startC;
 	}
 	void applyState() override;
 };
@@ -91,10 +96,11 @@ public:
 class CircleHighLightAnim : public Animation {
 protected:
     CircleButton* button;
-    Color startTC,endTC;
-    Color startFC,endFC;
-    Color startRC,endRC;
+    Color startTC, endTC;
+    Color startFC, endFC;
+    Color startRC, endRC;
 public:
+    
     virtual ~CircleHighLightAnim() = default;
 
     // default color is orange
@@ -109,6 +115,11 @@ public:
         startTC = btn->OgTextColor;
         startFC = btn->OgFillColor;
         startRC = btn->OgOutLineColor;
+    }
+    void resetColor() override{
+		button->OgTextColor = startTC;
+		button->OgFillColor = startFC;
+		button->OgOutLineColor = startRC;
     }
     void applyState() override;
 };

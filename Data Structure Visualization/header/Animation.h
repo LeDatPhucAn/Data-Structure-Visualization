@@ -274,6 +274,18 @@ public:
     };
     void applyState() override;
 };
+class CircleRemoveAnim : public Animation {
+private:
+    CircleButton* button;
+    float startRadius;
+    float endRadius;
+public:
+    CircleRemoveAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
+        startRadius = btn->getRadius();
+        endRadius = 0;
+    };
+    void applyState() override;
+};
 
 class NodeInitializeAnimation : public Animation {
 private:

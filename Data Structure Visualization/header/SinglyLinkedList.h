@@ -19,7 +19,7 @@ public:
     void insertnode(AnimationManager& animManager, int x, int pos);
     void randominsert(int x, int pos);
     void loadFromFile();
-    bool remove(int x);
+    bool remove(AnimationManager& animManager, int x);
     bool search(int x);
     void printlist();
     void deletelist();

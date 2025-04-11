@@ -24,7 +24,7 @@ private:
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);
     TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
-    TreapNode* search(TreapNode* root, int key);
+    void searchWithAnimation(TreapNode* curr, int key);
     TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);

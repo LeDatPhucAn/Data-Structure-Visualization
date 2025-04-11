@@ -140,7 +140,7 @@ TreapNode* Treap::insert(TreapNode* root, Vector2 pos, int key, int priority) {
         root->leftEdge = new Edge(root, newLeftChild);
         if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
     }
-    else {
+    else if(root->getKey() < key) {
         TreapNode* newRightChild = insert(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
         root->rightEdge = new Edge(root, newRightChild);
         if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
@@ -227,13 +227,11 @@ int Treap::getSubtreeWidth(TreapNode* curr) {
 }
 
 void Treap::updateSubtreeWidth(TreapNode* curr) {
-    if (curr) {
         if (curr) {
             int leftWidth = curr->leftEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
             int rightWidth = curr->rightEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
             curr->subtreeWidth = 1 + leftWidth + rightWidth;
         }
-    }
 }
 
 TreapNode* Treap::getRoot() {

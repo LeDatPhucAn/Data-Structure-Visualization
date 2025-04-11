@@ -39,6 +39,28 @@ void CircleHighLightAnim::applyState() {
         button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
 }
 
+RectHighlightAnim::RectHighlightAnim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK) : Animation(duration), button(b) {
+    startFill = b->FillColor;
+    startOutline = b->OutLineColor;
+    startText = b->TextColor;
+    endFill = fill;
+    endOutline = outline;
+    endText = text;
+}
+
+void RectHighlightAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    button->OgTextColor = UI::interpolateColors(startText, endText, easedT);
+    button->OgFillColor = UI::interpolateColors(startFill, endFill, easedT);
+    button->OgOutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
+}
+
+void RectHighlightAnim::resetColor() {
+    button->FillColor = startFill;
+    button->OutLineColor = startOutline;
+    button->TextColor = startText;
+}
+
 void CBEdgeHighLightAnim::applyState() {
 	edge->noDraw = false; 
     float easedT = EaseSineIn(elapsed, 0, 1.0f, duration);

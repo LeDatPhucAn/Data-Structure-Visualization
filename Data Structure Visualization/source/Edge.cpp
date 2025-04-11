@@ -62,8 +62,8 @@ void Edge::drawTreapEdge() {
 	TreapNode* toNode = dynamic_cast<TreapNode*>(to);
 	if (!fromNode || !toNode) return;
 
-	Rectangle fromRect = fromNode->rect;
-	Rectangle toRect = toNode->rect;
+	Rectangle fromRect = fromNode->keyBox->rect;
+	Rectangle toRect = toNode->keyBox->rect;
 
 	// Use the actual center of each box
 	Vector2 start = {

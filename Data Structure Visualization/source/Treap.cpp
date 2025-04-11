@@ -2,36 +2,35 @@
 #include "../header/SceneHandler.h"
 #include <math.h>
 
-TreapNode::TreapNode(int key, int priority, Vector2 pos) : NumberInputBox(4, pos.x, pos.y), Node(key, pos, 0), priority(priority % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
-    setNumber(key);
+TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
+    keyBox = new NumberInputBoxInCamera(3);
+    keyBox->setNumber(key);
+    keyBox->FillColor = LIGHTGRAY;
+    keyBox->TextColor = DARKGRAY;
+    keyBox->OutLineColor = DARKGRAY;
 
-    // Style the key box
-    FillColor = LIGHTGRAY;
-    TextColor = BLACK;
-    OutLineColor = DARKGRAY;
-
-    // Create priority box
-    priorityBox = new NumberInputBox(4);
-    priorityBox->setNumber(this->priority);
-    priorityBox->FillColor = { 173, 216, 230, 255 };
+    priorityBox = new NumberInputBoxInCamera(3);
+    priorityBox->setNumber(priority % 100);
+    priorityBox->FillColor = { 173, 216, 230, 255 }; // LIGHTBLUE
     priorityBox->TextColor = MAROON;
     priorityBox->OutLineColor = DARKGRAY;
+
     syncPosition();
 }
 
 TreapNode::~TreapNode() {
+    if (keyBox) delete keyBox;
     if (priorityBox) delete priorityBox;
     if (leftEdge) delete leftEdge;
     if (rightEdge) delete rightEdge;
 }
 
 int TreapNode::getKey() const {
-    return getNumber();
+    return keyBox->getNumber();
 }
 
 void TreapNode::setKey(int key) {
-    setNumber(key);
-    this->data = getKey();
+    keyBox->setNumber(key);
 }
 
 int TreapNode::getPriority() const {
@@ -40,81 +39,45 @@ int TreapNode::getPriority() const {
 
 void TreapNode::setPriority(int p) {
     priorityBox->setNumber(p);
-    this->priority = priorityBox->getNumber();
 }
 
 void TreapNode::syncPosition() {
-    // Shrink this (key) to left half
-    rect.width = 60;
-    rect.height = 40;
+    keyBox->rect.x = position.x - keyBox->getWidth() / 2;
+    keyBox->rect.y = position.y - keyBox->getHeight() / 2;
 
-    this->position = {
-        rect.x + rect.width / 2,
-        rect.y + rect.height / 2
-    };
-
-    this->radius = rect.height / 2;
-
-    if (priorityBox) {
-        priorityBox->rect.width = 40;
-        priorityBox->rect.height = rect.height;
-        priorityBox->rect.x = rect.x + rect.width;
-        priorityBox->rect.y = rect.y;
-    }
+    priorityBox->rect.x = keyBox->rect.x + keyBox->getWidth();
+    priorityBox->rect.y = keyBox->rect.y;
 }
 
 void TreapNode::setVisualPosition(float x, float y) {
-    rect.x = x;
-    rect.y = y;
+    position = { x, y };
     syncPosition();
 }
 
 void TreapNode::update() {
-    NumberInputBox::update();
+    keyBox->update();
+    priorityBox->update();
     syncPosition();
 
-    // Update priority box
-    if (priorityBox) {
-        priorityBox->update();
-
-        if (CheckCollisionPointRec(getMousePos(), priorityBox->rect)) {
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                // deactivate key box input
-                inputHandler->setTexting(false);
-
-                // activate priority input
-                priorityBox->inputHandler->setTexting(true);
-            }
-        }
-
-        if (priorityBox->inputHandler->isTexting() && IsKeyPressed(KEY_ENTER)) {
-            priorityBox->inputHandler->setTexting(false);
-        }
+    if (CheckCollisionPointRec(getMousePos(), keyBox->rect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        keyBox->inputHandler->setTexting(true);
+        priorityBox->inputHandler->setTexting(false);
     }
-
-    // Key box input
-    if (checkCollision()) {
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            // deactivate priority input
-            if (priorityBox) priorityBox->inputHandler->setTexting(false);
-
-            // activate key input
-            inputHandler->setTexting(true);
-        }
+    if (CheckCollisionPointRec(getMousePos(), priorityBox->rect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        priorityBox->inputHandler->setTexting(true);
+        keyBox->inputHandler->setTexting(false);
     }
-    else {
-        OutLineColor = DARKGRAY;
+    if (keyBox->inputHandler->isTexting() && IsKeyPressed(KEY_ENTER)) {
+        keyBox->inputHandler->setTexting(false);
     }
-
-    if (inputHandler->isTexting() && IsKeyPressed(KEY_ENTER)) {
-        inputHandler->setTexting(false);
-        if (onClick) onClick();
+    if (priorityBox->inputHandler->isTexting() && IsKeyPressed(KEY_ENTER)) {
+        priorityBox->inputHandler->setTexting(false);
     }
 }
 
 void TreapNode::draw(){
-    NumberInputBox::draw();
-    if (priorityBox) priorityBox->draw();
+    keyBox->draw();
+    priorityBox->draw();
 }
 
 Vector2 TreapNode::getMousePos() const {
@@ -172,15 +135,15 @@ TreapNode* Treap::insert(TreapNode* root, Vector2 pos, int key, int priority) {
     int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
     int newXOffset = max(getSubtreeWidth(root) * treeDepth * 5, 20);
 
-    if (root->data > key) {
+    if (root->getKey() > key) {
         TreapNode* newLeftChild = insert(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
         root->leftEdge = new Edge(root, newLeftChild);
-        if (newLeftChild->priority > root->priority) root = rotateRight(root);
+        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
     }
     else {
         TreapNode* newRightChild = insert(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
         root->rightEdge = new Edge(root, newRightChild);
-        if (newRightChild->priority > root->priority) root = rotateLeft(root);
+        if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
     }
 
     updateSubtreeWidth(root);

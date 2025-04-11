@@ -80,7 +80,7 @@ public:
         OgTextColor(tc), OgFillColor(fc), OgOutLineColor(olc),
         animation(nullptr), isHovered(false), isClicked(false), isActivated(false),noDraw(false) {
     }
-    virtual Vector2 getMousePos() const { return GetMousePosition(); }
+    virtual Vector2 getMousePos() const;
     /**
      * Deletes all buttons in the provided vector and clears the vector.
      * @tparam T Type of the button, must be derived from Button.
@@ -235,6 +235,12 @@ public:
     int getNumber() const { return dynamic_cast<NumericInputHandler*>(inputHandler.get())->getNumber(); }
     void setNumber(int x) {
         inputHandler->setText(std::to_string(x));
+    }
+    const int getWidth() const {
+        return rect.width;
+    }
+    const int getHeight() const {
+        return rect.height;
     }
 };
 

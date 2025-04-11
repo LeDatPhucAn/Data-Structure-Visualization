@@ -52,7 +52,7 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
         head = head->next;
 
         if(head){
-            CBEdge::removeEdge(Edges, del, head);
+            CBEdge::removeEdgeAndAnim(animManager,Edges, del, head);
             // adjusting position
             head->setCenterX(100);
             adjustPos(head);
@@ -63,6 +63,8 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
     }
     LLNode* cur = head;
     while (cur->next) {
+
+        // animate traversal
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         for (auto& edge : Edges) {
             if (edge->from == cur && edge->to == cur->next) {
@@ -70,6 +72,7 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
                 break;
             }
         }
+
         if (cur->next->getNumber() == x) {
 
             LLNode* temp = cur->next;
@@ -78,20 +81,28 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
 
             CBEdge::removeEdgeAndAnim(animManager,Edges, cur, temp);
 
-
             CBEdge::removeEdgeAndAnim(animManager,Edges, temp, temp->next);
 
-            animManager.addAnimation(new Animation(0.5f, [this,&animManager,&cur, &temp]() {
-                cur->next = temp->next;
-                CBEdge::addEdgeAndAnim(animManager, Edges, cur, cur->next);
-                //reposition in accordance to animation
-                animManager.addAnimation(new Animation(0.5f, [this, cur, &temp]() {
-                    adjustPos(cur);
-                    delete temp;
-                    temp = nullptr;
-                    }));
-                }));
+            animManager.addAnimation(new Animation(0.1f, [this, &animManager, cur, temp]() {
 
+                if (cur) {
+                    cur->next = temp->next;
+                    cout << temp->getNumber()<< "\n";
+                    animManager.addAnimation(new CircleRemoveAnim(temp, 1));
+                    CBEdge::addEdgeAndAnim(animManager,Edges, cur, cur->next);
+                    animManager.addAnimation(new Animation(0.5f, [&temp]() {
+                        delete temp;
+                        //temp = nullptr;
+                    }));
+
+                    //reposition
+                    animManager.addAnimation(new Animation(0.1f, [this, cur]() {
+                        adjustPos(cur);
+                        }));
+                }
+            }));
+
+            
             //cur->next = temp->next;
 
             

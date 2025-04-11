@@ -11,9 +11,10 @@ public:
     float elapsed;
     bool completed;
     std::function<void()> Function;
-	Animation() : duration(0), elapsed(0), completed(false) {};
-    Animation(float dur) : duration(dur), elapsed(0), completed(false),Function(nullptr) {};
-	Animation(float dur, std::function<void()> func) : duration(dur), elapsed(0), completed(false), Function(func) {};
+    bool FunctionActivated;
+	Animation() : duration(0), elapsed(0), completed(false), FunctionActivated(false){};
+    Animation(float dur) : duration(dur), elapsed(0), completed(false),Function(nullptr), FunctionActivated(false) {};
+	Animation(float dur, std::function<void()> func) : duration(dur), elapsed(0), completed(false), Function(func), FunctionActivated(false) {};
     virtual ~Animation() = default;
     virtual void handleReposition() {};
     virtual void update(float deltaTime);
@@ -274,6 +275,7 @@ public:
     };
     void applyState() override;
 };
+
 class CircleRemoveAnim : public Animation {
 private:
     CircleButton* button;

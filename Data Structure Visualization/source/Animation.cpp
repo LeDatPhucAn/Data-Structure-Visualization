@@ -14,13 +14,19 @@ void Animation::clamp() {
 }
 void Animation::update(float deltaTime) {
     elapsed += deltaTime;
-    if (Function) Function();
+    if (!FunctionActivated && Function) {
+        Function();
+        FunctionActivated = true;
+    }
     clamp();
     applyState();
 }
 void Animation::setTime(float t) {
     elapsed = t;
-    if (Function) Function();
+    if (!FunctionActivated && Function) {
+        Function();
+        FunctionActivated = true;
+    }
     clamp();
     applyState();
 }
@@ -52,7 +58,7 @@ void CircleInitializeAnim::applyState() {
     button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
 }
 void CircleRemoveAnim::applyState() {
-    button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
+    button->setRadius(EaseElasticIn(elapsed, startRadius, endRadius - startRadius, duration));
 }
 
 void NodeInitializeAnimation::applyState() {

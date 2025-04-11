@@ -12,6 +12,10 @@ const int RectButton::padding = UI::fontSize;
 
 // ### Button Utility Functions
 
+Vector2 Button::getMousePos() const {
+    return SceneHandler::mouseWorldPos;
+}
+
 void Button::hover() {
     if (!isHovered) {
         UI::darkenColor(FillColor, 30);
@@ -220,11 +224,21 @@ void RectButton::draw() {
 
 // ### InputBox Methods
 void InputBox::hover() {
-    OutLineColor = RED;
+    if (!isHovered) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(TextColor, 30);
+        isHovered = true;
+    }
+    //OutLineColor = RED;
 }
 
 void InputBox::unhover() {
-    OutLineColor = DARKGRAY;
+    if (isHovered) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(TextColor, 30);
+        isHovered = false;
+    }
+    //OutLineColor = DARKGRAY;
 }
 
 void InputBox::update() {
@@ -264,7 +278,6 @@ void InputBox::draw() {
 
 
 // NumberInputBox::draw and update and clear inherits from InputBox
-
 
 // ### TextBox Methods
 

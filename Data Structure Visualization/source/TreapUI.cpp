@@ -62,8 +62,8 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     if (!root) return;
 
     // Position the visual button correctly by setting top-left corner
-    float rectX = pos.x - root->rect.width / 2;
-    float rectY = pos.y - root->rect.height / 2;
+    float rectX = pos.x - root->keyBox->getWidth() / 2;
+    float rectY = pos.y - root->keyBox->getHeight() / 2;
     root->setVisualPosition(rectX, rectY);  // this will also update root->position
 
     int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);

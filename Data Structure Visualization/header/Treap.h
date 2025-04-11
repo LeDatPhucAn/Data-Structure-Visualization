@@ -6,12 +6,12 @@
 #include <cstdlib>
 #include <ctime>
 
-class TreapNode : public NumberInputBox, public Node {
+class TreapNode : public Node {
 public:
-    int priority;
     Edge* leftEdge;
     Edge* rightEdge;
     int subtreeWidth;
+	NumberInputBox* keyBox = nullptr;
     NumberInputBox* priorityBox = nullptr;
 
     TreapNode(int key, int priority, Vector2 pos);
@@ -21,11 +21,12 @@ public:
     void setKey(int key);
     int getPriority() const;
     void setPriority(int p);
+
     void syncPosition();
-    void setVisualPosition(float x, float y);
-    void update() override;
-	void draw() override;
-    Vector2 getMousePos() const override;
+	void setVisualPosition(float x, float y);
+    void update();
+	void draw();
+    Vector2 getMousePos() const;
 };
 
 class Treap {

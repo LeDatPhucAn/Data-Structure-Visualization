@@ -7,8 +7,162 @@ TreapUI::TreapUI() : root(nullptr) {
     init();
 }
 
+TreapNode* TreapUI::rotateLeft(TreapNode* root) {
+    Edge* oldRightEdge = root->rightEdge;
+    if (!oldRightEdge) return root;
+
+    TreapNode* newRoot = static_cast<TreapNode*> (oldRightEdge->to);
+
+    Edge* temp = newRoot->leftEdge;
+    root->rightEdge = temp ? new Edge(root, temp->to) : nullptr;
+
+    delete oldRightEdge;
+    delete temp;
+
+    newRoot->leftEdge = new Edge(newRoot, root);
+
+    return newRoot;
+}
+
+TreapNode* TreapUI::rotateRight(TreapNode* root) {
+    Edge* oldLeftEdge = root->leftEdge;
+    if (!oldLeftEdge) return root;
+
+    TreapNode* newRoot = static_cast<TreapNode*> (oldLeftEdge->to);
+
+    Edge* temp = newRoot->rightEdge;
+
+    root->leftEdge = temp ? new Edge(root, temp->to) : nullptr;
+
+    delete temp;
+    delete oldLeftEdge;
+
+    newRoot->rightEdge = new Edge(newRoot, root);
+
+    return newRoot;
+}
+
+int TreapUI::getSubtreeWidth(TreapNode* curr) {
+    if (!curr) return 0;
+    return curr->subtreeWidth;
+}
+
+void TreapUI::updateSubtreeWidth(TreapNode* curr) {
+    if (curr) {
+        int leftWidth = curr->leftEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
+        int rightWidth = curr->rightEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
+        curr->subtreeWidth = 1 + leftWidth + rightWidth;
+    }
+}
+
+TreapNode* TreapUI::insert(TreapNode* root, Vector2 pos, int key, int priority) {
+    static const int Y_OFFSET = 30;
+    if (!root) return new TreapNode(key, priority, pos);
+
+    int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
+    int newXOffset = max(getSubtreeWidth(root) * treeDepth * 5, 20);
+
+    if (root->getKey() > key) {
+        TreapNode* newLeftChild = insert(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
+        root->leftEdge = new Edge(root, newLeftChild);
+        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
+    }
+    else if (root->getKey() < key) {
+        TreapNode* newRightChild = insert(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
+        root->rightEdge = new Edge(root, newRightChild);
+        if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
+    }
+
+    updateSubtreeWidth(root);
+    return root;
+}
+
+TreapNode* TreapUI::search(TreapNode* root, int key) {
+    if (!root) return nullptr;
+
+    if (root->getKey() == key) return root;
+
+    if (root->getKey() > key) {
+        return search(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, key);
+    }
+
+    return search(root->rightEdge ? static_cast<TreapNode*> (root->rightEdge->to) : nullptr, key);
+}
+
+TreapNode* TreapUI::remove(TreapNode* root, int key) {
+    if (!root) return nullptr;
+
+    if (root->getKey() > key) {
+        if (root->leftEdge) {
+            TreapNode* newLeft = remove(static_cast<TreapNode*> (root->leftEdge->to), key);
+            if (root->leftEdge) delete root->leftEdge;
+            root->leftEdge = newLeft ? new Edge(root, newLeft) : nullptr;
+        }
+    }
+    else if (root->getKey() < key) {
+        if (root->rightEdge) {
+            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
+            if (root->rightEdge) delete root->rightEdge;
+            root->rightEdge = newRight ? new Edge(root, newRight) : nullptr;
+        }
+    }
+    else {
+        if (!root->leftEdge && !root->rightEdge) {
+            delete root;
+            return nullptr;
+        }
+        else if (!root->rightEdge) {
+            TreapNode* temp = static_cast<TreapNode*> (root->leftEdge->to);
+            delete root->leftEdge;
+            root->leftEdge = nullptr;
+            delete root;
+            return temp;
+        }
+        else if (!root->leftEdge) {
+            TreapNode* temp = static_cast<TreapNode*> (root->rightEdge->to);
+            delete root->rightEdge;
+            root->rightEdge = nullptr;
+            delete root;
+            return temp;
+        }
+
+        if (static_cast<TreapNode*> (root->leftEdge->to)->getPriority() > static_cast<TreapNode*> (root->rightEdge->to)->getPriority()) {
+            root = rotateRight(root);
+            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
+            if (root->rightEdge) delete root->rightEdge;
+            root->rightEdge = newRight ? new Edge(root, newRight) : nullptr;
+        }
+        else {
+            root = rotateLeft(root);
+            TreapNode* newLeft = remove(static_cast<TreapNode*>(root->leftEdge->to), key);
+            if (root->leftEdge) delete root->leftEdge;
+            root->leftEdge = newLeft ? new Edge(root, newLeft) : nullptr;
+        }
+    }
+
+    updateSubtreeWidth(root);
+    return root;
+}
+
+void TreapUI::clear(TreapNode* curr) {
+    if (!curr) return;
+
+    if (curr->leftEdge) {
+        clear(static_cast<TreapNode*>(curr->leftEdge->to));
+        delete curr->leftEdge;
+        curr->leftEdge = nullptr;
+    }
+    if (curr->rightEdge) {
+        clear(static_cast<TreapNode*>(curr->rightEdge->to));
+        delete curr->rightEdge;
+        curr->rightEdge = nullptr;
+    }
+    
+    delete curr;
+}
+
 void TreapUI::insert(int key, int priority) {
-    root = treap.insert(root, ROOT_POS, key, priority);
+    root = insert(root, ROOT_POS, key, priority);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
@@ -43,18 +197,16 @@ void TreapUI::loadFromFile(){
 }
 
 void TreapUI::search(int key) {
-    TreapNode* curr = treap.getRoot();
-    if (!curr) return;
-
+    
 }
 
 void TreapUI::remove(int key) {
-    root = treap.remove(root, key);
+    root = remove(root, key);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
 void TreapUI::clear() {
-    treap.Treap::clear();
+    clear(this->root);
     this->root = nullptr;
 }
 
@@ -66,8 +218,8 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     float rectY = pos.y - root->keyBox->getHeight() / 2;
     root->setVisualPosition(rectX, rectY);  // this will also update root->position
 
-    int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
-    int rightWidth = treap.getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
+    int leftWidth = getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
+    int rightWidth = getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
 
     int newXOffset = std::max((leftWidth + rightWidth + 1) * 40, 80);
 

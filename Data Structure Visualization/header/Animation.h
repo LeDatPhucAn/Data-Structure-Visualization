@@ -124,6 +124,18 @@ public:
     void applyState() override;
 };
 
+// Highlight Rectangle Button
+class RectHighlightAnim : public Animation {
+public:
+    NumberInputBox* button;
+    Color startFill, endFill;
+    Color startOutline, endOutline;
+    Color startText, endText;
+    RectHighlightAnim(NumberInputBox*, float, Color, Color, Color);
+    void applyState() override;
+    void resetColor() override;
+};
+
 // Move CircleButton in both x and y directions
 class CircleMoveAnim : public Animation {
 private:

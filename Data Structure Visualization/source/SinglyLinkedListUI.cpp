@@ -2,27 +2,30 @@
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
 
-
 void SinglyLinkedListUI::insert(int x, int pos) {
-    linkedlist.insertnode(x, pos);
+    animManager.clear();
+    linkedlist.insertnode(animManager,x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
-    linkedlist.remove(x);
+	animManager.clear();
+    linkedlist.remove(animManager,x);
 }
+
 bool SinglyLinkedListUI::search(int x) {
+    animManager.clear();
     LLNode* cur = linkedlist.head;
     while (cur) {
 		if (cur->getNumber() == x) {
-            animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
+            animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
             return true;
 		}
 
 		// Highlight the current node
-        animManager.addAnimation(new CircleHighLightAnim(cur, 3));
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
 
         for (auto& edge : linkedlist.Edges) {
             if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 1, PURPLE));
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
 				break;
             }
         }
@@ -90,7 +93,7 @@ void SinglyLinkedListUI::initButtons() {
     Buttons[1]->insertSubButton(Value1);
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
-        linkedlist.remove(ValueInput1->getNumber());
+        remove(ValueInput1->getNumber());
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
@@ -111,6 +114,7 @@ void SinglyLinkedListUI::initButtons() {
     RectButton::insertHeadButton(Buttons, new TextBox("Clear"));
     Buttons[3]->animation = new RectMoveXAnim(Buttons[3], 0.5);
     Buttons[3]->onClick = [this]() {
+		animManager.clear();
         linkedlist.clear();
         };
     RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
@@ -124,6 +128,7 @@ void SinglyLinkedListUI::initButtons() {
 
     Buttons[5]->onClick = [this]() {
         linkedlist.clear();
+		animManager.clear();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;

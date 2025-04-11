@@ -98,6 +98,7 @@ int SceneHandler::getCurrentScene() {
 
 void SceneHandler::changeScene(Scene newScene) {
     Button::resetButtonsAnimations<Button>(SceneButtons);
+    Button::resetButtonsAnimations<RectButton>(rightSideButtons);
     if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
     currentSceneObject->CurrentScene = newScene;
@@ -155,9 +156,8 @@ void SceneHandler::updateCurrentScene() {
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() + dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() + 50,
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterY()
 			);
-
-            RectButton::setHeadPosition(rightSideButtons,(float)UI::screenWidth * 3 / 4, (float)UI::screenHeight * 3/4);
             Button::handleButtonsAnimReposition<RectButton>(rightSideButtons);
+            RectButton::setHeadPosition(rightSideButtons,(float)UI::screenWidth * 3 / 4, (float)UI::screenHeight * 3/4);
 			Button::resetButtonsAnimations<RectButton>(rightSideButtons);
 
             for (int i = 1; i < 5; i++) {

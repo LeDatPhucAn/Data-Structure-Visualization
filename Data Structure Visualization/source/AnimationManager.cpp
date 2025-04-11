@@ -39,6 +39,16 @@ void AnimationManager::update(float deltaTime) {
     updateActiveAnimation();
 }
 
+void AnimationManager::clear() {
+	for (auto anim : animations) {
+        anim->resetColor();
+		delete anim;
+	}
+	animations.clear();
+	startTimes.clear();
+	totalDuration = 0;
+	currentTime = 0;
+}
 void AnimationManager::pause() {
     paused = true;
 }
@@ -77,6 +87,7 @@ void AnimationManager::goToNext() {
     if (animations.empty())return;
     for (int i = 0; i < animations.size() - 1; ++i) {
         if (currentTime < startTimes[i + 1]) {
+            animations[i]->makeComplete();
             seek(startTimes[i + 1]);
             return;
         }

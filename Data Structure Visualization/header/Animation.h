@@ -10,12 +10,14 @@ public:
     float duration;
     float elapsed;
     bool completed;
+    std::function<void()> Function;
 	Animation() : duration(0), elapsed(0), completed(false) {};
-    Animation(float dur) : duration(dur), elapsed(0), completed(false) {};
+    Animation(float dur) : duration(dur), elapsed(0), completed(false),Function(nullptr) {};
+	Animation(float dur, std::function<void()> func) : duration(dur), elapsed(0), completed(false), Function(func) {};
     virtual ~Animation() = default;
     virtual void handleReposition() {};
     virtual void update(float deltaTime);
-    virtual void applyState() = 0;
+    virtual void applyState() {};
     virtual bool isCompleted() {
         return completed;
     }
@@ -24,22 +26,16 @@ public:
         completed = false;
 
     }
+	virtual void makeComplete() {
+		elapsed = duration;
+		completed = true;
+	}
     virtual float getProgress() const {
         return elapsed;
     }
-    virtual void clamp() {
-        if (elapsed >= duration) {
-            elapsed = duration;
-            completed = true;
-        }
-        else if (elapsed <= 0) {
-            elapsed = 0;
-            completed = false;
-        }
-        else {
-            completed = false;
-        }
-    }
+	virtual void resetColor() {};
+    //clamp elapsed to duration
+    virtual void clamp();
     // Set the animation to a specific time and apply the state immediately
     virtual void setTime(float t);
 };
@@ -53,13 +49,45 @@ public:
 	virtual ~CBEdgeHighLightAnim() = default;
 
     // default color is orange
-    CBEdgeHighLightAnim(
-        CBEdge* e, float duration,
-		Color eC = ORANGE
-	)
-		: Animation(duration),
-		endC(eC), edge(e) {
+    CBEdgeHighLightAnim( CBEdge* e, float duration,Color eC = ORANGE)
+		: Animation(duration),endC(eC), edge(e) 
+    {
         startC = e->edgeColor;
+	}
+	void resetColor() override{
+		edge->edgeColor = startC;
+	}
+	void applyState() override;
+};
+class CBEdgeAddAnim : public Animation {
+protected:
+	CBEdge* edge;
+    int startT, endT;
+public:
+	virtual ~CBEdgeAddAnim() = default;
+
+    // default color is orange
+    CBEdgeAddAnim(CBEdge* e, float duration)
+		: Animation(duration) {
+		edge = e;
+		startT = 0;
+		endT = e->thickness;
+	}
+	void applyState() override;
+};
+class CBEdgeRemoveAnim : public Animation {
+protected:
+	CBEdge* edge;
+    int startT, endT;
+public:
+	virtual ~CBEdgeRemoveAnim() = default;
+
+    // default color is orange
+    CBEdgeRemoveAnim(CBEdge* e, float duration)
+		: Animation(duration) {
+		edge = e;
+		startT = e->thickness;
+		endT = 0;
 	}
 	void applyState() override;
 };
@@ -68,10 +96,11 @@ public:
 class CircleHighLightAnim : public Animation {
 protected:
     CircleButton* button;
-    Color startTC,endTC;
-    Color startFC,endFC;
-    Color startRC,endRC;
+    Color startTC, endTC;
+    Color startFC, endFC;
+    Color startRC, endRC;
 public:
+    
     virtual ~CircleHighLightAnim() = default;
 
     // default color is orange
@@ -86,6 +115,11 @@ public:
         startTC = btn->OgTextColor;
         startFC = btn->OgFillColor;
         startRC = btn->OgOutLineColor;
+    }
+    void resetColor() override{
+		button->OgTextColor = startTC;
+		button->OgFillColor = startFC;
+		button->OgOutLineColor = startRC;
     }
     void applyState() override;
 };
@@ -237,6 +271,18 @@ public:
     CircleInitializeAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
         startRadius = 0;
         endRadius = btn->getRadius();
+    };
+    void applyState() override;
+};
+class CircleRemoveAnim : public Animation {
+private:
+    CircleButton* button;
+    float startRadius;
+    float endRadius;
+public:
+    CircleRemoveAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
+        startRadius = btn->getRadius();
+        endRadius = 0;
     };
     void applyState() override;
 };

@@ -45,7 +45,7 @@ void LinkedList::adjustPos(LLNode* pHead) {
     }
 }
 
-bool LinkedList::remove(int x) {
+bool LinkedList::remove(AnimationManager& animManager, int x) {
     if (!head) return false;
     if (head && head->getNumber() == x) {
         LLNode* del = head;
@@ -63,15 +63,46 @@ bool LinkedList::remove(int x) {
     }
     LLNode* cur = head;
     while (cur->next) {
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        for (auto& edge : Edges) {
+            if (edge->from == cur && edge->to == cur->next) {
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
+                break;
+            }
+        }
         if (cur->next->getNumber() == x) {
-            CBEdge::removeEdge(Edges, cur, cur->next);
+
             LLNode* temp = cur->next;
-            CBEdge::removeEdge(Edges, temp, temp->next);
-            cur->next = temp->next;
-            CBEdge::addEdge(Edges, cur, cur->next);
-            adjustPos(cur);
-            delete temp;
-            temp = nullptr;
+
+            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
+
+            CBEdge::removeEdgeAndAnim(animManager,Edges, cur, temp);
+
+
+            CBEdge::removeEdgeAndAnim(animManager,Edges, temp, temp->next);
+
+            animManager.addAnimation(new Animation(0.5f, [this,&animManager,&cur, &temp]() {
+                cur->next = temp->next;
+                CBEdge::addEdgeAndAnim(animManager, Edges, cur, cur->next);
+                //reposition in accordance to animation
+                animManager.addAnimation(new Animation(0.5f, [this, cur, &temp]() {
+                    adjustPos(cur);
+                    delete temp;
+                    temp = nullptr;
+                    }));
+                }));
+
+            //cur->next = temp->next;
+
+            
+            ////reposition in accordance to animation
+            //animManager.addAnimation(new Animation(0.5f, [this, cur, &temp]() {
+            //    adjustPos(cur);
+            //    delete temp;
+            //    temp = nullptr;
+            //    }));
+            //
+            
             return true;
         }
         cur = cur->next;
@@ -116,7 +147,7 @@ void LinkedList::clear() {
     deletelist();
     deleteEdges();
 }
-void LinkedList::insertnode(int x, int pos) {
+void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
     if (pos < 1) {
         return;
     }
@@ -127,28 +158,104 @@ void LinkedList::insertnode(int x, int pos) {
             };
         temp->next = head;
         adjustPos(temp);
-        CBEdge::addEdge(Edges, temp, head);
+		animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
+        CBEdge::addEdgeAndAnim(animManager,Edges, temp, head);
         head = temp;
         return;
     }
+
     LLNode* cur = head;
+
+    //highlight traversal to pos
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        for (auto& edge : Edges) {
+            if (edge->from == cur && edge->to == cur->next){
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
+                break;
+            }
+        }
         cur = cur->next;
     }
-    animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
-    LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
+    animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+
+	// highlight the last node
+    if (!cur->next) {
+        LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, cur->getCenterY());
+        cur->next = newnode;
+        newnode->noDraw = true;
+
+
+		CBEdge::addEdgeAndAnim(animManager,Edges, cur, newnode);
+		Edges.back()->noDraw = true;
+        
+        Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
+        InsertNode->Function = [newnode]() {
+            newnode->noDraw = false; // when we traverse to the desired position, we draw the inserted node outside the linked list
+            newnode->animation->reset();
+         };
+
+        // highlight inserted node
+        animManager.addAnimation(InsertNode);
+        return;
+    }
+
+
+
+	//// highlight the current node
+
+    /// the node to be inserted
+    LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, 400);
+
+
+	
+    Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
+	InsertNode->Function = [newnode]() {
+        newnode->animation->reset();
+		newnode->noDraw=false; // when we traverse to the desired position, we draw the inserted node outside the linked list
+		};
+
+    // highlight inserted node
+    animManager.addAnimation(InsertNode);
+    
+	// initially the inserted node is not drawn
+    newnode->noDraw = true;
     newnode->onClick = [newnode]() {
         cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
-        };
-    newnode->next = cur->next;
-    CBEdge::addEdge(Edges, newnode, cur->next);
-    CBEdge::removeEdge(Edges, cur, cur->next);
+    };
+
+    LLNode* next = cur->next;
+
+    //connect first edge
     cur->next = newnode;
 
-    adjustPos(newnode);
-    CBEdge::addEdge(Edges, cur, newnode);
+    //first edge
+    CBEdge::addEdgeAndAnim(animManager, Edges, cur, newnode);
+    Edges.back()->noDraw = true;
+
+    // connect next edge
+    newnode->next = next;
+
+    //reposition in accordance to animation
+    animManager.addAnimation(new Animation(0.5f, [this,newnode]() {
+		adjustPos(newnode);
+        }));
+    
+
+    // Add next edge
+    CBEdge::addEdgeAndAnim(animManager,Edges, newnode, next);
+	Edges.back()->noDraw = true;
+
+
+	// remove the edge between cur and next with animation done
+	CBEdge::removeEdgeAndAnim(animManager, Edges, cur, next);  
+
+    // add the node in
+    animManager.addAnimation(new CircleMoveAnim(newnode, 2, newnode->getCenterX(), 400, newnode->getCenterX(),cur->getCenterY()));
+    
+
 }
+
 void LinkedList::randominsert(int x, int pos) {
     if (pos < 1) {
         return;

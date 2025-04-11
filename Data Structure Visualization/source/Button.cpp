@@ -13,7 +13,7 @@ const int RectButton::padding = UI::fontSize;
 // ### Button Utility Functions
 
 Vector2 Button::getMousePos() const {
-    return SceneHandler::mouseWorldPos;
+    return GetMousePosition();
 }
 
 void Button::hover() {

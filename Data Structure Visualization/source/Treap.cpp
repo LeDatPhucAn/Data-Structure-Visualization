@@ -3,13 +3,13 @@
 #include <math.h>
 
 TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
-    keyBox = new NumberInputBox(3);
+    keyBox = new NumberInputBoxInCamera(3);
     keyBox->setNumber(key);
     keyBox->FillColor = LIGHTGRAY;
     keyBox->TextColor = DARKGRAY;
     keyBox->OutLineColor = DARKGRAY;
 
-    priorityBox = new NumberInputBox(3);
+    priorityBox = new NumberInputBoxInCamera(3);
     priorityBox->setNumber(priority % 100);
     priorityBox->FillColor = { 173, 216, 230, 255 }; // LIGHTBLUE
     priorityBox->TextColor = MAROON;
@@ -135,7 +135,7 @@ TreapNode* Treap::insert(TreapNode* root, Vector2 pos, int key, int priority) {
     int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
     int newXOffset = max(getSubtreeWidth(root) * treeDepth * 5, 20);
 
-    if (root->data > key) {
+    if (root->getKey() > key) {
         TreapNode* newLeftChild = insert(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
         root->leftEdge = new Edge(root, newLeftChild);
         if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);

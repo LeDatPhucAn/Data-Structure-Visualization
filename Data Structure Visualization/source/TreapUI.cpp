@@ -1,5 +1,6 @@
 #include "../header/TreapUI.h"
 #include "../header/PseudoCode.h"
+#include "../header/Animation.h"
 
 const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
 
@@ -75,18 +76,6 @@ TreapNode* TreapUI::insert(TreapNode* root, Vector2 pos, int key, int priority) 
 
     updateSubtreeWidth(root);
     return root;
-}
-
-TreapNode* TreapUI::search(TreapNode* root, int key) {
-    if (!root) return nullptr;
-
-    if (root->getKey() == key) return root;
-
-    if (root->getKey() > key) {
-        return search(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, key);
-    }
-
-    return search(root->rightEdge ? static_cast<TreapNode*> (root->rightEdge->to) : nullptr, key);
 }
 
 TreapNode* TreapUI::remove(TreapNode* root, int key) {
@@ -197,7 +186,28 @@ void TreapUI::loadFromFile(){
 }
 
 void TreapUI::search(int key) {
+    animManager.clear();
+    searchWithAnimation(root, key);
+}
+
+void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
+    if (!curr) return;
     
+    animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.5f, ORANGE, DARKGRAY, WHITE));
+
+    if (curr->getKey() == key) {
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.5f, {82, 172, 16, 255}, DARKGRAY, WHITE));
+    }
+    else if (curr->getKey() > key) {
+        if (curr->leftEdge) {
+            searchWithAnimation(static_cast<TreapNode*> (curr->leftEdge->to), key);
+        }
+    }
+    else {
+        if (curr->rightEdge) {
+            searchWithAnimation(static_cast<TreapNode*> (curr->rightEdge->to), key);
+        }
+    }
 }
 
 void TreapUI::remove(int key) {
@@ -364,6 +374,8 @@ void TreapUI::updateButtonPositions() {
 }
 
 void TreapUI::updateScene() {
+    animManager.update(GetFrameTime());
+
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 

@@ -44,9 +44,10 @@ RectHighlightAnim::RectHighlightAnim(NumberInputBox* b, float duration, Color fi
 
 void RectHighlightAnim::applyState() {
     float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
-    button->OgTextColor = UI::interpolateColors(startText, endText, easedT);
-    button->OgFillColor = UI::interpolateColors(startFill, endFill, easedT);
-    button->OgOutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
+    button->TextColor = UI::interpolateColors(startText, endText, easedT);
+    button->FillColor = UI::interpolateColors(startFill, endFill, easedT);
+    button->OutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
+    cout << "call ApplyState" << endl;
 }
 
 void RectHighlightAnim::resetColor() {

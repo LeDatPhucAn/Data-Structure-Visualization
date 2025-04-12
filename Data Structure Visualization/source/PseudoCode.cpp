@@ -2,9 +2,9 @@
 
 namespace PseudoCode {
     std::string LLInsertHead =
-        "  Create new node with x\n"
-        "  Set new node's next to head\n"
-        "  Set new node as head\n";
+        "  Node InsertedNode = new Node;\n"
+        "  InsertedNode->next = head;\n"
+        "  head = InsertedNode";
 
     std::string LLInsertPos =
         "  Node cur = head;\n"

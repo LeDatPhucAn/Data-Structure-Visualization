@@ -45,6 +45,7 @@ void LinkedList::adjustPos(LLNode* pHead) {
         pHead = pHead->next;
     }
 }
+
 void LinkedList::adjustPosWithAnim(AnimationManager& animManager,LLNode* pHead) {
     if (!pHead)return;
     LLNode* prev = pHead;
@@ -57,6 +58,7 @@ void LinkedList::adjustPosWithAnim(AnimationManager& animManager,LLNode* pHead) 
         cur = cur->next;
     }
 }
+
 void LinkedList::adjustPosWithAnim2(AnimationManager& animManager,LLNode* pHead) {
     if (!pHead)return;
     LLNode* prev = pHead;
@@ -159,25 +161,43 @@ void LinkedList::printlist() {
     }
     cout << endl;
 }
-bool LinkedList::search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
-    LLNode* cur = head;
 
+
+void LinkedList::clearIndicates() {
+    LLNode* cur = head;
+    while (cur) {
+        cur->indicateNode = "";
+        cur = cur->next;
+    }
+}
+bool LinkedList::search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
+    
+    
+    ///// Clear All instances of the variable indicator "cur" which I draw under each node during traversal
+    clearIndicates();
+
+
+
+
+    LLNode* cur = head;
+    
     // highlight cur = head
     animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,cur]() {
         CodeBlocks[1]->highlight();
-        UI::drawtext2("cur", cur->getCenterX(), cur->getCenterY(), RED);
+        cur->indicateNode = "cur";
         }));
-    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks,cur]() {
         CodeBlocks[1]->unhighlight();
         }));
     while (cur) {
         
-        //    "Node cur = head;\n"
-        //    "while (cur != nullptr)\n"
-        //    "   if (cur->data == value)\n"
-        //    "        return true;\n"
-        //    "   cur = cur->next;\n"
-        //    "return false;\n";
+        ///// PseudoCode:
+        //    "Node cur = head;\n"              // CodeBlocks[1]
+        //    "while (cur != nullptr)\n"        // CodeBlocks[2]
+        //    "   if (cur->data == value)\n"    // CodeBlocks[3]
+        //    "        return true;\n"          // CodeBlocks[4]
+        //    "   cur = cur->next;\n"           // CodeBlocks[5]
+        //    "return false;\n";                // CodeBlocks[6]
         
 
         // highlight while(cur != nullptr)
@@ -201,7 +221,7 @@ bool LinkedList::search(vector<RectButton*>& CodeBlocks, AnimationManager& animM
             return true;
         }
 
-        //highlight 
+        //unhighlight line 3
         animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
             CodeBlocks[3]->unhighlight();
             }));
@@ -210,12 +230,17 @@ bool LinkedList::search(vector<RectButton*>& CodeBlocks, AnimationManager& animM
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks]() {
             CodeBlocks[5]->highlight();
             }));
-        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+        
+
+        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks,cur]() {
             CodeBlocks[5]->unhighlight();
+            cur->indicateNode = "";
             }));
         for (auto& edge : Edges) {
-            if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
+            if (edge->from == cur && edge->to == cur->next) {
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE, [cur]() {
+                    if (cur->next)cur->next->indicateNode = "cur";
+                    }));
                 break;
             }
         }

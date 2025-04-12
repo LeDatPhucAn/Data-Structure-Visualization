@@ -50,8 +50,8 @@ public:
 	virtual ~CBEdgeHighLightAnim() = default;
 
     // default color is orange
-    CBEdgeHighLightAnim( CBEdge* e, float duration,Color eC = ORANGE)
-		: Animation(duration),endC(eC), edge(e) 
+    CBEdgeHighLightAnim( CBEdge* e, float duration,Color eC = ORANGE, std::function<void()> func = nullptr)
+		: Animation(duration,func),endC(eC), edge(e) 
     {
         startC = e->edgeColor;
 	}

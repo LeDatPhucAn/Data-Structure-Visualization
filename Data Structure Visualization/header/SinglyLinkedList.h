@@ -15,6 +15,7 @@ public:
     ~LinkedList() {
         clear();
     }
+    void clearIndicates();
     void adjustPos(LLNode* head);
     void adjustPosWithAnim(AnimationManager& animManager, LLNode* head);
     void adjustPosWithAnim2(AnimationManager& animManager, LLNode* head);

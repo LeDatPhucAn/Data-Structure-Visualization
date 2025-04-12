@@ -471,21 +471,24 @@ public:
 // NumberInputCircleInCamera is NumberInputCircle but uses the camera position to get the mouse position
 class NumberInputCircleInCamera : public NumberInputCircle {
 private:
+    void Indicate(string text);
 public:
+    string indicateNode; 
     // default Number Input Box
     NumberInputCircleInCamera(int maxCh)
-        : NumberInputCircle(maxCh) {
+        : NumberInputCircle(maxCh), indicateNode("") {
     }
     NumberInputCircleInCamera(int maxCh, Color tc, Color fc, Color rc)
-        : NumberInputCircle(maxCh, tc, fc, rc) {
+        : NumberInputCircle(maxCh, tc, fc, rc), indicateNode("") {
     }
     NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh)
-        : NumberInputCircle(cent, r, input, maxCh) {
+        : NumberInputCircle(cent, r, input, maxCh), indicateNode("") {
     }
     NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
-        : NumberInputCircle(cent, r, input, maxCh, tc, fc, rc) {
+        : NumberInputCircle(cent, r, input, maxCh, tc, fc, rc), indicateNode("") {
     }
     Vector2 getMousePos() const override;
+    void draw() override;
 };
 
 

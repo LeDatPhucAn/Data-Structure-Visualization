@@ -74,6 +74,7 @@ public:
     bool isActivated;
     bool noDraw;
     static bool isCollision;
+    static bool isClicking;
     std::function<void()> onClick;
     Button(Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : TextColor(tc), FillColor(fc), OutLineColor(olc),
@@ -195,6 +196,48 @@ public:
     virtual void insertSubButton(RectButton* button, std::function<void()> function);
 };
 
+
+class ScrollyAndButton: public RectButton {
+protected:
+    float value;
+    float valueMin, valueMax;
+    Rectangle MoveableButton;
+public:
+    ScrollyAndButton(float x = 0, float y = 0, int scrollyLength=300, int scrollyThickness=20, float buttonSize=50,
+        Color ButtonColor = BLUE, Color ScrollyColor = WHITE, Color ScrollyLineColor = DARKGRAY, 
+        float val = 1, float valMin = 0.5f, float valMax = 2)
+        : RectButton(x, y, scrollyLength, scrollyThickness, ButtonColor, ScrollyColor, ScrollyLineColor),
+        MoveableButton({ x - buttonSize/2, y - (buttonSize - scrollyThickness)/2,buttonSize,buttonSize }),
+        value(val), valueMin(valMin), valueMax(valMax){
+    }
+
+    void update() override;
+    void draw() override;
+    float getValue() {
+        return value;
+    }
+    void clamp() {
+
+        int minclamp = rect.x - MoveableButton.width / 2;
+        int maxclamp = rect.width + rect.x - MoveableButton.width / 2;
+
+        if (MoveableButton.x < minclamp)MoveableButton.x = minclamp;
+
+        else if (MoveableButton.x > maxclamp) MoveableButton.x = maxclamp;
+    }
+
+    bool checkCollision() override {
+        return CheckCollisionPointRec(getMousePos(), MoveableButton);
+    }
+    void setPosition(float x, float y) override {
+
+        MoveableButton.x += x - rect.x;
+
+        rect.x = x;
+        rect.y = y;
+
+    }
+};
 // Uses RectButton and Input Handler to create a button with text
 class InputBox : public RectButton {
 public:

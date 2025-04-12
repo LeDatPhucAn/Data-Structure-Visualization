@@ -74,6 +74,7 @@ void SceneHandler::initButtons() {
         };
     SceneButtons.push_back(GoNext);
 
+    
     // play forward
     RectButton* PlayForward = new TextBox("Play Forward", (float)UI::screenWidth * 3 / 4, (float)UI::screenHeight * 3 / 4);
     PlayForward->onClick = [this]() {
@@ -90,7 +91,23 @@ void SceneHandler::initButtons() {
 	RectButton::insertHeadButton(rightSideButtons, PlayBackward);
     PlayBackward->animation = new RectMoveXAnim(PlayBackward, (float)UI::screenWidth, 0.5f);
 
+    // set speed                                     
+    RectButton* SetSpeed = new ScrollyAndButton(
+        UI::screenWidth * 3 / 5,   // x position
+                            100,   // y position
+                            500,   // length
+                             20,   // thickness
+                             60,   // Moveable Button size
+                           BLUE,   // Moveable Button color
+                          WHITE,   // Scrolly's FillColor 
+                          BLACK,   // Scrolly's outline color
+                              1,   // current value
+                           0.5f,   // Min value
+                              2    // Max value
+    );
 
+    SceneButtons.push_back(SetSpeed);
+    SetSpeed->animation = new RectMoveXAnim(SetSpeed, (float)UI::screenWidth, 0.5f);
 }
 int SceneHandler::getCurrentScene() {
     return currentSceneObject->CurrentScene;
@@ -107,7 +124,7 @@ void SceneHandler::changeScene(Scene newScene) {
 
 void SceneHandler::updateCamera() {
     // Move camera with drag
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    if (!Button::isClicking && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         Vector2 delta = GetMouseDelta();
         delta = Vector2Scale(delta, -1.0f / camera.zoom);
         camera.target = Vector2Add(camera.target, delta);
@@ -142,22 +159,42 @@ void SceneHandler::updateCurrentScene() {
         // update The Positions of all Scenes when there is a Window Resize
         if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
             
-            Button::resetButtonsAnimations<Button>(SceneButtons);
+            //////// reposition 
+
+            // Menu Button
             dynamic_cast<RectButton*>(SceneButtons[0])->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+            
+            // Pause
             dynamic_cast<CircleButton*>(SceneButtons[1])->setCenter(
                 (float)UI::screenWidth / 2,
                 (float)UI::screenHeight - 100
             );
+
+            // Go to Previous
 			dynamic_cast<CircleButton*>(SceneButtons[2])->setCenter(
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() - dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() - 50,
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterY()
 			);
+
+            // Go to Next
 			dynamic_cast<CircleButton*>(SceneButtons[3])->setCenter(
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() + dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() + 50,
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterY()
 			);
+
+            // Set Speed
+            dynamic_cast<RectButton*>(SceneButtons[4])->setPosition(UI::screenWidth * 3 /5, 100);
+            
+            // Right Side Buttons
+            RectButton::setHeadPosition(rightSideButtons, (float)UI::screenWidth * 3 / 4, (float)UI::screenHeight * 3 / 4);
+
+            // Animation resets
+            dynamic_cast<RectButton*>(SceneButtons[4])->animation->handleReposition();
+
+            Button::resetButtonsAnimations<Button>(SceneButtons);
+
             Button::handleButtonsAnimReposition<RectButton>(rightSideButtons);
-            RectButton::setHeadPosition(rightSideButtons,(float)UI::screenWidth * 3 / 4, (float)UI::screenHeight * 3/4);
+
 			Button::resetButtonsAnimations<RectButton>(rightSideButtons);
 
             for (int i = 1; i < 5; i++) {
@@ -168,18 +205,20 @@ void SceneHandler::updateCurrentScene() {
             UI::lastScreenHeight = UI::screenHeight;
         }
 
-        
+        Button::isCollision = false;
+        Button::updateButtons<Button>(SceneButtons);
+        Button::updateButtons<RectButton>(rightSideButtons);
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            Button::isClicking = false;
+        }
         if (getCurrentScene() != MENU) {
-
             updateCamera();
             currentSceneObject->updateSceneInCamera(camera);
 
         }
 
-        Button::isCollision = false;
-        Button::updateButtons<Button>(SceneButtons);
-		Button::updateButtons<RectButton>(rightSideButtons);
-
+        
+        currentSceneObject->animManager.setSpeed(dynamic_cast<ScrollyAndButton*>(SceneButtons.back())->getValue());
         currentSceneObject->animManager.update(GetFrameTime());
         currentSceneObject->updateScene();
 

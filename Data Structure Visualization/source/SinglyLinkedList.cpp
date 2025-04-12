@@ -52,9 +52,26 @@ void LinkedList::adjustPosWithAnim(AnimationManager& animManager,LLNode* pHead) 
     cur = cur->next;
     int i = 200;
     while (cur) {
-        animManager.addAnimation(new CircleMoveXAnim(cur, 0.5f, cur->getCenterX(), prev->getCenterX() + i));
+        animManager.addAnimation(new CircleMoveXAnim(cur, 0.2f, cur->getCenterX(), prev->getCenterX() + i));
         i += 200;
         cur = cur->next;
+    }
+}
+void LinkedList::adjustPosWithAnim2(AnimationManager& animManager,LLNode* pHead) {
+    if (!pHead)return;
+    LLNode* prev = pHead;
+    LLNode* cur = pHead;
+    cur = cur->next;
+    int i = 200;
+    stack<Animation*> reverse;
+    while (cur) {
+        reverse.push(new CircleMoveXAnim(cur, 0.2f, cur->getCenterX(), prev->getCenterX() + i));
+        i += 200;
+        cur = cur->next;
+    }
+    while (!reverse.empty()) {
+        animManager.addAnimation(reverse.top());
+        reverse.pop();
     }
 }
 
@@ -62,22 +79,29 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
     if (!head) return false;
     if (head && head->getNumber() == x) {
         LLNode* del = head;
+
+        animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, GREEN, RAYWHITE, GREEN));
+
+        // delay by 1 second
+        animManager.addAnimation(new Animation(1.0f));
         
         animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, RAYWHITE, RAYWHITE, RAYWHITE));
+
         animManager.addAnimation(new Animation(0.1f, [this, &animManager,del]() {
         
             head = head->next;
 
             if (head) {
+
                 CBEdge::removeEdgeAndAnim(animManager, Edges, del, head);
 
-                delete del;
-
                 //reposition
-                animManager.addAnimation(new Animation(0.1f, [&animManager,this]() {
+                animManager.addAnimation(new Animation(0.1f, [&animManager,this,del]() {
+                    delete del;
                     head->setCenterX(100);
                     adjustPosWithAnim(animManager,head);
                     }));
+
             }
             }));
 
@@ -107,7 +131,6 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
 
 
             animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,RAYWHITE,RAYWHITE,RAYWHITE));
-            //animManager.addAnimation(new CircleRemoveAnim(temp, 0.5f));
 
             animManager.addAnimation(new Animation(0.1f, [this,&animManager,cur,temp]() {
 
@@ -175,7 +198,7 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
             cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
             };
         temp->next = head;
-        adjustPosWithAnim(animManager,temp);
+        adjustPosWithAnim2(animManager,temp);
 		animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
         CBEdge::addEdgeAndAnim(animManager,Edges, temp, head);
         head = temp;
@@ -258,7 +281,7 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
     /*animManager.addAnimation(new Animation(0.5f, [this,newnode]() {
 		adjustPos(newnode);
         }));*/
-    adjustPosWithAnim(animManager, newnode);
+    adjustPosWithAnim2(animManager, newnode);
 
     // Add next edge
     CBEdge::addEdgeAndAnim(animManager,Edges, newnode, next);

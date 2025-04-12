@@ -183,8 +183,8 @@ public:
 	// sY is the start y position
 	// eX is the end x position
 	// eY is the end y position
-    CircleMoveAnim(CircleButton* btn, float duration, float sX, float sY, float eX, float eY)
-        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
+    CircleMoveAnim(CircleButton* btn, float duration, float sX, float sY, float eX, float eY, std::function<void()> func = nullptr)
+        : Animation(duration,func), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
     }
     void handleReposition() override {
         endX = button->getCenterX();

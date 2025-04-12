@@ -5,12 +5,14 @@ namespace PseudoCode {
         "  Create new node with x\n"
         "  Set new node's next to head\n"
         "  Set new node as head\n";
+
     std::string LLInsertPos =
-        "  Traverse to pos-1\n"
-        "  If node found:\n"
-        "    Create new node with x\n"
-        "    Set new node's next to current node's next\n"
-        "    Set current node's next to new node\n";
+        "  Node cur = head;\n"
+        "  for (int i = 1; i < pos-1; i++)\n"
+        "    cur = cur->next;\n"
+        "  Node InsertedNode = new Node;\n"
+        "  InsertedNode->next = cur->next;\n"
+        "  cur->next = InsertedNode;\n";
 
     std::string LLRemove =
         "If list is empty, return false\n"
@@ -24,9 +26,12 @@ namespace PseudoCode {
         "    Delete node with data x\n";
 
     std::string LLSearch =
-        "Traverse list to find node with data x\n"
-        "If node found, return true\n"
-        "If node not found, return false\n";
+        "Node cur = head;\n"
+        "while (cur != nullptr)\n"
+        "   if (cur->data == value)\n"
+        "        return true;\n"  
+        "   cur = cur->next;\n"
+        "return false;\n";
 
 
     std::string TreapInsert =

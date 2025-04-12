@@ -159,15 +159,73 @@ void LinkedList::printlist() {
     }
     cout << endl;
 }
-bool LinkedList::search(int x) {
+bool LinkedList::search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
     LLNode* cur = head;
+
+    // highlight cur = head
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,cur]() {
+        CodeBlocks[1]->highlight();
+        UI::drawtext2("cur", cur->getCenterX(), cur->getCenterY(), RED);
+        }));
+    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+        CodeBlocks[1]->unhighlight();
+        }));
     while (cur) {
+        
+        //    "Node cur = head;\n"
+        //    "while (cur != nullptr)\n"
+        //    "   if (cur->data == value)\n"
+        //    "        return true;\n"
+        //    "   cur = cur->next;\n"
+        //    "return false;\n";
+        
+
+        // highlight while(cur != nullptr)
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+            CodeBlocks[2]->highlight();
+            }));
+
+        // highlight if (cur->data == value)
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+            CodeBlocks[2]->unhighlight();
+            CodeBlocks[3]->highlight();
+            }));
+
         if (cur->getNumber() == x) {
+
+            // highlight return true
+            animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN, [&CodeBlocks]() {
+                CodeBlocks[3]->unhighlight();
+                CodeBlocks[4]->highlight();
+                }));
             return true;
         }
-        cur = cur->next;
 
+        //highlight 
+        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+            CodeBlocks[3]->unhighlight();
+            }));
+
+        // Highlight cur = cur->next
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks]() {
+            CodeBlocks[5]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+            CodeBlocks[5]->unhighlight();
+            }));
+        for (auto& edge : Edges) {
+            if (edge->from == cur) {
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
+                break;
+            }
+        }
+
+        cur = cur->next;
     }
+
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+        CodeBlocks[6]->highlight();
+        }));
     return false;
 }
 void LinkedList::deletelist() {
@@ -188,7 +246,7 @@ void LinkedList::clear() {
     deletelist();
     deleteEdges();
 }
-void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
+void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager,int x, int pos) {
     if (pos < 1) {
         return;
     }
@@ -208,18 +266,28 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
     }
 
     LLNode* cur = head;
-
-    //highlight traversal to pos
+    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+        CodeBlocks[1]->highlight();
+        }));
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
-        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f,ORANGE,RAYWHITE,ORANGE, [&CodeBlocks]() {
+            CodeBlocks[1]->unhighlight();
+            CodeBlocks[2]->highlight();
+            CodeBlocks[3]->unhighlight();
+            }));
         for (auto& edge : Edges) {
             if (edge->from == cur && edge->to == cur->next) {
                 animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
                 break;
             }
         }
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+            CodeBlocks[2]->unhighlight();
+            CodeBlocks[3]->highlight();
+            }));
         cur = cur->next;
     }
+
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
 
 	// highlight the last node

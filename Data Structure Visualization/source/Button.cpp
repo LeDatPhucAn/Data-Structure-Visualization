@@ -270,7 +270,7 @@ void ScrollyAndButton::draw() {
     DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
 
     // draw button
-    DrawRectangleRounded(MoveableButton, 0.5f, 100, TextColor);
+    DrawRectangleRounded(MoveableButton, 0.7f, 100, TextColor);
 
     UI::drawtext2("Speed: " + to_string(value) + "x", rect.x + rect.width / 2, MoveableButton.y - MoveableButton.height / 2, BLACK);
 }
@@ -336,6 +336,20 @@ void TextBox::draw() {
     if (next) next->draw();
 }
 
+void CodeBlock::highlight() {
+   isHighlight = true;
+   TextColor = WHITE;
+   FillColor = RED;
+}
+void CodeBlock::unhighlight() {
+    isHighlight = false;
+    TextColor = DARKGRAY;
+    FillColor = CodeColor;
+}
+void CodeBlock::hover() {
+    if (isHighlight)return;
+    Button::hover();
+}
 // ### CircleButton Methods
 bool CircleButton::checkCollision() {
     return CheckCollisionPointCircle(getMousePos(), center, radius);

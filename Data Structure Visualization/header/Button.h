@@ -145,6 +145,8 @@ public:
             if(btn->animation)btn->animation->handleReposition();
         }
     }
+    virtual void highlight() {};
+    virtual void unhighlight() {};
     virtual void draw() = 0;
     virtual void update();
     virtual void hover();
@@ -238,6 +240,7 @@ public:
 
     }
 };
+
 // Uses RectButton and Input Handler to create a button with text
 class InputBox : public RectButton {
 public:
@@ -310,14 +313,18 @@ public:
 class CodeBlock : public TextBox {
 private:
     static constexpr Color CodeColor = { 232,232,232,180 };
+    bool isHighlight;
 public:
     CodeBlock(string t, float x = 0, float y = 0,
         Color tc = DARKGRAY, Color fc = CodeColor, Color olc = CodeColor)
-        : TextBox(t,x,y, tc, fc, olc) {
+        : TextBox(t,x,y, tc, fc, olc), isHighlight(false) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect.width = tsize.x + padding;
         rect.height = tsize.y + padding;
     }
+    void highlight() override;
+    void unhighlight() override;
+    void hover() override;
 };
 
 // ### CircleButton Class

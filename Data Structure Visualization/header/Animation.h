@@ -134,9 +134,9 @@ public:
         CircleButton* btn, float duration,
         Color eTC = ORANGE, 
         Color eFC = RAYWHITE, 
-        Color eRC = ORANGE
+        Color eRC = ORANGE, std::function<void()> func = nullptr
         )
-        : Animation(duration),
+        : Animation(duration,func),
         endTC(eTC), endFC(eFC), endRC(eRC), button(btn) {
         startTC = btn->OgTextColor;
         startFC = btn->OgFillColor;

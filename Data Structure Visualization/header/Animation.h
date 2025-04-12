@@ -50,8 +50,8 @@ public:
 	virtual ~CBEdgeHighLightAnim() = default;
 
     // default color is orange
-    CBEdgeHighLightAnim( CBEdge* e, float duration,Color eC = ORANGE)
-		: Animation(duration),endC(eC), edge(e) 
+    CBEdgeHighLightAnim( CBEdge* e, float duration,Color eC = ORANGE, std::function<void()> func = nullptr)
+		: Animation(duration,func),endC(eC), edge(e) 
     {
         startC = e->edgeColor;
 	}
@@ -134,9 +134,9 @@ public:
         CircleButton* btn, float duration,
         Color eTC = ORANGE, 
         Color eFC = RAYWHITE, 
-        Color eRC = ORANGE
+        Color eRC = ORANGE, std::function<void()> func = nullptr
         )
-        : Animation(duration),
+        : Animation(duration,func),
         endTC(eTC), endFC(eFC), endRC(eRC), button(btn) {
         startTC = btn->OgTextColor;
         startFC = btn->OgFillColor;

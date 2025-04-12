@@ -389,7 +389,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
         // highlight line 5
         animManager.addAnimation(new Animation(5.0f, [newnode,cur]() {
             cur->indicateNode = "";
-            newnode->indicateNode = "Because pos is bigger than the size of list,\n this is an insert tails";
+            newnode->indicateNode = "Because pos > size of list,\n this is an insert tails";
             }));
         Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
         InsertNode->Function = [newnode, &CodeBlocks]() {

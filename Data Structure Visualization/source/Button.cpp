@@ -447,3 +447,11 @@ void InputCircle::draw() {
 
 Vector2 NumberInputBoxInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
 Vector2 NumberInputCircleInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
+
+void NumberInputCircleInCamera::Indicate(string Text){
+    UI::drawtext2(Text, center.x, center.y + radius + 20, RED);
+}
+void NumberInputCircleInCamera::draw() {
+    if (indicateNode !="") Indicate(indicateNode);
+    InputCircle::draw();
+}

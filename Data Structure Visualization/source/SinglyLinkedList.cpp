@@ -200,7 +200,9 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
         temp->next = head;
         adjustPosWithAnim2(animManager,temp);
 		animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
+        temp->noDraw = true;
         CBEdge::addEdgeAndAnim(animManager,Edges, temp, head);
+        Edges.back()->noDraw = true;
         head = temp;
         return;
     }

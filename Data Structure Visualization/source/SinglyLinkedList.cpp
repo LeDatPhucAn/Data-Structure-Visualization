@@ -33,6 +33,7 @@ void LinkedList::loadFromFile() {
         fin.close();
     }
 }
+
 void LinkedList::adjustPos(LLNode* pHead) {
     LLNode* prev = nullptr;
     while (pHead) {
@@ -44,25 +45,72 @@ void LinkedList::adjustPos(LLNode* pHead) {
         pHead = pHead->next;
     }
 }
+void LinkedList::adjustPosWithAnim(AnimationManager& animManager,LLNode* pHead) {
+    if (!pHead)return;
+    LLNode* prev = pHead;
+    LLNode* cur = pHead;
+    cur = cur->next;
+    int i = 200;
+    while (cur) {
+        animManager.addAnimation(new CircleMoveXAnim(cur, 0.2f, cur->getCenterX(), prev->getCenterX() + i));
+        i += 200;
+        cur = cur->next;
+    }
+}
+void LinkedList::adjustPosWithAnim2(AnimationManager& animManager,LLNode* pHead) {
+    if (!pHead)return;
+    LLNode* prev = pHead;
+    LLNode* cur = pHead;
+    cur = cur->next;
+    int i = 200;
+    stack<Animation*> reverse;
+    while (cur) {
+        reverse.push(new CircleMoveXAnim(cur, 0.2f, cur->getCenterX(), prev->getCenterX() + i));
+        i += 200;
+        cur = cur->next;
+    }
+    while (!reverse.empty()) {
+        animManager.addAnimation(reverse.top());
+        reverse.pop();
+    }
+}
 
 bool LinkedList::remove(AnimationManager& animManager, int x) {
     if (!head) return false;
     if (head && head->getNumber() == x) {
         LLNode* del = head;
-        head = head->next;
 
-        if(head){
-            CBEdge::removeEdge(Edges, del, head);
-            // adjusting position
-            head->setCenterX(100);
-            adjustPos(head);
-        }
-        delete del;
-        del = nullptr;
+        animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, GREEN, RAYWHITE, GREEN));
+
+        // delay by 1 second
+        animManager.addAnimation(new Animation(1.0f));
+        
+        animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, RAYWHITE, RAYWHITE, RAYWHITE));
+
+        animManager.addAnimation(new Animation(0.1f, [this, &animManager,del]() {
+        
+            head = head->next;
+
+            if (head) {
+
+                CBEdge::removeEdgeAndAnim(animManager, Edges, del, head);
+
+                //reposition
+                animManager.addAnimation(new Animation(0.1f, [&animManager,this,del]() {
+                    delete del;
+                    head->setCenterX(100);
+                    adjustPosWithAnim(animManager,head);
+                    }));
+
+            }
+            }));
+
         return true;
     }
     LLNode* cur = head;
     while (cur->next) {
+
+        // animate traversal
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         for (auto& edge : Edges) {
             if (edge->from == cur && edge->to == cur->next) {
@@ -70,6 +118,7 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
                 break;
             }
         }
+
         if (cur->next->getNumber() == x) {
 
             LLNode* temp = cur->next;
@@ -78,31 +127,23 @@ bool LinkedList::remove(AnimationManager& animManager, int x) {
 
             CBEdge::removeEdgeAndAnim(animManager,Edges, cur, temp);
 
-
             CBEdge::removeEdgeAndAnim(animManager,Edges, temp, temp->next);
 
-            animManager.addAnimation(new Animation(0.5f, [this,&animManager,&cur, &temp]() {
+
+            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,RAYWHITE,RAYWHITE,RAYWHITE));
+
+            animManager.addAnimation(new Animation(0.1f, [this,&animManager,cur,temp]() {
+
                 cur->next = temp->next;
                 CBEdge::addEdgeAndAnim(animManager, Edges, cur, cur->next);
-                //reposition in accordance to animation
-                animManager.addAnimation(new Animation(0.5f, [this, cur, &temp]() {
-                    adjustPos(cur);
-                    delete temp;
-                    temp = nullptr;
-                    }));
-                }));
+                delete temp;
+                //reposition
+                adjustPosWithAnim(animManager,cur);
 
-            //cur->next = temp->next;
+            }));
 
-            
-            ////reposition in accordance to animation
-            //animManager.addAnimation(new Animation(0.5f, [this, cur, &temp]() {
-            //    adjustPos(cur);
-            //    delete temp;
-            //    temp = nullptr;
-            //    }));
-            //
-            
+                
+
             return true;
         }
         cur = cur->next;
@@ -157,9 +198,11 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
             cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
             };
         temp->next = head;
-        adjustPos(temp);
+        adjustPosWithAnim2(animManager,temp);
 		animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
+        temp->noDraw = true;
         CBEdge::addEdgeAndAnim(animManager,Edges, temp, head);
+        Edges.back()->noDraw = true;
         head = temp;
         return;
     }
@@ -170,7 +213,7 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
         for (auto& edge : Edges) {
-            if (edge->from == cur && edge->to == cur->next){
+            if (edge->from == cur && edge->to == cur->next) {
                 animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
                 break;
             }
@@ -237,10 +280,10 @@ void LinkedList::insertnode(AnimationManager& animManager,int x, int pos) {
     newnode->next = next;
 
     //reposition in accordance to animation
-    animManager.addAnimation(new Animation(0.5f, [this,newnode]() {
+    /*animManager.addAnimation(new Animation(0.5f, [this,newnode]() {
 		adjustPos(newnode);
-        }));
-    
+        }));*/
+    adjustPosWithAnim2(animManager, newnode);
 
     // Add next edge
     CBEdge::addEdgeAndAnim(animManager,Edges, newnode, next);

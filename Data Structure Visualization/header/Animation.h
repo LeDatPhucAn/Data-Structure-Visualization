@@ -11,9 +11,10 @@ public:
     float elapsed;
     bool completed;
     std::function<void()> Function;
-	Animation() : duration(0), elapsed(0), completed(false) {};
-    Animation(float dur) : duration(dur), elapsed(0), completed(false),Function(nullptr) {};
-	Animation(float dur, std::function<void()> func) : duration(dur), elapsed(0), completed(false), Function(func) {};
+    bool FunctionActivated;
+	Animation() : duration(0), elapsed(0), completed(false), FunctionActivated(false){};
+    Animation(float dur) : duration(dur), elapsed(0), completed(false),Function(nullptr), FunctionActivated(false) {};
+	Animation(float dur, std::function<void()> func) : duration(dur), elapsed(0), completed(false), Function(func), FunctionActivated(false) {};
     virtual ~Animation() = default;
     virtual void handleReposition() {};
     virtual void update(float deltaTime);
@@ -91,7 +92,32 @@ public:
 	}
 	void applyState() override;
 };
+// Make CircleButton grow from 0 to its original size
+class CircleInitializeAnim : public Animation {
+private:
+    CircleButton* button;
+    float startRadius;
+    float endRadius;
+public:
+    CircleInitializeAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
+        startRadius = 0;
+        endRadius = btn->getRadius();
+    };
+    void applyState() override;
+};
 
+class CircleRemoveAnim : public Animation {
+private:
+    CircleButton* button;
+    float startRadius;
+    float endRadius;
+public:
+    CircleRemoveAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
+        startRadius = btn->getRadius();
+        endRadius = 0;
+    };
+    void applyState() override;
+};
 // HighLight Circle Button
 class CircleHighLightAnim : public Animation {
 protected:
@@ -134,8 +160,8 @@ protected:
     float endX, endY;
 public:
 	virtual ~CircleMoveAnim() = default;
-    CircleMoveAnim(CircleButton* btn, float duration)
-        : Animation(duration), button(btn) {
+    CircleMoveAnim(CircleButton* btn, float duration, std::function<void()> func = nullptr)
+        : Animation(duration,func), button(btn) {
         startX = 0;
         startY = 0;
         endX = btn->getCenterX();
@@ -185,16 +211,16 @@ public:
 	// Constructor with start position
 	// sX is the start x position
 	// the ending position is the original center of the circle (or circle position)
-    CircleMoveXAnim(CircleButton* btn, float duration, float sX)
-        : Animation(duration), startX(sX), button(btn) {
+    CircleMoveXAnim(CircleButton* btn, float duration, float sX, std::function<void()> func = nullptr)
+        : Animation(duration,func), startX(sX), button(btn) {
         endX = btn->getCenterX();
     }
 	// Constructor with start and end positions
 	// sX is the start x position
 	// eX is the end x position
 
-    CircleMoveXAnim(CircleButton* btn, float duration, float sX, float eX)
-        : Animation(duration), startX(sX), endX(eX), button(btn) {
+    CircleMoveXAnim(CircleButton* btn, float duration, float sX, float eX, std::function<void()> func = nullptr)
+        : Animation(duration,func), startX(sX), endX(eX), button(btn) {
     }
     void handleReposition() override{
         endX = button->getCenterX();
@@ -261,31 +287,7 @@ public:
     void applyState() override;
 };
 
-// Make CircleButton grow from 0 to its original size
-class CircleInitializeAnim : public Animation {
-private:
-    CircleButton* button;
-    float startRadius;
-    float endRadius;
-public:
-    CircleInitializeAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
-        startRadius = 0;
-        endRadius = btn->getRadius();
-    };
-    void applyState() override;
-};
-class CircleRemoveAnim : public Animation {
-private:
-    CircleButton* button;
-    float startRadius;
-    float endRadius;
-public:
-    CircleRemoveAnim(CircleButton* btn, float duration) : button(btn), Animation(duration) {
-        startRadius = btn->getRadius();
-        endRadius = 0;
-    };
-    void applyState() override;
-};
+
 
 class NodeInitializeAnimation : public Animation {
 private:

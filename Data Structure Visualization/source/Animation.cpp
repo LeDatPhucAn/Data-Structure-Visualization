@@ -14,23 +14,30 @@ void Animation::clamp() {
 }
 void Animation::update(float deltaTime) {
     elapsed += deltaTime;
-    if (Function) Function();
+    if (!FunctionActivated && Function) {
+        Function();
+        FunctionActivated = true;
+    }
     clamp();
     applyState();
 }
 void Animation::setTime(float t) {
     elapsed = t;
-    if (Function) Function();
+    if (!FunctionActivated && Function) {
+        Function();
+        FunctionActivated = true;
+    }
     clamp();
     applyState();
 }
 
 
 void CircleHighLightAnim::applyState() {
-        float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
-        button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
-        button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
-        button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
+    button->noDraw = false;
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    button->OgTextColor = UI::interpolateColors(startTC, endTC, easedT);
+    button->OgFillColor = UI::interpolateColors(startFC, endFC, easedT);
+    button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
 }
 
 void CBEdgeHighLightAnim::applyState() {
@@ -52,7 +59,7 @@ void CircleInitializeAnim::applyState() {
     button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
 }
 void CircleRemoveAnim::applyState() {
-    button->setRadius(EaseBackOut(elapsed, startRadius, endRadius - startRadius, duration));
+    button->setRadius(EaseElasticIn(elapsed, startRadius, endRadius - startRadius, duration));
 }
 
 void NodeInitializeAnimation::applyState() {

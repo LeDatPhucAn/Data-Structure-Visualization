@@ -17,6 +17,7 @@ public:
     }
     void adjustPos(LLNode* head);
     void adjustPosWithAnim(AnimationManager& animManager, LLNode* head);
+    void adjustPosWithAnim2(AnimationManager& animManager, LLNode* head);
     void insertnode(AnimationManager& animManager, int x, int pos);
     void randominsert(int x, int pos);
     void loadFromFile();

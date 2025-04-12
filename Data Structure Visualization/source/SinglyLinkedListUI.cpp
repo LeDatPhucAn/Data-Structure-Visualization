@@ -4,7 +4,7 @@
 
 void SinglyLinkedListUI::insert(int x, int pos) {
     animManager.clear();
-    linkedlist.insertnode(animManager,x, pos);
+    linkedlist.insertnode(CodeBlocks,animManager,x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
 	animManager.clear();
@@ -13,27 +13,8 @@ void SinglyLinkedListUI::remove(int x) {
 
 bool SinglyLinkedListUI::search(int x) {
     animManager.clear();
-    LLNode* cur = linkedlist.head;
-    while (cur) {
-		if (cur->getNumber() == x) {
-            animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN));
-            return true;
-		}
-
-		// Highlight the current node
-        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
-
-        for (auto& edge : linkedlist.Edges) {
-            if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
-				break;
-            }
-        }
-
-        cur = cur->next;
-    }
-	
-    return false;
+    return linkedlist.search(CodeBlocks,animManager,x);
+    
 }
 void SinglyLinkedListUI::drawlinkedlist() {
     LLNode* cur = linkedlist.head;

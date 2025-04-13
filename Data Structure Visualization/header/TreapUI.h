@@ -29,7 +29,7 @@ private:
     void clear(TreapNode* root);
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
     void drawTreapNode(TreapNode* curr);
-    void drawTreapLink(Edge* edge);
+    void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);
 public:
     void insert(int key, int priority = rand());

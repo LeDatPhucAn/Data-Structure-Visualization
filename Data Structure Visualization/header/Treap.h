@@ -8,8 +8,8 @@
 
 class TreapNode : public Node {
 public:
-    Edge* leftEdge;
-    Edge* rightEdge;
+    TreapEdge* leftEdge;
+    TreapEdge* rightEdge;
     int subtreeWidth;
 	NumberInputBox* keyBox = nullptr;
     NumberInputBox* priorityBox = nullptr;
@@ -27,28 +27,4 @@ public:
     void update();
 	void draw();
     Vector2 getMousePos() const;
-};
-
-class Treap {
-protected:
-	TreapNode* root;
-private:
-	TreapNode* rotateLeft(TreapNode* root);
-	TreapNode* rotateRight(TreapNode* root);
-	void clear(TreapNode* root);
-public:
-	Treap() : root(nullptr) {
-		srand(time(nullptr));
-	}
-	~Treap() {
-		clear(root);
-		root = nullptr;
-	}
-	TreapNode* getRoot();
-	int getSubtreeWidth(TreapNode* curr);
-	void updateSubtreeWidth(TreapNode* curr);
-	TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
-	TreapNode* search(TreapNode* root, int key);
-	TreapNode* remove(TreapNode* root, int key);
-	void clear();
 };

@@ -8,7 +8,7 @@ void SinglyLinkedListUI::insert(int x, int pos) {
 }
 void SinglyLinkedListUI::remove(int x) {
 	animManager.clear();
-    linkedlist.remove(animManager,x);
+    linkedlist.remove(CodeBlocks,animManager,x);
 }
 
 bool SinglyLinkedListUI::search(int x) {

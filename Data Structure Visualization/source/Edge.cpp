@@ -160,10 +160,10 @@ void CBEdge::removeEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& E
 	for (int i = 0; i < Edges.size(); i++) {
 		if (Edges[i]->from == from && Edges[i]->to == to) {
 			//highlight the edge
-			animManager.addAnimation(new CBEdgeHighLightAnim(Edges[i], 1, RED));
+			animManager.addAnimation(new CBEdgeHighLightAnim(Edges[i], 0.5f, RED));
 
 			//animate removal
-			animManager.addAnimation(new CBEdgeRemoveAnim(Edges[i], 1));
+			animManager.addAnimation(new CBEdgeRemoveAnim(Edges[i], 0.5f));
 			break;
 		}
 	}

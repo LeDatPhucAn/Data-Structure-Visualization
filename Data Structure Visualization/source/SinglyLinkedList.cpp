@@ -77,38 +77,106 @@ void LinkedList::adjustPosWithAnim2(AnimationManager& animManager,LLNode* pHead)
     }
 }
 
-bool LinkedList::remove(AnimationManager& animManager, int x) {
-    if (!head) return false;
-    if (head && head->getNumber() == x) {
-        LLNode* del = head;
+bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
 
-        animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, GREEN, RAYWHITE, GREEN));
 
-        // delay by 1 second
-        animManager.addAnimation(new Animation(1.0f));
+
+        // "if (head == nullptr)\n"          // line 1
+        // "   return false;"                // line 2
+        // "if (head->data == Value)\n"      // line 3
+        // "  Node del = head;\n"            // line 4
+        // "  head = head->next;\n"          // line 5
+        // "  delete del;\n"                 // line 6
+        // "  return true;\n"                // line 7
+    
         
-        animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, RAYWHITE, RAYWHITE, RAYWHITE));
+    
 
-        animManager.addAnimation(new Animation(0.1f, [this, &animManager,del]() {
+    if (!head) {
+        // highlight line 1
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+            CodeBlocks[1]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+            CodeBlocks[1]->unhighlight();
+            CodeBlocks[2]->highlight();
+            }));
+        return false;
+    }
+
+    if (head->getNumber() == x) {
+        LLNode* del = head;
+        // highlight line 1
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,del]() {
+            CodeBlocks[1]->highlight();
+            del->indicateNode = "head";
+            }));
+        // line 3
+        animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, GREEN, RAYWHITE, GREEN, [&CodeBlocks,del]() {
+            CodeBlocks[1]->unhighlight();
+            CodeBlocks[3]->highlight();
+            }));
+
+        
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, del] {
+            CodeBlocks[3]->unhighlight();
+            CodeBlocks[4]->highlight();
+            del->indicateNode = "del == head";
+            }));
+        animManager.addAnimation(new Animation(0.5f, [&animManager,&CodeBlocks, del] {
+            CodeBlocks[4]->unhighlight();
+            CodeBlocks[5]->highlight();
+            del->indicateNode = "del";
+            }));
+        if (del->next) 
+        {
+            animManager.addAnimation(new Animation(0.1f, [del]() {
+                del->next->indicateNode = "head";
+                }));
+            CBEdge::removeEdgeAndAnim(animManager, Edges, del, del->next);
+        }
+
+        animManager.addAnimation(new CircleHighLightAnim(del, 0.5f, RAYWHITE, RAYWHITE, RAYWHITE, [&CodeBlocks, del] {
+            CodeBlocks[5]->unhighlight();
+            CodeBlocks[6]->highlight();
+            }));
+        if (!del->next) {
+            animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, del,this]() {
+                head = head->next;
+                delete del;
+                CodeBlocks[6]->unhighlight();
+                CodeBlocks[7]->highlight();
+                }));
+            return true;
+        }
+        animManager.addAnimation(new Animation(0.1f, [this, &animManager,del, &CodeBlocks]() {
         
             head = head->next;
 
             if (head) {
 
-                CBEdge::removeEdgeAndAnim(animManager, Edges, del, head);
+                //CBEdge::removeEdgeAndAnim(animManager, Edges, del, head);
 
                 //reposition
-                animManager.addAnimation(new Animation(0.1f, [&animManager,this,del]() {
-                    delete del;
+                animManager.addAnimation(new Animation(0.2f, [&animManager,this,del, &CodeBlocks]() {
                     head->setCenterX(100);
                     adjustPosWithAnim(animManager,head);
                     }));
 
+                animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, del]() {
+                    delete del;
+                    CodeBlocks[6]->unhighlight();
+                    CodeBlocks[7]->highlight();
+                    }));
             }
             }));
 
+        
         return true;
     }
+
+
+
     LLNode* cur = head;
     while (cur->next) {
 
@@ -274,6 +342,7 @@ void LinkedList::clear() {
     deletelist();
     deleteEdges();
 }
+
 void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager,int x, int pos) {
     if (pos < 1) {
         return;
@@ -387,7 +456,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
         newnode->noDraw = true;
 
         // highlight line 5
-        animManager.addAnimation(new Animation(5.0f, [newnode,cur]() {
+        animManager.addAnimation(new Animation(3.0f, [newnode,cur]() {
             cur->indicateNode = "";
             newnode->indicateNode = "Because pos > size of list,\n this is an insert tails";
             }));

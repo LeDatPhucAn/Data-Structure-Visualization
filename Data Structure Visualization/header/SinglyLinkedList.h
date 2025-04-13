@@ -22,7 +22,7 @@ public:
     void insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int pos);
     void randominsert(int x, int pos);
     void loadFromFile();
-    bool remove(AnimationManager& animManager, int x);
+    bool remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
     bool search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
     void printlist();
     void deletelist();

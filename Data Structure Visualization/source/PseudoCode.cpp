@@ -10,15 +10,18 @@ namespace PseudoCode {
         "  Node cur = head;\n"
         "  for (int i = 1; i < pos-1; i++)\n"
         "    cur = cur->next;\n"
-        "  Node InsertedNode = new Node;\n"
+        "  Node InsertedNode = new Node(Value);\n"
         "  InsertedNode->next = cur->next;\n"
         "  cur->next = InsertedNode;\n";
 
     std::string LLRemove =
-        "If list is empty, return false\n"
-        "If head node's data is x:\n"
-        "  Remove head node\n"
-        "  Return true\n"
+        "if (head == nullptr)\n"
+        "   return false;\n"  
+        "if (head->data == Value)\n"
+        "  Node del = head;\n"
+        "  head = head->next;\n"
+        "  delete del;\n"
+        "  return true;\n"
         "Else:\n"
         "  Traverse to find node whose next node's data is x\n"
         "  If node found:\n"

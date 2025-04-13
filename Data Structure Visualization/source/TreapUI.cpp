@@ -25,6 +25,24 @@ TreapNode* TreapUI::rotateLeft(TreapNode* root) {
     return newRoot;
 }
 
+TreapNode* TreapUI::rotateLeftWithAnimation(TreapNode* root) {
+    TreapEdge* oldRightEdge = root->rightEdge;
+    if (!oldRightEdge) return root;
+
+    TreapNode* newRoot = oldRightEdge->to;
+    animManager.addAnimation(new TreapNodeMoveAnim(newRoot, 0.4f, newRoot->position, root->position));
+
+    TreapNode* movedLeft = newRoot->leftEdge ? newRoot->leftEdge->to : nullptr;
+
+    delete root->rightEdge;
+    root->rightEdge = movedLeft ? new TreapEdge(root, movedLeft) : nullptr;
+
+    delete newRoot->leftEdge;
+    newRoot->leftEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
+}
+
 TreapNode* TreapUI::rotateRight(TreapNode* root) {
     TreapEdge* oldLeftEdge = root->leftEdge;
     if (!oldLeftEdge) return root;
@@ -38,6 +56,24 @@ TreapNode* TreapUI::rotateRight(TreapNode* root) {
     delete temp;
     delete oldLeftEdge;
 
+    newRoot->rightEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
+}
+
+TreapNode* TreapUI::rotateRightWithAnimation(TreapNode* root) {
+    TreapEdge* oldLeftEdge = root->leftEdge;
+    if (!oldLeftEdge) return root;
+
+    TreapNode* newRoot = oldLeftEdge->to;
+    animManager.addAnimation(new TreapNodeMoveAnim(newRoot, 0.4f, newRoot->position, root->position));
+
+    TreapNode* movedRight = static_cast<TreapNode*>(newRoot->rightEdge ? newRoot->rightEdge->to : nullptr);
+
+    delete root->leftEdge;
+    root->leftEdge = movedRight ? new TreapEdge(root, movedRight) : nullptr;
+
+    delete newRoot->rightEdge;
     newRoot->rightEdge = new TreapEdge(newRoot, root);
 
     return newRoot;
@@ -75,7 +111,7 @@ TreapNode* TreapUI::insert(TreapNode* root, Vector2 pos, int key, int priority) 
     }
 
     updateSubtreeWidth(root);
-    return root;
+    return root;    
 }
 
 TreapNode* TreapUI::remove(TreapNode* root, int key) {
@@ -151,8 +187,9 @@ void TreapUI::clear(TreapNode* curr) {
 }
 
 void TreapUI::insert(int key, int priority) {
+    animManager.clear();
     root = insert(root, ROOT_POS, key, priority);
-    reposition(root, ROOT_POS, xOffset, yOffset);
+    repositionWithAnimation(root, ROOT_POS, xOffset, yOffset);
 }
 
 void TreapUI::loadFromFile(){
@@ -228,21 +265,62 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     // Position the visual button correctly by setting top-left corner
     float rectX = pos.x - root->keyBox->getWidth() / 2;
     float rectY = pos.y - root->keyBox->getHeight() / 2;
-    root->setVisualPosition(rectX, rectY);  // this will also update root->position
+    root->position = { rectX, rectY };
+    root->syncPosition();
 
-    int leftWidth = getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
-    int rightWidth = getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
+    nodes.push_back(root);
+    if (root->leftEdge) edges.push_back(root->leftEdge);
+    if (root->rightEdge) edges.push_back(root->rightEdge);
 
-    int newXOffset = std::max((leftWidth + rightWidth + 1) * 40, 80);
-
+    int leftWidth = getSubtreeWidth(root->leftEdge ? root->leftEdge->to : nullptr);
+    int rightWidth = getSubtreeWidth(root->rightEdge ? root->rightEdge->to : nullptr);
+    int newXOffset = max((leftWidth + rightWidth + 1) * 40, 80);
+    
     if (root->leftEdge) {
         Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
-        reposition(static_cast<TreapNode*>(root->leftEdge->to), leftPos, newXOffset, yOffset);
+        reposition(root->leftEdge->to, leftPos, newXOffset, yOffset);
     }
 
     if (root->rightEdge) {
         Vector2 rightPos = { pos.x + newXOffset, pos.y + yOffset };
-        reposition(static_cast<TreapNode*>(root->rightEdge->to), rightPos, newXOffset, yOffset);
+        reposition(root->rightEdge->to, rightPos, newXOffset, yOffset);
+    }
+}
+
+void TreapUI::repositionWithAnimation(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
+    if (!root) return;
+
+    // Position the visual button correctly by setting top-left corner
+    float rectX = pos.x - root->keyBox->getWidth() / 2;
+    float rectY = pos.y - root->keyBox->getHeight() / 2;
+    Vector2 newPos = { rectX, rectY };  
+
+    if (root->position.x != newPos.x || root->position.y != newPos.y) {
+        Vector2 prevPos = root->position;
+        root->position = newPos;
+        animManager.addAnimation(new TreapNodeMoveAnim(root, 0.3f, prevPos, newPos));
+    }
+    else {
+        root->position = newPos;
+        root->syncPosition();
+    }
+
+    nodes.push_back(root);
+    if (root->leftEdge) edges.push_back(root->leftEdge);
+    if (root->rightEdge) edges.push_back(root->rightEdge);
+
+    int leftWidth = getSubtreeWidth(root->leftEdge ? root->leftEdge->to : nullptr);
+    int rightWidth = getSubtreeWidth(root->rightEdge ? root->rightEdge->to : nullptr);
+    int newXOffset = max((leftWidth + rightWidth + 1) * 40, 80);
+
+    if (root->leftEdge) {
+        Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
+        reposition(root->leftEdge->to, leftPos, newXOffset, yOffset);
+    }
+
+    if (root->rightEdge) {
+        Vector2 rightPos = { pos.x + newXOffset, pos.y + yOffset };
+        reposition(root->rightEdge->to, rightPos, newXOffset, yOffset);
     }
 }
 
@@ -274,6 +352,8 @@ void TreapUI::drawTreap(TreapNode* curr) {
 
 void TreapUI::init() {
     srand(time(nullptr));
+    nodes.reserve(100);
+    edges.reserve(100);
     int n = rand() % 10;
     for (int i = 0; i < n; ++i) {
         int x = rand() % 100;
@@ -378,6 +458,9 @@ void TreapUI::updateButtonPositions() {
 void TreapUI::updateScene() {
     animManager.update(GetFrameTime());
 
+    nodes.clear();
+    edges.clear();
+
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 
@@ -385,8 +468,8 @@ void TreapUI::updateScene() {
     std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {
         if (!node) return;
         node->update();
-        if (node->leftEdge) updateTreapNodes(static_cast<TreapNode*>(node->leftEdge->to));
-        if (node->rightEdge) updateTreapNodes(static_cast<TreapNode*>(node->rightEdge->to));
+        if (node->leftEdge) updateTreapNodes(node->leftEdge->to);
+        if (node->rightEdge) updateTreapNodes(node->rightEdge->to);
         };
     updateTreapNodes(root);
 

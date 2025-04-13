@@ -75,6 +75,9 @@ void CircleMoveAnim::applyState() {
 void CircleMoveXAnim::applyState() {
     button->setCenterX(EaseExpoOut(elapsed, startX, endX - startX, duration));
 }
+void CircleMoveYAnim::applyState() {
+    button->setCenterY(EaseExpoOut(elapsed, startY, endY - startY, duration));
+}
 
 void RectMoveAnim::applyState() {
     button->rect.x = EaseSineOut(elapsed, startX, endX - startX, duration);

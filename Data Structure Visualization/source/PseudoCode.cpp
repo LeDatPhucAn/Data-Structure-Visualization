@@ -14,19 +14,25 @@ namespace PseudoCode {
         "  InsertedNode->next = cur->next;\n"
         "  cur->next = InsertedNode;\n";
 
-    std::string LLRemove =
+    std::string LLRemoveHead =
         "if (head == nullptr)\n"
-        "   return false;\n"  
+        "   return false;\n"
         "if (head->data == Value)\n"
         "  Node del = head;\n"
         "  head = head->next;\n"
         "  delete del;\n"
-        "  return true;\n"
-        "Else:\n"
-        "  Traverse to find node whose next node's data is x\n"
-        "  If node found:\n"
-        "    Set current node's next to next node's next\n"
-        "    Delete node with data x\n";
+        "  return true;\n";
+
+    std::string LLRemoveBody =
+        "Node cur = head;\n"
+        "while(cur->next!=nullptr)\n"
+        "  if (cur->next->data == Value)\n"
+        "    Node del = cur->next;\n"
+        "    cur->next = del->next;\n"
+        "    delete del;\n"
+        "    return true;\n"
+        "  cur = cur->next\n"
+        "return false;\n";
 
     std::string LLSearch =
         "Node cur = head;\n"

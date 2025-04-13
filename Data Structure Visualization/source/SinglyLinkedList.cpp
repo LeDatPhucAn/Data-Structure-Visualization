@@ -2,6 +2,7 @@
 #include "../header/Edge.h"
 #include "../header/Animation.h"
 #include "../header/tinyfiledialogs.h"
+#include "../header/PseudoCode.h"
 #include <fstream>
 vector<CBEdge*> LinkedList::Edges;
 
@@ -80,16 +81,21 @@ void LinkedList::adjustPosWithAnim2(AnimationManager& animManager,LLNode* pHead)
 bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
 
 
+    clearIndicates();
 
-        // "if (head == nullptr)\n"          // line 1
-        // "   return false;"                // line 2
-        // "if (head->data == Value)\n"      // line 3
-        // "  Node del = head;\n"            // line 4
-        // "  head = head->next;\n"          // line 5
-        // "  delete del;\n"                 // line 6
-        // "  return true;\n"                // line 7
-    
-        
+
+    RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLRemoveHead);
+        ///////////Remove Head://////////////////
+        // 
+        // 
+        //"if (head == nullptr)\n"                      // line 1
+        //"   return false;\n"                          // line 2
+        //"if (head->data == Value)\n"                  // line 3
+        //"  Node del = head;\n"                        // line 4
+        //"  head = head->next;\n"                      // line 5
+        //"  delete del;\n"                             // line 6
+        //"  return true;\n"                            // line 7
+        // 
     
 
     if (!head) {
@@ -175,13 +181,58 @@ bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animM
         return true;
     }
 
+        
 
+        
 
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,this]() {
+        CodeBlocks[1]->highlight();
+        head->indicateNode = "head";
+        }));
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+        CodeBlocks[1]->unhighlight();
+        CodeBlocks[3]->highlight();
+        }));
+    
+
+    // change PseudoCode to LLRemoveBody
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLRemoveBody);
+        }));
+
+    ///////////Remove Body://////////////////
+        // 
+        //"Node cur = head;\n"                          // line 1
+        //"while(cur->next!=nullptr)\n"                 // line 2
+        //"  if (cur->next->data == Value)\n"           // line 3
+        //"    Node del = cur->next;\n"                 // line 4
+        //"    cur->next = del->next;\n"                // line 5
+        //"    delete del;\n"                           // line 6
+        //"    return false;\n"                         // line 7
+        //"  cur = cur->next\n";                        // line 8
+        //"return false;\n";                            // line 9
+   
+    /// highlighting the removal of a node in the body
     LLNode* cur = head;
+
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,cur]() {
+        CodeBlocks[1]->highlight();
+        cur->indicateNode = "cur == head";
+        }));
+    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks,cur]() {
+        CodeBlocks[1]->unhighlight();
+        }));
+
     while (cur->next) {
 
         // animate traversal
-        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f));
+        // highlight line 2
+        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks,cur]() {
+            CodeBlocks[8]->unhighlight();
+            CodeBlocks[2]->highlight();
+            cur->indicateNode = "cur";
+            cur->next->indicateNode = "cur->next";
+            }));
         for (auto& edge : Edges) {
             if (edge->from == cur && edge->to == cur->next) {
                 animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
@@ -193,31 +244,79 @@ bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animM
 
             LLNode* temp = cur->next;
 
-            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN));
+            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f, GREEN, RAYWHITE, GREEN,[&CodeBlocks,temp]() {
+                CodeBlocks[2]->unhighlight();
+                CodeBlocks[3]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, temp]() {
+                CodeBlocks[3]->unhighlight();
+                CodeBlocks[4]->highlight();
+                temp->indicateNode = "del";
+                }));
+            
+            animManager.addAnimation(new CircleMoveYAnim(temp, 0.5f, temp->getCenterY(), 400, [&CodeBlocks,&animManager,cur,temp]() {
+                CodeBlocks[4]->unhighlight();
+                CodeBlocks[5]->highlight();
+                if (temp->next)temp->next->indicateNode = "del->next";
+                }));
+
+            
 
             CBEdge::removeEdgeAndAnim(animManager,Edges, cur, temp);
-
+            CBEdge::addEdgeAndAnim(animManager, Edges, cur, temp->next);
+            Edges.back()->noDraw = true;
             CBEdge::removeEdgeAndAnim(animManager,Edges, temp, temp->next);
 
 
-            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,RAYWHITE,RAYWHITE,RAYWHITE));
+            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f, RAYWHITE, RAYWHITE, RAYWHITE, [&CodeBlocks] {
+                CodeBlocks[5]->unhighlight();
+                CodeBlocks[6]->highlight();
 
-            animManager.addAnimation(new Animation(0.1f, [this,&animManager,cur,temp]() {
+                }));
 
-                cur->next = temp->next;
-                CBEdge::addEdgeAndAnim(animManager, Edges, cur, cur->next);
+            animManager.addAnimation(new Animation(0.1f, [this, &animManager, &CodeBlocks, cur,temp]() {
+                
+                if (cur) {
+                    cur->next = temp->next;
+                    if (cur->next) cur->next->indicateNode = "";
+                }
+
                 delete temp;
                 //reposition
                 adjustPosWithAnim(animManager,cur);
-
+                CodeBlocks[6]->unhighlight();
+                CodeBlocks[7]->highlight();
             }));
-
-                
 
             return true;
         }
+
+
+        // highlight line 8
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,cur]() {
+            CodeBlocks[2]->unhighlight();
+            CodeBlocks[8]->highlight();
+            cur->indicateNode = "";
+            if (cur->next) cur->next->indicateNode = "cur == cur->next";
+            }));
         cur = cur->next;
     }
+    animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks, cur]() {
+        CodeBlocks[8]->unhighlight();
+        CodeBlocks[2]->highlight();
+        cur->indicateNode = "cur";
+        }));
+
+    for (auto& edge : Edges) {
+        if (edge->from == cur && edge->to == cur->next) {
+            animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE));
+            break;
+        }
+    }
+    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+        CodeBlocks[2]->unhighlight();
+        CodeBlocks[9]->highlight();
+        }));
     return false;
 }
 
@@ -458,7 +557,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
         // highlight line 5
         animManager.addAnimation(new Animation(3.0f, [newnode,cur]() {
             cur->indicateNode = "";
-            newnode->indicateNode = "Because pos > size of list,\n this is an insert tails";
+            newnode->indicateNode = "Because pos > size of list,\n this is gonna visualize insert tails";
             }));
         Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
         InsertNode->Function = [newnode, &CodeBlocks]() {

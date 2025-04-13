@@ -227,6 +227,39 @@ public:
     }
     void applyState() override;
 };
+class CircleMoveYAnim : public Animation {
+private:
+    
+protected:
+    CircleButton* button;
+    float startY;
+    float endY;
+public:
+	virtual ~CircleMoveYAnim() = default;
+    CircleMoveYAnim(CircleButton* btn, float duration)
+        : Animation(duration), button(btn) {
+        startY = 0;
+        endY = btn->getCenterY();
+    }
+	// Constructor with start position
+	// sY is the start y position
+	// the ending position is the original center of the circle (or circle position)
+    CircleMoveYAnim(CircleButton* btn, float duration, float sY, std::function<void()> func = nullptr)
+        : Animation(duration,func), startY(sY), button(btn) {
+        endY = btn->getCenterY();
+    }
+	// Constructor with start and end positions
+	// sY is the start y position
+	// eY is the end y position
+
+    CircleMoveYAnim(CircleButton* btn, float duration, float sY, float eY, std::function<void()> func = nullptr)
+        : Animation(duration,func), startY(sY), endY(eY), button(btn) {
+    }
+    void handleReposition() override{
+        endY = button->getCenterY();
+    }
+    void applyState() override;
+};
 
 // Move RectButton in both x and y directions
 class RectMoveAnim : public Animation {

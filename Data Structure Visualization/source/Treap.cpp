@@ -15,7 +15,7 @@ TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), le
     priorityBox->TextColor = MAROON;
     priorityBox->OutLineColor = DARKGRAY;
 
-    //syncPosition();
+    syncPosition();
 }
 
 TreapNode::~TreapNode() {

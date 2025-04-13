@@ -16,11 +16,15 @@ private:
     TreapNode* root = nullptr;
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
+    vector<TreapNode*> nodes;
+    vector<TreapEdge*> edges;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 8;
     TreapNode* rotateLeft(TreapNode* root);
+    TreapNode* rotateLeftWithAnimation(TreapNode* root);
     TreapNode* rotateRight(TreapNode* root);
+    TreapNode* rotateRightWithAnimation(TreapNode* root);
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);
     TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
@@ -28,6 +32,7 @@ private:
     TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
+    void repositionWithAnimation(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);

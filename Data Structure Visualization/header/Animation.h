@@ -150,27 +150,6 @@ public:
     void applyState() override;
 };
 
-// Highlight Rectangle Button
-class RectHighlightAnim : public Animation {
-public:
-    NumberInputBox* button;
-    Color startFill, endFill;
-    Color startOutline, endOutline;
-    Color startText, endText;
-    RectHighlightAnim(NumberInputBox*, float, Color, Color, Color);
-    void applyState() override;
-    void resetColor() override;
-};
-
-class TreapEdgeHighlightAnim : public Animation {
-public:
-    TreapEdge* edge;
-    Color start, end;
-    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE) : Animation(duration), edge(e), start(edge->edgeColor), end(ec){}
-    void applyState() override;
-    void resetColor() override;
-};
-
 // Move CircleButton in both x and y directions
 class CircleMoveAnim : public Animation {
 private:
@@ -323,5 +302,34 @@ public:
     void applyState() override;
 };
 
+class RectHighlightAnim : public Animation {
+public:
+    NumberInputBox* button;
+    Color startFill, endFill;
+    Color startOutline, endOutline;
+    Color startText, endText;
+    RectHighlightAnim(NumberInputBox*, float, Color, Color, Color);
+    void applyState() override;
+    void resetColor() override;
+};
 
+class TreapEdgeHighlightAnim : public Animation {
+public:
+    TreapEdge* edge;
+    Color start, end;
+    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE) : Animation(duration), edge(e), start(edge->edgeColor), end(ec) {}
+    void applyState() override;
+    void resetColor() override;
+};
+
+#include "Treap.h" // Add this include to resolve the incomplete type error
+class TreapNodeMoveAnim : public Animation {
+public:
+    TreapNode* node;
+    Vector2 startPos;
+    Vector2 endPos;
+    TreapNodeMoveAnim(TreapNode* n, float duration, Vector2 sp, Vector2 ep) : Animation(duration), node(n), startPos(sp), endPos(ep){}
+    void applyState() override;
+    void handleReposition() override;
+};
 

@@ -4,10 +4,6 @@
 Vector2 SceneHandler::mouseWorldPos = { 0, 0 };
 SceneHandler::SceneHandler() {
 
-    // initialize Scene Buttons
-    initButtons();
-
-
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
@@ -20,6 +16,9 @@ SceneHandler::SceneHandler() {
 
     // Initialize other scenes as needed
     changeScene(MENU);
+
+    // initialize Scene Buttons
+    initButtons();
 }
 
 SceneHandler::~SceneHandler() {
@@ -40,8 +39,8 @@ void SceneHandler::initButtons() {
     MenuButton->animation = new RectMoveXAnim(dynamic_cast<RectButton*>(MenuButton), 0.5);
     SceneButtons.push_back(MenuButton);
     
-	// Pause animations
-    CircleButton* Pause = new TextureCircle(UI::Icons[4], { (float)UI::screenWidth / 2 , (float)UI::screenHeight - 100 }, 60.0f);
+	// Pause or play animations
+    CircleButton* Pause = new PlayButton(this,UI::Icons[4], { (float)UI::screenWidth / 2 , (float)UI::screenHeight - 100 }, 60.0f);
     Pause->onClick = [this]() {
         if (!currentSceneObject->animManager.isPaused())currentSceneObject->animManager.pause();
         else currentSceneObject->animManager.resume();
@@ -57,7 +56,8 @@ void SceneHandler::initButtons() {
         55.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
     
     GoPrevious->onClick = [this]() {
-        currentSceneObject->animManager.goToPrevious();
+        currentSceneObject->clearIndicatesAndHighlights();
+        currentSceneObject->animManager.goToPreviousStep();
         };
     SceneButtons.push_back(GoPrevious);
     
@@ -70,7 +70,8 @@ void SceneHandler::initButtons() {
         55.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
     
     GoNext->onClick = [this]() {
-        currentSceneObject->animManager.goToNext();
+        currentSceneObject->clearIndicatesAndHighlights();
+        currentSceneObject->animManager.goToNextStep();
         };
     SceneButtons.push_back(GoNext);
 
@@ -109,6 +110,7 @@ void SceneHandler::initButtons() {
     SceneButtons.push_back(SetSpeed);
     SetSpeed->animation = new RectMoveXAnim(SetSpeed, (float)UI::screenWidth, 0.5f);
 }
+
 int SceneHandler::getCurrentScene() {
     return currentSceneObject->CurrentScene;
 }
@@ -116,6 +118,7 @@ int SceneHandler::getCurrentScene() {
 void SceneHandler::changeScene(Scene newScene) {
     Button::resetButtonsAnimations<Button>(SceneButtons);
     Button::resetButtonsAnimations<RectButton>(rightSideButtons);
+
     if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
     currentSceneObject->CurrentScene = newScene;

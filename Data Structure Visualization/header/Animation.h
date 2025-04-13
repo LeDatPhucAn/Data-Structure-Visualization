@@ -22,15 +22,8 @@ public:
     virtual bool isCompleted() {
         return completed;
     }
-    virtual void reset() {
-        elapsed = 0.0f;
-        completed = false;
-
-    }
-	virtual void makeComplete() {
-		elapsed = duration;
-		completed = true;
-	}
+    virtual void reset();
+    virtual void makeComplete();
     virtual float getProgress() const {
         return elapsed;
     }

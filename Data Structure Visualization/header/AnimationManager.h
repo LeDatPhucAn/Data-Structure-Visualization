@@ -61,6 +61,16 @@ public:
 
     // Go to the start of the previous animation
     void goToPrevious();
+
+    void goToStep(int k);           // Go to step k
+
+    void goToFirstStep();          // Go to initial state
+
+    void goToLastStep();           // Go to final state
+
+    void goToPreviousStep();       // Go to previous step
+
+    void goToNextStep();           // Go to next step
 private:
     // Update the state of the active animation based on currentTime
     void updateActiveAnimation();

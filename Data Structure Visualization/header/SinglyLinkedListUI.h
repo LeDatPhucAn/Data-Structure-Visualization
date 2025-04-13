@@ -24,6 +24,8 @@ public:
     void insert(int x, int pos);
     void remove(int x);
     bool search(int x);
+
+    void clearIndicatesAndHighlights() override;
     void init() override;
     void initButtons() override;
 	void resetAnimations() override;

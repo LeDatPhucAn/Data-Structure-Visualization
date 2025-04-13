@@ -45,11 +45,12 @@ void UI::initTextures() {
 
 
 	// Icons
-	Icons.push_back(LoadTexture("assets/Icons/rightarrow.png"));
-	Icons.push_back(LoadTexture("assets/Icons/Sprite.png"));
-	Icons.push_back(LoadTexture("assets/Backgrounds/technoBG.jpg"));
-	Icons.push_back(LoadTexture("assets/Backgrounds/DSAlogo.png"));
-	Icons.push_back(LoadTexture("assets/Icons/Pause.png"));
+	Icons.push_back(LoadTexture("assets/Icons/rightarrow.png"));		// Icons[0]
+	Icons.push_back(LoadTexture("assets/Icons/Sprite.png"));			// Icons[1]
+	Icons.push_back(LoadTexture("assets/Backgrounds/technoBG.jpg"));	// Icons[2]
+	Icons.push_back(LoadTexture("assets/Backgrounds/DSAlogo.png"));		// Icons[3]
+	Icons.push_back(LoadTexture("assets/Icons/Pause.png"));				// Icons[4]
+	Icons.push_back(LoadTexture("assets/Icons/Start.png"));				// Icons[5]
 }
 
 

@@ -26,6 +26,8 @@ public:
     bool search(int x);
     void resize(int newSize);
 
+
+    void clearIndicatesAndHighlights() override {};
     void init() override;
     void initButtons() override;
     void resetAnimations() override;

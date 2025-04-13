@@ -30,6 +30,16 @@ void SinglyLinkedListUI::resetAnimations() {
 	Button::resetButtonsAnimations<RectButton>(Buttons);
 	Button::resetButtonsAnimations<RectButton>(CodeBlocks);
 }
+void SinglyLinkedListUI::clearIndicatesAndHighlights() {
+    LLNode* cur = linkedlist.head;
+    while (cur) {
+        cur->indicateNode = "";
+        cur = cur->next;
+    }
+    for (int i = 1; i < CodeBlocks.size(); i++) {
+        CodeBlocks[i]->unhighlight();
+    }
+}
 
 void SinglyLinkedListUI::initButtons() {
 

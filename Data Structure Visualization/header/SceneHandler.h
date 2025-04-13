@@ -18,8 +18,8 @@ private:
         0.0f
     };
 protected:
-    SceneManager* currentSceneObject;
 public:
+    SceneManager* currentSceneObject;
     static Vector2 mouseWorldPos;
     SceneHandler();
     ~SceneHandler();

@@ -74,6 +74,7 @@ public:
     bool isActivated;
     bool noDraw;
     static bool isCollision;
+    static bool isClicking;
     std::function<void()> onClick;
     Button(Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : TextColor(tc), FillColor(fc), OutLineColor(olc),
@@ -144,6 +145,8 @@ public:
             if(btn->animation)btn->animation->handleReposition();
         }
     }
+    virtual void highlight() {};
+    virtual void unhighlight() {};
     virtual void draw() = 0;
     virtual void update();
     virtual void hover();
@@ -193,6 +196,49 @@ public:
     virtual void resetSubAni();
     virtual void insertSubButton(RectButton* button);
     virtual void insertSubButton(RectButton* button, std::function<void()> function);
+};
+
+
+class ScrollyAndButton: public RectButton {
+protected:
+    float value;
+    float valueMin, valueMax;
+    Rectangle MoveableButton;
+public:
+    ScrollyAndButton(float x = 0, float y = 0, int scrollyLength=300, int scrollyThickness=20, float buttonSize=50,
+        Color ButtonColor = BLUE, Color ScrollyColor = WHITE, Color ScrollyLineColor = DARKGRAY, 
+        float val = 1, float valMin = 0.5f, float valMax = 2)
+        : RectButton(x, y, scrollyLength, scrollyThickness, ButtonColor, ScrollyColor, ScrollyLineColor),
+        MoveableButton({ x - buttonSize/2, y - (buttonSize - scrollyThickness)/2,buttonSize,buttonSize }),
+        value(val), valueMin(valMin), valueMax(valMax){
+    }
+
+    void update() override;
+    void draw() override;
+    float getValue() {
+        return value;
+    }
+    void clamp() {
+
+        int minclamp = rect.x - MoveableButton.width / 2;
+        int maxclamp = rect.width + rect.x - MoveableButton.width / 2;
+
+        if (MoveableButton.x < minclamp)MoveableButton.x = minclamp;
+
+        else if (MoveableButton.x > maxclamp) MoveableButton.x = maxclamp;
+    }
+
+    bool checkCollision() override {
+        return CheckCollisionPointRec(getMousePos(), MoveableButton);
+    }
+    void setPosition(float x, float y) override {
+
+        MoveableButton.x += x - rect.x;
+
+        rect.x = x;
+        rect.y = y;
+
+    }
 };
 
 // Uses RectButton and Input Handler to create a button with text
@@ -273,14 +319,18 @@ public:
 class CodeBlock : public TextBox {
 private:
     static constexpr Color CodeColor = { 232,232,232,180 };
+    bool isHighlight;
 public:
     CodeBlock(string t, float x = 0, float y = 0,
         Color tc = DARKGRAY, Color fc = CodeColor, Color olc = CodeColor)
-        : TextBox(t,x,y, tc, fc, olc) {
+        : TextBox(t,x,y, tc, fc, olc), isHighlight(false) {
         Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
         rect.width = tsize.x + padding;
         rect.height = tsize.y + padding;
     }
+    void highlight() override;
+    void unhighlight() override;
+    void hover() override;
 };
 
 // ### CircleButton Class
@@ -421,21 +471,24 @@ public:
 // NumberInputCircleInCamera is NumberInputCircle but uses the camera position to get the mouse position
 class NumberInputCircleInCamera : public NumberInputCircle {
 private:
+    void Indicate(string text);
 public:
+    string indicateNode; 
     // default Number Input Box
     NumberInputCircleInCamera(int maxCh)
-        : NumberInputCircle(maxCh) {
+        : NumberInputCircle(maxCh), indicateNode("") {
     }
     NumberInputCircleInCamera(int maxCh, Color tc, Color fc, Color rc)
-        : NumberInputCircle(maxCh, tc, fc, rc) {
+        : NumberInputCircle(maxCh, tc, fc, rc), indicateNode("") {
     }
     NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh)
-        : NumberInputCircle(cent, r, input, maxCh) {
+        : NumberInputCircle(cent, r, input, maxCh), indicateNode("") {
     }
     NumberInputCircleInCamera(Vector2 cent, float r, int input, int maxCh, Color tc, Color fc, Color rc)
-        : NumberInputCircle(cent, r, input, maxCh, tc, fc, rc) {
+        : NumberInputCircle(cent, r, input, maxCh, tc, fc, rc), indicateNode("") {
     }
     Vector2 getMousePos() const override;
+    void draw() override;
 };
 
 

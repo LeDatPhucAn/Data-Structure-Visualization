@@ -8,6 +8,7 @@
 #include <iostream>
 
 bool Button::isCollision = false;
+bool Button::isClicking = false;
 const int RectButton::padding = UI::fontSize;
 
 // ### Button Utility Functions
@@ -51,7 +52,13 @@ void Button::update() {
     if (checkCollision()) {
         hover();
         setCursor();
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) click();
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            click();
+            Button::isClicking = true;
+        }
+        else {
+            Button::isClicking = false;
+        }
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             isActivated = !isActivated;
             if (onClick) onClick();
@@ -222,6 +229,55 @@ void RectButton::draw() {
     if (next) next->draw();
 }
 
+void ScrollyAndButton::update() {
+    if (isActivated && Button::isClicking) {
+        MoveableButton.x = getMousePos().x - MoveableButton.width / 2;
+        clamp();
+    }
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+        isActivated = false;
+    }
+    if (checkCollision()) {
+        hover();
+        setCursor();
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            click();
+            isActivated = true;
+            Button::isClicking = true;
+            MoveableButton.x = getMousePos().x - MoveableButton.width/2;
+            clamp();
+        }
+        else {
+            Button::isClicking = false;
+        }
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            if (onClick) onClick();
+            unclick();
+        }
+        Button::isCollision = true;
+    }
+    else {
+        unhover();
+    }
+    if (animation && !animation->isCompleted()) animation->update(GetFrameTime());
+
+    // update the value represented in the scrolly
+    float x = (MoveableButton.x - rect.x + MoveableButton.width/2) / rect.width;
+
+    value = (valueMax - valueMin) * x + valueMin;
+}
+
+void ScrollyAndButton::draw() {
+    
+    // draw scrolly
+    DrawRectangleRec(rect, FillColor);
+    DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
+
+    // draw button
+    DrawRectangleRounded(MoveableButton, 0.7f, 100, TextColor);
+
+    UI::drawtext2("Speed: " + to_string(value) + "x", rect.x + rect.width / 2, MoveableButton.y - MoveableButton.height / 2, BLACK);
+}
 // ### InputBox Methods
 void InputBox::hover() {
     if (!isHovered) {
@@ -293,6 +349,20 @@ void TextBox::draw() {
     if (next) next->draw();
 }
 
+void CodeBlock::highlight() {
+   isHighlight = true;
+   TextColor = WHITE;
+   FillColor = RED;
+}
+void CodeBlock::unhighlight() {
+    isHighlight = false;
+    TextColor = DARKGRAY;
+    FillColor = CodeColor;
+}
+void CodeBlock::hover() {
+    if (isHighlight)return;
+    Button::hover();
+}
 // ### CircleButton Methods
 bool CircleButton::checkCollision() {
     return CheckCollisionPointCircle(getMousePos(), center, radius);
@@ -390,3 +460,11 @@ void InputCircle::draw() {
 
 Vector2 NumberInputBoxInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
 Vector2 NumberInputCircleInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
+
+void NumberInputCircleInCamera::Indicate(string Text){
+    UI::drawtext2(Text, center.x, center.y + radius + 20, RED);
+}
+void NumberInputCircleInCamera::draw() {
+    if (indicateNode !="") Indicate(indicateNode);
+    InputCircle::draw();
+}

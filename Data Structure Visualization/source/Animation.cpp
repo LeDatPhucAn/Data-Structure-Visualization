@@ -12,6 +12,15 @@ void Animation::clamp() {
         completed = false;
     }
 }
+void Animation::makeComplete() {
+    elapsed = duration;
+    completed = true; 
+    if (Function && !FunctionActivated) {
+        Function();           // Execute lambda only if not already activated
+        FunctionActivated = true;
+    }
+    applyState();
+}
 void Animation::update(float deltaTime) {
     elapsed += deltaTime;
     if (!FunctionActivated && Function) {
@@ -31,7 +40,12 @@ void Animation::setTime(float t) {
     applyState();
 }
 
-
+void Animation::reset() {
+    elapsed = 0.0f;
+    completed = false;
+    FunctionActivated = false;
+    resetColor();
+}
 void CircleHighLightAnim::applyState() {
     button->noDraw = false;
     float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);

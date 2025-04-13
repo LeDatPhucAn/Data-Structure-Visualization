@@ -33,7 +33,7 @@ public:
 
     void updateScene() override;
     void updateSceneInCamera(Camera2D cam) {};
-
+    void clearIndicatesAndHighlights() override {} ;
     void displayScene() override;
 
     void resetAnimations() {};

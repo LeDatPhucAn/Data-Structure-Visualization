@@ -150,6 +150,27 @@ public:
     void applyState() override;
 };
 
+// Highlight Rectangle Button
+class RectHighlightAnim : public Animation {
+public:
+    NumberInputBox* button;
+    Color startFill, endFill;
+    Color startOutline, endOutline;
+    Color startText, endText;
+    RectHighlightAnim(NumberInputBox*, float, Color, Color, Color);
+    void applyState() override;
+    void resetColor() override;
+};
+
+class TreapEdgeHighlightAnim : public Animation {
+public:
+    TreapEdge* edge;
+    Color start, end;
+    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE) : Animation(duration), edge(e), start(edge->edgeColor), end(ec){}
+    void applyState() override;
+    void resetColor() override;
+};
+
 // Move CircleButton in both x and y directions
 class CircleMoveAnim : public Animation {
 private:

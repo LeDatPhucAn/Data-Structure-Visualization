@@ -1,9 +1,10 @@
 #pragma once
 #include "Node.h"
+#include "raylib.h"
 #include <vector>
 class Edge {
 protected:
-	
+
 public:
 	int thickness;
 	Node* from;
@@ -13,15 +14,30 @@ public:
 		from = nullptr;
 		to = nullptr;
 	}
-	Edge(Node* f, Node* t) : from(f), to(t){
+	Edge(Node* f, Node* t) : from(f), to(t) {
 		thickness = 5;
 	}
-	Edge(int th, Node* f, Node* t) : thickness(th), from(f), to(t){}
+	Edge(int th, Node* f, Node* t) : thickness(th), from(f), to(t) {}
 	static void addEdge(vector<Edge*>& Edges, Node* from, Node* to);
 	static void removeEdge(vector<Edge*>& Edges, Node* from, Node* to);
 	void drawEdge();
 	void drawArrowEdge();
-	void drawTreapEdge();
+};
+
+class TreapNode;
+class TreapEdge {
+public:
+	TreapNode* from;
+	TreapNode* to;
+	int thickness;
+	bool noDraw;
+	Color edgeColor;
+
+	TreapEdge(TreapNode* f , TreapNode* t, Color c = BLACK, int th = 5) : from(f), to(t), edgeColor(c), thickness(th), noDraw(false){}
+
+	void draw();
+	static void addEdge(vector<TreapEdge*>& edges, TreapNode* from, TreapNode* to);
+	static void removeEdge(vector<TreapEdge*>& edges, TreapNode* from, TreapNode* to);
 };
 
 // Circle Button Edge used for Circle Buttons

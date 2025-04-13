@@ -1,5 +1,6 @@
 #include "../header/TreapUI.h"
 #include "../header/PseudoCode.h"
+#include "../header/Animation.h"
 
 const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
 
@@ -7,8 +8,150 @@ TreapUI::TreapUI() : root(nullptr) {
     init();
 }
 
+TreapNode* TreapUI::rotateLeft(TreapNode* root) {
+    TreapEdge* oldRightEdge = root->rightEdge;
+    if (!oldRightEdge) return root;
+
+    TreapNode* newRoot = oldRightEdge->to;
+
+    TreapEdge* temp = newRoot->leftEdge;
+    root->rightEdge = temp ? new TreapEdge(root, temp->to) : nullptr;
+
+    delete oldRightEdge;
+    delete temp;
+
+    newRoot->leftEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
+}
+
+TreapNode* TreapUI::rotateRight(TreapNode* root) {
+    TreapEdge* oldLeftEdge = root->leftEdge;
+    if (!oldLeftEdge) return root;
+
+    TreapNode* newRoot = oldLeftEdge->to;
+
+    TreapEdge* temp = newRoot->rightEdge;
+
+    root->leftEdge = temp ? new TreapEdge(root, temp->to) : nullptr;
+
+    delete temp;
+    delete oldLeftEdge;
+
+    newRoot->rightEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
+}
+
+int TreapUI::getSubtreeWidth(TreapNode* curr) {
+    if (!curr) return 0;
+    return curr->subtreeWidth;
+}
+
+void TreapUI::updateSubtreeWidth(TreapNode* curr) {
+    if (curr) {
+        int leftWidth = curr->leftEdge ? getSubtreeWidth(curr->leftEdge->to) : 0;
+        int rightWidth = curr->rightEdge ? getSubtreeWidth(curr->rightEdge->to) : 0;
+        curr->subtreeWidth = 1 + leftWidth + rightWidth;
+    }
+}
+
+TreapNode* TreapUI::insert(TreapNode* root, Vector2 pos, int key, int priority) {
+    static const int Y_OFFSET = 30;
+    if (!root) return new TreapNode(key, priority, pos);
+
+    int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
+    int newXOffset = max(getSubtreeWidth(root) * treeDepth * 5, 20);
+
+    if (root->getKey() > key) {
+        TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
+        root->leftEdge = new TreapEdge(root, newLeftChild);
+        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
+    }
+    else if (root->getKey() < key) {
+        TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
+        root->rightEdge = new TreapEdge(root, newRightChild);
+        if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
+    }
+
+    updateSubtreeWidth(root);
+    return root;
+}
+
+TreapNode* TreapUI::remove(TreapNode* root, int key) {
+    if (!root) return nullptr;
+
+    if (root->getKey() > key) {
+        if (root->leftEdge) {
+            TreapNode* newLeft = remove(static_cast<TreapNode*> (root->leftEdge->to), key);
+            if (root->leftEdge) delete root->leftEdge;
+            root->leftEdge = newLeft ? new TreapEdge(root, newLeft) : nullptr;
+        }
+    }
+    else if (root->getKey() < key) {
+        if (root->rightEdge) {
+            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
+            if (root->rightEdge) delete root->rightEdge;
+            root->rightEdge = newRight ? new TreapEdge(root, newRight) : nullptr;
+        }
+    }
+    else {
+        if (!root->leftEdge && !root->rightEdge) {
+            delete root;
+            return nullptr;
+        }
+        else if (!root->rightEdge) {
+            TreapNode* temp = root->leftEdge->to;
+            delete root->leftEdge;
+            root->leftEdge = nullptr;
+            delete root;
+            return temp;
+        }
+        else if (!root->leftEdge) {
+            TreapNode* temp = root->rightEdge->to;
+            delete root->rightEdge;
+            root->rightEdge = nullptr;
+            delete root;
+            return temp;
+        }
+
+        if (root->leftEdge->to->getPriority() > root->rightEdge->to->getPriority()) {
+            root = rotateRight(root);
+            TreapNode* newRight = remove(root->rightEdge->to, key);
+            if (root->rightEdge) delete root->rightEdge;
+            root->rightEdge = newRight ? new TreapEdge(root, newRight) : nullptr;
+        }
+        else {
+            root = rotateLeft(root);
+            TreapNode* newLeft = remove(root->leftEdge->to, key);
+            if (root->leftEdge) delete root->leftEdge;
+            root->leftEdge = newLeft ? new TreapEdge(root, newLeft) : nullptr;
+        }
+    }
+
+    updateSubtreeWidth(root);
+    return root;
+}
+
+void TreapUI::clear(TreapNode* curr) {
+    if (!curr) return;
+
+    if (curr->leftEdge) {
+        clear(curr->leftEdge->to);
+        delete curr->leftEdge;
+        curr->leftEdge = nullptr;
+    }
+    if (curr->rightEdge) {
+        clear(curr->rightEdge->to);
+        delete curr->rightEdge;
+        curr->rightEdge = nullptr;
+    }
+    
+    delete curr;
+}
+
 void TreapUI::insert(int key, int priority) {
-    root = treap.insert(root, ROOT_POS, key, priority);
+    root = insert(root, ROOT_POS, key, priority);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
@@ -43,18 +186,39 @@ void TreapUI::loadFromFile(){
 }
 
 void TreapUI::search(int key) {
-    TreapNode* curr = treap.getRoot();
-    if (!curr) return;
+    animManager.clear();
+    searchWithAnimation(root, key);
+}
 
+void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
+    if (!curr) return;
+    
+    animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
+
+    if (curr->getKey() == key) {
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, {82, 172, 16, 255}, DARKGRAY, WHITE));
+    }
+    else if (curr->getKey() > key) {
+        if (curr->leftEdge) {
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 0.75f));
+            searchWithAnimation(static_cast<TreapNode*> (curr->leftEdge->to), key);
+        }
+    }
+    else {
+        if (curr->rightEdge) {
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 0.75f));
+            searchWithAnimation(static_cast<TreapNode*> (curr->rightEdge->to), key);
+        }
+    }
 }
 
 void TreapUI::remove(int key) {
-    root = treap.remove(root, key);
+    root = remove(root, key);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
 void TreapUI::clear() {
-    treap.Treap::clear();
+    clear(this->root);
     this->root = nullptr;
 }
 
@@ -66,8 +230,8 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     float rectY = pos.y - root->keyBox->getHeight() / 2;
     root->setVisualPosition(rectX, rectY);  // this will also update root->position
 
-    int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
-    int rightWidth = treap.getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
+    int leftWidth = getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
+    int rightWidth = getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
 
     int newXOffset = std::max((leftWidth + rightWidth + 1) * 40, 80);
 
@@ -87,9 +251,9 @@ void TreapUI::drawTreapNode(TreapNode* curr) {
     curr->draw();
 }
 
-void TreapUI::drawTreapLink(Edge* edge) {
+void TreapUI::drawTreapEdge(TreapEdge* edge) {
     if (!edge || !edge->from || !edge->to) return;
-    edge->drawTreapEdge();
+    edge->draw();
 }
 
 void TreapUI::drawTreap(TreapNode* curr) {
@@ -98,13 +262,13 @@ void TreapUI::drawTreap(TreapNode* curr) {
     drawTreapNode(curr);
 
     if (curr->leftEdge) {
-        drawTreapLink(curr->leftEdge);
-        drawTreap(static_cast<TreapNode*>(curr->leftEdge->to));
+        drawTreapEdge(curr->leftEdge);
+        drawTreap(curr->leftEdge->to);
     }
 
     if (curr->rightEdge) {
-        drawTreapLink(curr->rightEdge);
-        drawTreap(static_cast<TreapNode*>(curr->rightEdge->to));
+        drawTreapEdge(curr->rightEdge);
+        drawTreap(curr->rightEdge->to);
     }
 }
 
@@ -212,6 +376,8 @@ void TreapUI::updateButtonPositions() {
 }
 
 void TreapUI::updateScene() {
+    animManager.update(GetFrameTime());
+
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 

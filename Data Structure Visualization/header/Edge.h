@@ -33,7 +33,7 @@ public:
 	bool noDraw;
 	Color edgeColor;
 
-	TreapEdge(TreapNode* f , TreapNode* t, Color c = BLACK, int th = 5) : from(f), to(t), edgeColor(c), thickness(th){}
+	TreapEdge(TreapNode* f , TreapNode* t, Color c = BLACK, int th = 5) : from(f), to(t), edgeColor(c), thickness(th), noDraw(false){}
 
 	void draw();
 	static void addEdge(vector<TreapEdge*>& edges, TreapNode* from, TreapNode* to);

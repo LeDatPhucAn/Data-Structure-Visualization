@@ -4,7 +4,8 @@
 namespace PseudoCode {
     extern std::string LLInsertHead;
     extern std::string LLInsertPos;
-    extern std::string LLRemove;
+    extern std::string LLRemoveHead;
+    extern std::string LLRemoveBody;
     extern std::string LLSearch;
     extern std::string HashTableInsert;
     extern std::string HashTableRemove;

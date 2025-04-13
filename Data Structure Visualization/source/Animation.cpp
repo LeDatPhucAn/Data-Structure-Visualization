@@ -54,13 +54,21 @@ void RectHighlightAnim::applyState() {
     button->TextColor = UI::interpolateColors(startText, endText, easedT);
     button->FillColor = UI::interpolateColors(startFill, endFill, easedT);
     button->OutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
-    cout << "call ApplyState" << endl;
 }
 
 void RectHighlightAnim::resetColor() {
     button->FillColor = startFill;
     button->OutLineColor = startOutline;
     button->TextColor = startText;
+}
+
+void TreapEdgeHighlightAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    edge->edgeColor = UI::interpolateColors(start, end, easedT);
+}
+
+void TreapEdgeHighlightAnim::resetColor() {
+    edge->edgeColor = start;
 }
 
 void CBEdgeHighLightAnim::applyState() {

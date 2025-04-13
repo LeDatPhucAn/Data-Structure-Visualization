@@ -162,6 +162,15 @@ public:
     void resetColor() override;
 };
 
+class TreapEdgeHighlightAnim : public Animation {
+public:
+    TreapEdge* edge;
+    Color start, end;
+    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE) : Animation(duration), edge(e), start(edge->edgeColor), end(ec){}
+    void applyState() override;
+    void resetColor() override;
+};
+
 // Move CircleButton in both x and y directions
 class CircleMoveAnim : public Animation {
 private:

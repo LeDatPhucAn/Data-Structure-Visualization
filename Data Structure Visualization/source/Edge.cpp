@@ -3,12 +3,14 @@
 #include "../header/Treap.h"
 #include "../header/Animation.h"
 #include "../header/AnimationManager.h"
+#include "../header/Button.h"
+
 void Edge::drawEdge() {
 	if (!from) {
 		cout << "u done fucked up";
 		return;
 	}
-	
+
 	if (!to) {
 		return;
 	}
@@ -18,7 +20,7 @@ void Edge::drawEdge() {
 	float fromY = from->radius * sin(theta) + from->position.y;
 	float toX = -to->radius * cos(theta) + to->position.x;
 	float toY = -to->radius * sin(theta) + to->position.y;
-	DrawLineEx({fromX,fromY}, {toX,toY}, thickness, BLACK);
+	DrawLineEx({ fromX,fromY }, { toX,toY }, thickness, BLACK);
 }
 //---------------------------------------------------------------------
 // Helper: Draw Edge With arrow
@@ -30,19 +32,19 @@ void Edge::drawArrowEdge()
 	float dx = to->position.x - from->position.x;
 	float dy = to->position.y - from->position.y;
 	float arrowHeadAngle = PI / 6;
-	float arrowHeadLength = thickness*5;
+	float arrowHeadLength = thickness * 5;
 
 	float theta = atan2(dy, dx);
 
 	float fromX = from->radius * cos(theta) + from->position.x;
 	float fromY = from->radius * sin(theta) + from->position.y;
-	float toX =  to->position.x - to->radius * cos(theta);
-	float toY =  to->position.y - to->radius * sin(theta);
+	float toX = to->position.x - to->radius * cos(theta);
+	float toY = to->position.y - to->radius * sin(theta);
 
 	float EdgeEndX = toX - arrowHeadLength * cos(theta) * sqrt(3) / 2;
 	float EdgeEndY = toY - arrowHeadLength * sin(theta) * sqrt(3) / 2;
 	//draw edge
-	
+
 	DrawLineEx({ fromX,fromY }, { EdgeEndX, EdgeEndY }, thickness, BLACK);
 
 	//draw arrow head
@@ -53,29 +55,7 @@ void Edge::drawArrowEdge()
 	Vector2 arrowPoint1 = { toX - arrowHeadLength * cos(theta1), toY - arrowHeadLength * sin(theta1) };
 	Vector2 arrowPoint2 = { toX - arrowHeadLength * cos(theta2), toY - arrowHeadLength * sin(theta2) };
 
-	DrawTriangle({toX,toY}, arrowPoint1, arrowPoint2, BLACK);
-}
-void Edge::drawTreapEdge() {
-	if (!from || !to) return;
-
-	TreapNode* fromNode = dynamic_cast<TreapNode*>(from);
-	TreapNode* toNode = dynamic_cast<TreapNode*>(to);
-	if (!fromNode || !toNode) return;
-
-	Rectangle fromRect = fromNode->keyBox->rect;
-	Rectangle toRect = toNode->keyBox->rect;
-
-	// Use the actual center of each box
-	Vector2 start = {
-		fromRect.x + fromRect.width / 2,
-		fromRect.y + fromRect.height       // bottom center of parent
-	};
-	Vector2 end = {
-		toRect.x + toRect.width / 2,
-		toRect.y                           // top center of child
-	};
-
-	DrawLineEx(start, end, thickness, BLACK);
+	DrawTriangle({ toX,toY }, arrowPoint1, arrowPoint2, BLACK);
 }
 
 void Edge::addEdge(vector<Edge*>& Edges, Node* from, Node* to) {
@@ -89,7 +69,39 @@ void Edge::removeEdge(vector<Edge*>& Edges, Node* from, Node* to) {
 		}
 	}
 }
-#include "../header/Button.h"
+
+void TreapEdge::draw() {
+	if (!from || !to || noDraw) return;
+
+	Rectangle fromRect = from->keyBox->rect;
+	Rectangle toRect = to->keyBox->rect;
+
+	Vector2 start = {
+		fromRect.x + fromRect.width / 2,
+		fromRect.y + fromRect.height
+	};
+	Vector2 end = {
+		toRect.x + toRect.width / 2,
+		toRect.y
+	};
+
+	DrawLineEx(start, end, thickness, edgeColor);
+}
+
+void TreapEdge::addEdge(vector<TreapEdge*>& edges, TreapNode* from, TreapNode* to) {
+	edges.push_back(new TreapEdge(from, to));
+}
+
+void TreapEdge::removeEdge(vector<TreapEdge*>& edges, TreapNode* from, TreapNode* to) {
+	for (int i = 0; i < edges.size(); ++i) {
+		if (edges[i]->from == from && edges[i]->to == to) {
+			delete edges[i];
+			edges.erase(edges.begin() + i);
+			return;
+		}
+	}
+}
+
 void CBEdge::drawArrowEdge()
 {
 	if (noDraw || !from || !to) return;

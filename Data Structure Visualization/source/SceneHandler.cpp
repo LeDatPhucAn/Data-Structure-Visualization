@@ -57,6 +57,15 @@ void SceneHandler::initButtons() {
     
     GoPrevious->onClick = [this]() {
         currentSceneObject->clearIndicatesAndHighlights();
+        if (currentSceneObject->CurrentScene == LINKEDLIST) {
+            
+            //dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->linkedlist.clear();
+
+            dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->deepCopy(
+                dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->initialState,
+                dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->linkedlist
+            );
+        }
         currentSceneObject->animManager.goToPreviousStep();
         };
     SceneButtons.push_back(GoPrevious);

@@ -4,7 +4,6 @@
 #include "../header/tinyfiledialogs.h"
 #include "../header/PseudoCode.h"
 #include <fstream>
-vector<CBEdge*> LinkedList::Edges;
 
 void LinkedList::loadFromFile() {
     const char* filter[] = { "*.txt" };
@@ -442,120 +441,321 @@ void LinkedList::clear() {
     deleteEdges();
 }
 
-void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager,int x, int pos) {
+//void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager,int x, int pos) {
+//    //animManager.addAnimation(new Animation(0.1f,[this,pos,x,&CodeBlocks,&animManager](){
+//        if (pos < 1) {
+//            return;
+//        }
+//
+//        clearIndicates();
+//
+//        if (pos == 1 || !head) {
+//
+//
+//            //    "  Node InsertedNode = new Node;\n"  // line 1
+//            //    "  InsertedNode->next = head;\n"     // line 2
+//            //    "  head = InsertedNode";             // line 3
+//
+//            LLNode* temp = new LLNode(x, 100, 100);
+//            temp->onClick = [temp]() {
+//                cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
+//                };
+//
+//            temp->next = head;
+//
+//            adjustPosWithAnim2(animManager, temp);
+//
+//            animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f, GREEN, RAYWHITE, GREEN, [&CodeBlocks, temp]() {
+//                CodeBlocks[1]->highlight();
+//                temp->indicateNode = "InsertedNode";
+//                }));
+//            temp->noDraw = true;
+//
+//
+//            /// highlight line 2
+//            animManager.addAnimation(new Animation(0.2f, [&CodeBlocks]() {
+//                CodeBlocks[1]->unhighlight();
+//                CodeBlocks[2]->highlight();
+//                }));
+//
+//            CBEdge::addEdgeAndAnim(animManager, Edges, temp, head);
+//            Edges.back()->noDraw = true;
+//
+//            /// highlight line 3
+//            animManager.addAnimation(new Animation(0.2f, [&CodeBlocks, temp]() {
+//                CodeBlocks[2]->unhighlight();
+//                CodeBlocks[3]->highlight();
+//                temp->indicateNode = "head";
+//                }));
+//            head = temp;
+//
+//            return;
+//        }
+//
+//
+//
+//        //    "  Node cur = head;\n"                    Line 1
+//        //    "  for (int i = 1; i < pos-1; i++)\n"     Line 2
+//        //    "    cur = cur->next;\n"                  Line 3
+//        //    "  Node InsertedNode = new Node;\n"       Line 4
+//        //    "  InsertedNode->next = cur->next;\n"     Line 5
+//        //    "  cur->next = InsertedNode;\n";          Line 6
+//
+//
+//
+//        LLNode* cur = head;
+//
+//        // highlight line 1
+//        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, cur]() {
+//            CodeBlocks[1]->highlight();
+//
+//            cur->indicateNode = "cur";
+//            }));
+//        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, cur]() {
+//            CodeBlocks[1]->unhighlight();
+//            }));
+//
+//        // traversal
+//        for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
+//
+//            // highlight line 2
+//            animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks]() {
+//                CodeBlocks[2]->highlight();
+//                CodeBlocks[3]->unhighlight();
+//                }));
+//
+//            // highlight line 3
+//            animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, cur]() {
+//                CodeBlocks[2]->unhighlight();
+//                CodeBlocks[3]->highlight();
+//                cur->indicateNode = "";
+//                }));
+//
+//            // indicate the next node
+//            for (auto& edge : Edges) {
+//                if (edge->from == cur && edge->to == cur->next) {
+//                    animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE, [cur]() {
+//                        if (cur->next)cur->next->indicateNode = "cur";
+//                        }));
+//                    break;
+//                }
+//            }
+//
+//
+//            cur = cur->next;
+//        }
+//
+//        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks]() {
+//            CodeBlocks[3]->unhighlight();
+//            }));
+//
+//        // highlight the last node
+//        if (!cur->next) {
+//            LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, cur->getCenterY());
+//            cur->next = newnode;
+//            newnode->noDraw = true;
+//
+//            // highlight line 5
+//            animManager.addAnimation(new Animation(3.0f, [newnode, cur]() {
+//                cur->indicateNode = "";
+//                newnode->indicateNode = "Because pos > size of list,\n this is gonna visualize insert tails";
+//                }));
+//            Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
+//            InsertNode->Function = [newnode, &CodeBlocks]() {
+//                CodeBlocks[4]->highlight();
+//                newnode->indicateNode = "InsertedNode";
+//                newnode->animation->reset();
+//                newnode->noDraw = false; // when we traverse to the desired position, we draw the inserted node outside the linked list
+//                };
+//
+//            // highlight inserted node
+//            animManager.addAnimation(InsertNode);
+//
+//            // highlight line 5
+//            animManager.addAnimation(new Animation(0.2f, [&CodeBlocks]() {
+//                CodeBlocks[4]->unhighlight();
+//                CodeBlocks[5]->highlight();
+//                }));
+//
+//
+//            animManager.addAnimation(new Animation(0.2f, [&CodeBlocks]() {
+//                CodeBlocks[5]->unhighlight();
+//                CodeBlocks[6]->highlight();
+//                }));
+//            CBEdge::addEdgeAndAnim(animManager, Edges, cur, newnode);
+//            Edges.back()->noDraw = true;
+//
+//
+//            return;
+//        }
+//
+//
+//
+//        //// highlight the current node
+//
+//        /// the node to be inserted
+//        LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, 400);
+//
+//
+//
+//        Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
+//        InsertNode->Function = [newnode, &CodeBlocks]() {
+//            CodeBlocks[4]->highlight();
+//            newnode->indicateNode = "InsertedNode";
+//            newnode->animation->reset();
+//            newnode->noDraw = false; // when we traverse to the desired position, we draw the inserted node outside the linked list
+//            };
+//
+//        // highlight inserted node
+//        animManager.addAnimation(InsertNode);
+//
+//        // initially the inserted node is not drawn
+//        newnode->noDraw = true;
+//        newnode->onClick = [newnode]() {
+//            cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
+//            };
+//
+//        LLNode* next = cur->next;
+//
+//
+//        /// highlight line 5
+//        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+//            CodeBlocks[4]->unhighlight();
+//            CodeBlocks[5]->highlight();
+//            }));
+//
+//
+//        // connect next edge
+//        newnode->next = cur->next;
+//        CBEdge::addEdgeAndAnim(animManager, Edges, newnode, newnode->next);
+//        Edges.back()->noDraw = true;
+//
+//        //reposition in accordance to animation
+//        adjustPosWithAnim2(animManager, newnode);
+//
+//
+//        /// highlight line 6
+//        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+//            CodeBlocks[5]->unhighlight();
+//            CodeBlocks[6]->highlight();
+//            }));
+//
+//
+//        // connect first edge
+//        cur->next = newnode;
+//
+//        // Add next edge
+//        CBEdge::addEdgeAndAnim(animManager, Edges, cur, newnode);
+//        Edges.back()->noDraw = true;
+//
+//        // remove the edge between cur and next with animation done
+//        CBEdge::removeEdgeAndAnim(animManager, Edges, cur, next);
+//
+//        // add the node in
+//        animManager.addAnimation(new CircleMoveAnim(newnode, 2, newnode->getCenterX(), 400, newnode->getCenterX(), cur->getCenterY(), [&CodeBlocks]() {
+//            CodeBlocks[6]->unhighlight();
+//            }));
+//    //}));
+//
+//}
+
+void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int pos) {
     if (pos < 1) {
         return;
     }
 
     clearIndicates();
 
+    // Case 1: Insert at the head (pos == 1 or empty list)
     if (pos == 1 || !head) {
-
-
-        //    "  Node InsertedNode = new Node;\n"  // line 1
-        //    "  InsertedNode->next = head;\n"     // line 2
-        //    "  head = InsertedNode";             // line 3
-
-        LLNode* temp = new LLNode(x,100,100);
+        // Create a temporary node for visualization
+        LLNode* temp = new LLNode(x, 100, 100);
         temp->onClick = [temp]() {
             cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
             };
-
-        temp->next = head;
-
-        adjustPosWithAnim2(animManager,temp);
-
-		animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f,GREEN,RAYWHITE,GREEN, [&CodeBlocks,temp]() {
-            CodeBlocks[1]->highlight();
-            temp->indicateNode = "InsertedNode";
-        }));
         temp->noDraw = true;
 
-
-        /// highlight line 2
+        // Add animations without modifying the list
+        animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f, GREEN, RAYWHITE, GREEN, [&CodeBlocks, temp]() {
+            CodeBlocks[1]->highlight();
+            temp->indicateNode = "InsertedNode";
+            }));
         animManager.addAnimation(new Animation(0.2f, [&CodeBlocks]() {
             CodeBlocks[1]->unhighlight();
             CodeBlocks[2]->highlight();
             }));
 
-        CBEdge::addEdgeAndAnim(animManager,Edges, temp, head);
-        Edges.back()->noDraw = true;
-
-        /// highlight line 3
-        animManager.addAnimation(new Animation(0.2f, [&CodeBlocks,temp]() {
+        // Visualize edge (not added to Edges yet)
+        CBEdge* newEdge = new CBEdge(temp, head);
+        newEdge->noDraw = true;
+        animManager.addAnimation(new Animation(0.2f, [&CodeBlocks, temp, newEdge]() {
             CodeBlocks[2]->unhighlight();
             CodeBlocks[3]->highlight();
             temp->indicateNode = "head";
+            newEdge->noDraw = false;
             }));
-        head = temp;
+
+        // Final step: Apply structural changes
+        animManager.addAnimation(new Animation(0.0f, [this, temp, newEdge]() {
+            temp->next = head;
+            head = temp;
+            temp->noDraw = false;
+            Edges.push_back(newEdge);
+            }));
 
         return;
     }
 
-
-
-    //    "  Node cur = head;\n"                    Line 1
-    //    "  for (int i = 1; i < pos-1; i++)\n"     Line 2
-    //    "    cur = cur->next;\n"                  Line 3
-    //    "  Node InsertedNode = new Node;\n"       Line 4
-    //    "  InsertedNode->next = cur->next;\n"     Line 5
-    //    "  cur->next = InsertedNode;\n";          Line 6
-
-
-
+    // Case 2: Insert at a specific position
     LLNode* cur = head;
-    
-    // highlight line 1
-    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,cur]() {
+
+    // Highlight line 1
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, cur]() {
         CodeBlocks[1]->highlight();
+        if (!cur) {
+            cout << "youfuckedup\n";
+            return;
+        }
         cur->indicateNode = "cur";
         }));
-    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks,cur]() {
+    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
         CodeBlocks[1]->unhighlight();
         }));
 
-    // traversal
+    // Traverse to the position
     for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
-
-        // highlight line 2
-        animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f,ORANGE,RAYWHITE,ORANGE, [&CodeBlocks]() {
+        LLNode* current = cur; // Capture current node for lambda
+        animManager.addAnimation(new CircleHighLightAnim(current, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks]() {
             CodeBlocks[2]->highlight();
             CodeBlocks[3]->unhighlight();
             }));
-
-        // highlight line 3
-        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,cur]() {
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, current]() {
             CodeBlocks[2]->unhighlight();
             CodeBlocks[3]->highlight();
-            cur->indicateNode = "";
+            current->indicateNode = "";
             }));
-
-        // indicate the next node
         for (auto& edge : Edges) {
-            if (edge->from == cur && edge->to == cur->next) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE, [cur]() {
-                    if(cur->next)cur->next->indicateNode = "cur";
-                }));
+            if (edge->from == current && edge->to == current->next) {
+                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 0.5f, PURPLE, [current]() {
+                    if (current->next) current->next->indicateNode = "cur";
+                    }));
                 break;
             }
         }
-
-        
         cur = cur->next;
     }
 
+    // Highlight the current node
     animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE, [&CodeBlocks]() {
         CodeBlocks[3]->unhighlight();
         }));
 
-  	// highlight the last node
+    // Insert at the end if cur->next is null
     if (!cur->next) {
         LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, cur->getCenterY());
-        cur->next = newnode;
         newnode->noDraw = true;
 
-        // highlight line 5
-        animManager.addAnimation(new Animation(3.0f, [newnode,cur]() {
+        animManager.addAnimation(new Animation(3.0f, [newnode, cur]() {
             cur->indicateNode = "";
             newnode->indicateNode = "Because pos > size of list,\n this is gonna visualize insert tails";
             }));
@@ -564,99 +764,31 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
             CodeBlocks[4]->highlight();
             newnode->indicateNode = "InsertedNode";
             newnode->animation->reset();
-            newnode->noDraw = false; // when we traverse to the desired position, we draw the inserted node outside the linked list
+            newnode->noDraw = false;
             };
-
-        // highlight inserted node
         animManager.addAnimation(InsertNode);
 
-        // highlight line 5
         animManager.addAnimation(new Animation(0.2f, [&CodeBlocks]() {
             CodeBlocks[4]->unhighlight();
             CodeBlocks[5]->highlight();
             }));
-
-
         animManager.addAnimation(new Animation(0.2f, [&CodeBlocks]() {
             CodeBlocks[5]->unhighlight();
             CodeBlocks[6]->highlight();
             }));
-		CBEdge::addEdgeAndAnim(animManager,Edges, cur, newnode);
-		Edges.back()->noDraw = true;
-        
-        
+
+        CBEdge* newEdge = new CBEdge(cur, newnode);
+        newEdge->noDraw = true;
+        animManager.addAnimation(new Animation(0.0f, [this, cur, newnode, newEdge]() {
+            cur->next = newnode;
+            newnode->noDraw = false;
+            newEdge->noDraw = false;
+            Edges.push_back(newEdge);
+            }));
+
         return;
     }
-
-
-
-	//// highlight the current node
-
-    /// the node to be inserted
-    LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, 400);
-
-
-	
-    Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
-    InsertNode->Function = [newnode, &CodeBlocks]() {
-        CodeBlocks[4]->highlight();
-        newnode->indicateNode = "InsertedNode";
-        newnode->animation->reset();
-        newnode->noDraw = false; // when we traverse to the desired position, we draw the inserted node outside the linked list
-        };
-
-    // highlight inserted node
-    animManager.addAnimation(InsertNode);
-    
-	// initially the inserted node is not drawn
-    newnode->noDraw = true;
-    newnode->onClick = [newnode]() {
-        cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
-    };
-
-    LLNode* next = cur->next;
-
-
-    /// highlight line 5
-    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
-        CodeBlocks[4]->unhighlight();
-        CodeBlocks[5]->highlight();
-        }));
-     
-     
-     // connect next edge
-     newnode->next = cur->next;
-     CBEdge::addEdgeAndAnim(animManager, Edges, newnode, newnode->next);
-     Edges.back()->noDraw = true;
-     
-     //reposition in accordance to animation
-       adjustPosWithAnim2(animManager, newnode);
-       
-     
-    /// highlight line 6
-    animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
-        CodeBlocks[5]->unhighlight();
-        CodeBlocks[6]->highlight();
-        }));
-     
-     
-     // connect first edge
-     cur->next = newnode;
-      
-     // Add next edge
-     CBEdge::addEdgeAndAnim(animManager, Edges, cur, newnode);
-     Edges.back()->noDraw = true;
-     
-     // remove the edge between cur and next with animation done
-     CBEdge::removeEdgeAndAnim(animManager, Edges, cur, next);
-    
-     // add the node in
-     animManager.addAnimation(new CircleMoveAnim(newnode, 2, newnode->getCenterX(), 400, newnode->getCenterX(), cur->getCenterY(), [&CodeBlocks]() {
-         CodeBlocks[6]->unhighlight();
-        }));
-
 }
-
 void LinkedList::randominsert(int x, int pos) {
     if (pos < 1) {
         return;

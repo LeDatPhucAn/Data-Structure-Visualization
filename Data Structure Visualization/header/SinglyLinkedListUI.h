@@ -7,10 +7,12 @@
 class SinglyLinkedListUI : public SceneManager {
 private:
 protected:
-    LinkedList linkedlist;
+    
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
 public:
+    LinkedList linkedlist;
+    LinkedList initialState;
     SinglyLinkedListUI() {
         init();
     }
@@ -25,6 +27,8 @@ public:
     void remove(int x);
     bool search(int x);
 
+    
+    void deepCopy(const LinkedList& original, LinkedList& copy);
     void clearIndicatesAndHighlights() override;
     void init() override;
     void initButtons() override;

@@ -8,7 +8,7 @@
 class LinkedList : public LLNode {
 public:
     LLNode* head;
-    static vector<CBEdge*> Edges;
+    vector<CBEdge*> Edges;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);
     }

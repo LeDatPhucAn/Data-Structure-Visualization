@@ -56,15 +56,17 @@ void SceneHandler::initButtons() {
         55.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
     
     GoPrevious->onClick = [this]() {
-        currentSceneObject->clearIndicatesAndHighlights();
+
+
         int step = currentSceneObject->animManager.getStep();
-        cout << step << "\n";
 
         // complete the operation to get final state
         currentSceneObject->animManager.goToLastStep();
+        currentSceneObject->clearIndicatesAndHighlights();
 
         // restore the initial state and get to the previous state
         currentSceneObject->replayOperation();
+        cout << step - 1 << "\n";
         currentSceneObject->animManager.goToStep(step-1);
         };
     SceneButtons.push_back(GoPrevious);

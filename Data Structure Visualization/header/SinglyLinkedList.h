@@ -19,12 +19,19 @@ public:
     void adjustPos(LLNode* head);
     void adjustPosWithAnim(AnimationManager& animManager, LLNode* head);
     void adjustPosWithAnim2(AnimationManager& animManager, LLNode* head);
+
     void insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int pos);
+
+    void restoreAfterInsert(int x, int pos);
+
     void randominsert(int x, int pos);
     void loadFromFile();
+
+
     int remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
+
+
     int getListSize();
-    bool randomremove(AnimationManager &animManager, int x, int pos);
     bool search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
     void printlist();
     void deletelist();

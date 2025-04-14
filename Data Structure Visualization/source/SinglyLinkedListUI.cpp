@@ -2,8 +2,13 @@
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
 #include <map>
-void SinglyLinkedListUI::insert(int x, int pos) {
+void SinglyLinkedListUI::cleanupForOperation() {
+    animManager.goToLastStep();
     animManager.clear();
+    animManager.resume();
+}
+void SinglyLinkedListUI::insert(int x, int pos) {
+    cleanupForOperation();
     isInsert = true;
     isRemove = false;
     if (pos > linkedlist.getListSize()) {
@@ -13,14 +18,18 @@ void SinglyLinkedListUI::insert(int x, int pos) {
     linkedlist.insertnode(CodeBlocks,animManager,x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
-	animManager.clear();
+    cleanupForOperation();
+
     isRemove = true;
     isInsert = false;
-    linkedlist.remove(CodeBlocks,animManager,x);
+    removeParameters = { x, linkedlist.remove(CodeBlocks,animManager,x) };
 }
 
 bool SinglyLinkedListUI::search(int x) {
-    animManager.clear();
+    cleanupForOperation();
+
+    isRemove = false;
+    isInsert = false;
     return linkedlist.search(CodeBlocks,animManager,x);
     
 }
@@ -52,14 +61,17 @@ void SinglyLinkedListUI::clearIndicatesAndHighlights() {
     }
 }
 void SinglyLinkedListUI::replayOperation() {
-    //////////////////////// INSERT NODE GO TO PREVIOUS IS UNFINISHED ///////////
     if (isInsert) {
-        linkedlist.randomremove(animManager,insertParameters.first, insertParameters.second);
         animManager.clear();
+        //restore the list after insert
+        linkedlist.restoreAfterInsert(insertParameters.first, insertParameters.second);
         linkedlist.insertnode(CodeBlocks,animManager,insertParameters.first, insertParameters.second);
     }
-    if (isRemove) {
+    else if (isRemove) {
         animManager.clear();
+        //restore the list after removal
+        linkedlist.randominsert(removeParameters.first, removeParameters.second );
+        linkedlist.remove(CodeBlocks, animManager, removeParameters.first);
     }
 
 }

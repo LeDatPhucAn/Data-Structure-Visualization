@@ -6,7 +6,7 @@
 #include "raylib.h"
 #include "UI.h"
 
-class EdgeOfGraph : public Edge {
+class EdgeOfGraph : public	Edge {
 private:
 	float weight;
 public:

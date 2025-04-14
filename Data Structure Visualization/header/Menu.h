@@ -1,6 +1,6 @@
 #pragma once
 #include "SceneManager.h"
-//#include "SceneHandler.h"
+#include "SceneHandler.h"
 typedef enum selected {
     NONE = -1,
     MENU_LINKEDLIST,
@@ -32,6 +32,7 @@ public:
     void updateButtonPositions() {};
 
     void updateScene() override;
+    void updateSceneInCamera(Camera2D cam) {};
 
     void displayScene() override;
 

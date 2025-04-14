@@ -1,159 +1,85 @@
 #include "../header/Treap.h"
-
+#include "../header/SceneHandler.h"
 #include <math.h>
 
-TreapNode* Treap::rotateLeft(TreapNode* root) {
-    Edge* oldRightEdge = root->rightEdge;
-    if (!oldRightEdge) return root;
+TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
+    keyBox = new NumberInputBoxInCamera(3);
+    keyBox->setNumber(key);
+    keyBox->FillColor = LIGHTGRAY;
+    keyBox->TextColor = DARKGRAY;
+    keyBox->OutLineColor = DARKGRAY;
 
-    TreapNode* newRoot = static_cast<TreapNode*> (oldRightEdge->to);
+    priorityBox = new NumberInputBoxInCamera(3);
+    priorityBox->setNumber(priority % 100);
+    priorityBox->FillColor = { 173, 216, 230, 255 }; // LIGHTBLUE
+    priorityBox->TextColor = MAROON;
+    priorityBox->OutLineColor = DARKGRAY;
 
-    Edge* temp = newRoot->leftEdge;
-    root->rightEdge = temp ? new Edge(root, temp->to) : nullptr;
-
-    delete oldRightEdge;
-    delete temp;
-
-    newRoot->leftEdge = new Edge(newRoot, root);
-
-    return newRoot;
+    //syncPosition();
 }
 
-TreapNode* Treap::rotateRight(TreapNode* root) {
-    Edge* oldLeftEdge = root->leftEdge;
-    if (!oldLeftEdge) return root;
-
-    TreapNode* newRoot = static_cast<TreapNode*> (oldLeftEdge->to);
-
-    Edge* temp = newRoot->rightEdge;
-
-    root->leftEdge = temp ? new Edge(root, temp->to) : nullptr;
-
-    delete temp;
-    delete oldLeftEdge;
-
-    newRoot->rightEdge = new Edge(newRoot, root);
-
-    return newRoot;
+TreapNode::~TreapNode() {
+    if (keyBox) delete keyBox;
+    if (priorityBox) delete priorityBox;
+    if (leftEdge) delete leftEdge;
+    if (rightEdge) delete rightEdge;
 }
 
-void Treap::clear(TreapNode* root){
-    if(!root) return;
-
-    if(root->leftEdge) clear(static_cast<TreapNode*>(root->leftEdge->to));
-    if(root->rightEdge) clear(static_cast<TreapNode*>(root->rightEdge->to));
-
-    delete root;
+int TreapNode::getKey() const {
+    return keyBox->getNumber();
 }
 
-TreapNode* Treap::insert(TreapNode* root, Vector2 pos, int key, int priority) {
-    static const int Y_OFFSET = 70;
-    if (!root) return new TreapNode(key, priority, pos);
+void TreapNode::setKey(int key) {
+    keyBox->setNumber(key);
+}
 
-    int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
-    int newXOffset = max(getSubtreeWidth(root) * treeDepth * 10, 30);
+int TreapNode::getPriority() const {
+    return priorityBox->getNumber();
+}
 
-    if (root->data > key) {
-        TreapNode* newLeftChild = insert(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
-        root->leftEdge = new Edge(root, newLeftChild);
-        if (newLeftChild->priority > root->priority) root = rotateRight(root);
+void TreapNode::setPriority(int p) {
+    priorityBox->setNumber(p);
+}
+
+void TreapNode::syncPosition() {
+    keyBox->rect.x = position.x - keyBox->getWidth() / 2;
+    keyBox->rect.y = position.y - keyBox->getHeight() / 2;
+
+    priorityBox->rect.x = keyBox->rect.x + keyBox->getWidth();
+    priorityBox->rect.y = keyBox->rect.y;
+}
+
+void TreapNode::setVisualPosition(float x, float y) {
+    position = { x, y };
+    syncPosition();
+}
+
+void TreapNode::update() {
+    keyBox->update();
+    priorityBox->update();
+    syncPosition();
+
+    if (CheckCollisionPointRec(getMousePos(), keyBox->rect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        keyBox->inputHandler->setTexting(true);
+        priorityBox->inputHandler->setTexting(false);
     }
-    else {
-        TreapNode* newRightChild = insert(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
-        root->rightEdge = new Edge(root, newRightChild);
-        if (newRightChild->priority > root->priority) root = rotateLeft(root);
+    if (CheckCollisionPointRec(getMousePos(), priorityBox->rect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        priorityBox->inputHandler->setTexting(true);
+        keyBox->inputHandler->setTexting(false);
     }
-
-    updateSubtreeWidth(root);
-    return root;
-}
-
-TreapNode* Treap::search(TreapNode* root, int key) {
-    if (!root) return nullptr;
-
-    if (root->data == key) return root;
-
-    if (root->data > key) {
-        return search(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr, key);
+    if (keyBox->inputHandler->isTexting() && IsKeyPressed(KEY_ENTER)) {
+        keyBox->inputHandler->setTexting(false);
     }
-
-    return search(root->rightEdge ? static_cast<TreapNode*> (root->rightEdge->to) : nullptr, key);
-}
-
-TreapNode* Treap::remove(TreapNode* root, int key) {
-    if (!root) return nullptr;
-
-    if (root->data > key) {
-        if (root->leftEdge) {
-            TreapNode* newLeft = remove(static_cast<TreapNode*> (root->leftEdge->to), key);
-            if (root->leftEdge) delete root->leftEdge;
-            root->leftEdge = newLeft ? new Edge(root, newLeft) : nullptr;
-        }
-    }
-    else if (root->data < key) {
-        if (root->rightEdge) {
-            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
-            if (root->rightEdge) delete root->rightEdge;
-            root->rightEdge = newRight ? new Edge(root, newRight) : nullptr;
-        }
-    }
-    else {
-        if (!root->leftEdge && !root->rightEdge) {
-            delete root;
-            return nullptr;
-        }
-        else if (!root->rightEdge) {
-            TreapNode* temp = static_cast<TreapNode*> (root->leftEdge->to);
-            delete root->leftEdge;
-            root->leftEdge = nullptr;
-            delete root;
-            return temp;
-        }
-        else if (!root->leftEdge) {
-            TreapNode* temp = static_cast<TreapNode*> (root->rightEdge->to);
-            delete root->rightEdge;
-            root->rightEdge = nullptr;
-            delete root;
-            return temp;
-        }
-
-        if (static_cast<TreapNode*> (root->leftEdge->to)->priority > static_cast<TreapNode*> (root->rightEdge->to)->priority) {
-            root = rotateRight(root);
-            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
-            if(root->rightEdge) delete root->rightEdge;
-            root->rightEdge = newRight ? new Edge(root, newRight) : nullptr;
-        }
-        else {
-            root = rotateLeft(root);
-            TreapNode* newLeft = remove(static_cast<TreapNode*>(root->leftEdge->to), key);
-            if(root->leftEdge) delete root->leftEdge;
-            root->leftEdge = newLeft ? new Edge(root, newLeft) : nullptr;
-        }
-    }
-
-    updateSubtreeWidth(root);
-    return root;
-}
-
-void Treap::clear(){
-    clear(root);
-}
-
-int Treap::getSubtreeWidth(TreapNode* curr) {
-    if (!curr) return 0;
-    return curr->subtreeWidth;
-}
-
-void Treap::updateSubtreeWidth(TreapNode* curr) {
-    if (curr) {
-        if (curr) {
-            int leftWidth = curr->leftEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->leftEdge->to)) : 0;
-            int rightWidth = curr->rightEdge ? getSubtreeWidth(static_cast<TreapNode*>(curr->rightEdge->to)) : 0;
-            curr->subtreeWidth = 1 + leftWidth + rightWidth;
-        }
+    if (priorityBox->inputHandler->isTexting() && IsKeyPressed(KEY_ENTER)) {
+        priorityBox->inputHandler->setTexting(false);
     }
 }
 
-TreapNode* Treap::getRoot(){
-    return root;
+void TreapNode::draw(){
+    keyBox->draw();
+    priorityBox->draw();
+}
+
+Vector2 TreapNode::getMousePos() const {
+    return SceneHandler::mouseWorldPos;
 }

@@ -10,6 +10,6 @@ public:
     Vector2 position;
     Animation* animation;
     float radius;
-    Node(int value,Vector2 pos, float r): data(value), position(pos), radius(r), animation(nullptr) {}
+    Node(int value, Vector2 pos, float r);
     virtual ~Node() {}
 };

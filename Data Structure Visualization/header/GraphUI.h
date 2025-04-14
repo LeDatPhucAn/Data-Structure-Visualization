@@ -8,8 +8,8 @@ class GraphUI : public SceneManager {
 
 protected:
     bool hidden = false;
-    vector<Button*> CodeBlocks;
-    vector<Button*> buttonsOnGraph;
+    vector<RectButton*> CodeBlocks;
+    vector<RectButton*> buttonsOnGraph;
 
     Graph* graph = nullptr;
 public:
@@ -20,11 +20,22 @@ public:
     GraphUI(Graph* g) : graph(g) {
         init();
     }
-
+    ~GraphUI() {
+        
+        Button::deleteButtons<RectButton>(buttonsOnGraph);
+        delete graph;
+        for (Button* btn : buttonsOnGraph) delete btn;
+        buttonsOnGraph.clear();
+        for (Button* codeBlock : CodeBlocks) delete codeBlock;
+        CodeBlocks.clear();
+    }
+    
     void init() override;
     void initButtons() override;
     void updateButtonPositions() override {};
     void updateScene() override;
+    void updateSceneInCamera(Camera2D cam) {};
+
     void resetAnimations() {};
 
     void displayScene() override;
@@ -32,14 +43,9 @@ public:
 
     void drawGraph();
     //void drawNodeOnGraph(Node* node, Vector2 position);
-    ~GraphUI() {
-        delete graph;
-        for (Button* btn : buttonsOnGraph) delete btn;
-        buttonsOnGraph.clear();
-        for (Button* codeBlock : CodeBlocks) delete codeBlock;
-        CodeBlocks.clear();
-    }
+   
     void setHidden();
     void clear();
+
 
 };

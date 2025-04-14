@@ -49,6 +49,7 @@ void UI::initTextures() {
 	Icons.push_back(LoadTexture("assets/Icons/Sprite.png"));
 	Icons.push_back(LoadTexture("assets/Backgrounds/technoBG.jpg"));
 	Icons.push_back(LoadTexture("assets/Backgrounds/DSAlogo.png"));
+	Icons.push_back(LoadTexture("assets/Icons/Pause.png"));
 }
 
 

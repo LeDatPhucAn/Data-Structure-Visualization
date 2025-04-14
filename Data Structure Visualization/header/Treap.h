@@ -1,52 +1,30 @@
 #pragma once
 
+#include "Button.h"
 #include "Node.h"
 #include "Edge.h"
 #include <cstdlib>
 #include <ctime>
-#include "Node.h"
+
 class TreapNode : public Node {
 public:
-	int priority;
-	Edge* leftEdge;
-	Edge* rightEdge;
-	int subtreeWidth;
+    TreapEdge* leftEdge;
+    TreapEdge* rightEdge;
+    int subtreeWidth;
+	NumberInputBox* keyBox = nullptr;
+    NumberInputBox* priorityBox = nullptr;
 
-	TreapNode(int data, int priority, Vector2 pos) : Node(data, pos, 0), priority(priority % 100), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1) {}
+    TreapNode(int key, int priority, Vector2 pos);
+    ~TreapNode();
 
-	~TreapNode() {
-		if (leftEdge) {
-			delete leftEdge;
-			leftEdge = nullptr;
-		}
-		if (rightEdge) {
-			delete rightEdge;
-			rightEdge = nullptr;
-		}
-	}
-};
+    int getKey() const;
+    void setKey(int key);
+    int getPriority() const;
+    void setPriority(int p);
 
-class Treap {
-protected:
-	TreapNode* root;
-private:
-	TreapNode* rotateLeft(TreapNode* root);
-	TreapNode* rotateRight(TreapNode* root);
-	void clear(TreapNode* root);
-public:
-	Treap() : root(nullptr) {
-		srand(time(nullptr));
-	}
-	~Treap() {
-		clear(root);
-		root = nullptr;
-	}
-	TreapNode* getRoot();
-	int getSubtreeWidth(TreapNode* curr);
-	void updateSubtreeWidth(TreapNode* curr);
-	TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
-	TreapNode* search(TreapNode* root, int key);
-	TreapNode* remove(TreapNode* root, int key);
-	void clear();
-
+    void syncPosition();
+	void setVisualPosition(float x, float y);
+    void update();
+	void draw();
+    Vector2 getMousePos() const;
 };

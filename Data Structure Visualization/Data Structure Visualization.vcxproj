@@ -20,15 +20,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Animation.cpp" />
-    <ClCompile Include="source\AnimationOnGraph.cpp" />
+    <ClCompile Include="source\AnimationManager.cpp" />
     <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\GraphUI.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\HashTableUI.cpp" />
+    <ClCompile Include="source\LLNode.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
+    <ClCompile Include="source\Node.cpp" />
     <ClCompile Include="source\PseudoCode.cpp" />
     <ClCompile Include="source\SceneHandler.cpp" />
     <ClCompile Include="source\SinglyLinkedList.cpp" />
@@ -40,14 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Animation.h" />
-    <ClInclude Include="header\AnimationOnGraph.h" />
+    <ClInclude Include="header\AnimationManager.h" />
     <ClInclude Include="header\Button.h" />
     <ClInclude Include="header\Edge.h" />
     <ClInclude Include="header\Graph.h" />
     <ClInclude Include="header\GraphUI.h" />
     <ClInclude Include="header\HashTable.h" />
     <ClInclude Include="header\HashTableUI.h" />
-    <ClInclude Include="header\LinkedListNode.h" />
+    <ClInclude Include="header\LLNode.h" />
     <ClInclude Include="header\Menu.h" />
     <ClInclude Include="header\Node.h" />
     <ClInclude Include="header\PseudoCode.h" />
@@ -72,6 +74,7 @@
     <Image Include="assets\Buttons\menu-sll-selected.png" />
     <Image Include="assets\Buttons\menu-treap-normal.png" />
     <Image Include="assets\Buttons\menu-treap-selected.png" />
+    <Image Include="assets\Icons\Pause.png" />
     <Image Include="assets\Icons\rightarrow.png" />
     <Image Include="assets\Icons\Sprite.png" />
   </ItemGroup>

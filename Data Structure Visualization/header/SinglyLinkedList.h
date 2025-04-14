@@ -1,25 +1,32 @@
 #pragma once
-#include "LinkedListNode.h"
+#include "LLNode.h"
 #include "Edge.h"
 #include <vector>
+#include <memory>
+#include "AnimationManager.h"
 
 class LinkedList : public LLNode {
 public:
     LLNode* head;
-    static std::vector<Edge*> Edges;
+    static vector<CBEdge*> Edges;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);
     }
     ~LinkedList() {
-        deletelist();
-        deleteEdges();
+        clear();
     }
+    void clearIndicates();
     void adjustPos(LLNode* head);
-    void insertnode(int x, int pos);
-    bool remove(int x);
-    bool search(int x);
+    void adjustPosWithAnim(AnimationManager& animManager, LLNode* head);
+    void adjustPosWithAnim2(AnimationManager& animManager, LLNode* head);
+    void insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int pos);
+    void randominsert(int x, int pos);
+    void loadFromFile();
+    bool remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
+    bool search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
     void printlist();
     void deletelist();
     void deleteEdges();
+    void clear();
 };
 

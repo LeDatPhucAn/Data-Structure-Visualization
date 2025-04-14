@@ -1,5 +1,6 @@
 #include "../header/TreapUI.h"
 #include "../header/PseudoCode.h"
+#include "../header/Animation.h"
 
 const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
 
@@ -7,18 +8,150 @@ TreapUI::TreapUI() : root(nullptr) {
     init();
 }
 
-void TreapUI::deleteButtons() {
-    for (auto button : Buttons) {
-        while (button) {
-            Button* del = button;
-            button = button->next;
-            delete del;
-        }
+TreapNode* TreapUI::rotateLeft(TreapNode* root) {
+    TreapEdge* oldRightEdge = root->rightEdge;
+    if (!oldRightEdge) return root;
+
+    TreapNode* newRoot = oldRightEdge->to;
+
+    TreapEdge* temp = newRoot->leftEdge;
+    root->rightEdge = temp ? new TreapEdge(root, temp->to) : nullptr;
+
+    delete oldRightEdge;
+    delete temp;
+
+    newRoot->leftEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
+}
+
+TreapNode* TreapUI::rotateRight(TreapNode* root) {
+    TreapEdge* oldLeftEdge = root->leftEdge;
+    if (!oldLeftEdge) return root;
+
+    TreapNode* newRoot = oldLeftEdge->to;
+
+    TreapEdge* temp = newRoot->rightEdge;
+
+    root->leftEdge = temp ? new TreapEdge(root, temp->to) : nullptr;
+
+    delete temp;
+    delete oldLeftEdge;
+
+    newRoot->rightEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
+}
+
+int TreapUI::getSubtreeWidth(TreapNode* curr) {
+    if (!curr) return 0;
+    return curr->subtreeWidth;
+}
+
+void TreapUI::updateSubtreeWidth(TreapNode* curr) {
+    if (curr) {
+        int leftWidth = curr->leftEdge ? getSubtreeWidth(curr->leftEdge->to) : 0;
+        int rightWidth = curr->rightEdge ? getSubtreeWidth(curr->rightEdge->to) : 0;
+        curr->subtreeWidth = 1 + leftWidth + rightWidth;
     }
 }
 
+TreapNode* TreapUI::insert(TreapNode* root, Vector2 pos, int key, int priority) {
+    static const int Y_OFFSET = 30;
+    if (!root) return new TreapNode(key, priority, pos);
+
+    int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
+    int newXOffset = max(getSubtreeWidth(root) * treeDepth * 5, 20);
+
+    if (root->getKey() > key) {
+        TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
+        root->leftEdge = new TreapEdge(root, newLeftChild);
+        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
+    }
+    else if (root->getKey() < key) {
+        TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
+        root->rightEdge = new TreapEdge(root, newRightChild);
+        if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
+    }
+
+    updateSubtreeWidth(root);
+    return root;
+}
+
+TreapNode* TreapUI::remove(TreapNode* root, int key) {
+    if (!root) return nullptr;
+
+    if (root->getKey() > key) {
+        if (root->leftEdge) {
+            TreapNode* newLeft = remove(static_cast<TreapNode*> (root->leftEdge->to), key);
+            if (root->leftEdge) delete root->leftEdge;
+            root->leftEdge = newLeft ? new TreapEdge(root, newLeft) : nullptr;
+        }
+    }
+    else if (root->getKey() < key) {
+        if (root->rightEdge) {
+            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
+            if (root->rightEdge) delete root->rightEdge;
+            root->rightEdge = newRight ? new TreapEdge(root, newRight) : nullptr;
+        }
+    }
+    else {
+        if (!root->leftEdge && !root->rightEdge) {
+            delete root;
+            return nullptr;
+        }
+        else if (!root->rightEdge) {
+            TreapNode* temp = root->leftEdge->to;
+            delete root->leftEdge;
+            root->leftEdge = nullptr;
+            delete root;
+            return temp;
+        }
+        else if (!root->leftEdge) {
+            TreapNode* temp = root->rightEdge->to;
+            delete root->rightEdge;
+            root->rightEdge = nullptr;
+            delete root;
+            return temp;
+        }
+
+        if (root->leftEdge->to->getPriority() > root->rightEdge->to->getPriority()) {
+            root = rotateRight(root);
+            TreapNode* newRight = remove(root->rightEdge->to, key);
+            if (root->rightEdge) delete root->rightEdge;
+            root->rightEdge = newRight ? new TreapEdge(root, newRight) : nullptr;
+        }
+        else {
+            root = rotateLeft(root);
+            TreapNode* newLeft = remove(root->leftEdge->to, key);
+            if (root->leftEdge) delete root->leftEdge;
+            root->leftEdge = newLeft ? new TreapEdge(root, newLeft) : nullptr;
+        }
+    }
+
+    updateSubtreeWidth(root);
+    return root;
+}
+
+void TreapUI::clear(TreapNode* curr) {
+    if (!curr) return;
+
+    if (curr->leftEdge) {
+        clear(curr->leftEdge->to);
+        delete curr->leftEdge;
+        curr->leftEdge = nullptr;
+    }
+    if (curr->rightEdge) {
+        clear(curr->rightEdge->to);
+        delete curr->rightEdge;
+        curr->rightEdge = nullptr;
+    }
+    
+    delete curr;
+}
+
 void TreapUI::insert(int key, int priority) {
-    root = treap.insert(root, ROOT_POS, key, priority);
+    root = insert(root, ROOT_POS, key, priority);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
@@ -30,7 +163,7 @@ void TreapUI::loadFromFile(){
         1, // Number of filter patterns
         filter, // Filter patterns
         "Text file (*.txt)", // Filter description
-        0 // Single file seclection mode
+        0 // Single file selection mode
     );
 
     if(filePath){
@@ -53,69 +186,74 @@ void TreapUI::loadFromFile(){
 }
 
 void TreapUI::search(int key) {
-    TreapNode* curr = treap.getRoot();
+    animManager.clear();
+    searchWithAnimation(root, key);
+}
+
+void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
+    if (!curr) return;
     
+    animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
+
+    if (curr->getKey() == key) {
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, {82, 172, 16, 255}, DARKGRAY, WHITE));
+    }
+    else if (curr->getKey() > key) {
+        if (curr->leftEdge) {
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 0.75f));
+            searchWithAnimation(static_cast<TreapNode*> (curr->leftEdge->to), key);
+        }
+    }
+    else {
+        if (curr->rightEdge) {
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 0.75f));
+            searchWithAnimation(static_cast<TreapNode*> (curr->rightEdge->to), key);
+        }
+    }
 }
 
 void TreapUI::remove(int key) {
-    root = treap.remove(root, key);
+    root = remove(root, key);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
 void TreapUI::clear() {
-    treap.Treap::clear();
+    clear(this->root);
     this->root = nullptr;
 }
 
 void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
     if (!root) return;
 
-    root->position = pos;
+    // Position the visual button correctly by setting top-left corner
+    float rectX = pos.x - root->keyBox->getWidth() / 2;
+    float rectY = pos.y - root->keyBox->getHeight() / 2;
+    root->setVisualPosition(rectX, rectY);  // this will also update root->position
 
-    int leftWidth = treap.getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*> (root->leftEdge->to) : nullptr);
-    int rightWidth = treap.getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*> (root->rightEdge->to) : nullptr);
+    int leftWidth = getSubtreeWidth(root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr);
+    int rightWidth = getSubtreeWidth(root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr);
 
-    int newXOffset = max((leftWidth + rightWidth + 1) * 60, 120);
+    int newXOffset = std::max((leftWidth + rightWidth + 1) * 40, 80);
 
     if (root->leftEdge) {
         Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
-        reposition(static_cast<TreapNode*> (root->leftEdge->to), leftPos, newXOffset, yOffset);
+        reposition(static_cast<TreapNode*>(root->leftEdge->to), leftPos, newXOffset, yOffset);
     }
 
     if (root->rightEdge) {
         Vector2 rightPos = { pos.x + newXOffset, pos.y + yOffset };
-        reposition(static_cast<TreapNode*> (root->rightEdge->to), rightPos, newXOffset, yOffset);
+        reposition(static_cast<TreapNode*>(root->rightEdge->to), rightPos, newXOffset, yOffset);
     }
 }
 
 void TreapUI::drawTreapNode(TreapNode* curr) {
     if (!curr) return;
-
-    static const float width = 120.0f;
-    static const float height = 100.0f;
-    static const float dataWidth = 80.0f;
-    static const float priorityWidth = 40.0f;
-
-    Vector2 pos = curr->position;
-
-    DrawRectangle(pos.x - width / 2, pos.y - height / 2, width, height, { 255, 203, 203, 255 });
-    DrawRectangle(pos.x - width / 2 + dataWidth, pos.y - height / 2, priorityWidth, height, { 69, 180, 238, 255 });
-
-    DrawRectangleLines(pos.x - width / 2, pos.y - height / 2, width, height, BLACK);
-    DrawLine(pos.x - width / 2 + dataWidth, pos.y - height / 2, pos.x - width / 2 + dataWidth, pos.y + height / 2, BLACK);
-
-    string value = to_string(curr->data).substr(0, 5);
-    Vector2 valueTextSize = MeasureTextEx(GetFontDefault(), value.c_str(), 30.0f, 2.0f);
-    string priority = to_string(curr->priority);
-    Vector2 priorityTextSize = MeasureTextEx(GetFontDefault(), priority.c_str(), 20.0f, 2.0f);
-
-    DrawText(value.c_str(), pos.x - width / 2 + dataWidth / 2 - valueTextSize.x / 2, pos.y - valueTextSize.y / 2, 30, DARKGRAY);
-    DrawText(priority.c_str(), pos.x - width / 2 + dataWidth + priorityWidth / 2 - priorityTextSize.x / 2, pos.y - priorityTextSize.y / 2, 20, DARKPURPLE);
+    curr->draw();
 }
 
-void TreapUI::drawTreapLink(Edge* edge) {
+void TreapUI::drawTreapEdge(TreapEdge* edge) {
     if (!edge || !edge->from || !edge->to) return;
-    edge->drawTreapEdge();
+    edge->draw();
 }
 
 void TreapUI::drawTreap(TreapNode* curr) {
@@ -124,13 +262,13 @@ void TreapUI::drawTreap(TreapNode* curr) {
     drawTreapNode(curr);
 
     if (curr->leftEdge) {
-        drawTreapLink(curr->leftEdge);
-        drawTreap(static_cast<TreapNode*>(curr->leftEdge->to));
+        drawTreapEdge(curr->leftEdge);
+        drawTreap(curr->leftEdge->to);
     }
 
     if (curr->rightEdge) {
-        drawTreapLink(curr->rightEdge);
-        drawTreap(static_cast<TreapNode*>(curr->rightEdge->to));
+        drawTreapEdge(curr->rightEdge);
+        drawTreap(curr->rightEdge->to);
     }
 }
 
@@ -148,20 +286,20 @@ void TreapUI::init() {
 void TreapUI::initButtons() {
 
     /// Code Blocks
-    Button* OpenCodeBlocks = new TextBox("<");
+    RectButton* OpenCodeBlocks = new TextBox("<");
     OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
     OpenCodeBlocks->rect.y = UI::screenHeight / 4;
     OpenCodeBlocks->rect.height = 0;
     OpenCodeBlocks->isActivated = true;
-    Button::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
+    RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
 
     /// Buttons
-    Button::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 4));
-    Button* Value = new TextBox("Value:");
-    Button* ValueInput = new NumberInputBox(3);
-    Button* Priority = new TextBox("Priority:");
-    Button* PriorityInput = new NumberInputBox(3);
-    Button* Enter = new TextBox(">");
+    RectButton::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
+    RectButton* Value = new TextBox("Value:");
+    RectButton* ValueInput = new NumberInputBox(3);
+    RectButton* Priority = new TextBox("Priority:");
+    RectButton* PriorityInput = new NumberInputBox(3);
+    RectButton* Enter = new TextBox(">");
 
     Buttons[0]->insertSubButton(Value);
     Buttons[0]->insertSubButton(ValueInput);
@@ -171,65 +309,86 @@ void TreapUI::initButtons() {
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PriorityInput]() {
         if (PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
         else this->insert(ValueInput->getNumber());
-        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PriorityInput)->clear();
         });
 
-    Button::insertHeadButton(Buttons, new TextBox("Remove"));
-    Button* Value1 = new TextBox("Value:");
-    Button* ValueInput1 = new NumberInputBox(3);
-    Button* Enter1 = new TextBox(">");
+    RectButton::insertHeadButton(Buttons, new TextBox("Remove"));
+    RectButton* Value1 = new TextBox("Value:");
+    RectButton* ValueInput1 = new NumberInputBox(3);
+    RectButton* Enter1 = new TextBox(">");
+
     Buttons[1]->insertSubButton(Value1);
     Buttons[1]->insertSubButton(ValueInput1);
     Buttons[1]->insertSubButton(Enter1, [this, ValueInput1]() {
         this->remove(ValueInput1->getNumber());
-        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
         static_cast<NumberInputBox*>(ValueInput1)->clear();
         });
 
-    Button::insertHeadButton(Buttons, new TextBox("Search"));
-    Buttons[2]->insertSubButton(new TextBox("Value:"));
-    Button* ValueInput2 = new NumberInputBox(3);
+    RectButton::insertHeadButton(Buttons, new TextBox("Search"));
+    RectButton* Value2 = new TextBox("Value:");
+    RectButton* ValueInput2 = new NumberInputBox(3);
+    RectButton* Enter2 = new TextBox(">");
+
+    Buttons[2]->insertSubButton(Value2);
     Buttons[2]->insertSubButton(ValueInput2);
-    Buttons[2]->insertSubButton(new TextBox(">"), [this, ValueInput2]() {
+    Buttons[2]->insertSubButton(Enter2, [this, ValueInput2]() {
         this->search(ValueInput2->getNumber());
-        Button::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
-    
-    Button::insertHeadButton(Buttons, new TextBox("LoadFile"));
-    Buttons[3]->onClick = [this](){
+
+    RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
+    Buttons[3]->onClick = [this]() {
         this->loadFromFile();
-    };
+        };
 
-
-    Button::insertHeadButton(Buttons, new TextBox(" Clear ", WHITE, { 214, 102, 49, 255 }, DARKGRAY));
+    RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->onClick = [this]() {
         this->clear();
+        int n = rand() % 10;
+        for (int i = 0; i < n; ++i) {
+            int x = rand() % 100;
+            this->insert(x);
+        }
         };
+
+    RectButton::insertHeadButton(Buttons, new TextBox(" Clear ",0,0, WHITE, { 214, 102, 49, 255 }, DARKGRAY));
+    Buttons[5]->onClick = [this]() {
+        this->clear();
+        };
+
+    updateButtonPositions();
 }
 
+
 void TreapUI::displayScene() {
-    SceneHandler::MenuButton->draw();
-    Button::drawButtons(Buttons);
-    Button::drawButtons(CodeBlocks);
+    Button::drawButtons<RectButton>(Buttons);
+    Button::drawButtons<RectButton>(CodeBlocks);
 }
 
 void TreapUI::updateButtonPositions() {
-    SceneHandler::MenuButton->setPosition(UI::screenWidth / 100, UI::screenHeight / 100);
+    RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
 
-    Button::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 4);
-
-    Button::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
+    RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
 
 void TreapUI::updateScene() {
-    Button::isCollision = false;
+    animManager.update(GetFrameTime());
 
-    SceneHandler::MenuButton->update();
-    Button::updateButtons(Buttons);
-    Button::updateButtons(CodeBlocks);
+    Button::updateButtons<RectButton>(Buttons);
+    Button::updateButtons<RectButton>(CodeBlocks);
+
+    // Update treap node buttons recursively
+    std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {
+        if (!node) return;
+        node->update();
+        if (node->leftEdge) updateTreapNodes(static_cast<TreapNode*>(node->leftEdge->to));
+        if (node->rightEdge) updateTreapNodes(static_cast<TreapNode*>(node->rightEdge->to));
+        };
+    updateTreapNodes(root);
 
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }

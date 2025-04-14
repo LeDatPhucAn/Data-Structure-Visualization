@@ -5,25 +5,22 @@ void GraphUI::init() {
 	initButtons();
 }
 void GraphUI::displayScene() {
-	SceneHandler::MenuButton->draw();
-	Button::drawButtons(buttonsOnGraph);
+	Button::drawButtons<RectButton>(buttonsOnGraph);
 
 
 }
 void GraphUI::updateScene() {
-	Button::isCollision = false;
-	SceneHandler::MenuButton->update();
-	Button::updateButtons(buttonsOnGraph);
+	Button::updateButtons<RectButton>(buttonsOnGraph);
 	if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 void GraphUI::initButtons() {
-	Button::insertHeadButton(buttonsOnGraph,
+	RectButton::insertHeadButton(buttonsOnGraph,
 		new TextBox("Add Node", 100, UI::screenHeight * 6 / 10));
-	Button* posX = new TextBox("PosX:");
-	Button* posXInput = new NumberInputBox(4);
-	Button* posY = new TextBox("PosY:");
-	Button* posYInput = new NumberInputBox(4);
-	Button* Enter = new TextBox(">");
+	RectButton* posX = new TextBox("PosX:");
+	RectButton* posXInput = new NumberInputBox(4);
+	RectButton* posY = new TextBox("PosY:");
+	RectButton* posYInput = new NumberInputBox(4);
+	RectButton* Enter = new TextBox(">");
 
 	buttonsOnGraph[0]->insertSubButton(posX);
 	buttonsOnGraph[0]->insertSubButton(posXInput);
@@ -35,10 +32,10 @@ void GraphUI::initButtons() {
 		static_cast<NumberInputBox*>(posYInput)->clear();
 		});
 
-	Button::insertHeadButton(buttonsOnGraph, new TextBox("Remove Node"));
-	Button* id = new TextBox("ID:");
-	Button* idInput = new NumberInputBox(3);
-	Button* enter1 = new TextBox(">");
+	RectButton::insertHeadButton(buttonsOnGraph, new TextBox("Remove Node"));
+	RectButton* id = new TextBox("ID:");
+	RectButton* idInput = new NumberInputBox(3);
+	RectButton* enter1 = new TextBox(">");
 
 	buttonsOnGraph[1]->insertSubButton(id);
 	buttonsOnGraph[1]->insertSubButton(idInput);
@@ -47,14 +44,14 @@ void GraphUI::initButtons() {
 		static_cast<NumberInputBox*>(idInput)->clear();
 		});
 
-	Button::insertHeadButton(buttonsOnGraph, new TextBox("Add Edge"));
-	Button* id1 = new TextBox("ID1:");
-	Button* id1Input = new NumberInputBox(3);
-	Button* id2 = new TextBox("ID2:");
-	Button* id2Input = new NumberInputBox(3);
-	Button* weight = new TextBox("Weight");
-	Button* wInput = new NumberInputBox(3);
-	Button* enter2 = new TextBox(">");
+	RectButton::insertHeadButton(buttonsOnGraph, new TextBox("Add Edge"));
+	RectButton* id1 = new TextBox("ID1:");
+	RectButton* id1Input = new NumberInputBox(3);
+	RectButton* id2 = new TextBox("ID2:");
+	RectButton* id2Input = new NumberInputBox(3);
+	RectButton* weight = new TextBox("Weight");
+	RectButton* wInput = new NumberInputBox(3);
+	RectButton* enter2 = new TextBox(">");
 
 	buttonsOnGraph[2]->insertSubButton(id1);
 	buttonsOnGraph[2]->insertSubButton(id1Input);
@@ -70,12 +67,12 @@ void GraphUI::initButtons() {
 	static_cast<NumberInputBox*>(wInput)->clear();
 		});
 
-	Button::insertHeadButton(buttonsOnGraph, new TextBox("Remove Edge"));
-	Button* id3 = new TextBox("ID1:");
-	Button* id3Input = new NumberInputBox(3);
-	Button* id4 = new TextBox("ID2:");
-	Button* id4Input = new NumberInputBox(3);
-	Button* enter3 = new TextBox(">");
+	RectButton::insertHeadButton(buttonsOnGraph, new TextBox("Remove Edge"));
+	RectButton* id3 = new TextBox("ID1:");
+	RectButton* id3Input = new NumberInputBox(3);
+	RectButton* id4 = new TextBox("ID2:");
+	RectButton* id4Input = new NumberInputBox(3);
+	RectButton* enter3 = new TextBox(">");
 
 	buttonsOnGraph[3]->insertSubButton(id3);
 	buttonsOnGraph[3]->insertSubButton(id3Input);
@@ -86,11 +83,11 @@ void GraphUI::initButtons() {
 		static_cast<NumberInputBox*>(id3Input)->clear();
 		static_cast<NumberInputBox*>(id3Input)->clear();
 		});
-	Button::insertHeadButton(buttonsOnGraph, new TextBox(" Clear "));
+	RectButton::insertHeadButton(buttonsOnGraph, new TextBox(" Clear "));
 	buttonsOnGraph[4]->onClick = [this]() {
 		this->clear();
 		};
-	Button::insertHeadButton(buttonsOnGraph, new TextBox("Hidden"));
+	RectButton::insertHeadButton(buttonsOnGraph, new TextBox("Hidden"));
 	buttonsOnGraph[5]->onClick = [this]() {
 		this->setHidden();
 		};
@@ -118,3 +115,4 @@ void GraphUI::setHidden() {
 	if (hidden) hidden = false;
 	else hidden = true;
 }
+

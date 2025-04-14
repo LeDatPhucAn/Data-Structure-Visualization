@@ -57,16 +57,10 @@ void SceneHandler::initButtons() {
     
     GoPrevious->onClick = [this]() {
         currentSceneObject->clearIndicatesAndHighlights();
-        if (currentSceneObject->CurrentScene == LINKEDLIST) {
-            
-            //dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->linkedlist.clear();
-
-            dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->deepCopy(
-                dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->initialState,
-                dynamic_cast<SinglyLinkedListUI*>(currentSceneObject)->linkedlist
-            );
-        }
-        currentSceneObject->animManager.goToPreviousStep();
+        int step = currentSceneObject->animManager.getStep();
+        cout << step << "\n";
+        currentSceneObject->replayOperation();
+        currentSceneObject->animManager.goToStep(step-1);
         };
     SceneButtons.push_back(GoPrevious);
     
@@ -80,6 +74,7 @@ void SceneHandler::initButtons() {
     
     GoNext->onClick = [this]() {
         currentSceneObject->clearIndicatesAndHighlights();
+        cout<< currentSceneObject->animManager.getStep()<<"\n";
         currentSceneObject->animManager.goToNextStep();
         };
     SceneButtons.push_back(GoNext);

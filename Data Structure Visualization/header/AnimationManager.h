@@ -56,11 +56,9 @@ public:
     // Seek to a specific progress (0.0 to 1.0)
     void seek(float progress);
 
-    // Go to the start of the next animation
-    void goToNext();
 
-    // Go to the start of the previous animation
-    void goToPrevious();
+
+    int getStep();
 
     void goToStep(int k);           // Go to step k
 

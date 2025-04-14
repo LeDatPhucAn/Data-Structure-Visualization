@@ -4,11 +4,15 @@
 #include <map>
 void SinglyLinkedListUI::insert(int x, int pos) {
     animManager.clear();
-    deepCopy(linkedlist, initialState);
+    isInsert = true;
+    isRemove = false;
+    insertParameters = { x,pos };
     linkedlist.insertnode(CodeBlocks,animManager,x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
 	animManager.clear();
+    isRemove = true;
+    isInsert = false;
     linkedlist.remove(CodeBlocks,animManager,x);
 }
 
@@ -28,99 +32,6 @@ void SinglyLinkedListUI::drawlinkedlist() {
         edge->drawArrowEdge();
     }
 }
-void SinglyLinkedListUI::deepCopy(const LinkedList& original, LinkedList& copy) {
-    // Clear the copy to avoid leaks
-    copy.clear();
-
-    // Step 1: Copy the nodes
-    if (!original.head) {
-        copy.head = nullptr;
-    }
-    else {
-        copy.head = new LLNode(original.head->getNumber(), original.head->getCenter());
-        copy.head->indicateNode = original.head->indicateNode;
-        copy.head->noDraw = original.head->noDraw;
-        if (original.head->onClick) {
-            copy.head->onClick = original.head->onClick;
-        }
-
-        LLNode* current = copy.head;
-        LLNode* otherCurrent = original.head->next;
-        while (otherCurrent) {
-            current->next = new LLNode(otherCurrent->getNumber(), otherCurrent->getCenter());
-            current->next->indicateNode = otherCurrent->indicateNode;
-            current->next->noDraw = otherCurrent->noDraw;
-            if (otherCurrent->onClick) {
-                current->next->onClick = otherCurrent->onClick;
-            }
-            current = current->next;
-            otherCurrent = otherCurrent->next;
-        }
-    }
-
-    // Step 2: Copy the edges
-    std::map<LLNode*, LLNode*> nodeMap;
-    LLNode* orig = original.head;
-    LLNode* copyNode = copy.head;
-    while (orig && copyNode) {
-        nodeMap[orig] = copyNode;
-        orig = orig->next;
-        copyNode = copyNode->next;
-    }
-
-    for (auto edge : original.Edges) {
-        LLNode* from = nodeMap[dynamic_cast<LLNode*>(edge->from)];
-        LLNode* to = nodeMap[dynamic_cast<LLNode*>(edge->to)];
-        if (from && to) {
-            CBEdge* newEdge = new CBEdge(from, to);
-            newEdge->noDraw = edge->noDraw;
-            copy.Edges.push_back(newEdge);
-        }
-    }
-}
-//void SinglyLinkedListUI::deepCopy(const LinkedList& original, LinkedList& copy) {
-//
-//    if (copy.head != nullptr)copy.clear();
-//    // Step 1: Copy the nodes
-//    if (!original.head) {
-//        copy.head = nullptr;
-//    }
-//    else {
-//        copy.head = new LLNode(original.head->getNumber(),original.head->getCenter()); // Assumes LLNode has a copy constructor
-//        LLNode* current = copy.head;
-//        LLNode* otherCurrent = original.head->next;
-//        while (otherCurrent) {
-//            copy.randominsert(otherCurrent->getNumber(), 99);
-//            otherCurrent = otherCurrent->next;
-//        }
-//    }
-//
-//    // Step 2: Copy the edges
-//
-//    LLNode* copyNode = copy.head;
-//
-//    LLNode* cur = copyNode;
-//    while (cur) {
-//        CBEdge::addEdge(copy.Edges, cur, cur->next);
-//        cur = cur->next;
-//    }
-//
-//    //std::map<LLNode*, LLNode*> nodeMap; // Maps original nodes to copied nodes
-//    //LLNode* orig = original.head;
-//    //while (orig) {
-//    //    nodeMap[orig] = copyNode;
-//    //    orig = orig->next;
-//    //    copyNode = copyNode->next;
-//    //}
-//
-//    //for (auto edge : original.Edges) {
-//    //    LLNode* from = nodeMap[edge->from];
-//    //    LLNode* to = nodeMap[edge->to];
-//    //    CBEdge* newEdge = new CBEdge(from, to); // Assumes CBEdge constructor takes from/to pointers
-//    //    copy->Edges.push_back(newEdge);
-//    //}
-//    
-//}
 
 void SinglyLinkedListUI::resetAnimations() {
 	Button::resetButtonsAnimations<RectButton>(Buttons);
@@ -136,6 +47,18 @@ void SinglyLinkedListUI::clearIndicatesAndHighlights() {
     for (int i = 1; i < CodeBlocks.size(); i++) {
         CodeBlocks[i]->unhighlight();
     }
+}
+void SinglyLinkedListUI::replayOperation() {
+
+    if (isInsert) {
+        animManager.clear();
+        linkedlist.randomremove(insertParameters.first, insertParameters.second);
+        linkedlist.insertnode(CodeBlocks,animManager,insertParameters.first, insertParameters.second);
+    }
+    if (isRemove) {
+        animManager.clear();
+    }
+
 }
 
 void SinglyLinkedListUI::initButtons() {

@@ -3,16 +3,17 @@
 #include "SceneManager.h"
 #include "SceneHandler.h"
 #include "Button.h"
-
 class SinglyLinkedListUI : public SceneManager {
 private:
 protected:
-    
+    LinkedList linkedlist;
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
+    bool isInsert = false;
+    pair<int, int> insertParameters;
+    bool isRemove = false;
 public:
-    LinkedList linkedlist;
-    LinkedList initialState;
+
     SinglyLinkedListUI() {
         init();
     }
@@ -26,9 +27,7 @@ public:
     void insert(int x, int pos);
     void remove(int x);
     bool search(int x);
-
-    
-    void deepCopy(const LinkedList& original, LinkedList& copy);
+    void replayOperation() override;
     void clearIndicatesAndHighlights() override;
     void init() override;
     void initButtons() override;

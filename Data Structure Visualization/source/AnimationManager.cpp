@@ -1,6 +1,7 @@
 #include "../header/Animation.h"
 #include "../header/AnimationManager.h"
 
+
 void AnimationManager::addAnimation(Animation* anim) {
     if (anim) {
         animations.push_back(anim);
@@ -82,32 +83,20 @@ void AnimationManager::seek(float time) {
     updateActiveAnimation();
 }
 
-// Go to the start of the next animation
-void AnimationManager::goToNext() {
-    if (animations.empty())return;
-    for (int i = 0; i < animations.size() - 1; ++i) {
-        if (currentTime < startTimes[i + 1]) {
-            animations[i]->makeComplete();
-            seek(startTimes[i + 1]);
-            return;
+int AnimationManager::getStep() {
+    // Find the current step based on currentTime
+    int currentStep = 0;
+    for (int i = 0; i < animations.size(); ++i) {
+        if (currentTime < startTimes[i] + animations[i]->duration) {
+            currentStep = i;
+            break;
+        }
+        else if (i == animations.size() - 1 && currentTime >= startTimes[i] + animations[i]->duration) {
+            currentStep = animations.size();
         }
     }
+    return currentStep;
 }
-
-// Go to the start of the previous animation
-void AnimationManager::goToPrevious() {
-	if (animations.empty())return;  
-    for (int i = 1; i < animations.size(); ++i) {
-        if (currentTime <= startTimes[i]) {
-            seek(startTimes[i - 1]);
-            return;
-        }
-    }
-    if (currentTime <= startTimes[0]) {
-        seek(0);
-    }
-}
-
 // Go to step k: state after animation k completes (step 0 is initial state)
 void AnimationManager::goToStep(int k) {
     if (k < 0 || k > animations.size()) return;
@@ -146,18 +135,8 @@ void AnimationManager::goToLastStep() {
 // Go to the previous step
 void AnimationManager::goToPreviousStep() {
     if (animations.empty()) return;
-    // Find the current step based on currentTime
-    int currentStep = 0;
-    for (int i = 0; i < animations.size(); ++i) {
-        if (currentTime < startTimes[i] + animations[i]->duration) {
-            currentStep = i;
-            break;
-        }
-        else if (i == animations.size() - 1 && currentTime >= startTimes[i] + animations[i]->duration) {
-            currentStep = animations.size();
-        }
-    }
-    goToStep(currentStep - 1);
+
+    goToStep(getStep() - 1);
 }
 
 // Go to the next step (modify existing goToNext for consistency)
@@ -174,6 +153,6 @@ void AnimationManager::goToNextStep() {
             currentStep = animations.size();
         }
     }
-    goToStep(currentStep + 1);
+    goToStep(getStep() + 1);
 }
 

@@ -234,7 +234,7 @@ public:
     void setPosition(float x, float y) override {
 
         MoveableButton.x += x - rect.x;
-
+        MoveableButton.y = y - (MoveableButton.height-rect.height)/2;
         rect.x = x;
         rect.y = y;
 

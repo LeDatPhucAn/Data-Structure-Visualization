@@ -275,8 +275,6 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
                 if (temp->next)temp->next->indicateNode = "del->next";
                 }));
 
-            
-
             CBEdge::removeEdgeAndAnim(animManager,Edges, cur, temp);
             CBEdge::addEdgeAndAnim(animManager, Edges, cur, temp->next);
             Edges.back()->noDraw = true;
@@ -296,7 +294,7 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
                     if (cur->next) cur->next->indicateNode = "";
                 }
 
-                delete temp;
+                deleteLater.push_back(temp);
                 //reposition
                 adjustPosWithAnim(animManager,cur);
                 CodeBlocks[6]->unhighlight();
@@ -490,6 +488,13 @@ void LinkedList::deleteEdges() {
 void LinkedList::clear() {
     deletelist();
     deleteEdges();
+    for (auto node : deleteLater) {
+        if(node)
+        {
+            delete node;
+            node = nullptr;
+        }
+    }
 }
 
 void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager,int x, int pos) {
@@ -608,7 +613,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
     if (!cur->next) {
         LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, cur->getCenterY());
 
-
+ 
         cur->next = newnode;
         newnode->noDraw = true;
 

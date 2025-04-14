@@ -63,14 +63,18 @@ void SinglyLinkedListUI::clearIndicatesAndHighlights() {
 void SinglyLinkedListUI::replayOperation() {
     if (isInsert) {
         animManager.clear();
-        //restore the list after insert
+        // restore the list after insert
         linkedlist.restoreAfterInsert(insertParameters.first, insertParameters.second);
+
+        // add the animations back
         linkedlist.insertnode(CodeBlocks,animManager,insertParameters.first, insertParameters.second);
     }
     else if (isRemove) {
         animManager.clear();
-        //restore the list after removal
+        // restore the list after removal
         linkedlist.randominsert(removeParameters.first, removeParameters.second );
+
+        // add the animations back
         linkedlist.remove(CodeBlocks, animManager, removeParameters.first);
     }
 

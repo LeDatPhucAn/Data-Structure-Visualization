@@ -9,6 +9,7 @@ class LinkedList : public LLNode {
 public:
     LLNode* head;
     vector<CBEdge*> Edges;
+    vector<LLNode*> deleteLater;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);
     }

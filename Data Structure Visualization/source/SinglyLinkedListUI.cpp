@@ -1,22 +1,40 @@
 #include "../header/SinglyLinkedListUI.h"
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
-
-void SinglyLinkedListUI::insert(int x, int pos) {
+#include <map>
+void SinglyLinkedListUI::cleanupForOperation() {
+    animManager.goToLastStep();
     animManager.clear();
+    animManager.resume();
+}
+void SinglyLinkedListUI::insert(int x, int pos) {
+    cleanupForOperation();
+    isInsert = true;
+    isRemove = false;
+    if (pos > linkedlist.getListSize()) {
+        pos = linkedlist.getListSize() + 1;
+    }
+    insertParameters = { x,pos };
     linkedlist.insertnode(CodeBlocks,animManager,x, pos);
 }
 void SinglyLinkedListUI::remove(int x) {
-	animManager.clear();
-    linkedlist.remove(CodeBlocks,animManager,x);
+    cleanupForOperation();
+
+    isRemove = true;
+    isInsert = false;
+    removeParameters = { x, linkedlist.remove(CodeBlocks,animManager,x) };
 }
 
 bool SinglyLinkedListUI::search(int x) {
-    animManager.clear();
+    cleanupForOperation();
+
+    isRemove = false;
+    isInsert = false;
     return linkedlist.search(CodeBlocks,animManager,x);
     
 }
 void SinglyLinkedListUI::drawlinkedlist() {
+    
     LLNode* cur = linkedlist.head;
     while (cur) {
         cur->draw();
@@ -26,9 +44,40 @@ void SinglyLinkedListUI::drawlinkedlist() {
         edge->drawArrowEdge();
     }
 }
+
 void SinglyLinkedListUI::resetAnimations() {
 	Button::resetButtonsAnimations<RectButton>(Buttons);
 	Button::resetButtonsAnimations<RectButton>(CodeBlocks);
+}
+void SinglyLinkedListUI::clearIndicatesAndHighlights() {
+    
+    LLNode* cur = linkedlist.head;
+    while (cur) {
+        cur->indicateNode = "";
+        cur = cur->next;
+    }
+    for (int i = 1; i < CodeBlocks.size(); i++) {
+        CodeBlocks[i]->unhighlight();
+    }
+}
+void SinglyLinkedListUI::replayOperation() {
+    if (isInsert) {
+        animManager.clear();
+        // restore the list after insert
+        linkedlist.restoreAfterInsert(insertParameters.first, insertParameters.second);
+
+        // add the animations back
+        linkedlist.insertnode(CodeBlocks,animManager,insertParameters.first, insertParameters.second);
+    }
+    else if (isRemove) {
+        animManager.clear();
+        // restore the list after removal
+        linkedlist.randominsert(removeParameters.first, removeParameters.second );
+
+        // add the animations back
+        linkedlist.remove(CodeBlocks, animManager, removeParameters.first);
+    }
+
 }
 
 void SinglyLinkedListUI::initButtons() {

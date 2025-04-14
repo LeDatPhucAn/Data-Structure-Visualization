@@ -234,7 +234,7 @@ public:
     void setPosition(float x, float y) override {
 
         MoveableButton.x += x - rect.x;
-
+        MoveableButton.y = y - (MoveableButton.height-rect.height)/2;
         rect.x = x;
         rect.y = y;
 
@@ -397,8 +397,9 @@ public:
 
 // CircleButton with texture
 class TextureCircle : public CircleButton {
-public:
+protected:
     Texture2D Texture;
+public:
     TextureCircle(Texture2D t, Vector2 cent = { 0, 0 }, float r = 50.0f,
         Color tc = RAYWHITE, Color fc = ORANGE, Color rc = RED)
         : CircleButton(cent, r, tc, fc, rc), Texture(t) {
@@ -406,6 +407,20 @@ public:
     void draw() override;
     void hover() override;
     void unhover() override;
+    void changeTexture(Texture2D texture);
+};
+
+// CircleButton with texture
+class SceneHandler;
+class PlayButton : public TextureCircle {
+private:
+    SceneHandler* scenehandler;
+public:
+    PlayButton(SceneHandler* obj, Texture2D t, Vector2 cent = { 0, 0 }, float r = 50.0f,
+        Color tc = RAYWHITE, Color fc = ORANGE, Color rc = RED)
+        : TextureCircle(t,cent, r, tc, fc, rc), scenehandler(obj){
+    }
+    void update() override;
 };
 
 // Uses CircleButton and Input Handler to create a button with text

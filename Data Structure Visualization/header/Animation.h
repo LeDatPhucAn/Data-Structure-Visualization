@@ -22,15 +22,8 @@ public:
     virtual bool isCompleted() {
         return completed;
     }
-    virtual void reset() {
-        elapsed = 0.0f;
-        completed = false;
-
-    }
-	virtual void makeComplete() {
-		elapsed = duration;
-		completed = true;
-	}
+    virtual void reset();
+    virtual void makeComplete();
     virtual float getProgress() const {
         return elapsed;
     }
@@ -60,6 +53,21 @@ public:
 	}
 	void applyState() override;
 };
+class RemoveEdgeInAnim: public Animation {
+private:
+    
+public:
+    CircleButton* from;
+    CircleButton* to;
+    RemoveEdgeInAnim(float dur,CircleButton* fromPtr, CircleButton* toPtr, std::function<void()> func)
+        : Animation(dur,func),  from(fromPtr), to(toPtr) {
+    }
+
+    void applyState() override {
+        // No visual state to apply; the removal is structural
+    }
+};
+
 class CBEdgeAddAnim : public Animation {
 protected:
 	CBEdge* edge;

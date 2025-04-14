@@ -17,6 +17,7 @@ public:
     }
     
     void init() override;
+    void clearIndicatesAndHighlights() override {};
     void drawEdge();
     void initButtons() override;
     void updateButtonPositions() override {};

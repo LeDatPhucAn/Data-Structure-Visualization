@@ -23,8 +23,8 @@ public:
     void randominsert(int x, int pos);
     void loadFromFile();
     bool remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
-
-    bool randomremove(int x, int pos);
+    int getListSize();
+    bool randomremove(AnimationManager &animManager, int x, int pos);
     bool search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
     void printlist();
     void deletelist();

@@ -53,6 +53,20 @@ public:
 	}
 	void applyState() override;
 };
+class RemoveEdgeInAnim: public Animation {
+private:
+    CircleButton* from;
+    CircleButton* to;
+public:
+    RemoveEdgeInAnim(float dur,CircleButton* fromPtr, CircleButton* toPtr, std::function<void()> func)
+        : Animation(dur,func),  from(fromPtr), to(toPtr) {
+    }
+
+    void applyState() override {
+        // No visual state to apply; the removal is structural
+    }
+};
+
 class CBEdgeAddAnim : public Animation {
 protected:
 	CBEdge* edge;

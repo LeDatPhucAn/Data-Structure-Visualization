@@ -4,7 +4,15 @@
 #include "../header/tinyfiledialogs.h"
 #include "../header/PseudoCode.h"
 #include <fstream>
-
+int LinkedList::getListSize() {
+    LLNode* cur = head;
+    int cnt = 0;
+    while (cur) {
+        cnt++;
+        cur = cur->next;
+    }
+    return cnt;
+}
 void LinkedList::loadFromFile() {
     const char* filter[] = { "*.txt" };
     const char* filePath = tinyfd_openFileDialog(
@@ -318,64 +326,39 @@ bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animM
         }));
     return false;
 }
-
-bool LinkedList::randomremove(int x, int pos) {
-    if (!head || pos < 1) {
-        return false;
+void LinkedList::randominsert(int x, int pos) {
+    if (pos < 1) {
+        return;
     }
-
-    if (pos == 1) {
-        LLNode* del = head;
-        head = head->next;
-
-        Edges.erase(
-            std::remove_if(Edges.begin(), Edges.end(),
-                [del](CBEdge* edge) {
-                    if (edge->from == del || edge->to == del) {
-                        delete edge;
-                        return true;
-                    }
-                    return false;
-                }),
-            Edges.end()
-        );
-
-        delete del;
-        return true;
+    if (pos == 1 || !head) {
+        LLNode* temp = new LLNode(x, 100, 100);
+        temp->onClick = [temp]() {
+            cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
+            };
+        temp->next = head;
+        adjustPos(temp);
+        CBEdge::addEdge(Edges, temp, head);
+        head = temp;
+        return;
     }
-
     LLNode* cur = head;
-    LLNode* prev = nullptr;
-    int i = 1;
-
-    while (cur && i < pos) {
-        prev = cur;
+    for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
         cur = cur->next;
-        i++;
     }
 
-    if (!cur) {
-        return false;
-    }
-
-    prev->next = cur->next;
-    adjustPos(prev);
-
-    Edges.erase(
-        std::remove_if(Edges.begin(), Edges.end(),
-            [cur,prev](CBEdge* edge) {
-                if (edge->from == cur || edge->to == cur) {
-                    delete edge;
-                    return true;
-                }
-                return false;
-            }),
-        Edges.end()
-    );
-
-    delete cur;
-    return true;
+    LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, cur->getCenterY());
+    newnode->onClick = [newnode]() {
+        cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
+        };
+    newnode->next = cur->next;
+    CBEdge::addEdge(Edges, newnode, cur->next);
+    CBEdge::removeEdge(Edges, cur, cur->next);
+    cur->next = newnode;
+    adjustPos(newnode);
+    CBEdge::addEdge(Edges, cur, newnode);
 }
+
+
 void LinkedList::printlist() {
     LLNode* cur = head;
     while (cur) {
@@ -504,6 +487,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
     if (pos < 1) {
             return;
         }
+
 
     clearIndicates();
 
@@ -674,6 +658,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
         };
 
 
+    LLNode* next = cur->next;
 
     /// highlight line 5
     animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
@@ -715,34 +700,66 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
 
 }
 
-void LinkedList::randominsert(int x, int pos) {
-    if (pos < 1) {
-        return;
-    }
-    if (pos == 1 || !head) {
-        LLNode* temp = new LLNode(x,100,100);
-        temp->onClick = [temp]() {
-            cout << temp->getCenterX() << " " << temp->getCenterY() << "\n";
-            };
-        temp->next = head;
-        adjustPos(temp);
-        CBEdge::addEdge(Edges, temp, head);
-        head = temp;
-        return;
-    }
-    LLNode* cur = head;
-    for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
-        cur = cur->next;
+bool LinkedList::randomremove(AnimationManager& animManager, int x, int pos) {
+    if (!head || pos < 1) {
+        return false;
     }
 
-    LLNode* newnode = new LLNode(x,cur->getCenterX() + 200, cur->getCenterY());
-    newnode->onClick = [newnode]() {
-        cout << newnode->getCenterX() << " " << newnode->getCenterY() << "\n";
-        };
-    newnode->next = cur->next;
-    CBEdge::addEdge(Edges, newnode, cur->next);
-    CBEdge::removeEdge(Edges, cur, cur->next);
-    cur->next = newnode;
-    adjustPos(newnode);
-    CBEdge::addEdge(Edges, cur, newnode);
+    if (pos == 1) {
+        LLNode* del = head;
+        head = head->next;
+        Edges.erase(
+            std::remove_if(Edges.begin(), Edges.end(),
+                [del](CBEdge* edge) {
+                    if (edge->from == del || edge->to == del) {
+                        delete edge;
+                        return true;
+                    }
+                    return false;
+                }),
+            Edges.end()
+        );
+        delete del;
+        return true;
+    }
+
+    LLNode* cur = head;
+    LLNode* prev = nullptr;
+    int i = 1;
+
+    while (cur && i < pos) {
+        prev = cur;
+        cur = cur->next;
+        i++;
+    }
+
+    if (!cur) {
+        return false;
+    }
+
+    LLNode* next = cur->next;
+    prev->next = next;
+
+    Edges.erase(
+        std::remove_if(Edges.begin(), Edges.end(),
+            [cur](CBEdge* edge) {
+                if (edge->from == cur || edge->to == cur) {
+                    delete edge;
+                    return true;
+                }
+                return false;
+            }),
+        Edges.end()
+    );
+    //// Restore the original edge if it existed
+    if (prev && next && CBEdge::findEdge(Edges, prev, next) == nullptr) {
+        cout << "EDGE ADDED\n";
+        CBEdge::addEdge(Edges, prev, next);
+        Edges.back()->noDraw = false;
+    }
+
+    adjustPos(prev);
+
+    delete cur;
+    return true;
 }

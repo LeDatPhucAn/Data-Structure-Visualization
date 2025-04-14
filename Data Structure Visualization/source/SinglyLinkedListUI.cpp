@@ -6,6 +6,9 @@ void SinglyLinkedListUI::insert(int x, int pos) {
     animManager.clear();
     isInsert = true;
     isRemove = false;
+    if (pos > linkedlist.getListSize()) {
+        pos = linkedlist.getListSize() + 1;
+    }
     insertParameters = { x,pos };
     linkedlist.insertnode(CodeBlocks,animManager,x, pos);
 }
@@ -51,8 +54,8 @@ void SinglyLinkedListUI::clearIndicatesAndHighlights() {
 void SinglyLinkedListUI::replayOperation() {
 
     if (isInsert) {
+        linkedlist.randomremove(animManager,insertParameters.first, insertParameters.second);
         animManager.clear();
-        linkedlist.randomremove(insertParameters.first, insertParameters.second);
         linkedlist.insertnode(CodeBlocks,animManager,insertParameters.first, insertParameters.second);
     }
     if (isRemove) {

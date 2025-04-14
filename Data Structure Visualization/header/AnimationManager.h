@@ -3,7 +3,6 @@
 class Animation;
 class AnimationManager {
 private:
-    std::vector<Animation*> animations; // List of animations in the sequence
     std::vector<float> startTimes;      // Start time of each animation on the timeline
     float totalDuration = 0;            // Total duration of the sequence
     float currentTime = 0;              // Current position on the timeline
@@ -11,6 +10,8 @@ private:
     bool paused = true;                 // Playback state
     int direction = 1;                  // 1 for forward, -1 for backward
 public:
+    std::vector<Animation*> animations; // List of animations in the sequence
+
     AnimationManager() {
         speed = 1.0f;
         paused = false;

@@ -55,9 +55,10 @@ public:
 };
 class RemoveEdgeInAnim: public Animation {
 private:
+    
+public:
     CircleButton* from;
     CircleButton* to;
-public:
     RemoveEdgeInAnim(float dur,CircleButton* fromPtr, CircleButton* toPtr, std::function<void()> func)
         : Animation(dur,func),  from(fromPtr), to(toPtr) {
     }

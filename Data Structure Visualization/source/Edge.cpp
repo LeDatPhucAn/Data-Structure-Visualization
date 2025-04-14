@@ -149,7 +149,7 @@ void CBEdge::removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton
 	}
 }
 CBEdge* CBEdge::findEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
-
+	if (!from)return nullptr;
 	for (int i = 0; i < Edges.size(); i++) {
 		if (Edges[i]->from == from && Edges[i]->to == to) {
 			return Edges[i];

@@ -52,7 +52,7 @@ void SinglyLinkedListUI::clearIndicatesAndHighlights() {
     }
 }
 void SinglyLinkedListUI::replayOperation() {
-
+    //////////////////////// INSERT NODE GO TO PREVIOUS IS UNFINISHED ///////////
     if (isInsert) {
         linkedlist.randomremove(animManager,insertParameters.first, insertParameters.second);
         animManager.clear();

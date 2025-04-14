@@ -59,6 +59,11 @@ void SceneHandler::initButtons() {
         currentSceneObject->clearIndicatesAndHighlights();
         int step = currentSceneObject->animManager.getStep();
         cout << step << "\n";
+
+        // complete the operation to get final state
+        currentSceneObject->animManager.goToLastStep();
+
+        // restore the initial state and get to the previous state
         currentSceneObject->replayOperation();
         currentSceneObject->animManager.goToStep(step-1);
         };

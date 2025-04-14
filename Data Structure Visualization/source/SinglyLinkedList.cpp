@@ -85,7 +85,7 @@ void LinkedList::adjustPosWithAnim2(AnimationManager& animManager,LLNode* pHead)
     }
 }
 
-bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
+int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
 
 
     clearIndicates();
@@ -114,7 +114,7 @@ bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animM
             CodeBlocks[1]->unhighlight();
             CodeBlocks[2]->highlight();
             }));
-        return false;
+        return -1;
     }
 
     if (head->getNumber() == x) {
@@ -153,6 +153,7 @@ bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animM
             CodeBlocks[5]->unhighlight();
             CodeBlocks[6]->highlight();
             }));
+
         if (!del->next) {
             animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, del,this]() {
                 head = head->next;
@@ -324,8 +325,9 @@ bool LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animM
         CodeBlocks[2]->unhighlight();
         CodeBlocks[9]->highlight();
         }));
-    return false;
+    return -1;
 }
+
 void LinkedList::randominsert(int x, int pos) {
     if (pos < 1) {
         return;
@@ -638,8 +640,6 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
     /// the node to be inserted
     LLNode* newnode = new LLNode(x, cur->getCenterX() + 200, 400);
 
-
-
     Animation* InsertNode = new CircleHighLightAnim(newnode, 0.5f, GREEN, RAYWHITE, GREEN);
     InsertNode->Function = [newnode, &CodeBlocks]() {
         CodeBlocks[4]->highlight();
@@ -686,7 +686,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
     // connect first edge
     cur->next = newnode;
 
-    // Add next edge
+    // Add first edge
     CBEdge::addEdgeAndAnim(animManager, Edges, cur, newnode);
     Edges.back()->noDraw = true;
 
@@ -702,7 +702,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
 
 bool LinkedList::randomremove(AnimationManager& animManager, int x, int pos) {
     if (!head || pos < 1) {
-        return false;
+        return -1;
     }
 
     if (pos == 1) {
@@ -751,12 +751,14 @@ bool LinkedList::randomremove(AnimationManager& animManager, int x, int pos) {
             }),
         Edges.end()
     );
+
     //// Restore the original edge if it existed
-    if (prev && next && CBEdge::findEdge(Edges, prev, next) == nullptr) {
-        cout << "EDGE ADDED\n";
-        CBEdge::addEdge(Edges, prev, next);
-        Edges.back()->noDraw = false;
-    }
+    //if (prev && next && CBEdge::findEdge(Edges, prev, next) == nullptr) {
+    //    cout << "EDGE ADDED\n";
+    //    CBEdge::addEdge(Edges, prev, next);
+    //}
+
+    CBEdge::addEdge(Edges, prev, next);
 
     adjustPos(prev);
 

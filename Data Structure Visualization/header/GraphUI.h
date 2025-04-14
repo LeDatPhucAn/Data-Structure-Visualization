@@ -7,6 +7,7 @@
 class GraphUI : public SceneManager {
 
 protected:
+    bool hidden = false;
     vector<Button*> CodeBlocks;
     vector<Button*> buttonsOnGraph;
 
@@ -38,6 +39,7 @@ public:
         for (Button* codeBlock : CodeBlocks) delete codeBlock;
         CodeBlocks.clear();
     }
+    void setHidden();
     void clear();
 
 };

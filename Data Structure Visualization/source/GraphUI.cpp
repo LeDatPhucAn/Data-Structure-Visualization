@@ -18,7 +18,7 @@ void GraphUI::updateScene() {
 }
 void GraphUI::initButtons() {
 	Button::insertHeadButton(buttonsOnGraph,
-		new TextBox("Add Node", 100, UI::screenHeight * 65 / 100));
+		new TextBox("Add Node", 100, UI::screenHeight * 6 / 10));
 	Button* posX = new TextBox("PosX:");
 	Button* posXInput = new NumberInputBox(4);
 	Button* posY = new TextBox("PosY:");
@@ -90,6 +90,10 @@ void GraphUI::initButtons() {
 	buttonsOnGraph[4]->onClick = [this]() {
 		this->clear();
 		};
+	Button::insertHeadButton(buttonsOnGraph, new TextBox("Hidden"));
+	buttonsOnGraph[5]->onClick = [this]() {
+		this->setHidden();
+		};
 
 }
 void GraphUI::drawGraph() {
@@ -104,8 +108,13 @@ void GraphUI::drawGraph() {
 }
 
 void GraphUI::displaySceneInCamera() {
-	drawGraph();
+	if (!hidden) drawGraph();
+	
 }
 void GraphUI::clear() {
 	graph->clear();
+}
+void GraphUI::setHidden() {
+	if (hidden) hidden = false;
+	else hidden = true;
 }

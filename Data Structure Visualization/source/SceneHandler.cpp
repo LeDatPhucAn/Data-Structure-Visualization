@@ -65,7 +65,6 @@ void SceneHandler::initButtons() {
 
         // restore the initial state and get to the previous state
         currentSceneObject->replayOperation();
-        if (step == -1)step++;
         currentSceneObject->animManager.goToStep(step - 1);
         };
     SceneButtons.push_back(GoPrevious);

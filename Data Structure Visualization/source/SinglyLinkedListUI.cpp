@@ -1,7 +1,6 @@
 #include "../header/SinglyLinkedListUI.h"
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
-#include <map>
 
 bool SinglyLinkedListUI::isInsert = false;
 bool SinglyLinkedListUI::isRemove = false;
@@ -66,16 +65,29 @@ void SinglyLinkedListUI::clearIndicatesAndHighlights() {
 }
 void SinglyLinkedListUI::replayOperation() {
     if (isInsert) {
+
+        // complete all animations to get the list after insert
+        animManager.goToLastStep();
+
         animManager.clear();
-        // restore the list after insert
+
+        // restore the list to the state before insert
         linkedlist.restoreAfterInsert(insertParameters.first, insertParameters.second);
 
         // add the animations back
         linkedlist.insertnode(CodeBlocks,animManager,insertParameters.first, insertParameters.second);
     }
     else if (isRemove) {
+
+        // complete all animations to get the list after removal
+        if (removeParameters.second == 1 && animManager.getStep() == animManager.animations.size()) {
+            animManager.goToStep(animManager.animations.size() - 1);
+        }
+        else animManager.goToLastStep();
+
         animManager.clear();
-        // restore the list after removal
+        
+        // restore the list to the state before removal
         linkedlist.randominsert(removeParameters.first, removeParameters.second );
 
         // add the animations back

@@ -148,6 +148,7 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             CodeBlocks[5]->highlight();
             del->indicateNode = "del";
             }));
+
         if (del->next) 
         {
             animManager.addAnimation(new Animation(0.1f, [del]() {

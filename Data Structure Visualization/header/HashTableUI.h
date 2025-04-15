@@ -28,6 +28,8 @@ public:
     void resize(int newSize);
     void loadFromFile();
 
+    void clearIndicatesAndHighlights() {};
+
     void init() override;
     void initButtons() override;
     void resetAnimations() override;

@@ -27,17 +27,17 @@ private:
     TreapNode* rotateRightWithAnimation(TreapNode* root);
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);
-    TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
+    TreapNode* insert(TreapNode* root, int key, int priority);
+    TreapNode* insertWithAnimation(TreapNode* root, int key, int priority);
     void searchWithAnimation(TreapNode* curr, int key);
     TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
-    void repositionWithAnimation(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);
 public:
-    void insert(int key, int priority = rand());
+    void insert(int key, int priority = rand(), bool isAnimated = true);
     void loadFromFile();
     void remove(int key);
     void search(int key);

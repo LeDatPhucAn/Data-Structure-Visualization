@@ -81,7 +81,7 @@ void SinglyLinkedListUI::replayOperation() {
 
         // complete all animations to get the list after removal
         if (removeParameters.second == 1 && animManager.getStep() == animManager.animations.size()) {
-            animManager.goToStep(animManager.animations.size() - 1);
+            cout << "bruh";
         }
         else animManager.goToLastStep();
 

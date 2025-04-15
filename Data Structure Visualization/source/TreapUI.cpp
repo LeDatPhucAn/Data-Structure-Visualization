@@ -93,12 +93,15 @@ void TreapUI::updateSubtreeWidth(TreapNode* curr) {
 }
 
 TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
-    if (!root) return new TreapNode(key, priority, ROOT_POS);
+    if (!root) {
+        TreapNode* newNode = new TreapNode(key, priority, ROOT_POS);
+        return newNode;
+    }
 
     if (root->getKey() > key) {
         TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
         root->leftEdge = new TreapEdge(root, newLeftChild);
-        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
+        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);    
     }
     else if (root->getKey() < key) {
         TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
@@ -113,25 +116,43 @@ TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
 TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) {
     if (!root) {
         TreapNode* newNode = new TreapNode(key, priority, ROOT_POS);
+        animManager.addAnimation(new RectHighlightAnim(newNode->keyBox, 0.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
         return newNode;
     }
 
+    cout << "compare with " << root->getKey() << endl;
     animManager.addAnimation(new RectHighlightAnim(root->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
 
-    if (root->getKey() > key) {
-        if (root->leftEdge) animManager.addAnimation(new TreapEdgeHighlightAnim(root->leftEdge, 0.75f));
-        TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
-        root->leftEdge = new TreapEdge(root, newLeftChild);
-        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
+    if (key < root->getKey()) {
+        TreapNode* leftChild = root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr;
+
+        if (root->leftEdge) {
+            animManager.addAnimation(new TreapEdgeHighlightAnim(root->leftEdge, 0.5f));
+        }
+
+        TreapNode* newLeft = insertWithAnimation(leftChild, key, priority);
+        root->leftEdge = new TreapEdge(root, newLeft);
+
+        if (newLeft->getPriority() > root->getPriority()) {
+            root = rotateRightWithAnimation(root);
+        }
     }
-    else if (root->getKey() < key) {
-        if (root->rightEdge) animManager.addAnimation(new TreapEdgeHighlightAnim(root->rightEdge, 0.75f));
-        TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
-        root->rightEdge = new TreapEdge(root, newRightChild);
-        if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
+    else if (key > root->getKey()) {
+        TreapNode* rightChild = root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr;
+
+        if (root->rightEdge) {
+            animManager.addAnimation(new TreapEdgeHighlightAnim(root->rightEdge, 0.5f));
+        }
+
+        TreapNode* newRight = insertWithAnimation(rightChild, key, priority);
+        root->rightEdge = new TreapEdge(root, newRight);
+
+        if (newRight->getPriority() > root->getPriority()) {
+            root = rotateLeftWithAnimation(root);
+        }
     }
     else {
-        animManager.addAnimation(new RectHighlightAnim(root->keyBox, 0.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlightAnim(root->keyBox, 0.5f, BLUE, DARKGRAY, WHITE));
     }
 
     updateSubtreeWidth(root);
@@ -211,9 +232,17 @@ void TreapUI::clear(TreapNode* curr) {
 }
 
 void TreapUI::insert(int key, int priority, bool isAnimated) {
-    animManager.clear();
-    root = isAnimated ? insertWithAnimation(root, key, priority) : insert(root, key, priority);
-    reposition(root, ROOT_POS, xOffset, yOffset);
+    cleanupForOperations();
+    if (isAnimated) {
+        root = insertWithAnimation(root, key, priority);
+        animManager.addAnimation(new Animation(0.0f, [this]() {
+            reposition(root, ROOT_POS, xOffset, yOffset);
+            }));
+    }
+    else {
+        root = insert(root, key, priority);
+        reposition(root, ROOT_POS, xOffset, yOffset);
+    }
 }
 
 void TreapUI::loadFromFile(){
@@ -247,13 +276,14 @@ void TreapUI::loadFromFile(){
 }
 
 void TreapUI::search(int key) {
-    animManager.clear();
+    cleanupForOperations();
     searchWithAnimation(root, key);
 }
 
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     if (!curr) return;
     
+    cout << "Compare with " << curr->getKey() << endl;
     animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
@@ -283,6 +313,12 @@ void TreapUI::clear() {
     this->root = nullptr;
 }
 
+void TreapUI::cleanupForOperations() {
+    animManager.goToLastStep();
+    animManager.clear();
+    animManager.resume();
+}
+
 void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
     if (!root) return;
 
@@ -291,10 +327,6 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     float rectY = pos.y - root->keyBox->getHeight() / 2;
     root->position = { rectX, rectY };
     root->syncPosition();
-
-    nodes.push_back(root);
-    if (root->leftEdge) edges.push_back(root->leftEdge);
-    if (root->rightEdge) edges.push_back(root->rightEdge);
 
     int leftWidth = getSubtreeWidth(root->leftEdge ? root->leftEdge->to : nullptr);
     int rightWidth = getSubtreeWidth(root->rightEdge ? root->rightEdge->to : nullptr);
@@ -339,8 +371,6 @@ void TreapUI::drawTreap(TreapNode* curr) {
 
 void TreapUI::init() {
     srand(time(nullptr));
-    nodes.reserve(100);
-    edges.reserve(100);
     
     int n = rand() % 10;
     for (int i = 0; i < n; ++i) {
@@ -445,9 +475,6 @@ void TreapUI::updateButtonPositions() {
 
 void TreapUI::updateScene() {
     animManager.update(GetFrameTime());
-
-    nodes.clear();
-    edges.clear();
 
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);

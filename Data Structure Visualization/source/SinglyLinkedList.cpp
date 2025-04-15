@@ -123,6 +123,7 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
 
     if (head->getNumber() == x) {
         LLNode* del = head;
+        deleteLater.insert(del);
         // highlight line 1
         animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,del]() {
             CodeBlocks[1]->highlight();
@@ -159,30 +160,27 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             }));
 
         if (!del->next) {
-            animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, del,this]() {
+            animManager.addAnimation(new Animation(0.1f, [&CodeBlocks,this]() {
                 head = head->next;
-                delete del;
                 CodeBlocks[6]->unhighlight();
                 CodeBlocks[7]->highlight();
                 }));
             return pos;
         }
-        animManager.addAnimation(new Animation(0.1f, [this, &animManager,del, &CodeBlocks]() {
+        animManager.addAnimation(new Animation(0.1f, [this, &animManager, &CodeBlocks]() {
         
             head = head->next;
 
             if (head) {
 
-                //CBEdge::removeEdgeAndAnim(animManager, Edges, del, head);
 
                 //reposition
-                animManager.addAnimation(new Animation(0.2f, [&animManager,this,del, &CodeBlocks]() {
-                    head->setCenterX(100);
-                    adjustPosWithAnim(animManager,head);
+                animManager.addAnimation(new Animation(0.2f, [&animManager,this, &CodeBlocks]() {
+                        head->setCenterX(100);
+                        adjustPosWithAnim(animManager, head);
                     }));
 
-                animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, del]() {
-                    delete del;
+                animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
                     CodeBlocks[6]->unhighlight();
                     CodeBlocks[7]->highlight();
                     }));
@@ -293,13 +291,12 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
                     cur->next = temp->next;
                     if (cur->next) cur->next->indicateNode = "";
                 }
-
-                deleteLater.push_back(temp);
                 //reposition
                 adjustPosWithAnim(animManager,cur);
                 CodeBlocks[6]->unhighlight();
                 CodeBlocks[7]->highlight();
             }));
+            if (temp)deleteLater.insert(temp);
 
             return pos;
         }
@@ -495,6 +492,7 @@ void LinkedList::clear() {
             node = nullptr;
         }
     }
+    deleteLater.clear();
 }
 
 void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager,int x, int pos) {

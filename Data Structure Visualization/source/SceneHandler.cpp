@@ -78,7 +78,7 @@ void SceneHandler::initButtons() {
         50, BLACK, Pause->FillColor, Pause->OutLineColor);
     GoFirst->onClick = [this]() {
         int step = currentSceneObject->animManager.getStep();
-
+        cout << step << "\n";
         // complete the operation to get final state
         currentSceneObject->animManager.goToLastStep();
         currentSceneObject->clearIndicatesAndHighlights();
@@ -111,6 +111,7 @@ void SceneHandler::initButtons() {
         50, BLACK, Pause->FillColor, Pause->OutLineColor);
     GoLast->onClick = [this]() {
         currentSceneObject->clearIndicatesAndHighlights();
+        cout << currentSceneObject->animManager.getStep() << "\n";
         currentSceneObject->animManager.goToLastStep();
         };
     SceneButtons.push_back(GoLast);
@@ -121,7 +122,7 @@ void SceneHandler::initButtons() {
     RectButton* SetSpeed = new ScrollyAndButton(
      GoLast->getCenterX() + 100,   // x position
       GoLast->getCenterY() - 10,   // y position
-                            400,   // length
+                            450,   // length
                              20,   // thickness
                              60,   // Moveable Button size
                            BLUE,   // Moveable Button color

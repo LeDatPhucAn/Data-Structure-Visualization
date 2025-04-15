@@ -2,6 +2,10 @@
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
 #include <map>
+
+bool SinglyLinkedListUI::isInsert = false;
+bool SinglyLinkedListUI::isRemove = false;
+
 void SinglyLinkedListUI::cleanupForOperation() {
     animManager.goToLastStep();
     animManager.clear();

@@ -9,11 +9,11 @@ protected:
     LinkedList linkedlist;
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
-    bool isInsert = false;
     pair<int, int> insertParameters;
     pair<int,int> removeParameters;
-    bool isRemove = false;
 public:
+    static bool isInsert;
+    static bool isRemove;
 
     SinglyLinkedListUI() {
         init();

@@ -4,6 +4,8 @@
 #include "../header/tinyfiledialogs.h"
 #include "../header/PseudoCode.h"
 #include <fstream>
+#include "../header/SinglyLinkedListUI.h"
+
 int LinkedList::getListSize() {
     LLNode* cur = head;
     int cnt = 0;
@@ -159,6 +161,7 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             CodeBlocks[6]->highlight();
             }));
 
+        
         if (!del->next) {
             animManager.addAnimation(new Animation(0.1f, [&CodeBlocks,this]() {
                 head = head->next;
@@ -167,6 +170,8 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
                 }));
             return pos;
         }
+
+
         animManager.addAnimation(new Animation(0.1f, [this, &animManager, &CodeBlocks]() {
         
             head = head->next;

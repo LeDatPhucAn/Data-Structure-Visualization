@@ -3,14 +3,18 @@
 #include "SceneManager.h"
 #include "SceneHandler.h"
 #include "Button.h"
-
 class SinglyLinkedListUI : public SceneManager {
 private:
 protected:
     LinkedList linkedlist;
     vector<RectButton*> Buttons;
     vector<RectButton*> CodeBlocks;
+    bool isInsert = false;
+    pair<int, int> insertParameters;
+    pair<int,int> removeParameters;
+    bool isRemove = false;
 public:
+
     SinglyLinkedListUI() {
         init();
     }
@@ -19,11 +23,13 @@ public:
         Button::deleteButtons<RectButton>(CodeBlocks);
     }
 
-
+    void cleanupForOperation();
     void drawlinkedlist();
     void insert(int x, int pos);
     void remove(int x);
     bool search(int x);
+    void replayOperation() override;
+    void clearIndicatesAndHighlights() override;
     void init() override;
     void initButtons() override;
 	void resetAnimations() override;

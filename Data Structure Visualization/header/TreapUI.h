@@ -16,8 +16,6 @@ private:
     TreapNode* root = nullptr;
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
-    vector<TreapNode*> nodes;
-    vector<TreapEdge*> edges;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 8;
@@ -36,6 +34,7 @@ private:
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);
+    void cleanupForOperations();
 public:
     void insert(int key, int priority = rand(), bool isAnimated = true);
     void loadFromFile();

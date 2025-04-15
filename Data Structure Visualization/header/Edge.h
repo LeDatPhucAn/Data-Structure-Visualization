@@ -63,6 +63,7 @@ public:
 		thickness = 5;
 	}
 	CBEdge(int th, CircleButton* f, CircleButton* t, Color c = BLACK) : noDraw(false), thickness(th), from(f), to(t), edgeColor(c){}
+	static CBEdge* findEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	static void addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	static void removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);
 	static void addEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to);

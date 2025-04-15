@@ -435,6 +435,19 @@ void TextureCircle::draw() {
         { 0,0 }, 0, TextColor
     );
 }
+void TextureCircle::changeTexture(Texture2D texture) {
+    Texture = texture;
+}
+void PlayButton::update() {
+    if (scenehandler->getCurrentScene() == MENU) {
+        return;
+    }
+    if (scenehandler->currentSceneObject->animManager.isPaused()) {
+        changeTexture(UI::Icons[5]);
+    }
+    else changeTexture(UI::Icons[4]);
+    Button::update();
+}
 // ### InputCircle Methods
 void InputCircle::update() {
     if (GetGestureDetected() == GESTURE_TAP) inputHandler->setTexting(false);

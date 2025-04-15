@@ -2,28 +2,37 @@
 
 namespace PseudoCode {
     std::string LLInsertHead =
-        "  Create new node with x\n"
-        "  Set new node's next to head\n"
-        "  Set new node as head\n";
+        "  Node InsertedNode = new Node;\n"
+        "  InsertedNode->next = head;\n"
+        "  head = InsertedNode";
 
     std::string LLInsertPos =
         "  Node cur = head;\n"
         "  for (int i = 1; i < pos-1; i++)\n"
         "    cur = cur->next;\n"
-        "  Node InsertedNode = new Node;\n"
+        "  Node InsertedNode = new Node(Value);\n"
         "  InsertedNode->next = cur->next;\n"
         "  cur->next = InsertedNode;\n";
 
-    std::string LLRemove =
-        "If list is empty, return false\n"
-        "If head node's data is x:\n"
-        "  Remove head node\n"
-        "  Return true\n"
-        "Else:\n"
-        "  Traverse to find node whose next node's data is x\n"
-        "  If node found:\n"
-        "    Set current node's next to next node's next\n"
-        "    Delete node with data x\n";
+    std::string LLRemoveHead =
+        "if (head == nullptr)\n"
+        "   return false;\n"
+        "if (head->data == Value)\n"
+        "  Node del = head;\n"
+        "  head = head->next;\n"
+        "  delete del;\n"
+        "  return true;\n";
+
+    std::string LLRemoveBody =
+        "Node cur = head;\n"
+        "while(cur->next!=nullptr)\n"
+        "  if (cur->next->data == Value)\n"
+        "    Node del = cur->next;\n"
+        "    cur->next = del->next;\n"
+        "    delete del;\n"
+        "    return true;\n"
+        "  cur = cur->next\n"
+        "return false;\n";
 
     std::string LLSearch =
         "Node cur = head;\n"

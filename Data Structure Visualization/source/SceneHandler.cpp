@@ -4,10 +4,6 @@
 Vector2 SceneHandler::mouseWorldPos = { 0, 0 };
 SceneHandler::SceneHandler() {
 
-    // initialize Scene Buttons
-    initButtons();
-
-
     camera.zoom = 1.0f;
     UI::screenWidth = GetScreenWidth();
     UI::screenHeight = GetScreenHeight();
@@ -20,6 +16,9 @@ SceneHandler::SceneHandler() {
 
     // Initialize other scenes as needed
     changeScene(MENU);
+
+    // initialize Scene Buttons
+    initButtons();
 }
 
 SceneHandler::~SceneHandler() {
@@ -27,12 +26,11 @@ SceneHandler::~SceneHandler() {
         delete scenes[i];
     }
     Button::deleteButtons<Button>(SceneButtons);
-	Button::deleteButtons<RectButton>(rightSideButtons);
 }
 
 void SceneHandler::initButtons() {
 
-    // menu button
+    // menu button 0
     Button* MenuButton = new TextBox("Menu", UI::screenWidth / 100, UI::screenHeight / 100);
     MenuButton->onClick = [this]() {
         this->changeScene(MENU);
@@ -40,15 +38,15 @@ void SceneHandler::initButtons() {
     MenuButton->animation = new RectMoveXAnim(dynamic_cast<RectButton*>(MenuButton), 0.5);
     SceneButtons.push_back(MenuButton);
     
-	// Pause animations
-    CircleButton* Pause = new TextureCircle(UI::Icons[4], { (float)UI::screenWidth / 2 , (float)UI::screenHeight - 100 }, 60.0f);
+	// Pause or play animations 1
+    CircleButton* Pause = new PlayButton(this,UI::Icons[4], { (float)UI::screenWidth / 2 , (float)UI::screenHeight - 100 }, 60.0f);
     Pause->onClick = [this]() {
         if (!currentSceneObject->animManager.isPaused())currentSceneObject->animManager.pause();
         else currentSceneObject->animManager.resume();
         };
     SceneButtons.push_back(Pause);
 
-    // go to the previous animation
+    // go to the previous animation 2
     CircleButton* GoPrevious = new TextCircle("<",
         {
             Pause->getCenterX() - Pause->getRadius() - 55,
@@ -57,11 +55,40 @@ void SceneHandler::initButtons() {
         55.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
     
     GoPrevious->onClick = [this]() {
-        currentSceneObject->animManager.goToPrevious();
+
+
+        int step = currentSceneObject->animManager.getStep();
+        cout << step << "\n";
+        // complete the operation to get final state
+        currentSceneObject->animManager.goToLastStep();
+        currentSceneObject->clearIndicatesAndHighlights();
+
+        // restore the initial state and get to the previous state
+        currentSceneObject->replayOperation();
+        currentSceneObject->animManager.goToStep(step - 1);
         };
     SceneButtons.push_back(GoPrevious);
     
-	// go to the next animation
+    // go to the first animation 3
+    CircleButton* GoFirst = new TextCircle("<<",
+        {
+            GoPrevious->getCenterX() - GoPrevious->getRadius() - 50,
+            GoPrevious->getCenterY()
+        },
+        50, BLACK, Pause->FillColor, Pause->OutLineColor);
+    GoFirst->onClick = [this]() {
+        int step = currentSceneObject->animManager.getStep();
+
+        // complete the operation to get final state
+        currentSceneObject->animManager.goToLastStep();
+        currentSceneObject->clearIndicatesAndHighlights();
+
+        // restore the initial state and get to the previous state
+        currentSceneObject->replayOperation();
+        currentSceneObject->animManager.goToFirstStep();
+        };
+    SceneButtons.push_back(GoFirst);
+	// go to the next animation 4
     CircleButton* GoNext = new TextCircle(">",
         {
             Pause->getCenterX() + Pause->getRadius() + 55,
@@ -70,32 +97,31 @@ void SceneHandler::initButtons() {
         55.0f, BLACK, Pause->FillColor, Pause->OutLineColor);
     
     GoNext->onClick = [this]() {
-        currentSceneObject->animManager.goToNext();
+        currentSceneObject->clearIndicatesAndHighlights();
+        cout<< currentSceneObject->animManager.getStep()<<"\n";
+        currentSceneObject->animManager.goToNextStep();
         };
     SceneButtons.push_back(GoNext);
-
+    // go to the last animation 5
+    CircleButton* GoLast = new TextCircle(">>",
+        {
+            GoNext->getCenterX() + GoNext->getRadius() + 50,
+            GoNext->getCenterY()
+        },
+        50, BLACK, Pause->FillColor, Pause->OutLineColor);
+    GoLast->onClick = [this]() {
+        currentSceneObject->clearIndicatesAndHighlights();
+        currentSceneObject->animManager.goToLastStep();
+        };
+    SceneButtons.push_back(GoLast);
     
-    // play forward
-    RectButton* PlayForward = new TextBox("Play Forward", (float)UI::screenWidth * 3 / 4, (float)UI::screenHeight * 3 / 4);
-    PlayForward->onClick = [this]() {
-        currentSceneObject->animManager.playForward();
-        };
-	PlayForward->animation = new RectMoveXAnim(PlayForward, (float)UI::screenWidth, 0.5f);
-    RectButton::insertHeadButton(rightSideButtons, PlayForward);
-
-	// play backward
-	RectButton* PlayBackward = new TextBox("Play Backward");
-    PlayBackward->onClick = [this]() {
-        currentSceneObject->animManager.playBackward();
-        };
-	RectButton::insertHeadButton(rightSideButtons, PlayBackward);
-    PlayBackward->animation = new RectMoveXAnim(PlayBackward, (float)UI::screenWidth, 0.5f);
+    
 
     // set speed                                     
     RectButton* SetSpeed = new ScrollyAndButton(
-        UI::screenWidth * 3 / 5,   // x position
-                            100,   // y position
-                            500,   // length
+     GoLast->getCenterX() + 100,   // x position
+      GoLast->getCenterY() - 10,   // y position
+                            400,   // length
                              20,   // thickness
                              60,   // Moveable Button size
                            BLUE,   // Moveable Button color
@@ -109,13 +135,14 @@ void SceneHandler::initButtons() {
     SceneButtons.push_back(SetSpeed);
     SetSpeed->animation = new RectMoveXAnim(SetSpeed, (float)UI::screenWidth, 0.5f);
 }
+
 int SceneHandler::getCurrentScene() {
     return currentSceneObject->CurrentScene;
 }
 
 void SceneHandler::changeScene(Scene newScene) {
     Button::resetButtonsAnimations<Button>(SceneButtons);
-    Button::resetButtonsAnimations<RectButton>(rightSideButtons);
+
     if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
     currentSceneObject->CurrentScene = newScene;
@@ -172,30 +199,39 @@ void SceneHandler::updateCurrentScene() {
 
             // Go to Previous
 			dynamic_cast<CircleButton*>(SceneButtons[2])->setCenter(
-                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() - dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() - 50,
+                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() - dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() - 55,
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterY()
+			);
+            
+            // Go to First
+			dynamic_cast<CircleButton*>(SceneButtons[3])->setCenter(
+                dynamic_cast<CircleButton*>(SceneButtons[2])->getCenterX() - dynamic_cast<CircleButton*>(SceneButtons[2])->getRadius() - 50,
+                dynamic_cast<CircleButton*>(SceneButtons[2])->getCenterY()
 			);
 
             // Go to Next
-			dynamic_cast<CircleButton*>(SceneButtons[3])->setCenter(
-                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() + dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() + 50,
+			dynamic_cast<CircleButton*>(SceneButtons[4])->setCenter(
+                dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterX() + dynamic_cast<CircleButton*>(SceneButtons[1])->getRadius() + 55,
                 dynamic_cast<CircleButton*>(SceneButtons[1])->getCenterY()
+			);
+            // Go to Last
+			dynamic_cast<CircleButton*>(SceneButtons[5])->setCenter(
+                dynamic_cast<CircleButton*>(SceneButtons[4])->getCenterX() + dynamic_cast<CircleButton*>(SceneButtons[4])->getRadius() + 50,
+                dynamic_cast<CircleButton*>(SceneButtons[4])->getCenterY()
 			);
 
             // Set Speed
-            dynamic_cast<RectButton*>(SceneButtons[4])->setPosition(UI::screenWidth * 3 /5, 100);
+            dynamic_cast<RectButton*>(SceneButtons[6])->setPosition(
+                dynamic_cast<CircleButton*>(SceneButtons[5])->getCenterX()+100, 
+                dynamic_cast<CircleButton*>(SceneButtons[5])->getCenterY()-10);
             
-            // Right Side Buttons
-            RectButton::setHeadPosition(rightSideButtons, (float)UI::screenWidth * 3 / 4, (float)UI::screenHeight * 3 / 4);
 
             // Animation resets
-            dynamic_cast<RectButton*>(SceneButtons[4])->animation->handleReposition();
+            dynamic_cast<RectButton*>(SceneButtons[6])->animation->handleReposition();
 
             Button::resetButtonsAnimations<Button>(SceneButtons);
 
-            Button::handleButtonsAnimReposition<RectButton>(rightSideButtons);
 
-			Button::resetButtonsAnimations<RectButton>(rightSideButtons);
 
             for (int i = 1; i < 5; i++) {
                 scenes[i]->updateButtonPositions();
@@ -207,7 +243,6 @@ void SceneHandler::updateCurrentScene() {
 
         Button::isCollision = false;
         Button::updateButtons<Button>(SceneButtons);
-        Button::updateButtons<RectButton>(rightSideButtons);
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             Button::isClicking = false;
         }
@@ -243,7 +278,6 @@ void SceneHandler::displayCurrentScene() {
             EndMode2D();
 
             Button::drawButtons<Button>(SceneButtons);
-			Button::drawButtons<RectButton>(rightSideButtons);
         }
         else {
             UI::drawBackground();

@@ -3,7 +3,6 @@
 class Animation;
 class AnimationManager {
 private:
-    std::vector<Animation*> animations; // List of animations in the sequence
     std::vector<float> startTimes;      // Start time of each animation on the timeline
     float totalDuration = 0;            // Total duration of the sequence
     float currentTime = 0;              // Current position on the timeline
@@ -11,6 +10,8 @@ private:
     bool paused = true;                 // Playback state
     int direction = 1;                  // 1 for forward, -1 for backward
 public:
+    std::vector<Animation*> animations; // List of animations in the sequence
+
     AnimationManager() {
         speed = 1.0f;
         paused = false;
@@ -56,11 +57,19 @@ public:
     // Seek to a specific progress (0.0 to 1.0)
     void seek(float progress);
 
-    // Go to the start of the next animation
-    void goToNext();
 
-    // Go to the start of the previous animation
-    void goToPrevious();
+
+    int getStep();
+
+    void goToStep(int k);           // Go to step k
+
+    void goToFirstStep();          // Go to initial state
+
+    void goToLastStep();           // Go to final state
+
+    void goToPreviousStep();       // Go to previous step
+
+    void goToNextStep();           // Go to next step
 private:
     // Update the state of the active animation based on currentTime
     void updateActiveAnimation();

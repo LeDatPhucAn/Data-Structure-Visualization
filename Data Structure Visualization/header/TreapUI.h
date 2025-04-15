@@ -52,6 +52,7 @@ public:
 
     void displayScene() override;
     void resetAnimations() {};
+    void clearIndicatesAndHighlights() override {};
 
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene

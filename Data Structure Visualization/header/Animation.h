@@ -22,15 +22,8 @@ public:
     virtual bool isCompleted() {
         return completed;
     }
-    virtual void reset() {
-        elapsed = 0.0f;
-        completed = false;
-
-    }
-	virtual void makeComplete() {
-		elapsed = duration;
-		completed = true;
-	}
+    virtual void reset();
+    virtual void makeComplete();
     virtual float getProgress() const {
         return elapsed;
     }
@@ -60,6 +53,21 @@ public:
 	}
 	void applyState() override;
 };
+class RemoveEdgeInAnim: public Animation {
+private:
+    
+public:
+    CircleButton* from;
+    CircleButton* to;
+    RemoveEdgeInAnim(float dur,CircleButton* fromPtr, CircleButton* toPtr, std::function<void()> func)
+        : Animation(dur,func),  from(fromPtr), to(toPtr) {
+    }
+
+    void applyState() override {
+        // No visual state to apply; the removal is structural
+    }
+};
+
 class CBEdgeAddAnim : public Animation {
 protected:
 	CBEdge* edge;
@@ -204,8 +212,8 @@ public:
 	// sY is the start y position
 	// eX is the end x position
 	// eY is the end y position
-    CircleMoveAnim(CircleButton* btn, float duration, float sX, float sY, float eX, float eY)
-        : Animation(duration), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
+    CircleMoveAnim(CircleButton* btn, float duration, float sX, float sY, float eX, float eY, std::function<void()> func = nullptr)
+        : Animation(duration,func), startX(sX), startY(sY), endX(eX), endY(eY), button(btn) {
     }
     void handleReposition() override {
         endX = button->getCenterX();
@@ -245,6 +253,39 @@ public:
     }
     void handleReposition() override{
         endX = button->getCenterX();
+    }
+    void applyState() override;
+};
+class CircleMoveYAnim : public Animation {
+private:
+    
+protected:
+    CircleButton* button;
+    float startY;
+    float endY;
+public:
+	virtual ~CircleMoveYAnim() = default;
+    CircleMoveYAnim(CircleButton* btn, float duration)
+        : Animation(duration), button(btn) {
+        startY = 0;
+        endY = btn->getCenterY();
+    }
+	// Constructor with start position
+	// sY is the start y position
+	// the ending position is the original center of the circle (or circle position)
+    CircleMoveYAnim(CircleButton* btn, float duration, float sY, std::function<void()> func = nullptr)
+        : Animation(duration,func), startY(sY), button(btn) {
+        endY = btn->getCenterY();
+    }
+	// Constructor with start and end positions
+	// sY is the start y position
+	// eY is the end y position
+
+    CircleMoveYAnim(CircleButton* btn, float duration, float sY, float eY, std::function<void()> func = nullptr)
+        : Animation(duration,func), startY(sY), endY(eY), button(btn) {
+    }
+    void handleReposition() override{
+        endY = button->getCenterY();
     }
     void applyState() override;
 };

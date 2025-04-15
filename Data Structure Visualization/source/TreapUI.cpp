@@ -92,26 +92,50 @@ void TreapUI::updateSubtreeWidth(TreapNode* curr) {
     }
 }
 
-TreapNode* TreapUI::insert(TreapNode* root, Vector2 pos, int key, int priority) {
-    static const int Y_OFFSET = 30;
-    if (!root) return new TreapNode(key, priority, pos);
-
-    int treeDepth = log2(getSubtreeWidth(root) + 1) + 1;
-    int newXOffset = max(getSubtreeWidth(root) * treeDepth * 5, 20);
+TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
+    if (!root) return new TreapNode(key, priority, ROOT_POS);
 
     if (root->getKey() > key) {
-        TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, { pos.x - newXOffset, pos.y + Y_OFFSET }, key, priority);
+        TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
         root->leftEdge = new TreapEdge(root, newLeftChild);
         if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
     }
     else if (root->getKey() < key) {
-        TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, { pos.x + newXOffset, pos.y + Y_OFFSET }, key, priority);
+        TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
         root->rightEdge = new TreapEdge(root, newRightChild);
         if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
     }
 
     updateSubtreeWidth(root);
     return root;    
+}
+
+TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) {
+    if (!root) {
+        TreapNode* newNode = new TreapNode(key, priority, ROOT_POS);
+        return newNode;
+    }
+
+    animManager.addAnimation(new RectHighlightAnim(root->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
+
+    if (root->getKey() > key) {
+        if (root->leftEdge) animManager.addAnimation(new TreapEdgeHighlightAnim(root->leftEdge, 0.75f));
+        TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
+        root->leftEdge = new TreapEdge(root, newLeftChild);
+        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
+    }
+    else if (root->getKey() < key) {
+        if (root->rightEdge) animManager.addAnimation(new TreapEdgeHighlightAnim(root->rightEdge, 0.75f));
+        TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
+        root->rightEdge = new TreapEdge(root, newRightChild);
+        if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
+    }
+    else {
+        animManager.addAnimation(new RectHighlightAnim(root->keyBox, 0.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+    }
+
+    updateSubtreeWidth(root);
+    return root;
 }
 
 TreapNode* TreapUI::remove(TreapNode* root, int key) {
@@ -186,10 +210,10 @@ void TreapUI::clear(TreapNode* curr) {
     delete curr;
 }
 
-void TreapUI::insert(int key, int priority) {
+void TreapUI::insert(int key, int priority, bool isAnimated) {
     animManager.clear();
-    root = insert(root, ROOT_POS, key, priority);
-    repositionWithAnimation(root, ROOT_POS, xOffset, yOffset);
+    root = isAnimated ? insertWithAnimation(root, key, priority) : insert(root, key, priority);
+    reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
 void TreapUI::loadFromFile(){
@@ -287,43 +311,6 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     }
 }
 
-void TreapUI::repositionWithAnimation(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
-    if (!root) return;
-
-    // Position the visual button correctly by setting top-left corner
-    float rectX = pos.x - root->keyBox->getWidth() / 2;
-    float rectY = pos.y - root->keyBox->getHeight() / 2;
-    Vector2 newPos = { rectX, rectY };  
-
-    if (root->position.x != newPos.x || root->position.y != newPos.y) {
-        Vector2 prevPos = root->position;
-        root->position = newPos;
-        animManager.addAnimation(new TreapNodeMoveAnim(root, 0.3f, prevPos, newPos));
-    }
-    else {
-        root->position = newPos;
-        root->syncPosition();
-    }
-
-    nodes.push_back(root);
-    if (root->leftEdge) edges.push_back(root->leftEdge);
-    if (root->rightEdge) edges.push_back(root->rightEdge);
-
-    int leftWidth = getSubtreeWidth(root->leftEdge ? root->leftEdge->to : nullptr);
-    int rightWidth = getSubtreeWidth(root->rightEdge ? root->rightEdge->to : nullptr);
-    int newXOffset = max((leftWidth + rightWidth + 1) * 40, 80);
-
-    if (root->leftEdge) {
-        Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
-        reposition(root->leftEdge->to, leftPos, newXOffset, yOffset);
-    }
-
-    if (root->rightEdge) {
-        Vector2 rightPos = { pos.x + newXOffset, pos.y + yOffset };
-        reposition(root->rightEdge->to, rightPos, newXOffset, yOffset);
-    }
-}
-
 void TreapUI::drawTreapNode(TreapNode* curr) {
     if (!curr) return;
     curr->draw();
@@ -354,10 +341,11 @@ void TreapUI::init() {
     srand(time(nullptr));
     nodes.reserve(100);
     edges.reserve(100);
+    
     int n = rand() % 10;
     for (int i = 0; i < n; ++i) {
         int x = rand() % 100;
-        insert(x);
+        this->insert(x, rand(), false);
     }
 
     initButtons();
@@ -388,7 +376,7 @@ void TreapUI::initButtons() {
 
     Buttons[0]->insertSubButton(Enter, [this, ValueInput, PriorityInput]() {
         if (PriorityInput->getNumber() > 0) this->insert(ValueInput->getNumber(), PriorityInput->getNumber());
-        else this->insert(ValueInput->getNumber());
+        else this->insert(ValueInput->getNumber(), rand());
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         static_cast<NumberInputBox*>(ValueInput)->clear();
         static_cast<NumberInputBox*>(PriorityInput)->clear();
@@ -431,7 +419,7 @@ void TreapUI::initButtons() {
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;
-            this->insert(x);
+            this->insert(x, rand(), false);
         }
         };
 

@@ -4,7 +4,7 @@
 
 void HashTableUI::drawHashTable() {
     for (int i = 0; i < hashtable.bucketCount; i++) {
-        Rectangle bucketRect = { 100 + i * 200 - 50, 100, 100, 50 };
+        Rectangle bucketRect = { 250 + i * 200 - 50, 100, 100, 50 };
         DrawRectangleRec(bucketRect, LIGHTGRAY);
         DrawRectangleLines(bucketRect.x, bucketRect.y, bucketRect.width, bucketRect.height, DARKGRAY);
         UI::drawtext2(std::to_string(i), bucketRect.x + bucketRect.width / 2, bucketRect.y + bucketRect.height / 2, BLACK);
@@ -21,35 +21,26 @@ void HashTableUI::drawHashTable() {
 }
 
 void HashTableUI::insert(int x) {
-    hashtable.insertNode(x);
+    animManager.clear();
+    hashtable.insertNode(CodeBlocks, animManager, x);
 }
 
 void HashTableUI::remove(int x) {
-    hashtable.remove(x);
+    animManager.clear();
+    hashtable.remove(CodeBlocks, animManager, x);
 }
 
 bool HashTableUI::search(int x) {
-    int idx = hashtable.hashFunction(x);
-    LLNode* cur = hashtable.buckets[idx];
-    while (cur) {
-        if (cur->getNumber() == x) {
-            animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
-            return true;
-        }
-        animManager.addAnimation(new CircleHighLightAnim(cur, 1));
-        for (auto& edge : hashtable.Edges) {
-            if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 1));
-                break;
-            }
-        }
-        cur = cur->next;
-    }
-    return false;
+    animManager.clear();
+    return hashtable.search(CodeBlocks, animManager, x);
 }
 
 void HashTableUI::resize(int newSize) {
     hashtable.resize(newSize);
+}
+
+void HashTableUI::loadFromFile() {
+    hashtable.loadFromFile(CodeBlocks, animManager);
 }
 
 void HashTableUI::init() {
@@ -112,11 +103,15 @@ void HashTableUI::initButtons() {
 
     RectButton::insertHeadButton(Buttons, new TextBox("Clear"));
     Buttons[3]->animation = new RectMoveXAnim(Buttons[3], 0.5);
-    Buttons[3]->onClick = [this]() { hashtable.clear(); };
+    Buttons[3]->onClick = [this]() {
+        animManager.clear();
+        hashtable.clear();
+        };
 
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->animation = new RectMoveXAnim(Buttons[4], 0.5);
     Buttons[4]->onClick = [this]() {
+        animManager.clear();
         hashtable.clear();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
@@ -125,12 +120,18 @@ void HashTableUI::initButtons() {
         }
         };
 
-    RectButton::insertHeadButton(Buttons, new TextBox("Bucket"));
+    RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
     Buttons[5]->animation = new RectMoveXAnim(Buttons[5], 0.5);
+    Buttons[5]->onClick = [this]() {
+        loadFromFile();
+        };
+
+    RectButton::insertHeadButton(Buttons, new TextBox("Bucket"));
+    Buttons[6]->animation = new RectMoveXAnim(Buttons[6], 0.5);
     RectButton* BucketInput = new NumberInputBox(2);
-    Buttons[5]->insertSubButton(new TextBox("Size:"));
-    Buttons[5]->insertSubButton(BucketInput);
-    Buttons[5]->insertSubButton(new TextBox(">"), [this, BucketInput]() {
+    Buttons[6]->insertSubButton(new TextBox("Size:"));
+    Buttons[6]->insertSubButton(BucketInput);
+    Buttons[6]->insertSubButton(new TextBox(">"), [this, BucketInput]() {
         int newSize = BucketInput->getNumber();
         if (newSize > 0) {
             resize(newSize);
@@ -176,7 +177,7 @@ void HashTableUI::updateScene() {
                 int newValue = cur->getNumber();
                 if (oldValue != newValue) {
                     hashtable.removeFromBucket(oldValue, selectedBucketIdx);
-                    hashtable.insertNode(newValue);
+                    hashtable.insertNode(CodeBlocks, animManager, newValue);
                 }
                 selectedNode = nullptr;
                 selectedBucketIdx = -1;

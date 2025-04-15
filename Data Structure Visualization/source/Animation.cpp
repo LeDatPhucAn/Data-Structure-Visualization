@@ -137,12 +137,26 @@ void TreapEdgeHighlightAnim::resetColor() {
 }
 
 void TreapNodeMoveAnim::applyState() {
-    float easedT = EaseExpoOut(elapsed, 0.0f, 1.0f, duration);
-    node->position.x = startPos.x + (endPos.x - startPos.x) * easedT;
-    node->position.y = startPos.y + (endPos.y - startPos.y) * easedT;
+    node->position.x = EaseExpoOut(elapsed, startPos.x, endPos.x - startPos.x, duration);
+    node->position.y = EaseExpoOut(elapsed, startPos.y, endPos.y - startPos.y, duration);
     node->syncPosition();
 }
 
 void TreapNodeMoveAnim::handleReposition() {
     endPos = node->position;
+}
+
+void TreapNodeInitializeAnim::applyState() {
+    node->keyBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->priorityBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->keyBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->priorityBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+}
+
+void TreapEdgeAddAnim::applyState() {
+    edge->thickness = EaseElasticOut(elapsed, startT, endT - startT, duration);
+}
+
+void TreapEdgeRemoveAnim::applyState() {
+    edge->thickness = EaseElasticIn(elapsed, startT, endT - startT, duration);
 }

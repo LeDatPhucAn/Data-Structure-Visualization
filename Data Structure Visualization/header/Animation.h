@@ -374,3 +374,36 @@ public:
     void handleReposition() override;
 };
 
+class TreapNodeInitializeAnim : public Animation {
+public:
+    TreapNode* node;
+    Vector2 startSize;
+    Vector2 endSize;
+    TreapNodeInitializeAnim(TreapNode* n, float duration): Animation(duration), node(n){
+        startSize = { 0, 0 };
+        endSize = { static_cast<float> (n->keyBox->getWidth()), static_cast<float> (n->keyBox->getHeight()) };
+    }
+    void applyState() override;
+};
+
+class TreapEdgeAddAnim : public Animation {
+public:
+    TreapEdge* edge;
+    int startT, endT;
+    TreapEdgeAddAnim(TreapEdge* e, float duration) : Animation(duration), edge(e) {
+        startT = 0;
+        endT = e->thickness;
+    }
+    void applyState() override;
+};
+
+class TreapEdgeRemoveAnim : public Animation {
+public: 
+    TreapEdge* edge;
+    int startT, endT;
+    TreapEdgeRemoveAnim(TreapEdge* e, float duration) : Animation(duration), edge(e) {
+        startT = e->thickness;
+        endT = 0;
+    }
+    void applyState() override;
+};

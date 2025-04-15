@@ -114,49 +114,7 @@ TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
 }
 
 TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) {
-    if (!root) {
-        TreapNode* newNode = new TreapNode(key, priority, ROOT_POS);
-        animManager.addAnimation(new RectHighlightAnim(newNode->keyBox, 0.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
-        return newNode;
-    }
-
-    cout << "compare with " << root->getKey() << endl;
-    animManager.addAnimation(new RectHighlightAnim(root->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
-
-    if (key < root->getKey()) {
-        TreapNode* leftChild = root->leftEdge ? static_cast<TreapNode*>(root->leftEdge->to) : nullptr;
-
-        if (root->leftEdge) {
-            animManager.addAnimation(new TreapEdgeHighlightAnim(root->leftEdge, 0.5f));
-        }
-
-        TreapNode* newLeft = insertWithAnimation(leftChild, key, priority);
-        root->leftEdge = new TreapEdge(root, newLeft);
-
-        if (newLeft->getPriority() > root->getPriority()) {
-            root = rotateRightWithAnimation(root);
-        }
-    }
-    else if (key > root->getKey()) {
-        TreapNode* rightChild = root->rightEdge ? static_cast<TreapNode*>(root->rightEdge->to) : nullptr;
-
-        if (root->rightEdge) {
-            animManager.addAnimation(new TreapEdgeHighlightAnim(root->rightEdge, 0.5f));
-        }
-
-        TreapNode* newRight = insertWithAnimation(rightChild, key, priority);
-        root->rightEdge = new TreapEdge(root, newRight);
-
-        if (newRight->getPriority() > root->getPriority()) {
-            root = rotateLeftWithAnimation(root);
-        }
-    }
-    else {
-        animManager.addAnimation(new RectHighlightAnim(root->keyBox, 0.5f, BLUE, DARKGRAY, WHITE));
-    }
-
-    updateSubtreeWidth(root);
-    return root;
+    
 }
 
 TreapNode* TreapUI::remove(TreapNode* root, int key) {

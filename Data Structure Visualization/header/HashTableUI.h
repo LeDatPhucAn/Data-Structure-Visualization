@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "Button.h"
 using namespace std;
+
 class HashTableUI : public SceneManager {
 private:
     HashTable hashtable;
@@ -25,9 +26,8 @@ public:
     void remove(int x);
     bool search(int x);
     void resize(int newSize);
+    void loadFromFile();
 
-
-    void clearIndicatesAndHighlights() override {};
     void init() override;
     void initButtons() override;
     void resetAnimations() override;

@@ -38,6 +38,9 @@ bool SinglyLinkedListUI::search(int x) {
 }
 void SinglyLinkedListUI::drawlinkedlist() {
     
+    if (linkedlist.RemoveFirstNode) {
+        linkedlist.RemoveFirstNode->draw();
+    }
     LLNode* cur = linkedlist.head;
     while (cur) {
         cur->draw();
@@ -80,10 +83,7 @@ void SinglyLinkedListUI::replayOperation() {
     else if (isRemove) {
 
         // complete all animations to get the list after removal
-        if (removeParameters.second == 1 && animManager.getStep() == animManager.animations.size()) {
-            cout << "bruh";
-        }
-        else animManager.goToLastStep();
+        animManager.goToLastStep();
 
         animManager.clear();
         
@@ -219,7 +219,9 @@ void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
     
 }
 void SinglyLinkedListUI::updateScene() {
-    
+    if (linkedlist.RemoveFirstNode) {
+        linkedlist.RemoveFirstNode->update();
+    }
    LLNode* cur = linkedlist.head;
    while (cur) {
        cur->update();

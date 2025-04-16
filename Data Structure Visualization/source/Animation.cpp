@@ -64,6 +64,7 @@ RectHighlightAnim::RectHighlightAnim(NumberInputBox* b, float duration, Color fi
 }
 
 void RectHighlightAnim::applyState() {
+    button->noDraw = false;
     float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
     button->TextColor = UI::interpolateColors(startText, endText, easedT);
     button->FillColor = UI::interpolateColors(startFill, endFill, easedT);
@@ -77,6 +78,7 @@ void RectHighlightAnim::resetColor() {
 }
 
 void TreapEdgeHighlightAnim::applyState() {
+    edge->noDraw = false;
     float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
     edge->edgeColor = UI::interpolateColors(start, end, easedT);
 }

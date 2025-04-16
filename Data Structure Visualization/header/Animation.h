@@ -349,7 +349,14 @@ public:
     Color startFill, endFill;
     Color startOutline, endOutline;
     Color startText, endText;
-    RectHighlightAnim(NumberInputBox*, float, Color, Color, Color);
+    RectHighlightAnim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+        startFill = b->FillColor;
+        startOutline = b->OutLineColor;
+        startText = b->TextColor;
+        endFill = fill;
+        endOutline = outline;
+        endText = text;
+    }
     void applyState() override;
     void resetColor() override;
 };
@@ -358,7 +365,7 @@ class TreapEdgeHighlightAnim : public Animation {
 public:
     TreapEdge* edge;
     Color start, end;
-    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE) : Animation(duration), edge(e), start(edge->edgeColor), end(ec) {}
+    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
     void applyState() override;
     void resetColor() override;
 };
@@ -379,7 +386,7 @@ public:
     TreapNode* node;
     Vector2 startSize;
     Vector2 endSize;
-    TreapNodeInitializeAnim(TreapNode* n, float duration): Animation(duration), node(n){
+    TreapNodeInitializeAnim(TreapNode* n, float duration, function<void()> func = nullptr): Animation(duration, func), node(n){
         startSize = { 0, 0 };
         endSize = { static_cast<float> (n->keyBox->getWidth()), static_cast<float> (n->keyBox->getHeight()) };
     }

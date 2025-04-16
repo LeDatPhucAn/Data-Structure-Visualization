@@ -42,7 +42,7 @@ void TreapNode::setPriority(int p) {
 }
 
 void TreapNode::syncPosition() {
-    keyBox->rect.x = position.x - keyBox->getWidth() / 2;
+    keyBox->rect.x = position.x - keyBox->getWidth();
     keyBox->rect.y = position.y - keyBox->getHeight() / 2;
 
     priorityBox->rect.x = keyBox->rect.x + keyBox->getWidth();
@@ -76,6 +76,7 @@ void TreapNode::update() {
 }
 
 void TreapNode::draw(){
+    if (noDraw) return;
     keyBox->draw();
     priorityBox->draw();
 }

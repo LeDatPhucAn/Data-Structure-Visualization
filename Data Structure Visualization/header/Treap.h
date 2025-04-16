@@ -11,6 +11,7 @@ public:
     TreapEdge* leftEdge;
     TreapEdge* rightEdge;
     int subtreeWidth;
+    bool noDraw = false;
 	NumberInputBox* keyBox = nullptr;
     NumberInputBox* priorityBox = nullptr;
 

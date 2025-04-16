@@ -9,6 +9,7 @@ class LinkedList : public LLNode {
 public:
     LLNode* head;
     vector<CBEdge*> Edges;
+    LLNode* RemoveFirstNode = nullptr;
     unordered_set<LLNode*> deleteLater;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);

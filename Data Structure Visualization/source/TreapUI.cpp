@@ -25,24 +25,6 @@ TreapNode* TreapUI::rotateLeft(TreapNode* root) {
     return newRoot;
 }
 
-TreapNode* TreapUI::rotateLeftWithAnimation(TreapNode* root) {
-    TreapEdge* oldRightEdge = root->rightEdge;
-    if (!oldRightEdge) return root;
-
-    TreapNode* newRoot = oldRightEdge->to;
-    animManager.addAnimation(new TreapNodeMoveAnim(newRoot, 0.4f, newRoot->position, root->position));
-
-    TreapNode* movedLeft = newRoot->leftEdge ? newRoot->leftEdge->to : nullptr;
-
-    delete root->rightEdge;
-    root->rightEdge = movedLeft ? new TreapEdge(root, movedLeft) : nullptr;
-
-    delete newRoot->leftEdge;
-    newRoot->leftEdge = new TreapEdge(newRoot, root);
-
-    return newRoot;
-}
-
 TreapNode* TreapUI::rotateRight(TreapNode* root) {
     TreapEdge* oldLeftEdge = root->leftEdge;
     if (!oldLeftEdge) return root;
@@ -61,37 +43,6 @@ TreapNode* TreapUI::rotateRight(TreapNode* root) {
     return newRoot;
 }
 
-TreapNode* TreapUI::rotateRightWithAnimation(TreapNode* root) {
-    TreapEdge* oldLeftEdge = root->leftEdge;
-    if (!oldLeftEdge) return root;
-
-    TreapNode* newRoot = oldLeftEdge->to;
-    animManager.addAnimation(new TreapNodeMoveAnim(newRoot, 0.4f, newRoot->position, root->position));
-
-    TreapNode* movedRight = static_cast<TreapNode*>(newRoot->rightEdge ? newRoot->rightEdge->to : nullptr);
-
-    delete root->leftEdge;
-    root->leftEdge = movedRight ? new TreapEdge(root, movedRight) : nullptr;
-
-    delete newRoot->rightEdge;
-    newRoot->rightEdge = new TreapEdge(newRoot, root);
-
-    return newRoot;
-}
-
-int TreapUI::getSubtreeWidth(TreapNode* curr) {
-    if (!curr) return 0;
-    return curr->subtreeWidth;
-}
-
-void TreapUI::updateSubtreeWidth(TreapNode* curr) {
-    if (curr) {
-        int leftWidth = curr->leftEdge ? getSubtreeWidth(curr->leftEdge->to) : 0;
-        int rightWidth = curr->rightEdge ? getSubtreeWidth(curr->rightEdge->to) : 0;
-        curr->subtreeWidth = 1 + leftWidth + rightWidth;
-    }
-}
-
 TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
     if (!root) {
         TreapNode* newNode = new TreapNode(key, priority, ROOT_POS);
@@ -101,7 +52,7 @@ TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
     if (root->getKey() > key) {
         TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
         root->leftEdge = new TreapEdge(root, newLeftChild);
-        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);    
+        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
     }
     else if (root->getKey() < key) {
         TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
@@ -110,11 +61,16 @@ TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
     }
 
     updateSubtreeWidth(root);
-    return root;    
+    return root;
 }
 
-TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) {
-    
+bool TreapUI::search(TreapNode* root, int key) {
+    if (!root) return false;
+    if (root->getKey() == key) return true;
+    else if (root->getKey() > key) {
+        return search(root->leftEdge ? root->leftEdge->to : nullptr, key);
+    }
+    return search(root->rightEdge ? root->rightEdge->to : nullptr, key);
 }
 
 TreapNode* TreapUI::remove(TreapNode* root, int key) {
@@ -185,67 +141,131 @@ void TreapUI::clear(TreapNode* curr) {
         delete curr->rightEdge;
         curr->rightEdge = nullptr;
     }
-    
+
     delete curr;
 }
 
-void TreapUI::insert(int key, int priority, bool isAnimated) {
-    cleanupForOperations();
-    if (isAnimated) {
-        root = insertWithAnimation(root, key, priority);
-        animManager.addAnimation(new Animation(0.0f, [this]() {
-            reposition(root, ROOT_POS, xOffset, yOffset);
-            }));
-    }
-    else {
-        root = insert(root, key, priority);
-        reposition(root, ROOT_POS, xOffset, yOffset);
-    }
+TreapNode* TreapUI::rotateLeftWithAnimation(TreapNode* root) {
+    TreapEdge* oldRightEdge = root->rightEdge;
+    if (!oldRightEdge) return root;
+
+    TreapNode* newRoot = oldRightEdge->to;
+    animManager.addAnimation(new TreapNodeMoveAnim(newRoot, 0.4f, newRoot->position, root->position));
+
+    TreapNode* movedLeft = newRoot->leftEdge ? newRoot->leftEdge->to : nullptr;
+
+    delete root->rightEdge;
+    root->rightEdge = movedLeft ? new TreapEdge(root, movedLeft) : nullptr;
+
+    delete newRoot->leftEdge;
+    newRoot->leftEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
 }
 
-void TreapUI::loadFromFile(){
-    const char* filter[] = {"*.txt"};
-    const char* filePath = tinyfd_openFileDialog(
-        "Select a text file", // Title
-        "", // Default path (empty = open from last used folder)
-        1, // Number of filter patterns
-        filter, // Filter patterns
-        "Text file (*.txt)", // Filter description
-        0 // Single file selection mode
-    );
+TreapNode* TreapUI::rotateRightWithAnimation(TreapNode* root) {
+    TreapEdge* oldLeftEdge = root->leftEdge;
+    if (!oldLeftEdge) return root;
 
-    if(filePath){
-        cout << "Trying to open the file: " << filePath << endl;
-        ifstream fin(filePath);
-        if(fin.is_open()){
-            clear();
-            string line;
-            while(getline(fin, line)){
-                istringstream iss(line);
-                int key = 0, priority = 0;
-                if(iss >> key){
-                    if(iss >> priority) insert(key, priority);
-                    else insert(key);
-                }
+    TreapNode* newRoot = oldLeftEdge->to;
+    animManager.addAnimation(new TreapNodeMoveAnim(newRoot, 0.4f, newRoot->position, root->position));
+
+    TreapNode* movedRight = static_cast<TreapNode*>(newRoot->rightEdge ? newRoot->rightEdge->to : nullptr);
+
+    delete root->leftEdge;
+    root->leftEdge = movedRight ? new TreapEdge(root, movedRight) : nullptr;
+
+    delete newRoot->rightEdge;
+    newRoot->rightEdge = new TreapEdge(newRoot, root);
+
+    return newRoot;
+}
+
+TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) {
+    // Check if the key has already in the tree
+    if (search(root, key)) {
+        searchWithAnimation(root, key);
+        return root;
+    }
+
+    // Insert like in a BST
+    std::function<TreapNode* (TreapNode*, int, int)> step1 = [&](TreapNode* curr, int key, int priority) -> TreapNode* {
+        if (!curr) {
+            TreapNode* newNode = new TreapNode(key, priority, ROOT_POS);
+            newNode->noDraw = true;
+            return newNode;
+        }
+
+        if (key < curr->getKey()) {
+            curr->leftEdge = new TreapEdge(curr, step1(curr->leftEdge ? curr->leftEdge->to : nullptr, key, priority));
+            if (curr->leftEdge && curr->leftEdge->to->getKey() == key) curr->leftEdge->noDraw = true;
+
+        }
+        else if (key > curr->getKey()) {
+            curr->rightEdge = new TreapEdge(curr, step1(curr->rightEdge ? curr->rightEdge->to : nullptr, key, priority));
+            if (curr->rightEdge && curr->rightEdge->to->getKey() == key) curr->rightEdge->noDraw = true;
+        }
+
+        updateSubtreeWidth(curr);
+        return curr;
+        };
+
+    this->root = step1(this->root, key, priority);
+    reposition(this->root, ROOT_POS, xOffset, yOffset);
+
+
+    // Highlight search path
+    std::function<void(TreapNode*, int)> step2 = [&](TreapNode* curr, int key) {
+        if (!curr) return;
+
+        if (curr->getKey() == key) {
+            TreapNode* target = curr;
+            target->keyBox->noDraw = true;
+            target->priorityBox->noDraw = true;
+            //animManager.addAnimation(new TreapNodeInitializeAnim(target, 2.0f, ));
+            animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE, [target]() {
+                target->keyBox->noDraw = false;
+                target->priorityBox->noDraw = false;
+                }));
+            //animManager.addAnimation(new Animation(0.75f, [target]() {target->noDraw = false; }));
+            curr->noDraw = false;
+            return;
+        }
+
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
+
+        if (curr->getKey() > key) {
+            if (curr->leftEdge && curr->leftEdge->to) {
+                TreapEdge* edge = curr->leftEdge;
+                //if (edge->to && edge->to->getKey() == key) animManager.addAnimation(new TreapEdgeAddAnim(edge, 5.0f));
+                animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 0.75f, ORANGE, [edge]() {edge->noDraw = false; }));
+                //animManager.addAnimation(new Animation(0.75f, ));
+                step2(curr->leftEdge->to, key);
             }
         }
-        else cerr << "Error: Can not open file\n";
-    }
-}
+        else if (curr->getKey() < key) {
+            if (curr->rightEdge && curr->rightEdge->to) {
+                TreapEdge* edge = curr->rightEdge;
+                //if (edge->to && edge->to->getKey() == key) animManager.addAnimation(new TreapEdgeAddAnim(edge, 5.0f));
+                animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 0.75f, ORANGE, [edge]() {edge->noDraw = false; }));
+                //animManager.addAnimation(new Animation(0.75f, [edge]() {edge->noDraw = false; }));
+                step2(curr->rightEdge->to, key);
+            }
+        }
+        };
 
-void TreapUI::search(int key) {
-    cleanupForOperations();
-    searchWithAnimation(root, key);
+    step2(root, key);
+    return root;
 }
 
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     if (!curr) return;
-    
+
     cout << "Compare with " << curr->getKey() << endl;
     animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
-        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, {82, 172, 16, 255}, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
     }
     else if (curr->getKey() > key) {
         if (curr->leftEdge) {
@@ -261,20 +281,17 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     }
 }
 
-void TreapUI::remove(int key) {
-    root = remove(root, key);
-    reposition(root, ROOT_POS, xOffset, yOffset);
+int TreapUI::getSubtreeWidth(TreapNode* curr) {
+    if (!curr) return 0;
+    return curr->subtreeWidth;
 }
 
-void TreapUI::clear() {
-    clear(this->root);
-    this->root = nullptr;
-}
-
-void TreapUI::cleanupForOperations() {
-    animManager.goToLastStep();
-    animManager.clear();
-    animManager.resume();
+void TreapUI::updateSubtreeWidth(TreapNode* curr) {
+    if (curr) {
+        int leftWidth = curr->leftEdge ? getSubtreeWidth(curr->leftEdge->to) : 0;
+        int rightWidth = curr->rightEdge ? getSubtreeWidth(curr->rightEdge->to) : 0;
+        curr->subtreeWidth = 1 + leftWidth + rightWidth;
+    }
 }
 
 void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset) {
@@ -289,7 +306,7 @@ void TreapUI::reposition(TreapNode* root, Vector2 pos, const int xOffset, const 
     int leftWidth = getSubtreeWidth(root->leftEdge ? root->leftEdge->to : nullptr);
     int rightWidth = getSubtreeWidth(root->rightEdge ? root->rightEdge->to : nullptr);
     int newXOffset = max((leftWidth + rightWidth + 1) * 40, 80);
-    
+
     if (root->leftEdge) {
         Vector2 leftPos = { pos.x - newXOffset, pos.y + yOffset };
         reposition(root->leftEdge->to, leftPos, newXOffset, yOffset);
@@ -325,6 +342,71 @@ void TreapUI::drawTreap(TreapNode* curr) {
         drawTreapEdge(curr->rightEdge);
         drawTreap(curr->rightEdge->to);
     }
+}
+
+void TreapUI::cleanupForOperations() {
+    animManager.goToLastStep();
+    animManager.clear();
+    animManager.resume();
+}
+
+void TreapUI::loadFromFile(){
+    const char* filter[] = {"*.txt"};
+    const char* filePath = tinyfd_openFileDialog(
+        "Select a text file", // Title
+        "", // Default path (empty = open from last used folder)
+        1, // Number of filter patterns
+        filter, // Filter patterns
+        "Text file (*.txt)", // Filter description
+        0 // Single file selection mode
+    );
+
+    if(filePath){
+        cout << "Trying to open the file: " << filePath << endl;
+        ifstream fin(filePath);
+        if(fin.is_open()){
+            clear();
+            string line;
+            while(getline(fin, line)){
+                istringstream iss(line);
+                int key = 0, priority = 0;
+                if(iss >> key){
+                    if(iss >> priority) insert(key, priority);
+                    else insert(key);
+                }
+            }
+        }
+        else cerr << "Error: Can not open file\n";
+    }
+}
+
+void TreapUI::insert(int key, int priority, bool isAnimated) {
+    cleanupForOperations();
+    if (isAnimated) {
+        root = insertWithAnimation(root, key, priority);
+        animManager.addAnimation(new Animation(0.0f, [this]() {
+            reposition(root, ROOT_POS, xOffset, yOffset);
+            }));
+    }
+    else {
+        root = insert(root, key, priority);
+        reposition(root, ROOT_POS, xOffset, yOffset);
+    }
+}
+
+void TreapUI::search(int key) {
+    cleanupForOperations();
+    searchWithAnimation(root, key);
+}
+
+void TreapUI::remove(int key) {
+    root = remove(root, key);
+    reposition(root, ROOT_POS, xOffset, yOffset);
+}
+
+void TreapUI::clear() {
+    clear(this->root);
+    this->root = nullptr;
 }
 
 void TreapUI::init() {
@@ -403,7 +485,8 @@ void TreapUI::initButtons() {
 
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->onClick = [this]() {
-        this->clear();
+        cleanupForOperations();
+        clear();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;

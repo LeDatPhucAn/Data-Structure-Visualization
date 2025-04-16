@@ -12,32 +12,38 @@
 
 class TreapUI : public SceneManager {
 private:
-    //Treap treap;
-    TreapNode* root = nullptr;
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
+
+    TreapNode* root = nullptr;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 8;
+
     TreapNode* rotateLeft(TreapNode* root);
-    TreapNode* rotateLeftWithAnimation(TreapNode* root);
     TreapNode* rotateRight(TreapNode* root);
-    TreapNode* rotateRightWithAnimation(TreapNode* root);
-    int getSubtreeWidth(TreapNode* curr);
-    void updateSubtreeWidth(TreapNode* curr);
     TreapNode* insert(TreapNode* root, int key, int priority);
-    TreapNode* insertWithAnimation(TreapNode* root, int key, int priority);
-    void searchWithAnimation(TreapNode* curr, int key);
+    bool search(TreapNode* root, int key);
     TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
+
+    TreapNode* rotateLeftWithAnimation(TreapNode* root);
+    TreapNode* rotateRightWithAnimation(TreapNode* root);
+    TreapNode* insertWithAnimation(TreapNode* root, int key, int priority);
+    void searchWithAnimation(TreapNode* curr, int key);
+
+    int getSubtreeWidth(TreapNode* curr);
+    void updateSubtreeWidth(TreapNode* curr);
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
+
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);
+
     void cleanupForOperations();
 public:
-    void insert(int key, int priority = rand(), bool isAnimated = true);
     void loadFromFile();
+    void insert(int key, int priority = rand(), bool isAnimated = true);
     void remove(int key);
     void search(int key);
     void clear();

@@ -11,6 +11,13 @@ private:
     vector<RectButton*> CodeBlocks;
     LLNode* selectedNode = nullptr;
     int selectedBucketIdx = -1;
+    pair<int, int> insertParameters;
+    pair<int, int> removeParameters;
+    bool isInsert = false;
+    bool isRemove = false;
+    RectButton* editValueInput = nullptr;
+    RectButton* editValueConfirm = nullptr;
+    bool isEditingNode = false;
 
 protected:
     void drawHashTable();
@@ -20,6 +27,8 @@ public:
     ~HashTableUI() {
         Button::deleteButtons<RectButton>(Buttons);
         Button::deleteButtons<RectButton>(CodeBlocks);
+        if (editValueInput) delete editValueInput;
+        if (editValueConfirm) delete editValueConfirm;
     }
 
     void insert(int x);
@@ -27,8 +36,6 @@ public:
     bool search(int x);
     void resize(int newSize);
     void loadFromFile();
-
-    void clearIndicatesAndHighlights() {};
 
     void init() override;
     void initButtons() override;
@@ -38,4 +45,6 @@ public:
     void displaySceneInCamera() override;
     void updateScene() override;
     void updateSceneInCamera(Camera2D cam) override;
+    void clearIndicatesAndHighlights() override;
+    void replayOperation() override;
 };

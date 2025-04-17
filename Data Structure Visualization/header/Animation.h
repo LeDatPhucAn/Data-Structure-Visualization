@@ -386,9 +386,19 @@ public:
     TreapNode* node;
     Vector2 startSize;
     Vector2 endSize;
+    Color start;
+    Color k_text, k_fill, k_outline;
+    Color p_text, p_fill, p_outline;
     TreapNodeInitializeAnim(TreapNode* n, float duration, function<void()> func = nullptr): Animation(duration, func), node(n){
         startSize = { 0, 0 };
         endSize = { static_cast<float> (n->keyBox->getWidth()), static_cast<float> (n->keyBox->getHeight()) };
+        start = { 255, 255, 255, 255 };
+        k_text = n->keyBox->TextColor;
+        k_fill = n->keyBox->FillColor;
+        k_outline = n->keyBox->OutLineColor;
+        p_text = n->priorityBox->TextColor;
+        p_fill = n->priorityBox->FillColor;
+        p_outline = n->priorityBox->OutLineColor;
     }
     void applyState() override;
 };
@@ -412,5 +422,12 @@ public:
         startT = e->thickness;
         endT = 0;
     }
+    void applyState() override;
+};
+
+class TreapRotateLeftAnim : public Animation {
+public:
+    TreapNode* node;
+    TreapRotateLeftAnim(TreapNode* n, float duration, function<void()> func = nullptr) : Animation(duration, func), node(n) {}
     void applyState() override;
 };

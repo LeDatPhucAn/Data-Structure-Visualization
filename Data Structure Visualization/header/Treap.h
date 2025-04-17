@@ -58,6 +58,7 @@ public:
     }
     TreapNode* root = nullptr;
     void insert(int key, int priority);
+    bool search(int key);
     void clear();
 
     void insertBST(int key, int priority);
@@ -68,5 +69,6 @@ public:
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
 
     TreapNode* searchForNode(TreapNode* curr, int key);
-    TreapNode* rotateLeftAtSpecificNode(TreapNode* root, int key);
+    TreapNode* rotateLeftAtSpecificNode(TreapNode* curr, int key);
+    TreapNode* rotateRightAtSpecificNode(TreapNode* curr, int key);
 };

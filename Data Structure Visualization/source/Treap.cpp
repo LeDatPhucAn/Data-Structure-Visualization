@@ -230,10 +230,14 @@ TreapNode* Treap::insertBST(TreapNode* root, int key, int priority) {
 
     if (root->getKey() == key) return root;
     else if (root->getKey() > key) {
+        TreapEdge* del = root->leftEdge;
         root->leftEdge = new TreapEdge(root, insertBST(root->leftEdge ? root->leftEdge->to : nullptr, key, priority));
+        delete del;
     }
     else {
+        TreapEdge* del = root->rightEdge;
         root->rightEdge = new TreapEdge(root, insertBST(root->rightEdge ? root->rightEdge->to : nullptr, key, priority));
+        delete del;
     }
 
     updateSubtreeWidth(root);
@@ -282,6 +286,10 @@ void Treap::insert(int key, int priority) {
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
+bool Treap::search(int key) {
+    return search(root, key);
+}
+
 void Treap::clear() {
     clear(root);
     root = nullptr;
@@ -327,69 +335,12 @@ TreapNode* Treap::searchForNode(TreapNode* curr, int key) {
     return searchForNode(root->rightEdge ? root->rightEdge->to : nullptr, key);
 }
 
-//TreapEdge* oldRightEdge = root->rightEdge;
-//if (!oldRightEdge) return root;
-//
-//TreapNode* newRoot = oldRightEdge->to;
-//
-//TreapEdge* temp = newRoot->leftEdge;
-//root->rightEdge = temp ? new TreapEdge(root, temp->to) : nullptr;
-//
-//delete oldRightEdge;
-//delete temp;
-//
-//newRoot->leftEdge = new TreapEdge(newRoot, root);
-//
-//return newRoot;
-
-//TreapNode* Treap::rotateLeftAtSpecificNode(TreapNode* root, int key) {
-//    if (!root) return nullptr;
-//
-//    if (root->getKey() == key) {
-//        TreapEdge* oldRightEdge = root->rightEdge;
-//        if (!oldRightEdge) return root;
-//        
-//        TreapNode* newRoot = oldRightEdge->to;
-//
-//        TreapEdge* temp = newRoot->leftEdge;
-//        root->rightEdge = temp ? new TreapEdge(root, temp->to) : nullptr;
-//
-//        delete oldRightEdge;
-//        //delete temp;
-//
-//        newRoot->leftEdge = new TreapEdge(newRoot, root);
-//
-//        return newRoot;
-//    }
-//    else if (root->getKey() > key) {
-//        root->leftEdge = new TreapEdge(root, rotateLeftAtSpecificNode(root->leftEdge ? root->leftEdge->to : nullptr, key));
-//    }
-//    else {
-//        root->rightEdge = new TreapEdge(root, rotateLeftAtSpecificNode(root->rightEdge ? root->rightEdge->to : nullptr, key));
-//    }
-//    updateSubtreeWidth(root);
-//    return root;
-//}
-
 TreapNode* Treap::rotateLeftAtSpecificNode(TreapNode* curr, int key) {
     if (!curr) return nullptr;
 
     if (curr->getKey() == key) {
-        TreapEdge* oldRightEdge = curr->rightEdge;
-        if (!oldRightEdge) return curr;
-
-        TreapNode* newcurr = oldRightEdge->to;
-
-        TreapNode* movedLeft = newcurr->leftEdge ? newcurr->leftEdge->to : nullptr;
-
-        curr->rightEdge = movedLeft ? new TreapEdge(curr, movedLeft) : nullptr;
-
-        delete oldRightEdge;
-
-        newcurr->leftEdge = new TreapEdge(newcurr, curr);
-
-        cout << "rotate here" << endl;
-        return newcurr;
+        cout << "rotate left here" << endl;
+        return rotateLeft(curr);
     }
     else if (curr->getKey() > key) {
         cout << "go left" << endl;
@@ -399,6 +350,32 @@ TreapNode* Treap::rotateLeftAtSpecificNode(TreapNode* curr, int key) {
     else {
         cout << "go right" << endl;
         curr->rightEdge = new TreapEdge(curr, rotateLeftAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
+        cout << "return from right" << endl;
+    }
+
+    updateSubtreeWidth(curr);
+    return curr;
+}
+
+TreapNode* Treap::rotateRightAtSpecificNode(TreapNode* curr, int key) {
+    if (!curr) return nullptr;
+
+    if (curr->getKey() == key) {
+        cout << "rotate right here" << endl;
+        return rotateRight(curr);
+    }
+    else if (curr->getKey() > key) {
+        cout << "go left" << endl;
+        TreapEdge* del = curr->leftEdge;
+        curr->leftEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
+        delete del;
+        cout << "return from left" << endl;
+    }
+    else {
+        cout << "go right" << endl;
+        TreapEdge* del = curr->rightEdge;
+        curr->rightEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
+        delete del;
         cout << "return from right" << endl;
     }
 

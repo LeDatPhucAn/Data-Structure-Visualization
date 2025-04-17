@@ -87,19 +87,15 @@ void HashTable::adjustPosWithAnim(AnimationManager& animManager, LLNode* head, i
     }
 }
 
-void HashTable::insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
+void HashTable::insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int& pos) {
     clearIndicates();
     int idx = hashFunction(x);
     LLNode* newNode = new LLNode(x, 50, 400);
     newNode->noDraw = true;
+    pos = 1;
 
     animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
         CodeBlocks[1]->highlight();
-        }));
-
-    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
-        CodeBlocks[1]->unhighlight();
-        CodeBlocks[2]->highlight();
         }));
 
     Animation* insertAnim = new CircleHighLightAnim(newNode, 0.5f, GREEN, RAYWHITE, GREEN);
@@ -112,7 +108,7 @@ void HashTable::insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& an
     if (!buckets[idx]) {
         buckets[idx] = newNode;
         animManager.addAnimation(new CircleMoveAnim(newNode, 0.5f, newNode->getCenterX(), 400, 250 + idx * 200, 200, [&CodeBlocks]() {
-            CodeBlocks[2]->unhighlight();
+            CodeBlocks[1]->unhighlight();
             }));
     }
     else {
@@ -121,13 +117,14 @@ void HashTable::insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& an
         while (cur) {
             prev = cur;
             cur = cur->next;
+            pos++;
         }
         prev->next = newNode;
         CBEdge::addEdgeAndAnim(animManager, Edges, prev, newNode);
         Edges.back()->noDraw = true;
         adjustPosWithAnim(animManager, buckets[idx], idx);
         animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
-            CodeBlocks[2]->unhighlight();
+            CodeBlocks[1]->unhighlight();
             }));
     }
 }
@@ -150,9 +147,10 @@ void HashTable::randomInsert(int x) {
     adjustPos(buckets[idx], idx);
 }
 
-bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x) {
+bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int& pos) {
     int idx = hashFunction(x);
     clearIndicates();
+    pos = 1;
 
     animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
         CodeBlocks[1]->highlight();
@@ -209,7 +207,7 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
         }
         animManager.addAnimation(new Animation(0.5f, [this, cur, idx, nextNode, &CodeBlocks, &animManager]() {
             buckets[idx] = nextNode;
-            delete cur;
+            deleteLater.insert(cur);
             adjustPosWithAnim(animManager, buckets[idx], idx);
             CodeBlocks[3]->unhighlight();
             }));
@@ -217,6 +215,7 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
     }
 
     while (cur->next) {
+        pos++;
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, ORANGE, RAYWHITE, ORANGE));
         for (auto& edge : Edges) {
             if (edge->from == cur && edge->to == cur->next) {
@@ -276,7 +275,7 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             }
             animManager.addAnimation(new Animation(0.5f, [this, cur, temp, idx, nextNode, &CodeBlocks, &animManager]() {
                 cur->next = nextNode;
-                delete temp;
+                deleteLater.insert(temp);
                 adjustPosWithAnim(animManager, buckets[idx], idx);
                 CodeBlocks[3]->unhighlight();
                 }));
@@ -299,7 +298,7 @@ bool HashTable::removeFromBucket(int x, int bucketIdx) {
     if (cur->getNumber() == x) {
         buckets[bucketIdx] = cur->next;
         CBEdge::removeEdge(Edges, cur, cur->next);
-        delete cur;
+        deleteLater.insert(cur);
         adjustPos(buckets[bucketIdx], bucketIdx);
         return true;
     }
@@ -311,7 +310,7 @@ bool HashTable::removeFromBucket(int x, int bucketIdx) {
             CBEdge::removeEdge(Edges, temp, temp->next);
             cur->next = temp->next;
             CBEdge::addEdge(Edges, cur, cur->next);
-            delete temp;
+            deleteLater.insert(temp);
             adjustPos(buckets[bucketIdx], bucketIdx);
             return true;
         }
@@ -337,6 +336,9 @@ bool HashTable::search(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
         animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
             CodeBlocks[2]->unhighlight();
             CodeBlocks[4]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+            CodeBlocks[4]->unhighlight();
             }));
         return false;
     }
@@ -364,6 +366,9 @@ bool HashTable::search(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
                 CodeBlocks[3]->unhighlight();
                 CodeBlocks[4]->highlight();
                 }));
+            animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+                CodeBlocks[4]->unhighlight();
+                }));
             return true;
         }
         animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, cur]() {
@@ -378,6 +383,9 @@ bool HashTable::search(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
         CodeBlocks[2]->unhighlight();
         CodeBlocks[4]->highlight();
         }));
+    animManager.addAnimation(new Animation(0.5f, [&CodeBlocks]() {
+        CodeBlocks[4]->unhighlight();
+        }));
     return false;
 }
 
@@ -386,10 +394,16 @@ void HashTable::clear() {
         while (buckets[i]) {
             LLNode* temp = buckets[i];
             buckets[i] = buckets[i]->next;
-            delete temp;
+            deleteLater.insert(temp);
         }
     }
     deleteEdges();
+    for (auto node : deleteLater) {
+        if (node) {
+            delete node;
+        }
+    }
+    deleteLater.clear();
 }
 
 void HashTable::resize(int newSize) {
@@ -419,4 +433,64 @@ void HashTable::deleteEdges() {
         delete edge;
     }
     Edges.clear();
+}
+
+void HashTable::restoreAfterInsert(int x, int pos) {
+    int idx = hashFunction(x);
+    LLNode* cur = buckets[idx];
+    LLNode* prev = nullptr;
+    int i = 1;
+
+    if (pos == 1) {
+        buckets[idx] = cur->next;
+        Edges.erase(
+            std::remove_if(Edges.begin(), Edges.end(),
+                [cur](CBEdge* edge) {
+                    if (edge->from == cur || edge->to == cur) {
+                        delete edge;
+                        return true;
+                    }
+                    return false;
+                }),
+            Edges.end()
+        );
+        deleteLater.insert(cur);
+        return;
+    }
+
+    while (cur && i < pos) {
+        prev = cur;
+        cur = cur->next;
+        i++;
+    }
+
+    if (!cur) return;
+
+    prev->next = cur->next;
+    Edges.erase(
+        std::remove_if(Edges.begin(), Edges.end(),
+            [cur](CBEdge* edge) {
+                if (edge->from == cur || edge->to == cur) {
+                    delete edge;
+                    return true;
+                }
+                return false;
+            }),
+        Edges.end()
+    );
+    CBEdge::addEdge(Edges, prev, cur->next);
+    adjustPos(buckets[idx], idx);
+    deleteLater.insert(cur);
+}
+
+vector<int> HashTable::collectValues() {
+    vector<int> values;
+    for (int i = 0; i < bucketCount; i++) {
+        LLNode* cur = buckets[i];
+        while (cur) {
+            values.push_back(cur->getNumber());
+            cur = cur->next;
+        }
+    }
+    return values;
 }

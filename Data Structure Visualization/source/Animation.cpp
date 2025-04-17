@@ -138,10 +138,17 @@ void TreapNodeMoveAnim::handleReposition() {
 }
 
 void TreapNodeInitializeAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
     node->keyBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
     node->priorityBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
     node->keyBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
     node->priorityBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->keyBox->TextColor = UI::interpolateColors(start, k_text, easedT);
+    node->keyBox->FillColor = UI::interpolateColors(start, k_fill, easedT);
+    node->keyBox->OutLineColor = UI::interpolateColors(start, k_outline, easedT);
+    node->priorityBox->TextColor = UI::interpolateColors(start, p_text, easedT);
+    node->priorityBox->FillColor = UI::interpolateColors(start, p_fill, easedT);
+    node->priorityBox->OutLineColor = UI::interpolateColors(start, p_outline, easedT);
 }
 
 void TreapEdgeAddAnim::applyState() {
@@ -150,4 +157,8 @@ void TreapEdgeAddAnim::applyState() {
 
 void TreapEdgeRemoveAnim::applyState() {
     edge->thickness = EaseElasticIn(elapsed, startT, endT - startT, duration);
+}
+
+void TreapRotateLeftAnim::applyState() {
+    
 }

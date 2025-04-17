@@ -15,6 +15,7 @@ private:
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
 
+    Treap treap;
     TreapNode* root = nullptr;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
@@ -48,10 +49,14 @@ public:
     void search(int key);
     void clear();
 
+    TreapNode* rotateLeftAtSpecificNode(TreapNode* root, int key);
+
     TreapUI();
     ~TreapUI() {
         Button::deleteButtons<RectButton>(Buttons);
         Button::deleteButtons<RectButton>(CodeBlocks);
+        treap.clear();
+        clear();
     }
     void init() override;
     void initButtons() override;
@@ -66,7 +71,8 @@ public:
 
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
-        drawTreap(root);
+        //drawTreap(root);
+        treap.drawTreap(treap.root);
     }
 
 };

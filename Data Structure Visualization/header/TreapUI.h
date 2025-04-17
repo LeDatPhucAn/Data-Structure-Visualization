@@ -24,13 +24,17 @@ private:
     TreapNode* rotateLeft(TreapNode* root);
     TreapNode* rotateRight(TreapNode* root);
     TreapNode* insert(TreapNode* root, int key, int priority);
-    bool search(TreapNode* root, int key);
     TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
 
     TreapNode* rotateLeftWithAnimation(TreapNode* root);
     TreapNode* rotateRightWithAnimation(TreapNode* root);
+
+
+    TreapNode* insertBST(TreapNode* root, int key, int priority);
+    void makeNewNodeAppear(TreapNode* curr, int key);
     TreapNode* insertWithAnimation(TreapNode* root, int key, int priority);
+
     void searchWithAnimation(TreapNode* curr, int key);
 
     int getSubtreeWidth(TreapNode* curr);
@@ -48,8 +52,6 @@ public:
     void remove(int key);
     void search(int key);
     void clear();
-
-    TreapNode* rotateLeftAtSpecificNode(TreapNode* root, int key);
 
     TreapUI();
     ~TreapUI() {
@@ -69,8 +71,8 @@ public:
 
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
-        //drawTreap(root);
-        treap.drawTreap(treap.root);
+        drawTreap(root);
+        //treap.drawTreap(treap.root);
     }
 
 };

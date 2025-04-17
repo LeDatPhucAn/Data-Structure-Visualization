@@ -1,6 +1,7 @@
 #include "../header/HashTableUI.h"
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
+#include <iostream>
 
 void HashTableUI::drawHashTable() {
     for (int i = 0; i < hashtable.bucketCount; i++) {
@@ -22,16 +23,26 @@ void HashTableUI::drawHashTable() {
 
 void HashTableUI::insert(int x) {
     animManager.clear();
-    hashtable.insertNode(CodeBlocks, animManager, x);
+    isInsert = true;
+    isRemove = false;
+    int pos = -1;
+    hashtable.insertNode(CodeBlocks, animManager, x, pos);
+    insertParameters = { x, pos };
 }
 
 void HashTableUI::remove(int x) {
     animManager.clear();
-    hashtable.remove(CodeBlocks, animManager, x);
+    isRemove = true;
+    isInsert = false;
+    int pos = -1;
+    bool success = hashtable.remove(CodeBlocks, animManager, x, pos);
+    removeParameters = { x, pos };
 }
 
 bool HashTableUI::search(int x) {
     animManager.clear();
+    isInsert = false;
+    isRemove = false;
     return hashtable.search(CodeBlocks, animManager, x);
 }
 
@@ -159,35 +170,109 @@ void HashTableUI::displaySceneInCamera() {
 void HashTableUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
+    // Vẽ NumberInputBox và nút xác nhận nếu đang chỉnh sửa
+    if (editValueInput) {
+        editValueInput->draw();
+    }
+    if (editValueConfirm) {
+        editValueConfirm->draw();
+    }
 }
 
 void HashTableUI::updateScene() {
+    bool needUpdateHashTable = false;
+    int newValue = 0;
+    int oldValue = 0;
+    int bucketIdx = -1;
+
     for (int i = 0; i < hashtable.bucketCount; i++) {
         LLNode* cur = hashtable.buckets[i];
         while (cur) {
             cur->update();
             if (cur->animation) cur->animation->update(GetFrameTime());
 
-            if (cur->checkCollision() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            // Khi click vào node, hiển thị NumberInputBox
+            if (!isEditingNode && cur->checkCollision() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 selectedNode = cur;
                 selectedBucketIdx = i;
-            }
-            if (selectedNode == cur && GetGestureDetected() == GESTURE_TAP && !cur->checkCollision()) {
-                int oldValue = selectedNode->getNumber();
-                int newValue = cur->getNumber();
-                if (oldValue != newValue) {
-                    hashtable.removeFromBucket(oldValue, selectedBucketIdx);
-                    hashtable.insertNode(CodeBlocks, animManager, newValue);
-                }
-                selectedNode = nullptr;
-                selectedBucketIdx = -1;
+                isEditingNode = true;
+
+                // Tạo NumberInputBox gần node
+                editValueInput = new NumberInputBox(3);
+                editValueInput->rect.x = cur->getCenterX() + 50;
+                editValueInput->rect.y = cur->getCenterY() - 20;
+                static_cast<NumberInputBox*>(editValueInput)->setNumber(cur->getNumber()); // Ép kiểu để gọi setNumber
+
+                // Tạo nút xác nhận
+                editValueConfirm = new TextBox(">");
+                editValueConfirm->rect.x = editValueInput->rect.x + editValueInput->rect.width + 10;
+                editValueConfirm->rect.y = editValueInput->rect.y;
+                editValueConfirm->onClick = [this, cur, i, &needUpdateHashTable, &newValue, &oldValue, &bucketIdx]() {
+                    newValue = static_cast<NumberInputBox*>(editValueInput)->getNumber();
+                    oldValue = cur->getNumber();
+                    bucketIdx = i;
+                    needUpdateHashTable = true; // Đánh dấu cần cập nhật hash table
+                    isEditingNode = false; // Kết thúc trạng thái chỉnh sửa
+                    };
             }
             cur = cur->next;
         }
     }
+
+    // Cập nhật NumberInputBox và nút xác nhận
+    if (editValueInput) {
+        editValueInput->update();
+    }
+    if (editValueConfirm) {
+        editValueConfirm->update();
+    }
+
+    // Xử lý cập nhật hash table sau khi vòng lặp duyệt node hoàn tất
+    if (needUpdateHashTable && newValue != oldValue) {
+        hashtable.removeFromBucket(oldValue, bucketIdx);
+        vector<int> values = hashtable.collectValues();
+        values.push_back(newValue);
+        hashtable.clear();
+        for (int val : values) {
+            hashtable.randomInsert(val);
+        }
+    }
+
+    // Xóa editValueInput và editValueConfirm nếu không còn chỉnh sửa
+    if (!isEditingNode && editValueInput) {
+        delete editValueInput;
+        editValueInput = nullptr;
+    }
+    if (!isEditingNode && editValueConfirm) {
+        delete editValueConfirm;
+        editValueConfirm = nullptr;
+    }
+
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
-    if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    if (!Button::isCollision && !isEditingNode) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 
 void HashTableUI::updateSceneInCamera(Camera2D cam) {}
+
+void HashTableUI::clearIndicatesAndHighlights() {
+    hashtable.clearIndicates();
+    for (int i = 1; i < CodeBlocks.size(); i++) {
+        CodeBlocks[i]->unhighlight();
+    }
+}
+
+void HashTableUI::replayOperation() {
+    if (isInsert) {
+        animManager.clear();
+        hashtable.restoreAfterInsert(insertParameters.first, insertParameters.second);
+        int pos = -1;
+        hashtable.insertNode(CodeBlocks, animManager, insertParameters.first, pos);
+    }
+    else if (isRemove && removeParameters.second != -1) {
+        animManager.clear();
+        hashtable.randomInsert(removeParameters.first);
+        int pos = -1;
+        hashtable.remove(CodeBlocks, animManager, removeParameters.first, pos);
+    }
+}

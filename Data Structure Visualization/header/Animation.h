@@ -2,6 +2,7 @@
 #include "reasings.h"
 #include "SceneManager.h"
 #include "Button.h"
+#include <stack>
 class Animation {
 protected:
 
@@ -425,9 +426,10 @@ public:
     void applyState() override;
 };
 
-class TreapRotateLeftAnim : public Animation {
+class MoveMultipleTreapNodesAnim : public Animation {
 public:
-    TreapNode* node;
-    TreapRotateLeftAnim(TreapNode* n, float duration, function<void()> func = nullptr) : Animation(duration, func), node(n) {}
+    vector<TreapNode*> nodesToMove;
+    unordered_map<int, Vector2> positions;
+    MoveMultipleTreapNodesAnim(vector<TreapNode*> v, unordered_map<int, Vector2> m, float duration, function<void()> func = nullptr) : Animation(duration, func), nodesToMove(v), positions(m){}
     void applyState() override;
 };

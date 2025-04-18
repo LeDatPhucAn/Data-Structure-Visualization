@@ -17,6 +17,7 @@ private:
 
     Treap treap;
     TreapNode* root = nullptr;
+    bool drawInsideTreap = false;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 8;
@@ -24,18 +25,25 @@ private:
     TreapNode* rotateLeft(TreapNode* root);
     TreapNode* rotateRight(TreapNode* root);
     TreapNode* insert(TreapNode* root, int key, int priority);
+    TreapNode* search(TreapNode* root, int key);
+    TreapNode* searchForNode(int key);
     TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
 
     TreapNode* rotateLeftWithAnimation(TreapNode* root);
     TreapNode* rotateRightWithAnimation(TreapNode* root);
 
+    TreapNode* rotateLeftAtSpecificNode(TreapNode* curr, int key);
+    TreapNode* rotateRightAtSpecificNode(TreapNode* curr, int key);
+
 
     TreapNode* insertBST(TreapNode* root, int key, int priority);
-    void makeNewNodeAppear(TreapNode* curr, int key);
+    void makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited);
+    void fixViolation(stack<int>& visited);
+    void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
     TreapNode* insertWithAnimation(TreapNode* root, int key, int priority);
 
-    void searchWithAnimation(TreapNode* curr, int key);
+    void searchWithAnimation(TreapNode* curr, int key); 
 
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);
@@ -71,8 +79,8 @@ public:
 
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
-        drawTreap(root);
-        //treap.drawTreap(treap.root);
+        if(drawInsideTreap) treap.drawTreap(treap.root);
+        else drawTreap(root);
     }
 
 };

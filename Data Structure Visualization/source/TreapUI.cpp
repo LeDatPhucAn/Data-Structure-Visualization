@@ -22,6 +22,8 @@ TreapNode* TreapUI::rotateLeft(TreapNode* root) {
 
     newRoot->leftEdge = new TreapEdge(newRoot, root);
 
+    updateSubtreeWidth(root);
+    updateSubtreeWidth(newRoot);
     return newRoot;
 }
 
@@ -40,6 +42,8 @@ TreapNode* TreapUI::rotateRight(TreapNode* root) {
 
     newRoot->rightEdge = new TreapEdge(newRoot, root);
 
+    updateSubtreeWidth(root);
+    updateSubtreeWidth(newRoot);
     return newRoot;
 }
 
@@ -62,6 +66,19 @@ TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
 
     updateSubtreeWidth(root);
     return root;
+}
+
+TreapNode* TreapUI::search(TreapNode* root, int key) {
+    if (!root) return nullptr;
+    if (root->getKey() == key) return root;
+    else if (root->getKey() > key) {
+        return search(root->leftEdge ? root->leftEdge->to : nullptr, key);
+    }
+    return search(root->rightEdge ? root->rightEdge->to : nullptr, key);
+}
+
+TreapNode* TreapUI::searchForNode(int key) {
+    return search(this->root, key);
 }
 
 TreapNode* TreapUI::remove(TreapNode* root, int key) {
@@ -172,6 +189,54 @@ TreapNode* TreapUI::rotateRightWithAnimation(TreapNode* root) {
     return newRoot;
 }
 
+TreapNode* TreapUI::rotateLeftAtSpecificNode(TreapNode* curr, int key) {
+    if (!curr) return nullptr;
+
+    if (curr->getKey() == key) {
+        cerr << "rotate left here" << endl;
+        return rotateLeft(curr);
+    }
+    else if (curr->getKey() > key) {
+        cerr << "go left" << endl;
+        curr->leftEdge = new TreapEdge(curr, rotateLeftAtSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
+        cerr << "return from left" << endl;
+    }
+    else {
+        cerr << "go right" << endl;
+        curr->rightEdge = new TreapEdge(curr, rotateLeftAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
+        cerr << "return from right" << endl;
+    }
+
+    updateSubtreeWidth(curr);
+    return curr;
+}
+
+TreapNode* TreapUI::rotateRightAtSpecificNode(TreapNode* curr, int key) {
+    if (!curr) return nullptr;
+
+    if (curr->getKey() == key) {
+        cerr << "rotate right here" << endl;
+        return rotateRight(curr);
+    }
+    else if (curr->getKey() > key) {
+        cerr << "go left" << endl;
+        TreapEdge* del = curr->leftEdge;
+        curr->leftEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
+        delete del;
+        cerr << "return from left" << endl;
+    }
+    else {
+        cerr << "go right" << endl;
+        TreapEdge* del = curr->rightEdge;
+        curr->rightEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
+        delete del;
+        cerr << "return from right" << endl;
+    }
+
+    updateSubtreeWidth(curr);
+    return curr;
+}
+
 TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
     if (!root) return new TreapNode(key, priority, ROOT_POS);
 
@@ -191,7 +256,7 @@ TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
     return root;
 }
 
-void TreapUI::makeNewNodeAppear(TreapNode* curr, int key) {
+void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
     if (!curr) return;
 
     if (curr->getKey() == key) {
@@ -207,6 +272,8 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key) {
         return;
     }
 
+    visited.push(curr->getKey());
+    //cerr << "add " << curr->getKey() << endl;
     animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() > key) {
@@ -214,7 +281,7 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key) {
             TreapEdge* edge = curr->leftEdge;
             if (edge->to->getKey() == key) edge->noDraw = true;
             animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 0.75f, ORANGE, [edge]() {edge->noDraw = false; }));
-            makeNewNodeAppear(curr->leftEdge->to, key);
+            makeNewNodeAppear(curr->leftEdge->to, key, visited);
         }
     }
     else if (curr->getKey() < key) {
@@ -222,9 +289,83 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key) {
             TreapEdge* edge = curr->rightEdge;
             if (edge->to->getKey() == key) edge->noDraw = true;
             animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 0.75f, ORANGE, [edge]() {edge->noDraw = false; }));
-            makeNewNodeAppear (curr->rightEdge->to, key);
+            makeNewNodeAppear (curr->rightEdge->to, key, visited);
         }
     }
+}
+
+void TreapUI::fixViolation(stack<int>& visited) {
+    if (visited.empty()) return;
+    int key = visited.top(); // Get the key of the current node
+    visited.pop();
+
+    TreapNode* v = searchForNode(key); // Revalidate the node in the updated tree
+    if (!v) {
+        cerr << "Node with key " << key << " no longer exists in the tree." << endl;
+        animManager.addAnimation(new Animation(0.1f, [this, visited]() mutable {
+            fixViolation(visited);
+            }));
+        return;
+    }
+
+    cerr << "Handling node with key " << v->getKey() << endl;
+    bool hasRotated = false;
+    animManager.addAnimation(new RectHighlightAnim(v->priorityBox, 0.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+
+    if (v->leftEdge && v->leftEdge->to) {
+        cerr << "current priority " << v->getPriority() << " checking with priority " << v->leftEdge->to->getPriority() << endl;
+        if (v->leftEdge->to->getPriority() > v->getPriority()) {
+            //v->leftEdge->noDraw = true;
+            cerr << "left node has higher priority" << endl;
+            treap.rotateRightAtSpecificNode(v->getKey());
+            treap.reposition(treap.root, ROOT_POS, xOffset, yOffset);
+
+            unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+            vector<TreapNode*> move;
+            getNodesToMove(move, v);
+
+            animManager.addAnimation(new Animation(0.1f, [this, key]() {
+                this->root = rotateRightAtSpecificNode(this->root, key);
+                }));
+            animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+            //this->root = rotateRightAtSpecificNode(this->root, key);
+
+            hasRotated = true;
+        }
+    }
+
+    if (!hasRotated && v->rightEdge && v->rightEdge->to) {
+        cerr << "current priority " << v->getPriority() << " checking with priority " << v->rightEdge->to->getPriority() << endl;
+        if (v->rightEdge->to->getPriority() > v->getPriority()) {
+            //v->rightEdge->noDraw = true;
+            cerr << "right node has higher priority" << endl;
+            treap.rotateLeftAtSpecificNode(v->getKey());
+            treap.reposition(treap.root, ROOT_POS, xOffset, yOffset);
+
+            unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+            vector<TreapNode*> move;
+            getNodesToMove(move, v);
+
+            animManager.addAnimation(new Animation(0.1f, [this, key]() {
+                this->root = rotateLeftAtSpecificNode(this->root, key);
+                }));
+
+            animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+        }
+    }
+
+    animManager.addAnimation(new Animation(0.1f, [this, visited]() mutable {
+        fixViolation(visited);
+        }));
+}
+
+void TreapUI::getNodesToMove(vector<TreapNode*>& res, TreapNode* curr) {
+    if (!curr) return;
+    res.push_back(curr);
+    getNodesToMove(res, curr->leftEdge ? curr->leftEdge->to : nullptr);
+    getNodesToMove(res, curr->rightEdge ? curr->rightEdge->to : nullptr);
 }
 
 TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) {
@@ -234,10 +375,21 @@ TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) 
     }
 
     root = insertBST(root, key, priority);
+    treap.insertBST(key, priority);
 
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 
-    makeNewNodeAppear(root, key);
+    auto visited = std::make_shared<std::stack<int>>();
+
+    makeNewNodeAppear(root, key, *visited);
+
+    cerr << "after step 2, size of stack " << visited->size() << endl;
+
+    animManager.addAnimation(new Animation(3.0f, [this, temp = *visited]() mutable {
+        fixViolation(temp);
+    }));
+
+    reposition(this->root, ROOT_POS, xOffset, yOffset);
     
     return root;
 }
@@ -368,7 +520,6 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
     cleanupForOperations();
     if (isAnimated) {
         root = insertWithAnimation(root, key, priority);
-        //treap.insertBST(key, priority);
         animManager.addAnimation(new Animation(0.5f, [this]() {
             reposition(root, ROOT_POS, xOffset, yOffset);
             }));
@@ -387,6 +538,7 @@ void TreapUI::search(int key) {
 
 void TreapUI::remove(int key) {
     root = remove(root, key);
+    treap.remove(key);
     reposition(root, ROOT_POS, xOffset, yOffset);
 }
 
@@ -466,9 +618,14 @@ void TreapUI::initButtons() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
-    RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
+    /*RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
     Buttons[3]->onClick = [this]() {
         this->loadFromFile();
+        };*/
+
+    RectButton::insertHeadButton(Buttons, new TextBox("DrawInside"));
+    Buttons[3]->onClick = [this]() {
+        this->drawInsideTreap = !(this->drawInsideTreap);
         };
 
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
@@ -488,23 +645,6 @@ void TreapUI::initButtons() {
         treap.clear();
         this->clear();
         };
-
-    RectButton::insertHeadButton(Buttons, new TextBox("Test"));
-    RectButton* Value6 = new TextBox("Value:");
-    RectButton* ValueInput6 = new NumberInputBox(3);
-    RectButton* Enter6 = new TextBox(">");
-
-    Buttons[6]->insertSubButton(Value6);
-    Buttons[6]->insertSubButton(ValueInput6);
-    Buttons[6]->insertSubButton(Enter6, [this, ValueInput6]() {
-        //if (ValueInput6->getNumber() < 0) return;
-        cout << "trying to rotate " << ValueInput6->getNumber() << endl;
-        //this->root = this->rotateLeftAtSpecificNode(this->root, ValueInput6->getNumber());
-        treap.root = treap.rotateRightAtSpecificNode(treap.root, ValueInput6->getNumber());
-        treap.reposition(treap.root, ROOT_POS, xOffset, yOffset);
-        //RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
-        static_cast<NumberInputBox*>(ValueInput6)->clear();
-        });
 
     updateButtonPositions();
 }

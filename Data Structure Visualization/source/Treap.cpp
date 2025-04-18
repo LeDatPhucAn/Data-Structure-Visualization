@@ -102,6 +102,8 @@ TreapNode* Treap::rotateLeft(TreapNode* root) {
 
     newRoot->leftEdge = new TreapEdge(newRoot, root);
 
+    updateSubtreeWidth(root);
+    updateSubtreeWidth(newRoot);
     return newRoot;
 }
 
@@ -120,6 +122,8 @@ TreapNode* Treap::rotateRight(TreapNode* root) {
 
     newRoot->rightEdge = new TreapEdge(newRoot, root);
 
+    updateSubtreeWidth(root);
+    updateSubtreeWidth(newRoot);
     return newRoot;
 }
 
@@ -244,6 +248,51 @@ TreapNode* Treap::insertBST(TreapNode* root, int key, int priority) {
     return root;
 }
 
+TreapNode* Treap::rotateLeftAtSpecificNode(TreapNode* curr, int key) {
+    if (!curr) return nullptr;
+
+    if (curr->getKey() == key) {
+        return rotateLeft(curr);
+    }
+    else if (curr->getKey() > key) {
+        curr->leftEdge = new TreapEdge(curr, rotateLeftAtSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
+    }
+    else {
+        curr->rightEdge = new TreapEdge(curr, rotateLeftAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
+    }
+
+    updateSubtreeWidth(curr);
+    return curr;
+}
+
+TreapNode* Treap::rotateRightAtSpecificNode(TreapNode* curr, int key) {
+    if (!curr) return nullptr;
+
+    if (curr->getKey() == key) {
+        return rotateRight(curr);
+    }
+    else if (curr->getKey() > key) {
+        TreapEdge* del = curr->leftEdge;
+        curr->leftEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
+        delete del;
+    }
+    else {
+        TreapEdge* del = curr->rightEdge;
+        curr->rightEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
+        delete del;
+    }
+
+    updateSubtreeWidth(curr);
+    return curr;
+}
+
+void Treap::getAllPositions(unordered_map<int, Vector2>& res, TreapNode* curr) {
+    if (!curr) return;
+    res[curr->getKey()] = curr->position;
+    getAllPositions(res, curr->leftEdge ? curr->leftEdge->to : nullptr);
+    getAllPositions(res, curr->rightEdge ? curr->rightEdge->to : nullptr);
+}
+
 int Treap::getSubtreeWidth(TreapNode* curr) {
     if (!curr) return 0;
     return curr->subtreeWidth;
@@ -290,6 +339,11 @@ bool Treap::search(int key) {
     return search(root, key);
 }
 
+void Treap::remove(int key) {
+    root = remove(root, key);
+    reposition(root, ROOT_POS, xOffset, yOffset);
+}
+
 void Treap::clear() {
     clear(root);
     root = nullptr;
@@ -298,6 +352,22 @@ void Treap::clear() {
 void Treap::insertBST(int key, int priority) {
     root = insertBST(root, key, priority);
     reposition(root, ROOT_POS, xOffset, yOffset);
+}
+
+void Treap::rotateLeftAtSpecificNode(int key) {
+    root = rotateLeftAtSpecificNode(root, key);
+    reposition(root, ROOT_POS, xOffset, yOffset);
+}
+
+void Treap::rotateRightAtSpecificNode(int key) {
+    root = rotateRightAtSpecificNode(root, key);
+    reposition(root, ROOT_POS, xOffset, yOffset);
+}   
+
+unordered_map<int, Vector2> Treap::getAllPositions() {
+    unordered_map<int, Vector2> res;
+    getAllPositions(res, root);
+    return res;
 }
 
 void Treap::drawTreapNode(TreapNode* curr) {
@@ -333,52 +403,4 @@ TreapNode* Treap::searchForNode(TreapNode* curr, int key) {
         return searchForNode(root->leftEdge ? root->leftEdge->to : nullptr, key);
     }
     return searchForNode(root->rightEdge ? root->rightEdge->to : nullptr, key);
-}
-
-TreapNode* Treap::rotateLeftAtSpecificNode(TreapNode* curr, int key) {
-    if (!curr) return nullptr;
-
-    if (curr->getKey() == key) {
-        cout << "rotate left here" << endl;
-        return rotateLeft(curr);
-    }
-    else if (curr->getKey() > key) {
-        cout << "go left" << endl;
-        curr->leftEdge = new TreapEdge(curr, rotateLeftAtSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
-        cout << "return from left" << endl;
-    }
-    else {
-        cout << "go right" << endl;
-        curr->rightEdge = new TreapEdge(curr, rotateLeftAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
-        cout << "return from right" << endl;
-    }
-
-    updateSubtreeWidth(curr);
-    return curr;
-}
-
-TreapNode* Treap::rotateRightAtSpecificNode(TreapNode* curr, int key) {
-    if (!curr) return nullptr;
-
-    if (curr->getKey() == key) {
-        cout << "rotate right here" << endl;
-        return rotateRight(curr);
-    }
-    else if (curr->getKey() > key) {
-        cout << "go left" << endl;
-        TreapEdge* del = curr->leftEdge;
-        curr->leftEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
-        delete del;
-        cout << "return from left" << endl;
-    }
-    else {
-        cout << "go right" << endl;
-        TreapEdge* del = curr->rightEdge;
-        curr->rightEdge = new TreapEdge(curr, rotateRightAtSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
-        delete del;
-        cout << "return from right" << endl;
-    }
-
-    updateSubtreeWidth(curr);
-    return curr;
 }

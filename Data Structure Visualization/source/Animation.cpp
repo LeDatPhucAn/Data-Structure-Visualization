@@ -159,6 +159,11 @@ void TreapEdgeRemoveAnim::applyState() {
     edge->thickness = EaseElasticIn(elapsed, startT, endT - startT, duration);
 }
 
-void TreapRotateLeftAnim::applyState() {
-    
+//  node->position.x = EaseExpoOut(elapsed, startPos.x, endPos.x - startPos.x, duration);
+void MoveMultipleTreapNodesAnim::applyState() {
+    for (TreapNode* n : nodesToMove) {
+        n->position.x = EaseExpoOut(elapsed, n->position.x, positions[n->getKey()].x - n->position.x, duration);
+        n->position.y = EaseExpoOut(elapsed, n->position.y, positions[n->getKey()].y - n->position.y, duration);
+        n->syncPosition();
+    }
 }

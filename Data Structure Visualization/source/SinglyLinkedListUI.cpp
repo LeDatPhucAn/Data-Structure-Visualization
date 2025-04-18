@@ -158,6 +158,7 @@ void SinglyLinkedListUI::updateScene() {
     
    LLNode* cur = linkedlist.head;
    while (cur) {
+    
        cur->update();
        if (cur->animation)cur->animation->update(GetFrameTime());
        cur = cur->next;

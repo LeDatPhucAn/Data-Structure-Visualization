@@ -1,64 +1,55 @@
-
+#include "fstream"
+#include "sstream"
+#include "../header/tinyfiledialogs.h"
 #include "../header/Graph.h"
-void EdgeOfGraph::drawEdgeOfGraph() {
-	if (!from || !to) return;
-
-	float a = from->position.x;
-	float b = from->position.y;
-	float c = to->position.x;
-	float d = to->position.y;
-	float AB = sqrt(pow(a - c, 2) + pow(d - b, 2));
-
-	float fromX = a + (float)from->radius * (c - a) / AB;
-	float fromY = b + (float)from->radius * (d - b) / AB;
-	float toX = c - (float)to->radius * (c - a) / AB;
-	float toY = d - (float)to->radius * (d - b) / AB;
-	//draw edge
-
-	DrawLineEx({ fromX,fromY }, { toX, toY }, thickness, BLACK);
-
-	float midX = (fromX + toX) / 2.0f;
-	float midY = (fromY + toY) / 2.0f;
-
-
-	float dx = toX - fromX;
-	float dy = toY - fromY;
-	float len = sqrtf(dx * dx + dy * dy);
-	float nx = -dy / len;
-	float ny = dx / len;
-
-
-	float offset = 16.0f;
-	float textX = midX + nx * offset;
-	float textY = midY + ny * offset;
-
-
-	std::string text = std::to_string((int)weight);
-
-	float angle = atan2f(dy, dx);
-	//if (angle > PI / 2 || angle < -PI / 2) angle += PI;
-
-	Vector2 position = { textX, textY };
-	int fontSize = 20;
-	Font font = GetFontDefault();
-	Vector2 textSize = MeasureTextEx(font, text.c_str(), fontSize, 1);
-	Vector2 origin = { textSize.x / 2, textSize.y / 2 };
-
-	DrawTextPro(font, text.c_str(), position, origin, angle * 180 / PI, fontSize, 1, RED);
+void Graph::adjustPosWithAnim2(AnimationManager& animManager) {
+	
 }
-void Graph::calculatePositions() {
+void Graph::calculatePositions(int n) {
 	position.clear();
-	float width = UI::screenWidth, height = UI::screenHeight;
 
-	std::vector<Vector2> predefinedPositions = {
-		{width * 0.3f, height * 0.3f}, {width * 0.7f, height * 0.3f},
-		{width * 0.5f, height * 0.5f}, {width * 0.3f, height * 0.7f},
-		{width * 0.7f, height * 0.7f}
+	vector<Vector2> predefined = {
+		{200, 100}, 
+		{400, 0},
+		{600, 200},
+		{800, 100},
+		{100, 300},
+		{300, 1000},
+		{600, 850},
+		{900, 900},
+		{400, 600},
+		{750, 600}
 	};
-
-	for (int i = 0; i < numberVertices; ++i) {
-		position.push_back(predefinedPositions[i % predefinedPositions.size()]);
+	if (n <= predefined.size()) {
+		for (int i = 0; i < n; ++i) {
+			position.push_back(predefined[i]);
+		}
 	}
+	else {
+		float centerX = UI::screenWidth / 2.0f;
+		float centerY = UI::screenHeight / 2.0f;
+		float radius = 800.0f;
+
+		for (int i = 0; i < n; ++i) {
+			float angle = 2 * PI * i / n;
+			float x = centerX + radius * cosf(angle);
+			float y = centerY + radius * sinf(angle);
+			position.push_back({ x, y });
+		}
+	}
+}
+bool Graph::checkEdge(int id1, int id2) {
+	GraphNode* node1 = getNodeById(id1);
+	GraphNode* node2 = getNodeById(id2);
+	if (!node1 || !node2) return false;
+
+	for (auto& edge : edges) {
+		if ((edge->from == node1 && edge->to == node2) ||
+			(edge->from == node2 && edge->to == node1)) {
+			return true;
+		}
+	}
+	return false;
 }
 void Graph::addNode(Vector2 pos) {
 	int id;
@@ -72,19 +63,26 @@ void Graph::addNode(Vector2 pos) {
 	}
 	setNumberOfVertices(nodes.size() + 1);
 	position.push_back(pos);
-	nodes.push_back(new Node(id, pos, radiusNode));
+	nodes.push_back(new GraphNode(id, pos, radiusNode));
 }
 void Graph::removeNode(int id) {
-	edges.erase(std::remove_if(edges.begin(), edges.end(),
-		[id](EdgeOfGraph* edge) {
-			return edge->from->data == id ||
-				edge->to->data == id;
-		}),
-		edges.end());
+	GraphNode* nodeRemove = getNodeById(id);
+	if (!nodeRemove) return;
+	// Remove edges connected to the node
+	for (auto it = edges.begin(); it != edges.end(); ) {
+		if ((*it)->from == nodeRemove || (*it)->to == nodeRemove) {
+			delete* it;
+			it = edges.erase(it); 
+		}
+		else {
+			++it;
+		}
+	}
 
+	
 	auto posIt = position.begin();
 	for (size_t i = 0; i < nodes.size(); ++i) {
-		if (nodes[i]->data == id) {
+		if (nodes[i]->getNumber() == id) {
 			posIt = position.begin() + i;
 			break;
 		}
@@ -93,7 +91,7 @@ void Graph::removeNode(int id) {
 		position.erase(posIt);
 	}
 	auto iter = std::find_if(nodes.begin(), nodes.end(),
-		[id](Node* node) { return node->data == id; });
+		[id](GraphNode* node) { return node->getNumber() == id; });
 
 	if (iter != nodes.end()) {
 		deleteIds.insert(id);
@@ -102,29 +100,35 @@ void Graph::removeNode(int id) {
 	}
 }
 void Graph::addEdge(int from, int to, float weight) {
-	Node* nodeFrom = Graph::getNodeById(from);
-	Node* nodeTo = Graph::getNodeById(to);
+	GraphNode* nodeFrom = Graph::getNodeById(from);
+	GraphNode* nodeTo = Graph::getNodeById(to);
 	if (nodeFrom && nodeTo) {
 		edges.push_back(new EdgeOfGraph(weight, nodeFrom, nodeTo));
 	}
 }
 void Graph::removeEdge(int from, int to) {
-	edges.erase(std::remove_if(edges.begin(), edges.end(),
-		[from, to](EdgeOfGraph* edge) {
-			return (edge->from->data == from && edge->to->data == to) ||
-				(edge->from->data == to && edge->to->data == from);
-		}),
-		edges.end());
-
+	GraphNode* nodeFrom = getNodeById(from);
+	GraphNode* nodeTo = getNodeById(to);
+	if (!nodeFrom || !nodeTo) return;
+	for (auto it = edges.begin(); it != edges.end(); ) {
+		if (((*it)->from == nodeFrom && (*it)->to == nodeTo) ||
+			((*it)->from == nodeTo && (*it)->to == nodeFrom)) {
+			delete* it;
+			it = edges.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
 }
-Node* Graph::getNodeById(int id) {
+GraphNode* Graph::getNodeById(int id) {
 	for (auto node : nodes) {
-		if (node->data == id) return node;
+		if (node->getNumber() == id) return node;
 	}
 	return nullptr;
 }
 Graph::~Graph() {
-	for (Node* node : nodes) {
+	for (GraphNode* node : nodes) {
 		delete node;
 	}
 	nodes.clear();
@@ -137,28 +141,490 @@ Graph::~Graph() {
 }
 void Graph::printGraph() {
 	cout << "Graph Adjacency List: " << std::endl;
-	for (Node* node : nodes) {
-		int val = node->data;
-		cout << "Node " << val << " -> ";
-		bool hasEdge = false;
-		for (EdgeOfGraph* edge : edges) {
-			if (edge->from->data == val) {
-				cout << edge->to->data << " ";
-				hasEdge = true;
+	for (int i = 0; i < nodes.size(); ++i) {
+		for (int j = i; j < nodes.size(); ++j) {
+			if (checkEdge(i, j)) {
+				cout << nodes[i]->getNumber() << " " << nodes[j]->getNumber() << endl;
 			}
-			if (edge->to->data == val) {
-				cout << edge->from->data << " ";
-				hasEdge = true;
-			}
-
 		}
-		if (!hasEdge) {
-			cout << "no edges";
-		}
-		cout << endl;
-
 	}
 	cout << endl;
+}
+void Graph::drawMatrixTable(int n, const vector<vector<string>>& inputs, int selectedRow, int selectedCol) {
+	// Draw the table
+	float screenWidth = UI::screenWidth;
+	float screenHeight = UI::screenHeight;
+
+	float cellSize = 60.0f;
+	float tableWidth = cellSize * n;
+	float tableHeight = cellSize * n;
+	float startX = (screenWidth - tableWidth) / 2.0f;
+	float startY = (screenHeight - tableHeight) / 2.0f;
+
+	Font font = GetFontDefault();
+	int fontSize = 20;
+
+	for (int row = 0; row < n; ++row) {
+		for (int col = 0; col < n; ++col) {
+			float x = startX + col * cellSize;
+			float y = startY + row * cellSize;
+			Rectangle cellRect = { x, y, cellSize, cellSize };
+
+			if (row == selectedRow && col == selectedCol) {
+				DrawRectangleRec(cellRect, LIGHTGRAY);
+			}
+			else {
+				DrawRectangleLinesEx(cellRect, 2, DARKGRAY);
+			}
+
+			std::string content = inputs[row][col];
+			Vector2 textSize = MeasureTextEx(font, content.c_str(), fontSize, 1);
+			float textX = x + (cellSize - textSize.x) / 2;
+			float textY = y + (cellSize - textSize.y) / 2;
+
+			DrawText(content.c_str(), textX, textY, fontSize, BLACK);
+		}
+	}
+	for (int i = 0; i < n; ++i) {
+		std::string index = std::to_string(i);
+		Vector2 size = MeasureTextEx(font, index.c_str(), fontSize, 1);
+
+		DrawText(index.c_str(),
+			startX + i * cellSize + (cellSize - size.x) / 2,
+			startY - cellSize * 0.8f,
+			fontSize, DARKGRAY);
+
+		DrawText(index.c_str(),
+			startX - cellSize * 0.8f,
+			startY + i * cellSize + (cellSize - size.y) / 2,
+			fontSize, DARKGRAY);
+	}
+
+	DrawRectangleLines(startX - 2, startY - 2, tableWidth + 4, tableHeight + 4, GRAY);
+}
+void Graph::initGraph(int n) {
+	const float screenWidth = UI::screenWidth;
+	const float screenHeight = UI::screenHeight;
+	const float cellSize = 60.0f;
+
+	float tableWidth = n * cellSize;
+	float tableHeight = n * cellSize;
+	float startX = (screenWidth - tableWidth) / 2.0f;
+	float startY = (screenHeight - tableHeight) / 2.0f;
+
+	Rectangle okButton = { screenWidth / 2.0f - 50, startY + tableHeight + 40, 100, 40 };
+
+	vector<vector<string>> inputs(n, vector<string>(n, ""));
+	int selectedRow = 0;
+	int selectedCol = 0;
+	bool confirmed = false;
+
+	SetTargetFPS(60);
+	
+	while (!WindowShouldClose() && !confirmed) {
+		
+		// input number
+		int key = GetCharPressed();
+		while (key > 0) {
+			if ((key >= '0' && key <= '9') || key == '-') {
+				if (inputs[selectedRow][selectedCol].length() < 3)
+					inputs[selectedRow][selectedCol] += static_cast<char>(key);
+			}
+			key = GetCharPressed();
+		}
+		//delete
+		if (IsKeyPressed(KEY_BACKSPACE)) {
+			if (!inputs[selectedRow][selectedCol].empty())
+				inputs[selectedRow][selectedCol].pop_back();
+		}
+		//move cell (keyboard)
+		if (IsKeyPressed(KEY_RIGHT)) selectedCol = (selectedCol + 1) % n;
+		if (IsKeyPressed(KEY_LEFT)) selectedCol = (selectedCol - 1 + n) % n;
+		if (IsKeyPressed(KEY_DOWN)) selectedRow = (selectedRow + 1) % n;
+		if (IsKeyPressed(KEY_UP)) selectedRow = (selectedRow - 1 + n) % n;
+		//move cell (mouse)
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 mouse = GetMousePosition();
+			float mouseX = mouse.x;
+			float mouseY = mouse.y;
+
+			if (mouseX >= startX && mouseX < startX + tableWidth &&
+				mouseY >= startY && mouseY < startY + tableHeight) {
+				int colClicked = (int)((mouseX - startX) / cellSize);
+				int rowClicked = (int)((mouseY - startY) / cellSize);
+
+				selectedRow = rowClicked;
+				selectedCol = colClicked;
+			}
+
+			if (CheckCollisionPointRec(mouse, okButton)) {
+				confirmed = true;
+			}
+		}
+		//check ok
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 mouse = GetMousePosition();
+			if (CheckCollisionPointRec(mouse, okButton)) {
+				confirmed = true;
+			}
+		}
+		BeginDrawing();
+		ClearBackground(RAYWHITE);
+
+		drawMatrixTable(n, inputs, selectedRow, selectedCol);
+
+		DrawRectangleRec(okButton, DARKGREEN);
+		DrawText("OK", okButton.x + 30, okButton.y + 10, 20, RAYWHITE);
+
+		EndDrawing();
+	}
+	clear();
+	setNumberOfVertices(n);
+	calculatePositions(n);
+	for (int i = 0; i < n; ++i) {
+		nodes.push_back(new GraphNode(i + 1, position[i], radiusNode));
+		maxID = std::max(maxID, i + 1);
+	}
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			if (i < j && !inputs[i][j].empty()) {
+				int id1 = i + 1;
+				int id2 = j + 1;
+				float weight = std::stof(inputs[i][j]);
+				if (weight > 0) {
+					addEdge(id1, id2, weight);
+				}
+				
+			}
+		}
+	}
+
+}
+void Graph::loadFromFile() {
+	const char* filterPatterns[1] = { "*.txt" };
+	const char* filePath = tinyfd_openFileDialog(
+		"Choose graph file", "", 1, filterPatterns, "Text files", 0);
+
+	if (!filePath) {
+		std::cout << "Don't choose any files." << std::endl;
+		return;
+	}
+
+	std::ifstream infile(filePath);
+	if (!infile.is_open()) {
+		std::cout << "Don't open file: " << filePath << std::endl;
+		return;
+	}
+
+	std::vector<std::vector<float>> weights;
+	std::string line;
+
+	while (std::getline(infile, line)) {
+		std::istringstream iss(line);
+		std::vector<float> row;
+		float w;
+		while (iss >> w) {
+			row.push_back(w);
+		}
+		if (!row.empty()) {
+			weights.push_back(row);
+		}
+	}
+
+	infile.close();
+
+	int n = weights.size();
+	if (n == 0 || weights[0].size() != n) {
+		std::cout << "Invalid Matric (must be n x n)." << std::endl;
+		return;
+	}
+
+	clear();
+
+	setNumberOfVertices(n);
+	calculatePositions(n); 
+
+	for (int i = 0; i < n; ++i) {
+		nodes.push_back(new GraphNode(i, position[i], radiusNode));
+		maxID = std::max(maxID, i);
+	}
+
+	
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			if (i < j && weights[i][j] > 0) {
+				addEdge(i, j, weights[i][j]);
+			}
+		}
+	}
+
+	std::cout << "Load file success: " << filePath << std::endl;
+}
+void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int startID) {
+	// Reset the Dijkstra algorithm
+	clearIndicates();
+	resetDijkstra();
+	dijkstraHistory.clear();
+	currentStep = 0;
+
+	int n = nodes.size();
+	cost[startID] = 0;
+	path[startID].push_back(nodes[startID]->getNumber());
+	// Highlight start node
+	Animation* NodeStart = new CircleHighLightAnim(nodes[startID], 0.5f, GREEN, RAYWHITE, GREEN, [startID, this]() {
+		nodes[startID]->animation->reset();
+		nodes[startID]->noDraw = false;
+		currentStep++;
+		});
+	animManager.addAnimation(NodeStart);
+
+	saveDijkstraState(startID);
+
+	for (int i = 0; i < n; ++i) {
+		//Find node with min cost
+		int u = -1;
+		float minCost = INF;
+		for (int j = 0; j < n; ++j) {
+			if (!visited[j] && cost[j] < minCost) {
+				minCost = cost[j];
+				u = j;
+			}
+		}
+		if (u == -1) break;
+		
+		//Highlight node u
+		Animation* nodeU = new CircleHighLightAnim(nodes[u], 0.5f, GREEN, RAYWHITE, GREEN, [u, this]() {
+			nodes[u]->indicateNode = "Current";
+			nodes[u]->animation->reset();
+			nodes[u]->noDraw = false;
+			currentStep++;
+			});
+		animManager.addAnimation(nodeU);
+			
+		// Mark visited
+		
+		
+			
+		visited[u] = true;
+		saveDijkstraState(u);
+		// Traverse all neighbors
+		for (auto& edge : edges) {
+			int v = -1;
+			float weight = edge->weight;
+
+			if (edge->from == nodes[u]) {
+				for (int k = 0; k < n; ++k) {
+					if (nodes[k] == edge->to) {
+						v = k;
+						break;
+					}
+				}
+			}
+			else if (edge->to == nodes[u]) {
+				for (int k = 0; k < n; ++k) {
+					if (nodes[k] == edge->from) {
+						v = k;
+						break;
+					}
+				}
+			}
+			if (v != -1 && !visited[v]) {
+			
+				//highlight edge u-v
+				Animation* edgeUV = new GEdgeHighlightAnim(edge, 0.5f, PURPLE, [v, this]() {
+					nodes[v]->indicateNode = "v";
+					nodes[v]->animation->reset();
+					nodes[v]->noDraw = false;
+					currentStep++;
+					});
+				animManager.addAnimation(edgeUV);
+				saveDijkstraState(v);
+					
+				if (cost[u] + weight < cost[v]) {
+					cost[v] = cost[u] + weight;
+					path[v] = path[u];
+					path[v].push_back(nodes[v]->getNumber());
+					
+					animManager.addAnimation(new CircleHighLightAnim(nodes[v], 0.5f, GREEN, RAYWHITE, GREEN, [v, this]() {
+						nodes[v]->indicateNode = "updated";
+						currentStep++;
+						}));
+						
+					saveDijkstraState(v);
+
+				}
+				// Unhighlight edge + node v
+				
+				animManager.addAnimation(new Animation(0.1f, [v, this]() {
+
+					nodes[v]->indicateNode = "";
+					currentStep++;
+					}));
+				saveDijkstraState(v);
+			}
+		}
+		
+		animManager.addAnimation(new Animation(0.1f, [u, this]() {
+			nodes[u]->indicateNode = "";
+			currentStep++;
+			}));
+		saveDijkstraState(u);
+	}
+	/*
+	animManager.addAnimation(new Animation(0.5f, [n, this]() {
+		for (int i = 0; i < n; ++i) {
+			nodes[i]->indicateNode = "dist = " + (cost[i] >= INF ? string("INF") : to_string((int)cost[i]));
+		}
+		}));
+		*/
+}
+void Graph::Dijkstra(int startID) {
+	resetDijkstra();
+	int n = nodes.size();
+	
+	cost[startID] = 0;
+	path[startID].push_back(nodes[startID]->getNumber());
+
+	for (int i = 0; i < n; ++i) {
+		//Find node with min cost
+		int u = -1;
+		float minCost = INF;
+		for (int j = 0; j < n; ++j) {
+			if (!visited[j] && cost[j] < minCost) {
+				minCost = cost[j];
+				u = j;
+			}
+		}
+		if (u == -1) break;
+		visited[u] = true;
+
+		//traversal all edges from u
+		for (auto& edge : edges) {
+			int v = -1;
+			float weight = edge->weight;
+
+			if (edge->from == nodes[u]) {
+				for (int k = 0; k < n; ++k) {
+					if (nodes[k] == edge->to) {
+						v = k;
+						break;
+					}
+				}
+			}
+			else if (edge->to == nodes[u]) {
+				for (int k = 0; k < n; ++k) {
+					if (nodes[k] == edge->from) {
+						v = k;
+						break;
+					}
+				}
+			}
+			if (v != -1 && !visited[v]) {
+				if (cost[u] + weight < cost[v]) {
+					cost[v] = cost[u] + weight;
+					path[v] = path[u];
+					path[v].push_back(nodes[v]->getNumber());
+				}
+			}
+		}
+	}
+
+
+}
+
+void Graph::drawDijkstraTable() {
+	if (drawDijk && !dijkstraHistory.empty()) 
+	{
+		const DijkstraState& state = dijkstraHistory[currentStep];
+
+		int n = state.cost.size();
+		const float cellWidth = 100;
+		const float cellHeight = 40;
+		const float tableWidth = cellWidth * 4;
+		const float tableHeight = cellHeight * (n + 1);
+
+		float startX = 150.0f;
+		float startY = 10.0f;
+
+		Font font = GetFontDefault();
+		int fontSize = 20;
+		//header
+		std::vector<std::string> headers = { "Vertex", "Known", "Cost", "Path" };
+		for (int col = 0; col < 4; ++col) {
+			float x = startX + col * cellWidth;
+			DrawRectangleLinesEx({ x, startY, cellWidth, cellHeight }, 2, BLACK);
+			Vector2 size = MeasureTextEx(font, headers[col].c_str(), fontSize, 1);
+			DrawText(headers[col].c_str(), x + (cellWidth - size.x) / 2, startY + (cellHeight - size.y) / 2, fontSize, BLACK);
+		}
+
+		//rows
+		for (int i = 0; i < n; ++i) {
+			float rowY = startY + (i + 1) * cellHeight;
+			Color textColor = (i == state.current ? RED : BLACK);
+			// Column: Vertex
+			{
+				std::string txt = std::to_string(i);
+				float x = startX;
+				DrawRectangleLinesEx({ x, rowY, cellWidth, cellHeight }, 1, BLUE);
+				DrawText(txt.c_str(), x + 40, rowY + 10, fontSize, BLUE);
+			}
+
+			// Column: Known (visited)
+			{
+				std::string txt = state.visited[i] ? "T" : "F";
+				float x = startX + cellWidth;
+				DrawRectangleLinesEx({ x, rowY, cellWidth, cellHeight }, 1, DARKGRAY);
+				DrawText(txt.c_str(), x + 40, rowY + 10, fontSize, textColor);
+			}
+
+			// Column: Cost
+			{
+				std::string txt = (state.cost[i] >= INF) ? "INF" : std::to_string((int)state.cost[i]);
+				float x = startX + 2 * cellWidth;
+				DrawRectangleLinesEx({ x, rowY, cellWidth, cellHeight }, 2, RED);
+				DrawText(txt.c_str(), x + 30, rowY + 10, fontSize, textColor);
+			}
+
+			// Column: Parent (last node before current)
+			{
+				std::string txt = "-1";
+				if (!state.path[i].empty() && state.path[i].size() > 1) {
+					txt = std::to_string((int)state.path[i][state.path[i].size() - 2]);
+				}
+				else if (!path[i].empty()) {
+					txt = "Start";
+				}
+				float x = startX + 3 * cellWidth;
+				DrawRectangleLinesEx({ x, rowY, cellWidth, cellHeight }, 1, DARKGRAY);
+				DrawText(txt.c_str(), x + 30, rowY + 10, fontSize, textColor);
+			}
+			// Draw full path string on the right
+
+			{
+				std::string fullPathStr;
+				for (int j = 0; j < state.path[i].size(); ++j) {
+					fullPathStr += std::to_string((int)state.path[i][j]);
+					if (j != state.path[i].size() - 1) fullPathStr += " ";
+				}
+				float x = startX + 4 * cellWidth + 20;
+				DrawText(fullPathStr.c_str(), x, rowY + 10, fontSize, BLACK);
+			}
+		}
+		DrawRectangleLines(startX - 2, startY - 2, tableWidth + 4, tableHeight + 4, GRAY);
+	}
+}
+void Graph::saveDijkstraState(int current) {
+	DijkstraState state;
+	state.cost = cost;
+	state.visited = visited;
+	state.path = path;
+	state.current = current;
+	dijkstraHistory.push_back(state);
+}
+void Graph::clearIndicates() {
+	for (auto& node : nodes) {
+		node->indicateNode = "";
+	}
 }
 void Graph::printPosition() {
 	for (Vector2 pos : position) {
@@ -166,12 +632,10 @@ void Graph::printPosition() {
 	}
 }
 void Graph::printEdge() {
-	for (auto edge : edges) {
-		cout << edge->from->data << " " << edge->to->data << endl;
-	}
+	printGraph();
 }
 void Graph::clear() {
-	for (Node* node : nodes) {
+	for (GraphNode* node : nodes) {
 		delete node;
 	}
 	nodes.clear();

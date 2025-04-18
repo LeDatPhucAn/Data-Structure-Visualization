@@ -13,4 +13,9 @@ namespace PseudoCode {
     extern std::string TreapInsert;
     extern std::string TreapRemove;
     extern std::string TreapSearch;
+    extern std::string GraphAddNode;
+    extern std::string GraphRemoveNode;
+    extern std::string GraphAddEdge;
+    extern std::string GraphRemoveEdge;
+    
 };

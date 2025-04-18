@@ -24,6 +24,7 @@
     <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\Edge.cpp" />
     <ClCompile Include="source\Graph.cpp" />
+    <ClCompile Include="source\GraphEdge.cpp" />
     <ClCompile Include="source\GraphUI.cpp" />
     <ClCompile Include="source\HashTable.cpp" />
     <ClCompile Include="source\HashTableUI.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="header\Button.h" />
     <ClInclude Include="header\Edge.h" />
     <ClInclude Include="header\Graph.h" />
+    <ClInclude Include="header\GraphEdge.h" />
     <ClInclude Include="header\GraphUI.h" />
     <ClInclude Include="header\HashTable.h" />
     <ClInclude Include="header\HashTableUI.h" />

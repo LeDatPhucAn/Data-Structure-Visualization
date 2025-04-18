@@ -85,8 +85,20 @@ namespace PseudoCode {
         "Traverse bucket at index to find value\n"
         "If value found, return true\n"
         "If value not found, return false\n";
-
-
-
+    std::string GraphAddNode =
+        "Insert Node at min-index(from 1)";
+    std::string GraphRemoveNode =
+        "Find node which we want to remove\n"
+        "Remove all edges which have a removing node\n"
+        "Remove node\n";
+    std::string GraphAddEdge =
+        "Find nodeFrom = Graph::getNodeById(from)\n"
+        "Find nodeTo = Graph::getNodeById(to)\n"
+        "if nodeFrom and nodeTo found, draw Edge\n"
+        "if nodeFrom or nodeTo not found, return\n";
+    std::string GraphRemoveEdge =
+        "Find nodeFrom = Graph::getNodeById(from)\n"
+        "Find nodeTo = Graph::getNodeById(to)\n"
+        "if nodeFrom and nodeTo found, remove Edge\n";
 
 }

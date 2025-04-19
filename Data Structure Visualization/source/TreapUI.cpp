@@ -356,8 +356,9 @@ void TreapUI::fixViolation(stack<int>& visited) {
         }
     }
 
-    animManager.addAnimation(new Animation(0.1f, [this, visited]() mutable {
+    animManager.addAnimation(new Animation(1.0f, [this, visited]() mutable {
         fixViolation(visited);
+        reposition(this->root, ROOT_POS, xOffset, yOffset);
         }));
 }
 
@@ -368,30 +369,26 @@ void TreapUI::getNodesToMove(vector<TreapNode*>& res, TreapNode* curr) {
     getNodesToMove(res, curr->rightEdge ? curr->rightEdge->to : nullptr);
 }
 
-TreapNode* TreapUI::insertWithAnimation(TreapNode* root, int key, int priority) {
+void TreapUI::insertWithAnimation(int key, int priority) {
     if (treap.search(key)) {
-        searchWithAnimation(root, key);
-        return root;
+        searchWithAnimation(this->root, key);
+        return;
     }
 
-    root = insertBST(root, key, priority);
+    this->root = insertBST(this->root, key, priority);
     treap.insertBST(key, priority);
 
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 
     auto visited = std::make_shared<std::stack<int>>();
+    makeNewNodeAppear(this->root, key, *visited);
 
-    makeNewNodeAppear(root, key, *visited);
+    cerr << "After step 2, size of stack: " << visited->size() << endl;
 
-    cerr << "after step 2, size of stack " << visited->size() << endl;
-
-    animManager.addAnimation(new Animation(3.0f, [this, temp = *visited]() mutable {
+    animManager.addAnimation(new Animation(1.0f, [this, temp = *visited]() mutable {
         fixViolation(temp);
-    }));
-
-    reposition(this->root, ROOT_POS, xOffset, yOffset);
-    
-    return root;
+        reposition(this->root, ROOT_POS, xOffset, yOffset);
+        }));
 }
 
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
@@ -519,10 +516,13 @@ void TreapUI::loadFromFile(){
 void TreapUI::insert(int key, int priority, bool isAnimated) {
     cleanupForOperations();
     if (isAnimated) {
-        root = insertWithAnimation(root, key, priority);
-        animManager.addAnimation(new Animation(0.5f, [this]() {
+        clear();
+        this->root = cloneTree(treap.root);
+        //reposition(this->root, ROOT_POS, xOffset, yOffset);
+        insertWithAnimation(key, priority);
+        /*animManager.addAnimation(new Animation(0.5f, [this]() {
             reposition(root, ROOT_POS, xOffset, yOffset);
-            }));
+            }));*/
     }
     else {
         treap.insert(key, priority);
@@ -533,10 +533,14 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
 
 void TreapUI::search(int key) {
     cleanupForOperations();
+    clear();
+    this->root = cloneTree(treap.root);
+    reposition(this->root, ROOT_POS, xOffset, yOffset);
     searchWithAnimation(root, key);
 }
 
 void TreapUI::remove(int key) {
+    cleanupForOperations();
     root = remove(root, key);
     treap.remove(key);
     reposition(root, ROOT_POS, xOffset, yOffset);

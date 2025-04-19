@@ -47,27 +47,6 @@ TreapNode* TreapUI::rotateRight(TreapNode* root) {
     return newRoot;
 }
 
-TreapNode* TreapUI::insert(TreapNode* root, int key, int priority) {
-    if (!root) {
-        TreapNode* newNode = new TreapNode(key, priority, ROOT_POS);
-        return newNode;
-    }
-
-    if (root->getKey() > key) {
-        TreapNode* newLeftChild = insert(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
-        root->leftEdge = new TreapEdge(root, newLeftChild);
-        if (newLeftChild->getPriority() > root->getPriority()) root = rotateRight(root);
-    }
-    else if (root->getKey() < key) {
-        TreapNode* newRightChild = insert(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
-        root->rightEdge = new TreapEdge(root, newRightChild);
-        if (newRightChild->getPriority() > root->getPriority()) root = rotateLeft(root);
-    }
-
-    updateSubtreeWidth(root);
-    return root;
-}
-
 TreapNode* TreapUI::search(TreapNode* root, int key) {
     if (!root) return nullptr;
     if (root->getKey() == key) return root;
@@ -79,61 +58,6 @@ TreapNode* TreapUI::search(TreapNode* root, int key) {
 
 TreapNode* TreapUI::searchForNode(int key) {
     return search(this->root, key);
-}
-
-TreapNode* TreapUI::remove(TreapNode* root, int key) {
-    if (!root) return nullptr;
-
-    if (root->getKey() > key) {
-        if (root->leftEdge) {
-            TreapNode* newLeft = remove(static_cast<TreapNode*> (root->leftEdge->to), key);
-            if (root->leftEdge) delete root->leftEdge;
-            root->leftEdge = newLeft ? new TreapEdge(root, newLeft) : nullptr;
-        }
-    }
-    else if (root->getKey() < key) {
-        if (root->rightEdge) {
-            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
-            if (root->rightEdge) delete root->rightEdge;
-            root->rightEdge = newRight ? new TreapEdge(root, newRight) : nullptr;
-        }
-    }
-    else {
-        if (!root->leftEdge && !root->rightEdge) {
-            delete root;
-            return nullptr;
-        }
-        else if (!root->rightEdge) {
-            TreapNode* temp = root->leftEdge->to;
-            delete root->leftEdge;
-            root->leftEdge = nullptr;
-            delete root;
-            return temp;
-        }
-        else if (!root->leftEdge) {
-            TreapNode* temp = root->rightEdge->to;
-            delete root->rightEdge;
-            root->rightEdge = nullptr;
-            delete root;
-            return temp;
-        }
-
-        if (root->leftEdge->to->getPriority() > root->rightEdge->to->getPriority()) {
-            root = rotateRight(root);
-            TreapNode* newRight = remove(root->rightEdge->to, key);
-            if (root->rightEdge) delete root->rightEdge;
-            root->rightEdge = newRight ? new TreapEdge(root, newRight) : nullptr;
-        }
-        else {
-            root = rotateLeft(root);
-            TreapNode* newLeft = remove(root->leftEdge->to, key);
-            if (root->leftEdge) delete root->leftEdge;
-            root->leftEdge = newLeft ? new TreapEdge(root, newLeft) : nullptr;
-        }
-    }
-
-    updateSubtreeWidth(root);
-    return root;
 }
 
 void TreapUI::clear(TreapNode* curr) {
@@ -494,16 +418,12 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
     if (isAnimated) {
         clear();
         this->root = cloneTree(treap.root);
-        //reposition(this->root, ROOT_POS, xOffset, yOffset);
         insertWithAnimation(key, priority);
-        /*animManager.addAnimation(new Animation(0.5f, [this]() {
-            reposition(root, ROOT_POS, xOffset, yOffset);
-            }));*/
     }
     else {
+        clear();
         treap.insert(key, priority);
-        root = insert(root, key, priority);
-        reposition(root, ROOT_POS, xOffset, yOffset);
+        this->root = cloneTree(treap.root);
     }
 }
 
@@ -516,24 +436,24 @@ void TreapUI::search(int key) {
 
 void TreapUI::remove(int key) {
     cleanupForOperations();
-    root = remove(root, key);
+    clear();
     treap.remove(key);
-    reposition(root, ROOT_POS, xOffset, yOffset);
+    this->root = cloneTree(treap.root);
 }
 
 void TreapUI::clear() {
     clear(this->root);
-    this->root = nullptr;
 }
 
 void TreapUI::init() {
     srand(time(nullptr));
     
-    int n = rand() % 10;
+    int n = rand() % 7;
     for (int i = 0; i < n; ++i) {
         int x = rand() % 100;
-        this->insert(x, rand(), false);
+        treap.insert(x, rand() % 100);
     }
+    this->root = cloneTree(treap.root);
 
     initButtons();
 }
@@ -609,14 +529,15 @@ void TreapUI::initButtons() {
 
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->onClick = [this]() {
-        treap.clear();
         cleanupForOperations();
         clear();
-        int n = rand() % 10;
+        treap.clear();
+        int n = rand() % 7;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;
-            this->insert(x, rand(), false);
+            treap.insert(x, rand() % 100);
         }
+        this->root = cloneTree(treap.root);
         };
 
     RectButton::insertHeadButton(Buttons, new TextBox(" Clear ",0,0, WHITE, { 214, 102, 49, 255 }, DARKGRAY));

@@ -24,22 +24,20 @@ private:
 
     TreapNode* rotateLeft(TreapNode* root);
     TreapNode* rotateRight(TreapNode* root);
-    TreapNode* insert(TreapNode* root, int key, int priority);
     TreapNode* search(TreapNode* root, int key);
     TreapNode* searchForNode(int key);
-    TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
 
     TreapNode* rotateLeftAtSpecificNode(TreapNode* curr, int key);
     TreapNode* rotateRightAtSpecificNode(TreapNode* curr, int key);
 
-
     TreapNode* insertBST(TreapNode* root, int key, int priority);
     void makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited);
     void fixViolation(stack<int>& visited);
-    void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
-    void insertWithAnimation(int key, int priority);
 
+    void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
+
+    void insertWithAnimation(int key, int priority);
     void searchWithAnimation(TreapNode* curr, int key); 
 
     int getSubtreeWidth(TreapNode* curr);
@@ -47,6 +45,7 @@ private:
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
 
     TreapNode* cloneTree(TreapNode* root);
+
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);

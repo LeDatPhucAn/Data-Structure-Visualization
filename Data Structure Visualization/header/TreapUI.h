@@ -30,9 +30,6 @@ private:
     TreapNode* remove(TreapNode* root, int key);
     void clear(TreapNode* root);
 
-    TreapNode* rotateLeftWithAnimation(TreapNode* root);
-    TreapNode* rotateRightWithAnimation(TreapNode* root);
-
     TreapNode* rotateLeftAtSpecificNode(TreapNode* curr, int key);
     TreapNode* rotateRightAtSpecificNode(TreapNode* curr, int key);
 
@@ -49,29 +46,13 @@ private:
     void updateSubtreeWidth(TreapNode* curr);
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
 
+    TreapNode* cloneTree(TreapNode* root);
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);
 
     void cleanupForOperations();
 
-    TreapNode* cloneTree(TreapNode* root) {
-        if (!root) return nullptr; // Base case: if the original tree is empty, return nullptr
-
-        // Create a new node with the same key, priority, and position
-        TreapNode* cloneRoot = new TreapNode(root->getKey(), root->getPriority(), root->position);
-
-        // Recursively clone the left and right subtrees
-        if (root->leftEdge) {
-            cloneRoot->leftEdge = new TreapEdge(cloneRoot, cloneTree(root->leftEdge->to));
-        }
-        if (root->rightEdge) {
-            cloneRoot->rightEdge = new TreapEdge(cloneRoot, cloneTree(root->rightEdge->to));
-        }
-
-        // Return the cloned root
-        return cloneRoot;
-    }
 public:
     void loadFromFile();
     void insert(int key, int priority = rand(), bool isAnimated = true);

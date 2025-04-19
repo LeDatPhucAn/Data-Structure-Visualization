@@ -10,7 +10,7 @@ TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), le
     keyBox->OutLineColor = DARKGRAY;
 
     priorityBox = new NumberInputBoxInCamera(3);
-    priorityBox->setNumber(priority % 100);
+    priorityBox->setNumber(priority % 1000);
     priorityBox->FillColor = { 173, 216, 230, 255 }; // LIGHTBLUE
     priorityBox->TextColor = MAROON;
     priorityBox->OutLineColor = DARKGRAY;

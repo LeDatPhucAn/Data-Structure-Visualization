@@ -41,7 +41,7 @@ private:
     void makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited);
     void fixViolation(stack<int>& visited);
     void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
-    TreapNode* insertWithAnimation(TreapNode* root, int key, int priority);
+    void insertWithAnimation(int key, int priority);
 
     void searchWithAnimation(TreapNode* curr, int key); 
 
@@ -54,6 +54,24 @@ private:
     void drawTreap(TreapNode* curr);
 
     void cleanupForOperations();
+
+    TreapNode* cloneTree(TreapNode* root) {
+        if (!root) return nullptr; // Base case: if the original tree is empty, return nullptr
+
+        // Create a new node with the same key, priority, and position
+        TreapNode* cloneRoot = new TreapNode(root->getKey(), root->getPriority(), root->position);
+
+        // Recursively clone the left and right subtrees
+        if (root->leftEdge) {
+            cloneRoot->leftEdge = new TreapEdge(cloneRoot, cloneTree(root->leftEdge->to));
+        }
+        if (root->rightEdge) {
+            cloneRoot->rightEdge = new TreapEdge(cloneRoot, cloneTree(root->rightEdge->to));
+        }
+
+        // Return the cloned root
+        return cloneRoot;
+    }
 public:
     void loadFromFile();
     void insert(int key, int priority = rand(), bool isAnimated = true);

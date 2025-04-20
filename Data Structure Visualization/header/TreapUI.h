@@ -39,7 +39,8 @@ private:
     void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
 
     bool searchBeforeRemove(TreapNode* curr, int key);
-    void makeNodeDisappear(TreapNode*, int key);
+    void makeNodeDisappear(TreapNode* curr, int key);
+    void makeNodeDisappearWithAnimation(TreapNode* curr, int key);
 
     void insertWithAnimation(int key, int priority);
     void searchWithAnimation(TreapNode* curr, int key); 

@@ -197,10 +197,6 @@ void TreapNodeRemoveAnim::applyState() {
     node->priorityBox->OutLineColor = UI::interpolateColors(p_sOutline, end, easedT);
 }
 
-void TreapEdgeRemoveAnim::applyState() {
-    edge->thickness = EaseElasticIn(elapsed, startT, endT - startT, duration);
-}
-
 //  node->position.x = EaseExpoOut(elapsed, startPos.x, endPos.x - startPos.x, duration);
 void MoveMultipleTreapNodesAnim::applyState() {
     for (TreapNode* n : nodesToMove) {

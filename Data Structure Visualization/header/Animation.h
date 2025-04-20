@@ -451,17 +451,6 @@ public:
     void applyState() override;
 };
 
-class TreapEdgeRemoveAnim : public Animation {
-public: 
-    TreapEdge* edge;
-    int startT, endT;
-    TreapEdgeRemoveAnim(TreapEdge* e, float duration) : Animation(duration), edge(e) {
-        startT = e->thickness;
-        endT = 0;
-    }
-    void applyState() override;
-};
-
 class MoveMultipleTreapNodesAnim : public Animation {
 public:
     vector<TreapNode*> nodesToMove;

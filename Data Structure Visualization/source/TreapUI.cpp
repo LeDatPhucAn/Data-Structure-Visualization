@@ -290,8 +290,16 @@ void TreapUI::insertWithAnimation(int key, int priority) {
         return;
     }
 
-    this->root = insertBST(this->root, key, priority);
     treap.insertBST(key, priority);
+    unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+    vector<TreapNode*> move;
+    getNodesToMove(move, this->root);
+
+    animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+    animManager.addAnimation(new Animation(0.1f, [this, key, priority]() {
+        this->root = insertBST(this->root, key, priority);
+        }));
 
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 

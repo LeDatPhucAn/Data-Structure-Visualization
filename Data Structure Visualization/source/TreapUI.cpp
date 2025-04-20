@@ -404,8 +404,6 @@ void TreapUI::makeNodeDisappearWithAnimation(TreapNode* curr, int key) {
     }
 }
 
-
-
 void TreapUI::removeWithAnimation(int key) {
     TreapNode* del = searchForNode(key);
     // No child
@@ -422,7 +420,6 @@ void TreapUI::removeWithAnimation(int key) {
     // Only right child
     else if (!del->leftEdge || !del->leftEdge->to) {
         treap.remove(key);
-
         unordered_map<int, Vector2> positions = treap.getAllPositions();
 
         vector<TreapNode*> move;
@@ -430,6 +427,21 @@ void TreapUI::removeWithAnimation(int key) {
 
         animManager.addAnimation(new Animation(0.1f, [this, key]() {
             this->root = rotateLeftAtSpecificNode(this->root, key);
+            makeNodeDisappear(this->root, key);
+            }));
+
+        animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+    }
+    // Only left child
+    else if (!del->rightEdge || !del->rightEdge->to) {
+        treap.remove(key);
+        unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+        vector<TreapNode*> move;
+        getNodesToMove(move, del->leftEdge->to);
+
+        animManager.addAnimation(new Animation(0.1f, [this, key]() {
+            this->root = rotateRightAtSpecificNode(this->root, key);
             makeNodeDisappear(this->root, key);
             }));
 

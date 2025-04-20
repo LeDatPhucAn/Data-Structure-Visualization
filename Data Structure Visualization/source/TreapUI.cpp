@@ -352,6 +352,31 @@ void TreapUI::makeNodeDisappear(TreapNode* curr, int key) {
     if (!curr) return;
 
     if (curr->getKey() == key) {
+        curr->keyBox->noDraw = true;
+        curr->priorityBox->noDraw = true;
+    }
+    else if (curr->getKey() > key) {
+        if (curr->leftEdge && curr->leftEdge->to) {
+            makeNodeDisappear(curr->leftEdge->to, key);
+            if (curr->leftEdge->to->getKey() == key) {
+                curr->leftEdge->noDraw = true;
+            }
+        }
+    }
+    else {
+        if (curr->rightEdge && curr->rightEdge->to) {
+            makeNodeDisappear(curr->rightEdge->to, key);
+            if (curr->rightEdge->to->getKey() == key) {
+                curr->rightEdge->noDraw = true;
+            }
+        }
+    }
+}
+
+void TreapUI::makeNodeDisappearWithAnimation(TreapNode* curr, int key) {
+    if (!curr) return;
+
+    if (curr->getKey() == key) {
         animManager.addAnimation(new Animation(0.1f, [curr]() {
             curr->keyBox->noDraw = true;
             curr->priorityBox->noDraw = true;
@@ -359,7 +384,7 @@ void TreapUI::makeNodeDisappear(TreapNode* curr, int key) {
     }
     else if (curr->getKey() > key) {
         if (curr->leftEdge && curr->leftEdge->to) {
-            makeNodeDisappear(curr->leftEdge->to, key);
+            makeNodeDisappearWithAnimation(curr->leftEdge->to, key);
             if (curr->leftEdge->to->getKey() == key) {
                 animManager.addAnimation(new Animation(0.1f, [curr]() {
                     curr->leftEdge->noDraw = true;
@@ -369,7 +394,7 @@ void TreapUI::makeNodeDisappear(TreapNode* curr, int key) {
     }
     else {
         if (curr->rightEdge && curr->rightEdge->to) {
-            makeNodeDisappear(curr->rightEdge->to, key);
+            makeNodeDisappearWithAnimation(curr->rightEdge->to, key);
             if (curr->rightEdge->to->getKey() == key) {
                 animManager.addAnimation(new Animation(0.1f, [curr]() {
                     curr->rightEdge->noDraw = true;
@@ -385,7 +410,7 @@ void TreapUI::removeWithAnimation(int key) {
     TreapNode* del = searchForNode(key);
     // No child
     if ((!del->leftEdge || !del->leftEdge->to) && (!del->rightEdge || !del->rightEdge->to)) {
-        makeNodeDisappear(this->root, key);
+        makeNodeDisappearWithAnimation(this->root, key);
         treap.remove(key);
         unordered_map<int, Vector2> positions = treap.getAllPositions();
 

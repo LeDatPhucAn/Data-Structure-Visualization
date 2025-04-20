@@ -30,6 +30,7 @@ private:
 
     TreapNode* rotateLeftAtSpecificNode(TreapNode* curr, int key);
     TreapNode* rotateRightAtSpecificNode(TreapNode* curr, int key);
+    TreapNode* removeSpecificNode(TreapNode* curr, int key);
 
     TreapNode* insertBST(TreapNode* root, int key, int priority);
     void makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited);
@@ -37,8 +38,12 @@ private:
 
     void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
 
+    bool searchBeforeRemove(TreapNode* curr, int key);
+    void makeNodeDisappear(TreapNode*, int key);
+
     void insertWithAnimation(int key, int priority);
     void searchWithAnimation(TreapNode* curr, int key); 
+    void removeWithAnimation(int key);
 
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);

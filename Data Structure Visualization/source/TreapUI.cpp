@@ -73,7 +73,7 @@ void TreapUI::clear(TreapNode* curr) {
         delete curr->rightEdge;
         curr->rightEdge = nullptr;
     }
-
+    
     delete curr;
 }
 
@@ -123,6 +123,38 @@ TreapNode* TreapUI::rotateRightAtSpecificNode(TreapNode* curr, int key) {
 
     updateSubtreeWidth(curr);
     return curr;
+}
+
+TreapNode* TreapUI::removeSpecificNode(TreapNode* curr, int key) {
+    if (!curr) return nullptr;
+    if (curr->getKey() > key) {
+        TreapEdge* del = curr->leftEdge;
+        curr->leftEdge = new TreapEdge(curr, removeSpecificNode(curr->leftEdge ? curr->leftEdge->to : nullptr, key));
+        delete del;
+    }
+    else if (curr->getKey() < key) {
+        TreapEdge* del = curr->rightEdge;
+        curr->rightEdge = new TreapEdge(curr, removeSpecificNode(curr->rightEdge ? curr->rightEdge->to : nullptr, key));
+        delete del;
+    }
+    else {
+        if ((!curr->leftEdge || !curr->leftEdge->to) && (!curr->rightEdge || !curr->rightEdge->to)) {
+            delete curr;
+            return nullptr;
+        }
+        else if (!curr->leftEdge || !curr->leftEdge->to) {
+            TreapNode* r = curr->rightEdge->to;
+            delete curr->rightEdge;
+            delete curr;
+            return r;
+        }
+        else if (!curr->rightEdge || !curr->rightEdge->to) {
+            TreapNode* r = curr->leftEdge->to;
+            delete curr->leftEdge;
+            delete curr;
+            return r;
+        }
+    }
 }
 
 TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
@@ -298,6 +330,78 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     }
 }
 
+bool TreapUI::searchBeforeRemove(TreapNode* curr, int key) {
+    if (!curr) return false;
+    
+    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+
+    if (curr->getKey() == key) {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+        return true;
+    }
+    else if (curr->getKey() > key) {
+        if (curr->leftEdge && curr->leftEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f));
+        return searchBeforeRemove(curr->leftEdge ? curr->leftEdge->to : nullptr, key);
+    }
+    else {
+        if (curr->rightEdge && curr->rightEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f));
+        return searchBeforeRemove(curr->rightEdge ? curr->rightEdge->to : nullptr, key);
+    }
+}
+
+void TreapUI::makeNodeDisappear(TreapNode* curr, int key) {
+    if (!curr) return;
+
+    //animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
+
+    if (curr->getKey() == key) {
+        /*animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new TreapNodeRemoveAnim(curr, 0.3f));*/
+        animManager.addAnimation(new Animation(0.1f, [curr]() {
+            curr->keyBox->noDraw = true;
+            curr->priorityBox->noDraw = true;
+            }));
+    }
+    else if (curr->getKey() > key) {
+        if (curr->leftEdge && curr->leftEdge->to) {
+            makeNodeDisappear(curr->leftEdge->to, key);
+            if (curr->leftEdge->to->getKey() == key) {
+                animManager.addAnimation(new Animation(0.1f, [curr]() {
+                    curr->leftEdge->noDraw = true;
+                    }));
+            }
+        }
+    }
+    else {
+        if (curr->rightEdge && curr->rightEdge->to) {
+            makeNodeDisappear(curr->rightEdge->to, key);
+            if (curr->rightEdge->to->getKey() == key) {
+                animManager.addAnimation(new Animation(0.1f, [curr]() {
+                    curr->rightEdge->noDraw = true;
+                    }));
+            }
+        }
+    }
+}
+
+
+
+void TreapUI::removeWithAnimation(int key) {
+    if (!searchBeforeRemove(this->root, key)) return;
+
+    TreapNode* del = searchForNode(key);
+    if ((!del->leftEdge || !del->leftEdge->to) && (!del->rightEdge || !del->rightEdge->to)) {
+        makeNodeDisappear(this->root, key);
+        treap.remove(key);
+        unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+        vector<TreapNode*> move;
+        getNodesToMove(move, this->root);
+
+        animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+    }
+}
+
 int TreapUI::getSubtreeWidth(TreapNode* curr) {
     if (!curr) return 0;
     return curr->subtreeWidth;
@@ -437,8 +541,8 @@ void TreapUI::search(int key) {
 void TreapUI::remove(int key) {
     cleanupForOperations();
     clear();
-    treap.remove(key);
     this->root = cloneTree(treap.root);
+    removeWithAnimation(key);
 }
 
 void TreapUI::clear() {

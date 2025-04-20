@@ -362,6 +362,23 @@ public:
     void resetColor() override;
 };
 
+class RectHighlight2Anim : public Animation {
+public:
+    NumberInputBox* button;
+    Color startFill, endFill;
+    Color startOutline, endOutline;
+    Color startText, endText;
+    RectHighlight2Anim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+        startFill = b->FillColor;
+        startOutline = b->OutLineColor;
+        startText = b->TextColor;
+        endFill = fill;
+        endOutline = outline;
+        endText = text;
+    }
+    void applyState() override;
+};
+
 class TreapEdgeHighlightAnim : public Animation {
 public:
     TreapEdge* edge;
@@ -371,7 +388,15 @@ public:
     void resetColor() override;
 };
 
-#include "Treap.h" // Add this include to resolve the incomplete type error
+class TreapEdgeHighlight2Anim : public Animation {
+public:
+    TreapEdge* edge;
+    Color start, end;
+    TreapEdgeHighlight2Anim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
+    void applyState() override;
+};
+
+#include "Treap.h"
 class TreapNodeMoveAnim : public Animation {
 public:
     TreapNode* node;
@@ -404,13 +429,24 @@ public:
     void applyState() override;
 };
 
-class TreapEdgeAddAnim : public Animation {
+class TreapNodeRemoveAnim : public Animation {
 public:
-    TreapEdge* edge;
-    int startT, endT;
-    TreapEdgeAddAnim(TreapEdge* e, float duration) : Animation(duration), edge(e) {
-        startT = 0;
-        endT = e->thickness;
+    TreapNode* node;
+    Vector2 startSize;
+    Vector2 endSize;
+    Color k_sText, k_sFill, k_sOutline;
+    Color p_sText, p_sFill, p_sOutline;
+    Color end;
+    TreapNodeRemoveAnim(TreapNode* n, float duration, function<void()> func = nullptr) : Animation(duration, func), node(n) {
+        startSize = { static_cast<float> (n->keyBox->getWidth()), static_cast<float> (n->keyBox->getHeight()) };
+        endSize = { 0, 0 };
+        k_sText = n->keyBox->TextColor;
+        k_sFill = n->keyBox->FillColor;
+        k_sOutline = n->keyBox->OutLineColor;
+        p_sText = n->priorityBox->TextColor;
+        p_sFill = n->priorityBox->FillColor;
+        p_sOutline = n->priorityBox->OutLineColor;
+        end = { 255, 255, 255, 255 };
     }
     void applyState() override;
 };

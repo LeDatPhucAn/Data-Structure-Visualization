@@ -291,16 +291,7 @@ void TreapUI::insertWithAnimation(int key, int priority) {
     }
 
     treap.insertBST(key, priority);
-    unordered_map<int, Vector2> positions = treap.getAllPositions();
-
-    vector<TreapNode*> move;
-    getNodesToMove(move, this->root);
-
-    animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
-    animManager.addAnimation(new Animation(0.1f, [this, key, priority]() {
-        this->root = insertBST(this->root, key, priority);
-        }));
-
+    this->root = insertBST(this->root, key, priority);
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 
     auto visited = std::make_shared<std::stack<int>>();
@@ -391,9 +382,8 @@ void TreapUI::makeNodeDisappear(TreapNode* curr, int key) {
 
 
 void TreapUI::removeWithAnimation(int key) {
-    if (!searchBeforeRemove(this->root, key)) return;
-
     TreapNode* del = searchForNode(key);
+    // No child
     if ((!del->leftEdge || !del->leftEdge->to) && (!del->rightEdge || !del->rightEdge->to)) {
         makeNodeDisappear(this->root, key);
         treap.remove(key);
@@ -401,6 +391,22 @@ void TreapUI::removeWithAnimation(int key) {
 
         vector<TreapNode*> move;
         getNodesToMove(move, this->root);
+
+        animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+    }
+    // Only right child
+    else if (!del->leftEdge || !del->leftEdge->to) {
+        treap.remove(key);
+
+        unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+        vector<TreapNode*> move;
+        getNodesToMove(move, del->rightEdge->to);
+
+        animManager.addAnimation(new Animation(0.1f, [this, key]() {
+            this->root = rotateLeftAtSpecificNode(this->root, key);
+            makeNodeDisappear(this->root, key);
+            }));
 
         animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
     }
@@ -546,6 +552,7 @@ void TreapUI::remove(int key) {
     cleanupForOperations();
     clear();
     this->root = cloneTree(treap.root);
+    if (!searchBeforeRemove(this->root, key)) return;
     removeWithAnimation(key);
 }
 

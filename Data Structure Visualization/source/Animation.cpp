@@ -112,7 +112,25 @@ void RectHighlightAnim::applyState() {
     button->OutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
 }
 
+void RectHighlight2Anim::applyState() {
+    float easedT = EaseSineInOut(elapsed, 0.0f, 1.0f, duration);
+
+    if (easedT <= 0.5f) {
+        float progress = easedT * 2.0f;
+        button->FillColor = UI::interpolateColors(startFill, endFill, progress);
+        button->OutLineColor = UI::interpolateColors(startOutline, endOutline, progress);
+        button->TextColor = UI::interpolateColors(startText, endText, progress);
+    }
+    else {
+        float progress = (easedT - 0.5f) * 2.0f;
+        button->FillColor = UI::interpolateColors(endFill, startFill, progress);
+        button->OutLineColor = UI::interpolateColors(endOutline, startOutline, progress);
+        button->TextColor = UI::interpolateColors(endText, startText, progress);
+    }
+}
+
 void RectHighlightAnim::resetColor() {
+    if (!button) return;
     button->FillColor = startFill;
     button->OutLineColor = startOutline;
     button->TextColor = startText;
@@ -124,7 +142,21 @@ void TreapEdgeHighlightAnim::applyState() {
 }
 
 void TreapEdgeHighlightAnim::resetColor() {
+    if (!edge) return;
     edge->edgeColor = start;
+}
+
+void TreapEdgeHighlight2Anim::applyState() {
+    float easedT = EaseSineInOut(elapsed, 0.0f, 1.0f, duration);
+
+    if (easedT <= 0.5f) {
+        float progress = easedT * 2.0f;
+        edge->edgeColor = UI::interpolateColors(start, end, progress);
+    }
+    else {
+        float progress = (easedT - 0.5f) * 2.0f;
+        edge->edgeColor = UI::interpolateColors(end, start, progress);
+    }
 }
 
 void TreapNodeMoveAnim::applyState() {
@@ -151,8 +183,18 @@ void TreapNodeInitializeAnim::applyState() {
     node->priorityBox->OutLineColor = UI::interpolateColors(start, p_outline, easedT);
 }
 
-void TreapEdgeAddAnim::applyState() {
-    edge->thickness = EaseElasticOut(elapsed, startT, endT - startT, duration);
+void TreapNodeRemoveAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0, 1.0f, duration);
+    node->keyBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->priorityBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->keyBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->priorityBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->keyBox->TextColor = UI::interpolateColors(k_sText, end, easedT);
+    node->keyBox->FillColor = UI::interpolateColors(k_sFill, end, easedT);
+    node->keyBox->OutLineColor = UI::interpolateColors(k_sOutline, end, easedT);
+    node->priorityBox->TextColor = UI::interpolateColors(p_sText, end, easedT);
+    node->priorityBox->FillColor = UI::interpolateColors(p_sFill, end, easedT);
+    node->priorityBox->OutLineColor = UI::interpolateColors(p_sOutline, end, easedT);
 }
 
 void TreapEdgeRemoveAnim::applyState() {

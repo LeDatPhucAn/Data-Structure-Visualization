@@ -162,14 +162,14 @@ TreapNode* Treap::remove(TreapNode* root, int key) {
 
     if (root->getKey() > key) {
         if (root->leftEdge) {
-            TreapNode* newLeft = remove(static_cast<TreapNode*> (root->leftEdge->to), key);
+            TreapNode* newLeft = remove(root->leftEdge->to, key);
             if (root->leftEdge) delete root->leftEdge;
             root->leftEdge = newLeft ? new TreapEdge(root, newLeft) : nullptr;
         }
     }
     else if (root->getKey() < key) {
         if (root->rightEdge) {
-            TreapNode* newRight = remove(static_cast<TreapNode*>(root->rightEdge->to), key);
+            TreapNode* newRight = remove(root->rightEdge->to, key);
             if (root->rightEdge) delete root->rightEdge;
             root->rightEdge = newRight ? new TreapEdge(root, newRight) : nullptr;
         }

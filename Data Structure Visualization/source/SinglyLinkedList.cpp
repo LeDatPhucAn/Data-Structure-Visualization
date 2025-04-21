@@ -4,6 +4,8 @@
 #include "../header/tinyfiledialogs.h"
 #include "../header/PseudoCode.h"
 #include <fstream>
+#include "../header/SinglyLinkedListUI.h"
+
 int LinkedList::getListSize() {
     LLNode* cur = head;
     int cnt = 0;
@@ -89,7 +91,7 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
 
 
     clearIndicates();
-
+    RemoveFirstNode = nullptr;
 
     RectButton::insertPseudoCode(CodeBlocks, PseudoCode::LLRemoveHead);
         ///////////Remove Head://////////////////
@@ -123,6 +125,8 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
 
     if (head->getNumber() == x) {
         LLNode* del = head;
+        RemoveFirstNode = del;
+        deleteLater.insert(del);
         // highlight line 1
         animManager.addAnimation(new Animation(0.5f, [&CodeBlocks,del]() {
             CodeBlocks[1]->highlight();
@@ -145,6 +149,7 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             CodeBlocks[5]->highlight();
             del->indicateNode = "del";
             }));
+
         if (del->next) 
         {
             animManager.addAnimation(new Animation(0.1f, [del]() {
@@ -158,31 +163,31 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             CodeBlocks[6]->highlight();
             }));
 
+        head = head->next;
+
         if (!del->next) {
-            animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, del,this]() {
-                head = head->next;
-                delete del;
+            animManager.addAnimation(new Animation(0.1f, [&CodeBlocks,this]() {
                 CodeBlocks[6]->unhighlight();
                 CodeBlocks[7]->highlight();
+                RemoveFirstNode = nullptr;
                 }));
             return pos;
         }
-        animManager.addAnimation(new Animation(0.1f, [this, &animManager,del, &CodeBlocks]() {
-        
-            head = head->next;
+
+
+        animManager.addAnimation(new Animation(0.1f, [this, &animManager, &CodeBlocks]() {
+            RemoveFirstNode = nullptr;
 
             if (head) {
 
-                //CBEdge::removeEdgeAndAnim(animManager, Edges, del, head);
 
                 //reposition
-                animManager.addAnimation(new Animation(0.2f, [&animManager,this,del, &CodeBlocks]() {
-                    head->setCenterX(100);
-                    adjustPosWithAnim(animManager,head);
+                animManager.addAnimation(new Animation(0.2f, [&animManager,this, &CodeBlocks]() {
+                        head->setCenterX(100);
+                        adjustPosWithAnim(animManager, head);
                     }));
 
-                animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, del]() {
-                    delete del;
+                animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
                     CodeBlocks[6]->unhighlight();
                     CodeBlocks[7]->highlight();
                     }));
@@ -293,13 +298,12 @@ int LinkedList::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
                     cur->next = temp->next;
                     if (cur->next) cur->next->indicateNode = "";
                 }
-
-                deleteLater.push_back(temp);
                 //reposition
                 adjustPosWithAnim(animManager,cur);
                 CodeBlocks[6]->unhighlight();
                 CodeBlocks[7]->highlight();
             }));
+            if (temp)deleteLater.insert(temp);
 
             return pos;
         }
@@ -495,6 +499,7 @@ void LinkedList::clear() {
             node = nullptr;
         }
     }
+    deleteLater.clear();
 }
 
 void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager,int x, int pos) {
@@ -539,6 +544,7 @@ void LinkedList::insertnode(vector<RectButton*>& CodeBlocks, AnimationManager& a
             }));
 
         CBEdge::addEdgeAndAnim(animManager, Edges, temp, head);
+        
         Edges.back()->noDraw = true;
 
         /// highlight line 3

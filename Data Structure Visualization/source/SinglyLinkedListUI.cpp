@@ -1,7 +1,10 @@
 #include "../header/SinglyLinkedListUI.h"
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
-#include <map>
+
+bool SinglyLinkedListUI::isInsert = false;
+bool SinglyLinkedListUI::isRemove = false;
+
 void SinglyLinkedListUI::cleanupForOperation() {
     animManager.goToLastStep();
     animManager.clear();
@@ -35,6 +38,9 @@ bool SinglyLinkedListUI::search(int x) {
 }
 void SinglyLinkedListUI::drawlinkedlist() {
     
+    if (linkedlist.RemoveFirstNode) {
+        linkedlist.RemoveFirstNode->draw();
+    }
     LLNode* cur = linkedlist.head;
     while (cur) {
         cur->draw();
@@ -62,16 +68,26 @@ void SinglyLinkedListUI::clearIndicatesAndHighlights() {
 }
 void SinglyLinkedListUI::replayOperation() {
     if (isInsert) {
+
+        // complete all animations to get the list after insert
+        animManager.goToLastStep();
+
         animManager.clear();
-        // restore the list after insert
+
+        // restore the list to the state before insert
         linkedlist.restoreAfterInsert(insertParameters.first, insertParameters.second);
 
         // add the animations back
         linkedlist.insertnode(CodeBlocks,animManager,insertParameters.first, insertParameters.second);
     }
     else if (isRemove) {
+
+        // complete all animations to get the list after removal
+        animManager.goToLastStep();
+
         animManager.clear();
-        // restore the list after removal
+        
+        // restore the list to the state before removal
         linkedlist.randominsert(removeParameters.first, removeParameters.second );
 
         // add the animations back
@@ -203,7 +219,9 @@ void SinglyLinkedListUI::updateSceneInCamera(Camera2D cam) {
     
 }
 void SinglyLinkedListUI::updateScene() {
-    
+    if (linkedlist.RemoveFirstNode) {
+        linkedlist.RemoveFirstNode->update();
+    }
    LLNode* cur = linkedlist.head;
    while (cur) {
        cur->update();

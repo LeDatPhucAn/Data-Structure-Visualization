@@ -60,11 +60,12 @@ void SceneHandler::initButtons() {
         int step = currentSceneObject->animManager.getStep();
         cout << step << "\n";
         // complete the operation to get final state
-        currentSceneObject->animManager.goToLastStep();
         currentSceneObject->clearIndicatesAndHighlights();
 
-        // restore the initial state and get to the previous state
+        // restore the initial state
         currentSceneObject->replayOperation();
+
+        // go to the previous step
         currentSceneObject->animManager.goToStep(step - 1);
         };
     SceneButtons.push_back(GoPrevious);
@@ -78,13 +79,14 @@ void SceneHandler::initButtons() {
         50, BLACK, Pause->FillColor, Pause->OutLineColor);
     GoFirst->onClick = [this]() {
         int step = currentSceneObject->animManager.getStep();
+        cout << step << "\n";
 
-        // complete the operation to get final state
-        currentSceneObject->animManager.goToLastStep();
         currentSceneObject->clearIndicatesAndHighlights();
 
-        // restore the initial state and get to the previous state
+        // restore the initial state and add animations back in
         currentSceneObject->replayOperation();
+
+        // go to the first state
         currentSceneObject->animManager.goToFirstStep();
         };
     SceneButtons.push_back(GoFirst);
@@ -111,6 +113,7 @@ void SceneHandler::initButtons() {
         50, BLACK, Pause->FillColor, Pause->OutLineColor);
     GoLast->onClick = [this]() {
         currentSceneObject->clearIndicatesAndHighlights();
+        cout << currentSceneObject->animManager.getStep() << "\n";
         currentSceneObject->animManager.goToLastStep();
         };
     SceneButtons.push_back(GoLast);
@@ -121,7 +124,7 @@ void SceneHandler::initButtons() {
     RectButton* SetSpeed = new ScrollyAndButton(
      GoLast->getCenterX() + 100,   // x position
       GoLast->getCenterY() - 10,   // y position
-                            400,   // length
+                            450,   // length
                              20,   // thickness
                              60,   // Moveable Button size
                            BLUE,   // Moveable Button color

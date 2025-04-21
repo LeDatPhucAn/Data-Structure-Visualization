@@ -73,7 +73,7 @@ namespace PseudoCode {
         "else if(curr->key > key)\n"
         "   return search(curr->left)\n"
         "else if(curr->key < key)\n"
-        "   return search(curr->right)\n"
+        "   return search(curr->right)\n";
     
     std::string HashTableInsert =
         "Calculate index = value % size\n"

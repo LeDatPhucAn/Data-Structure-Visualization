@@ -306,25 +306,64 @@ void TreapUI::insertWithAnimation(int key, int priority) {
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 }
 
+
+//"if(!curr)\n"
+//"   return\n"
+//"if(curr->key == key)\n"
+//"   return true\n"
+//"else if(curr->key > key)\n"
+//"   return search(curr->left)\n"
+//"else if(curr->key < key)\n"
+//"   return search(curr->right)\n"
+
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     if (!curr) {
-
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[1]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[1]->unhighlight();
+            this->CodeBlocks[2]->highlight();
+            }));
         return;
     }
 
-    //cout << "Compare with " << curr->getKey() << endl;
     animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[2]->unhighlight();
+            this->CodeBlocks[3]->highlight();
+            }));
         animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[3]->unhighlight();
+            this->CodeBlocks[4]->highlight();
+            }));
     }
     else if (curr->getKey() > key) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[4]->unhighlight();
+            this->CodeBlocks[5]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[5]->unhighlight();
+            this->CodeBlocks[6]->highlight();
+            }));
         if (curr->leftEdge) {
             animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f));
             searchWithAnimation(curr->leftEdge->to, key);
         }
     }
     else {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[6]->unhighlight();
+            this->CodeBlocks[7]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            this->CodeBlocks[7]->unhighlight();
+            this->CodeBlocks[8]->highlight();
+            }));
         if (curr->rightEdge) {
             animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f));
             searchWithAnimation(curr->rightEdge->to, key);

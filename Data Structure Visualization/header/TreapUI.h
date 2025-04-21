@@ -52,6 +52,8 @@ private:
 
     TreapNode* cloneTree(TreapNode* root);
 
+    void unhighlightAllCodeBlocks();
+
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);

@@ -308,73 +308,89 @@ void TreapUI::insertWithAnimation(int key, int priority) {
 
 
 //"if(!curr)\n"
-//"   return\n"
+//"   return false\n"
 //"if(curr->key == key)\n"
 //"   return true\n"
-//"else if(curr->key > key)\n"
+//"if(curr->key > key)\n"
 //"   return search(curr->left)\n"
-//"else if(curr->key < key)\n"
+//"if(curr->key < key)\n"
 //"   return search(curr->right)\n"
 
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     if (!curr) {
-        animManager.addAnimation(new Animation(0.2f, [this]() {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[1]->highlight();
             }));
-        animManager.addAnimation(new Animation(0.2f, [this]() {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[2]->highlight();
             }));
         return;
     }
 
-    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+    //animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
-        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
-        animManager.addAnimation(new Animation(0.2f, [this]() {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[3]->highlight();
             }));
-        animManager.addAnimation(new Animation(0.2f, [this]() {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[4]->highlight();
             }));
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
     }
     else if (curr->getKey() > key) {
-        if (curr->leftEdge) {
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f));
-            searchWithAnimation(curr->leftEdge->to, key);
-        }
-        else {
-            searchWithAnimation(nullptr, key);
-        }
-        animManager.addAnimation(new Animation(0.2f, [this]() {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[5]->highlight();
             }));
-        animManager.addAnimation(new Animation(0.2f, [this]() {
-            unhighlightAllCodeBlocks();
-            CodeBlocks[6]->highlight();
-            }));
+        if (curr->leftEdge) {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[6]->highlight();
+                }));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f));          
+            searchWithAnimation(curr->leftEdge->to, key);
+        }
+        else {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[5]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[6]->highlight();
+                }));
+            searchWithAnimation(nullptr, key);
+        }
     }
     else {       
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[7]->highlight();
+            }));
         if (curr->rightEdge) {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[8]->highlight();
+                }));
             animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f));
             searchWithAnimation(curr->rightEdge->to, key);
         }
         else {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[7]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[8]->highlight();
+                }));
             searchWithAnimation(nullptr, key);
         }
-        animManager.addAnimation(new Animation(0.2f, [this]() {
-            unhighlightAllCodeBlocks();
-            CodeBlocks[7]->highlight();
-            }));
-        animManager.addAnimation(new Animation(0.2f, [this]() {
-            unhighlightAllCodeBlocks();
-            CodeBlocks[8]->highlight();
-            }));
     }
 }
 

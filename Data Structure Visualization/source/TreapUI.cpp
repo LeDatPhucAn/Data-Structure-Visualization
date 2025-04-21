@@ -310,20 +310,20 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     if (!curr) return;
 
     cout << "Compare with " << curr->getKey() << endl;
-    animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
+    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 0.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
         animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 0.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
     }
     else if (curr->getKey() > key) {
         if (curr->leftEdge) {
-            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 0.75f));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 0.75f));
             searchWithAnimation(static_cast<TreapNode*> (curr->leftEdge->to), key);
         }
     }
     else {
         if (curr->rightEdge) {
-            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 0.75f));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 0.75f));
             searchWithAnimation(static_cast<TreapNode*> (curr->rightEdge->to), key);
         }
     }

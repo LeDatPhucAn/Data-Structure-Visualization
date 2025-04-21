@@ -67,7 +67,7 @@ namespace PseudoCode {
 
     std::string TreapSearch =
         "if(!curr)\n"
-        "   return\n"
+        "   return false\n"
         "if(curr->key == key)\n"
         "   return true\n"
         "if(curr->key > key)\n"

@@ -70,9 +70,9 @@ namespace PseudoCode {
         "   return\n"
         "if(curr->key == key)\n"
         "   return true\n"
-        "else if(curr->key > key)\n"
+        "if(curr->key > key)\n"
         "   return search(curr->left)\n"
-        "else if(curr->key < key)\n"
+        "if(curr->key < key)\n"
         "   return search(curr->right)\n";
     
     std::string HashTableInsert =

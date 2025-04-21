@@ -99,6 +99,7 @@ public:
 
 	void Dijkstra(int startID);
 	void saveDijkstraState(int current);
+	void snapshot(int current);
 	void resetDijkstra() {
 		int n = numberVertices;
 		cost.assign(n, INF);
@@ -114,6 +115,7 @@ public:
 			drawDijk = false;
 		}
 	}
+	bool getDrawDijkstra() { return drawDijk; }
 	vector<GraphNode*> ListNodeOnGraph() { return nodes; }
 	vector<EdgeOfGraph*> ListEdgeOnGraph() { return edges; }
 	int numberOfVertices() const { return numberVertices; }

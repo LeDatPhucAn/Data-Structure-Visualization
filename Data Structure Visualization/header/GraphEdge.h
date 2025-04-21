@@ -45,7 +45,7 @@ public:
 	static void addEdgeAndAnim(AnimationManager& animManager, vector<EdgeOfGraph*>& Edges, CircleButton* from, CircleButton* to);
 	void drawEdge();
 	//void drawArrowEdge();
-	
+	void setEdgeColor(Color c) { edgeColor = c; }
 
 };
 class GEdgeHighlightAnim : public Animation {
@@ -65,4 +65,48 @@ public:
 		edge->edgeColor = startC;
 	}
 	void applyState() override;
+};
+class DijkstraCellHighlightAnim : public Animation {
+public:
+	int row, col;
+	float cellWidth, cellHeight;
+	float startX, startY;
+	Color color;
+	double startTime;
+	float durationReal;
+	bool started = false;
+	DijkstraCellHighlightAnim(int r, int c, float dur, Color col, 
+		std::function<void()> callback = nullptr,
+		float cellW = 100, float cellH = 40,
+		float originX = 150, float originY = 10
+		)
+		: Animation(dur, callback), row(r), col(c),
+		cellWidth(cellW), cellHeight(cellH),
+		startX(originX), startY(originY), color(col) {
+	}
+
+	
+	void applyState() override {
+		float x = startX + col * cellWidth;
+		float y = startY + (row + 1) * cellHeight;
+
+		float alpha = 1.0f - getProgress(); // fade out
+		DrawRectangleRec({ x, y, cellWidth, cellHeight }, Fade(color, alpha));
+	}
+	void update(float deltaTime) override {
+		if (!started) {
+			startTime = GetTime();
+			started = true;
+		}
+
+		double elapsedTime = GetTime() - startTime;
+
+		if (elapsedTime >= durationReal) {
+			completed = true;
+			if (Function && !FunctionActivated) {
+				Function();
+				FunctionActivated = true;
+			}
+		}
+	}
 };

@@ -80,43 +80,25 @@ void GraphUI::initButtons() {
 	buttonsOnGraph[2]->insertSubButton(vertice2);
 	buttonsOnGraph[2]->insertSubButton(verticeInput2);
 	buttonsOnGraph[2]->insertSubButton(Enter2, [this, verticeInput2]() {
-		graph->drawDijkstra();
-		Dijkstra(verticeInput2->getNumber());
-		
-		RectButton::insertPseudoCode(CodeBlocks, PseudoCode::GraphAddNode);
-		static_cast<NumberInputBox*>(verticeInput2)->clear();
+		if (graph->numberOfVertices() > 0) {
+
+			graph->drawDijkstra();
+			Dijkstra(verticeInput2->getNumber());
+
+			RectButton::insertPseudoCode(CodeBlocks, PseudoCode::GraphDijkstra);
+			static_cast<NumberInputBox*>(verticeInput2)->clear();
+		}
 		});
 
 	
 
-	RectButton::insertHeadButton(buttonsOnGraph, new TextBox("Remove Edge"));
-	buttonsOnGraph[3]->animation = new RectMoveXAnim(buttonsOnGraph[3], 0.5f);
-	RectButton* id3 = new TextBox("ID1:");
-	RectButton* id3Input = new NumberInputBox(3);
-	RectButton* id4 = new TextBox("ID2:");
-	RectButton* id4Input = new NumberInputBox(3);
-	RectButton* enter3 = new TextBox(">");
 
-	buttonsOnGraph[3]->insertSubButton(id3);
-	buttonsOnGraph[3]->insertSubButton(id3Input);
-	buttonsOnGraph[3]->insertSubButton(id4);
-	buttonsOnGraph[3]->insertSubButton(id4Input);
-	buttonsOnGraph[3]->insertSubButton(enter3, [this, id3Input, id4Input]() {
-		graph->removeEdge(id3Input->getNumber(), id4Input->getNumber());
-		RectButton::insertPseudoCode(CodeBlocks, PseudoCode::GraphRemoveEdge);
-		static_cast<NumberInputBox*>(id3Input)->clear();
-		static_cast<NumberInputBox*>(id3Input)->clear();
-		});
 	RectButton::insertHeadButton(buttonsOnGraph, new TextBox(" Clear "));
-	buttonsOnGraph[4]->animation = new RectMoveXAnim(buttonsOnGraph[4], 0.5f);
-	buttonsOnGraph[4]->onClick = [this]() {
+	buttonsOnGraph[3]->animation = new RectMoveXAnim(buttonsOnGraph[3], 0.5f);
+	buttonsOnGraph[3]->onClick = [this]() {
 		this->clear();
 		};
-	RectButton::insertHeadButton(buttonsOnGraph, new TextBox("Hidden"));
-	buttonsOnGraph[5]->animation = new RectMoveXAnim(buttonsOnGraph[5], 0.5f);
-	buttonsOnGraph[5]->onClick = [this]() {
-		this->setHidden();
-		};
+	
 	updateButtonPositions();
 }
 void GraphUI::drawGraph() {
@@ -133,7 +115,7 @@ void GraphUI::drawGraph() {
 void GraphUI::displaySceneInCamera() {
 	//if (!hidden) drawGraph();
 	drawGraph();
-	//graph->drawDijkstraTable();
+	
 }
 void GraphUI::updateButtonPositions() {
 

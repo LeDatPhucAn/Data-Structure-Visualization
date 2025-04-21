@@ -66,10 +66,14 @@ namespace PseudoCode {
         "    Else, rotate left and remove from left subtree\n";
 
     std::string TreapSearch =
-        "If tree is empty, return nullptr\n"
-        "If key == current node's key, return current node\n"
-        "If key < current node's key, search in left subtree\n"
-        "Else, search in right subtree\n";
+        "if(!curr)\n"
+        "   return\n"
+        "if(curr->key == key)\n"
+        "   return true\n"
+        "else if(curr->key > key)\n"
+        "   return search(curr->left)\n"
+        "else if(curr->key < key)\n"
+        "   return search(curr->right)\n"
     
     std::string HashTableInsert =
         "Calculate index = value % size\n"

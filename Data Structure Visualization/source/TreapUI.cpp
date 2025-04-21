@@ -307,9 +307,12 @@ void TreapUI::insertWithAnimation(int key, int priority) {
 }
 
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
-    if (!curr) return;
+    if (!curr) {
 
-    cout << "Compare with " << curr->getKey() << endl;
+        return;
+    }
+
+    //cout << "Compare with " << curr->getKey() << endl;
     animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
@@ -626,6 +629,7 @@ void TreapUI::search(int key) {
     cleanupForOperations();
     clear();
     this->root = cloneTree(treap.root);
+    RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
     searchWithAnimation(root, key);
 }
 

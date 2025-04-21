@@ -331,11 +331,13 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
-        animManager.addAnimation(new Animation(0.5f, [this]() {
+        /*animManager.addAnimation(new Animation(0.5f, [this]() {
             this->CodeBlocks[2]->unhighlight();
             this->CodeBlocks[3]->highlight();
+            }));*/
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE, [this]() {
+            this->CodeBlocks[3]->highlight();
             }));
-        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
         animManager.addAnimation(new Animation(0.5f, [this]() {
             this->CodeBlocks[3]->unhighlight();
             this->CodeBlocks[4]->highlight();
@@ -364,6 +366,7 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
             this->CodeBlocks[7]->unhighlight();
             this->CodeBlocks[8]->highlight();
             }));
+        
         if (curr->rightEdge) {
             animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f));
             searchWithAnimation(curr->rightEdge->to, key);

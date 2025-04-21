@@ -100,5 +100,10 @@ namespace PseudoCode {
         "Find nodeFrom = Graph::getNodeById(from)\n"
         "Find nodeTo = Graph::getNodeById(to)\n"
         "if nodeFrom and nodeTo found, remove Edge\n";
-
+    std::string GraphDijkstra =
+        "Traversal all vertices which haven't been visited.\n"
+        "Set u as the current vertex with the smallest cost\n"
+        "Mark visited[u] is True\n"
+        "If d(v) > d(u) + (u,v). Update d(v)\n"
+        "Update the shortest path to v (path[v])\n";
 }

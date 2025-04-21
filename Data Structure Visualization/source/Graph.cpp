@@ -364,54 +364,82 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 	// Reset the Dijkstra algorithm
 	clearIndicates();
 	resetDijkstra();
-	//dijkstraHistory.clear();
+	dijkstraHistory.clear();
 	currentStep = 0;
 
 	int n = nodes.size();
 	cost[startID] = 0;
 	path[startID].push_back(nodes[startID]->getNumber());
-	// Highlight start node
-	/*
-	Animation* NodeStart = new CircleHighLightAnim(nodes[startID], 0.5f, GREEN, RAYWHITE, GREEN, [startID, this]() {
-		nodes[startID]->animation->reset();
-		nodes[startID]->noDraw = false;
-		
-		});
-	animManager.addAnimation(NodeStart);
-	*/
+
+	
 	
 
 	for (int i = 0; i < n; ++i) {
 		//Find node with min cost
+		animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, this] {
+			CodeBlocks[1]->highlight();
+			}));
+		for (int j = 0; j < n; ++j) {
+			if (!visited[j]) {
+				animManager.addAnimation(new DijkstraCellHighlightAnim(j, 2, 0.3f, RED));
+			}
+		}
+		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
+			CodeBlocks[1]->unhighlight();
+			}));
 		int u = -1;
 		float minCost = INF;
 		for (int j = 0; j < n; ++j) {
-			if (!visited[j] && cost[j] < minCost) {
-				minCost = cost[j];
-				u = j;
+
+			if (!visited[j]){
+				if (cost[j] < minCost) {
+					minCost = cost[j];
+					u = j;
+				}
 			}
 		}
-		if (u == -1) break;
-		
+		if (u == -1) {
+			break;
+		}
 		//Highlight node u
 		
-		Animation* nodeU = new CircleHighLightAnim(nodes[u], 0.5f, RED, RAYWHITE, RED, [u, this]() {
+
+		Animation* nodeU = new CircleHighLightAnim(nodes[u], 0.5f, RED, RAYWHITE, RED, [&CodeBlocks, u, this]() {
+			CodeBlocks[2]->highlight();
 			nodes[u]->indicateNode = "Current";
 			nodes[u]->animation->reset();
 			nodes[u]->noDraw = false;
-			
+			currentStep++; 
 			});
-			
+		saveDijkstraState(u);
+		animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED));
 		animManager.addAnimation(nodeU);
-		
-		// Mark visited
-		
-		
-			
+
+		Animation* CellU = new DijkstraCellHighlightAnim(u, 1, 0.3f, RED, [&CodeBlocks, this]() {
+			CodeBlocks[2]->unhighlight();
+			CodeBlocks[3]->highlight();
+			currentStep++;
+			});
+		animManager.addAnimation(CellU);
+		saveDijkstraState(u);
+		//animManager.addAnimation(new DijkstraCellHighlightAnim(u, 1, 0.3f, RED));
 		visited[u] = true;
+		// Mark visited
+		/*
+		animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, this]() {
+			CodeBlocks[2]->unhighlight();
+			CodeBlocks[3]->highlight();
+			}));
+		*/
+			
+		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
+			CodeBlocks[3]->unhighlight();
+			}));
+		
 		
 		// Traverse all neighbors
 		for (auto& edge : edges) {
+			
 			int v = -1;
 			float weight = edge->weight;
 
@@ -431,40 +459,68 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 					}
 				}
 			}
+			
 			if (v != -1 && !visited[v]) {
 			
 				//highlight edge u-v
-				animManager.addAnimation(new GEdgeHighlightAnim(edge, 0.5f, PURPLE, [v, this]() {
+				
+				animManager.addAnimation(new GEdgeHighlightAnim(edge, 0.75f, RED, [&CodeBlocks, v, this]() {
+					
+					
 					nodes[v]->indicateNode = "v";
 					nodes[v]->animation->reset();
 					nodes[v]->noDraw = false;
-
+					currentStep++;
+				
 					}));
-				
-				
+				saveDijkstraState(v);
+
+				animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [&CodeBlocks, this]() {
+					CodeBlocks[4]->highlight();
+					currentStep++;
+					}));
+				saveDijkstraState(u);
+				animManager.addAnimation(new DijkstraCellHighlightAnim(v, 2, 0.3f, RED, [this]() {
+					currentStep++;
+					}));
+				saveDijkstraState(v);
+				//animManager.addAnimation(new GEdgeHighlightAnim(edge, 0.5f, RED));
+				//animManager.addAnimation(new GEdgeHighlightAnim(edge, 1));
+				//EdgeOfGraph::addEdgeAndAnim(animManager, edges, nodes[u], nodes[v]);
+				//edges.back()->noDraw = true;
+				/*
+				animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, this]() {
 					
+					CodeBlocks[4]->highlight();
+					}));
+					*/
+
 				if (cost[u] + weight < cost[v]) {
+					
 					cost[v] = cost[u] + weight;
 					path[v] = path[u];
 					path[v].push_back(nodes[v]->getNumber());
 					
-					animManager.addAnimation(new CircleHighLightAnim(nodes[v], 0.5f, PURPLE, RAYWHITE, PURPLE, [v, this]() {
-						nodes[v]->indicateNode = "updated";
-						
-						}));
-						
-				
+					
+					
 
 				}
+
 				// Unhighlight edge + node v
 				
-				animManager.addAnimation(new Animation(0.1f, [v, this]() {
-
+				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, v, this]() {
+					CodeBlocks[4]->unhighlight(); 
 					nodes[v]->indicateNode = "";
 					
 					}));
+				//edge->setEdgeColor(RED);
 				
 			}
+			// Reset ColorEdge
+			animManager.addAnimation(new Animation(0.1f, [edge]() {
+				edge->setEdgeColor(BLACK); 
+				}));
+
 		}
 		
 		animManager.addAnimation(new Animation(0.1f, [u, this]() {
@@ -473,18 +529,12 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			}));
 		animManager.addAnimation(new CircleHighLightAnim(nodes[u], 0.5f, GREEN, RAYWHITE, GREEN, [u, this]() {
 			nodes[u]->indicateNode = "Visited";
+			currentStep++;
 			}));
-		
+		saveDijkstraState(u);
 	}
 	
-
-	/*
-	animManager.addAnimation(new Animation(0.5f, [n, this]() {
-		for (int i = 0; i < n; ++i) {
-			nodes[i]->indicateNode = "dist = " + (cost[i] >= INF ? string("INF") : to_string((int)cost[i]));
-		}
-		}));
-		*/
+	
 }
 void Graph::Dijkstra(int startID) {
 	resetDijkstra();
@@ -541,8 +591,13 @@ void Graph::Dijkstra(int startID) {
 }
 
 void Graph::drawDijkstraTable() {
-	if (drawDijk && !dijkstraHistory.empty()) 
+	//if (drawDijk && !dijkstraHistory.empty()) 
+	if (drawDijk && !dijkstraHistory.empty())
 	{
+		//std::cout << "[Draw] Drawing Step: " << currentStep << std::endl;
+		if (currentStep >= dijkstraHistory.size()) {
+			currentStep = dijkstraHistory.size() - 1; 
+		}
 		const DijkstraState& state = dijkstraHistory[currentStep];
 
 		int n = state.cost.size();
@@ -568,7 +623,7 @@ void Graph::drawDijkstraTable() {
 		//rows
 		for (int i = 0; i < n; ++i) {
 			float rowY = startY + (i + 1) * cellHeight;
-			Color textColor = (i == state.current ? RED : BLACK);
+			Color textColor = (i == state.current ? BLACK : BLACK);
 			// Column: Vertex
 			{
 				std::string txt = std::to_string(i);
@@ -599,8 +654,8 @@ void Graph::drawDijkstraTable() {
 				if (!state.path[i].empty() && state.path[i].size() > 1) {
 					txt = std::to_string((int)state.path[i][state.path[i].size() - 2]);
 				}
-				else if (!path[i].empty()) {
-					txt = "Start";
+				else if (!state.path[i].empty()) {
+					txt = "-1";
 				}
 				float x = startX + 3 * cellWidth;
 				DrawRectangleLinesEx({ x, rowY, cellWidth, cellHeight }, 1, DARKGRAY);
@@ -621,13 +676,34 @@ void Graph::drawDijkstraTable() {
 		DrawRectangleLines(startX - 2, startY - 2, tableWidth + 4, tableHeight + 4, GRAY);
 	}
 }
+void Graph::snapshot(int current) {
+	saveDijkstraState(current);
+	currentStep++;
+	//currentStep = (int)dijkstraHistory.size() - 1;
+}
 void Graph::saveDijkstraState(int current) {
 	DijkstraState state;
-	state.cost = cost;
-	state.visited = visited;
-	state.path = path;
+
+	state.cost = std::vector<float>(cost.begin(), cost.end());
+	state.visited = std::vector<bool>(visited.begin(), visited.end());
+	state.path.resize(path.size());
+
+	for (size_t i = 0; i < path.size(); ++i) {
+		state.path[i] = std::vector<float>(path[i].begin(), path[i].end());
+	}
+
 	state.current = current;
+
 	dijkstraHistory.push_back(state);
+
+	std::cout << "[Snapshot] Step " << dijkstraHistory.size() - 1 << ": ";
+	for (size_t i = 0; i < state.visited.size(); ++i) {
+		if (state.visited[i])
+			std::cout << "T ";
+		else
+			std::cout << "F ";
+	}
+	std::cout << "| Current: " << current << std::endl;
 }
 void Graph::clearIndicates() {
 	for (auto& node : nodes) {

@@ -13,7 +13,7 @@ void EdgeOfGraph::drawEdge() {
 	float toY = d - (float)to->getRadius() * (d - b) / AB;
 	//draw edge
 
-	DrawLineEx({ fromX,fromY }, { toX, toY }, thickness, BLACK);
+	DrawLineEx({ fromX,fromY }, { toX, toY }, thickness, edgeColor);
 
 	float midX = (fromX + toX) / 2.0f;
 	float midY = (fromY + toY) / 2.0f;
@@ -52,6 +52,7 @@ void EdgeOfGraph::drawEdge() {
 void EdgeOfGraph::removeEdge(vector<EdgeOfGraph*>& Edges, CircleButton* from, CircleButton* to) {
 	for (int i = 0; i < Edges.size(); i++) {
 		if (Edges[i]->from == from && Edges[i]->to == to) {
+			
 			EdgeOfGraph* del = Edges[i];
 			Edges.erase(Edges.begin() + i);
 			delete del;
@@ -64,7 +65,9 @@ void EdgeOfGraph::addEdge(vector<EdgeOfGraph*>& Edges, CircleButton* from, Circl
 	Edges.push_back(new EdgeOfGraph(from, to));
 }
 void EdgeOfGraph::addEdgeAndAnim(AnimationManager& animManager, vector<EdgeOfGraph*>& Edges, CircleButton* from, CircleButton* to) {
-	Edges.push_back(new EdgeOfGraph(from, to));
+	//Edges.push_back(new EdgeOfGraph(from, to));
+	EdgeOfGraph* edge;
+
 	animManager.addAnimation(new GEdgeHighlightAnim(Edges.back(), 0.2f, PURPLE));
 	animManager.addAnimation(new GEdgeHighlightAnim(Edges.back(), 1));
 }

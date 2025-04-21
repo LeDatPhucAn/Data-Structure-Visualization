@@ -17,5 +17,5 @@ namespace PseudoCode {
     extern std::string GraphRemoveNode;
     extern std::string GraphAddEdge;
     extern std::string GraphRemoveEdge;
-    
+    extern std::string GraphDijkstra;
 };

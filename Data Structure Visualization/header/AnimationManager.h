@@ -58,10 +58,9 @@ public:
     void seek(float progress);
 
 
+    int getStep();                 // get step 
 
-    int getStep();
-
-    void goToStep(int k);           // Go to step k
+    void goToStep(int k);          // Go to step k
 
     void goToFirstStep();          // Go to initial state
 

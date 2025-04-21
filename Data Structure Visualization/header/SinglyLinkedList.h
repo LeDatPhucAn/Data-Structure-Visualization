@@ -4,12 +4,13 @@
 #include <vector>
 #include <memory>
 #include "AnimationManager.h"
-
+#include <unordered_set>
 class LinkedList : public LLNode {
 public:
     LLNode* head;
     vector<CBEdge*> Edges;
-    vector<LLNode*> deleteLater;
+    LLNode* RemoveFirstNode = nullptr;
+    unordered_set<LLNode*> deleteLater;
     LinkedList() : head(nullptr) {
         Edges.reserve(100);
     }

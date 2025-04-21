@@ -16,6 +16,7 @@ public:
         Button::deleteButtons<RectButton>(buttonsOnGraph);
     }
     void Dijkstra(int n);
+    void DijkstraTable();
     void init() override;
     void drawEdge();
     void initButtons() override;

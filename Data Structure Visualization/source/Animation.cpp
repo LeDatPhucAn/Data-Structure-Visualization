@@ -137,3 +137,104 @@ void RectMoveXAnim::applyState() {
 void RectMoveYAnim::applyState() {
     button->rect.y = EaseExpoOut(elapsed, startY, endY - startY, duration);
 }
+
+void RectHighlightAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    button->TextColor = UI::interpolateColors(startText, endText, easedT);
+    button->FillColor = UI::interpolateColors(startFill, endFill, easedT);
+    button->OutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
+}
+
+void RectHighlight2Anim::applyState() {
+    float easedT = EaseSineInOut(elapsed, 0.0f, 1.0f, duration);
+
+    if (easedT <= 0.5f) {
+        float progress = easedT * 2.0f;
+        button->FillColor = UI::interpolateColors(startFill, endFill, progress);
+        button->OutLineColor = UI::interpolateColors(startOutline, endOutline, progress);
+        button->TextColor = UI::interpolateColors(startText, endText, progress);
+    }
+    else {
+        float progress = (easedT - 0.5f) * 2.0f;
+        button->FillColor = UI::interpolateColors(endFill, startFill, progress);
+        button->OutLineColor = UI::interpolateColors(endOutline, startOutline, progress);
+        button->TextColor = UI::interpolateColors(endText, startText, progress);
+    }
+}
+
+void RectHighlightAnim::resetColor() {
+    if (!button) return;
+    button->FillColor = startFill;
+    button->OutLineColor = startOutline;
+    button->TextColor = startText;
+}
+
+void TreapEdgeHighlightAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    edge->edgeColor = UI::interpolateColors(start, end, easedT);
+}
+
+void TreapEdgeHighlightAnim::resetColor() {
+    if (!edge) return;
+    edge->edgeColor = start;
+}
+
+void TreapEdgeHighlight2Anim::applyState() {
+    float easedT = EaseSineInOut(elapsed, 0.0f, 1.0f, duration);
+
+    if (easedT <= 0.5f) {
+        float progress = easedT * 2.0f;
+        edge->edgeColor = UI::interpolateColors(start, end, progress);
+    }
+    else {
+        float progress = (easedT - 0.5f) * 2.0f;
+        edge->edgeColor = UI::interpolateColors(end, start, progress);
+    }
+}
+
+void TreapNodeMoveAnim::applyState() {
+    node->position.x = EaseExpoOut(elapsed, startPos.x, endPos.x - startPos.x, duration);
+    node->position.y = EaseExpoOut(elapsed, startPos.y, endPos.y - startPos.y, duration);
+    node->syncPosition();
+}
+
+void TreapNodeMoveAnim::handleReposition() {
+    endPos = node->position;
+}
+
+void TreapNodeInitializeAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    node->keyBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->priorityBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->keyBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->priorityBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->keyBox->TextColor = UI::interpolateColors(start, k_text, easedT);
+    node->keyBox->FillColor = UI::interpolateColors(start, k_fill, easedT);
+    node->keyBox->OutLineColor = UI::interpolateColors(start, k_outline, easedT);
+    node->priorityBox->TextColor = UI::interpolateColors(start, p_text, easedT);
+    node->priorityBox->FillColor = UI::interpolateColors(start, p_fill, easedT);
+    node->priorityBox->OutLineColor = UI::interpolateColors(start, p_outline, easedT);
+}
+
+void TreapNodeRemoveAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0, 1.0f, duration);
+    node->keyBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->priorityBox->rect.x = EaseBackOut(elapsed, startSize.x, endSize.x - startSize.x, duration);
+    node->keyBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->priorityBox->rect.y = EaseBackOut(elapsed, startSize.y, endSize.y - startSize.y, duration);
+    node->keyBox->TextColor = UI::interpolateColors(k_sText, end, easedT);
+    node->keyBox->FillColor = UI::interpolateColors(k_sFill, end, easedT);
+    node->keyBox->OutLineColor = UI::interpolateColors(k_sOutline, end, easedT);
+    node->priorityBox->TextColor = UI::interpolateColors(p_sText, end, easedT);
+    node->priorityBox->FillColor = UI::interpolateColors(p_sFill, end, easedT);
+    node->priorityBox->OutLineColor = UI::interpolateColors(p_sOutline, end, easedT);
+}
+
+//  node->position.x = EaseExpoOut(elapsed, startPos.x, endPos.x - startPos.x, duration);
+void MoveMultipleTreapNodesAnim::applyState() {
+    for (TreapNode* n : nodesToMove) {
+        n->position.x = EaseExpoOut(elapsed, n->position.x, positions[n->getKey()].x - n->position.x, duration);
+        n->position.y = EaseExpoOut(elapsed, n->position.y, positions[n->getKey()].y - n->position.y, duration);
+        n->syncPosition();
+    }
+}

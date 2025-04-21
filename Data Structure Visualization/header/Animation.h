@@ -2,6 +2,7 @@
 #include "reasings.h"
 #include "SceneManager.h"
 #include "Button.h"
+#include <stack>
 class Animation {
 protected:
 
@@ -156,27 +157,6 @@ public:
 		button->OgOutLineColor = startRC;
     }
     void applyState() override;
-};
-
-// Highlight Rectangle Button
-class RectHighlightAnim : public Animation {
-public:
-    NumberInputBox* button;
-    Color startFill, endFill;
-    Color startOutline, endOutline;
-    Color startText, endText;
-    RectHighlightAnim(NumberInputBox*, float, Color, Color, Color);
-    void applyState() override;
-    void resetColor() override;
-};
-
-class TreapEdgeHighlightAnim : public Animation {
-public:
-    TreapEdge* edge;
-    Color start, end;
-    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE) : Animation(duration), edge(e), start(edge->edgeColor), end(ec){}
-    void applyState() override;
-    void resetColor() override;
 };
 
 // Move CircleButton in both x and y directions
@@ -364,5 +344,117 @@ public:
     void applyState() override;
 };
 
+class RectHighlightAnim : public Animation {
+public:
+    NumberInputBox* button;
+    Color startFill, endFill;
+    Color startOutline, endOutline;
+    Color startText, endText;
+    RectHighlightAnim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+        startFill = b->FillColor;
+        startOutline = b->OutLineColor;
+        startText = b->TextColor;
+        endFill = fill;
+        endOutline = outline;
+        endText = text;
+    }
+    void applyState() override;
+    void resetColor() override;
+};
 
+class RectHighlight2Anim : public Animation {
+public:
+    NumberInputBox* button;
+    Color startFill, endFill;
+    Color startOutline, endOutline;
+    Color startText, endText;
+    RectHighlight2Anim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+        startFill = b->FillColor;
+        startOutline = b->OutLineColor;
+        startText = b->TextColor;
+        endFill = fill;
+        endOutline = outline;
+        endText = text;
+    }
+    void applyState() override;
+};
 
+class TreapEdgeHighlightAnim : public Animation {
+public:
+    TreapEdge* edge;
+    Color start, end;
+    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
+    void applyState() override;
+    void resetColor() override;
+};
+
+class TreapEdgeHighlight2Anim : public Animation {
+public:
+    TreapEdge* edge;
+    Color start, end;
+    TreapEdgeHighlight2Anim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
+    void applyState() override;
+};
+
+#include "Treap.h"
+class TreapNodeMoveAnim : public Animation {
+public:
+    TreapNode* node;
+    Vector2 startPos;
+    Vector2 endPos;
+    TreapNodeMoveAnim(TreapNode* n, float duration, Vector2 sp, Vector2 ep) : Animation(duration), node(n), startPos(sp), endPos(ep){}
+    void applyState() override;
+    void handleReposition() override;
+};
+
+class TreapNodeInitializeAnim : public Animation {
+public:
+    TreapNode* node;
+    Vector2 startSize;
+    Vector2 endSize;
+    Color start;
+    Color k_text, k_fill, k_outline;
+    Color p_text, p_fill, p_outline;
+    TreapNodeInitializeAnim(TreapNode* n, float duration, function<void()> func = nullptr): Animation(duration, func), node(n){
+        startSize = { 0, 0 };
+        endSize = { static_cast<float> (n->keyBox->getWidth()), static_cast<float> (n->keyBox->getHeight()) };
+        start = { 255, 255, 255, 255 };
+        k_text = n->keyBox->TextColor;
+        k_fill = n->keyBox->FillColor;
+        k_outline = n->keyBox->OutLineColor;
+        p_text = n->priorityBox->TextColor;
+        p_fill = n->priorityBox->FillColor;
+        p_outline = n->priorityBox->OutLineColor;
+    }
+    void applyState() override;
+};
+
+class TreapNodeRemoveAnim : public Animation {
+public:
+    TreapNode* node;
+    Vector2 startSize;
+    Vector2 endSize;
+    Color k_sText, k_sFill, k_sOutline;
+    Color p_sText, p_sFill, p_sOutline;
+    Color end;
+    TreapNodeRemoveAnim(TreapNode* n, float duration, function<void()> func = nullptr) : Animation(duration, func), node(n) {
+        startSize = { static_cast<float> (n->keyBox->getWidth()), static_cast<float> (n->keyBox->getHeight()) };
+        endSize = { 0, 0 };
+        k_sText = n->keyBox->TextColor;
+        k_sFill = n->keyBox->FillColor;
+        k_sOutline = n->keyBox->OutLineColor;
+        p_sText = n->priorityBox->TextColor;
+        p_sFill = n->priorityBox->FillColor;
+        p_sOutline = n->priorityBox->OutLineColor;
+        end = { 255, 255, 255, 255 };
+    }
+    void applyState() override;
+};
+
+class MoveMultipleTreapNodesAnim : public Animation {
+public:
+    vector<TreapNode*> nodesToMove;
+    unordered_map<int, Vector2> positions;
+    MoveMultipleTreapNodesAnim(vector<TreapNode*> v, unordered_map<int, Vector2> m, float duration, function<void()> func = nullptr) : Animation(duration, func), nodesToMove(v), positions(m){}
+    void applyState() override;
+};

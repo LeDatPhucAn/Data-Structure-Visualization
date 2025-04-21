@@ -3,6 +3,8 @@
 #include "raylib.h"
 #include "Button.h"
 #include "Animation.h"
+#include "reasings.h"
+#include "SceneManager.h"
 #include <vector>
 
 class CircleButton;
@@ -40,6 +42,7 @@ public:
 		CircleButton* from, CircleButton* to);
 	static void removeEdge(vector<EdgeOfGraph*>& Edges, 
 		CircleButton* from, CircleButton* to);
+	static void addEdgeAndAnim(AnimationManager& animManager, vector<EdgeOfGraph*>& Edges, CircleButton* from, CircleButton* to);
 	void drawEdge();
 	//void drawArrowEdge();
 	

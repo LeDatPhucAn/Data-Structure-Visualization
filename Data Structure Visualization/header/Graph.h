@@ -41,8 +41,10 @@ private:
 	int numberVertices;
 	std::vector<GraphNode*> nodes;
 	std::vector<EdgeOfGraph*> edges;
+	vector<vector<int>> adjMatrix;
 	std::vector<Vector2> position;
 	vector<vector<float>> path;
+	
 	vector<float> cost;
 	vector<bool> visited;
 	bool drawDijk = false;

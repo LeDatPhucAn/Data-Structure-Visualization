@@ -63,6 +63,11 @@ void EdgeOfGraph::removeEdge(vector<EdgeOfGraph*>& Edges, CircleButton* from, Ci
 void EdgeOfGraph::addEdge(vector<EdgeOfGraph*>& Edges, CircleButton* from, CircleButton* to) {
 	Edges.push_back(new EdgeOfGraph(from, to));
 }
+void EdgeOfGraph::addEdgeAndAnim(AnimationManager& animManager, vector<EdgeOfGraph*>& Edges, CircleButton* from, CircleButton* to) {
+	Edges.push_back(new EdgeOfGraph(from, to));
+	animManager.addAnimation(new GEdgeHighlightAnim(Edges.back(), 0.2f, PURPLE));
+	animManager.addAnimation(new GEdgeHighlightAnim(Edges.back(), 1));
+}
 void GEdgeHighlightAnim::applyState() {
 	edge->noDraw = false;
 	float easedT = EaseSineIn(elapsed, 0, 1.0f, duration);

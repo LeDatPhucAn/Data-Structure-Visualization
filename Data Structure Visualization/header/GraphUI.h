@@ -30,6 +30,7 @@ public:
         CodeBlocks.clear();
     }
     void Dijkstra(int n);
+    void DijkstraTable();
     void init() override;
     void initButtons() override;
     void updateButtonPositions() override;

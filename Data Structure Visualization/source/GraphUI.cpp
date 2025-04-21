@@ -10,6 +10,10 @@ void GraphUI::Dijkstra(int n) {
 	animManager.clear();
 	graph->DijkstraAnim(CodeBlocks, animManager, n);
 }
+void GraphUI::DijkstraTable() {
+	animManager.clear();
+	graph->drawDijkstraTable();
+}
 void GraphUI::displayScene() {
 	Button::drawButtons<RectButton>(buttonsOnGraph);
 	Button::drawButtons<RectButton>(CodeBlocks);
@@ -20,6 +24,12 @@ void GraphUI::displayScene() {
 void GraphUI::updateScene() {
 	Button::updateButtons<RectButton>(buttonsOnGraph);
 	Button::updateButtons<RectButton>(CodeBlocks);
+	Graph* g = this->graph;
+	for (GraphNode*& vertice : g->ListNodeOnGraph()) {
+		vertice->update();
+		if (vertice->animation) vertice->animation->update(GetFrameTime());
+	}
+	
 	if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 void GraphUI::resetAnimations() {
@@ -121,7 +131,8 @@ void GraphUI::drawGraph() {
 }
 
 void GraphUI::displaySceneInCamera() {
-	if (!hidden) drawGraph();
+	//if (!hidden) drawGraph();
+	drawGraph();
 	//graph->drawDijkstraTable();
 }
 void GraphUI::updateButtonPositions() {

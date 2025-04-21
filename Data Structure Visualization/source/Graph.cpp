@@ -364,21 +364,22 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 	// Reset the Dijkstra algorithm
 	clearIndicates();
 	resetDijkstra();
-	dijkstraHistory.clear();
+	//dijkstraHistory.clear();
 	currentStep = 0;
 
 	int n = nodes.size();
 	cost[startID] = 0;
 	path[startID].push_back(nodes[startID]->getNumber());
 	// Highlight start node
+	/*
 	Animation* NodeStart = new CircleHighLightAnim(nodes[startID], 0.5f, GREEN, RAYWHITE, GREEN, [startID, this]() {
 		nodes[startID]->animation->reset();
 		nodes[startID]->noDraw = false;
-		currentStep++;
+		
 		});
 	animManager.addAnimation(NodeStart);
-
-	saveDijkstraState(startID);
+	*/
+	
 
 	for (int i = 0; i < n; ++i) {
 		//Find node with min cost
@@ -393,20 +394,22 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 		if (u == -1) break;
 		
 		//Highlight node u
-		Animation* nodeU = new CircleHighLightAnim(nodes[u], 0.5f, GREEN, RAYWHITE, GREEN, [u, this]() {
+		
+		Animation* nodeU = new CircleHighLightAnim(nodes[u], 0.5f, RED, RAYWHITE, RED, [u, this]() {
 			nodes[u]->indicateNode = "Current";
 			nodes[u]->animation->reset();
 			nodes[u]->noDraw = false;
-			currentStep++;
-			});
-		animManager.addAnimation(nodeU);
 			
+			});
+			
+		animManager.addAnimation(nodeU);
+		
 		// Mark visited
 		
 		
 			
 		visited[u] = true;
-		saveDijkstraState(u);
+		
 		// Traverse all neighbors
 		for (auto& edge : edges) {
 			int v = -1;
@@ -431,26 +434,26 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			if (v != -1 && !visited[v]) {
 			
 				//highlight edge u-v
-				Animation* edgeUV = new GEdgeHighlightAnim(edge, 0.5f, PURPLE, [v, this]() {
+				animManager.addAnimation(new GEdgeHighlightAnim(edge, 0.5f, PURPLE, [v, this]() {
 					nodes[v]->indicateNode = "v";
 					nodes[v]->animation->reset();
 					nodes[v]->noDraw = false;
-					currentStep++;
-					});
-				animManager.addAnimation(edgeUV);
-				saveDijkstraState(v);
+
+					}));
+				
+				
 					
 				if (cost[u] + weight < cost[v]) {
 					cost[v] = cost[u] + weight;
 					path[v] = path[u];
 					path[v].push_back(nodes[v]->getNumber());
 					
-					animManager.addAnimation(new CircleHighLightAnim(nodes[v], 0.5f, GREEN, RAYWHITE, GREEN, [v, this]() {
+					animManager.addAnimation(new CircleHighLightAnim(nodes[v], 0.5f, PURPLE, RAYWHITE, PURPLE, [v, this]() {
 						nodes[v]->indicateNode = "updated";
-						currentStep++;
+						
 						}));
 						
-					saveDijkstraState(v);
+				
 
 				}
 				// Unhighlight edge + node v
@@ -458,18 +461,23 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 				animManager.addAnimation(new Animation(0.1f, [v, this]() {
 
 					nodes[v]->indicateNode = "";
-					currentStep++;
+					
 					}));
-				saveDijkstraState(v);
+				
 			}
 		}
 		
 		animManager.addAnimation(new Animation(0.1f, [u, this]() {
 			nodes[u]->indicateNode = "";
-			currentStep++;
+			
 			}));
-		saveDijkstraState(u);
+		animManager.addAnimation(new CircleHighLightAnim(nodes[u], 0.5f, GREEN, RAYWHITE, GREEN, [u, this]() {
+			nodes[u]->indicateNode = "Visited";
+			}));
+		
 	}
+	
+
 	/*
 	animManager.addAnimation(new Animation(0.5f, [n, this]() {
 		for (int i = 0; i < n; ++i) {

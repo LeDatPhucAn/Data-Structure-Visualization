@@ -1,10 +1,11 @@
 #include "../header/HashTableUI.h"
 #include "../header/PseudoCode.h"
 #include "../header/Animation.h"
+#include <iostream>
 
 void HashTableUI::drawHashTable() {
     for (int i = 0; i < hashtable.bucketCount; i++) {
-        Rectangle bucketRect = { 100 + i * 200 - 50, 100, 100, 50 };
+        Rectangle bucketRect = { 250 + i * 200 - 50, 100, 100, 50 };
         DrawRectangleRec(bucketRect, LIGHTGRAY);
         DrawRectangleLines(bucketRect.x, bucketRect.y, bucketRect.width, bucketRect.height, DARKGRAY);
         UI::drawtext2(std::to_string(i), bucketRect.x + bucketRect.width / 2, bucketRect.y + bucketRect.height / 2, BLACK);
@@ -21,35 +22,36 @@ void HashTableUI::drawHashTable() {
 }
 
 void HashTableUI::insert(int x) {
-    hashtable.insertNode(x);
+    animManager.clear();
+    isInsert = true;
+    isRemove = false;
+    int pos = -1;
+    hashtable.insertNode(CodeBlocks, animManager, x, pos);
+    insertParameters = { x, pos };
 }
 
 void HashTableUI::remove(int x) {
-    hashtable.remove(x);
+    animManager.clear();
+    isRemove = true;
+    isInsert = false;
+    int pos = -1;
+    bool success = hashtable.remove(CodeBlocks, animManager, x, pos);
+    removeParameters = { x, pos };
 }
 
 bool HashTableUI::search(int x) {
-    int idx = hashtable.hashFunction(x);
-    LLNode* cur = hashtable.buckets[idx];
-    while (cur) {
-        if (cur->getNumber() == x) {
-            animManager.addAnimation(new CircleHighLightAnim(cur, 2, GREEN, RAYWHITE, GREEN));
-            return true;
-        }
-        animManager.addAnimation(new CircleHighLightAnim(cur, 1));
-        for (auto& edge : hashtable.Edges) {
-            if (edge->from == cur) {
-                animManager.addAnimation(new CBEdgeHighLightAnim(edge, 1));
-                break;
-            }
-        }
-        cur = cur->next;
-    }
-    return false;
+    animManager.clear();
+    isInsert = false;
+    isRemove = false;
+    return hashtable.search(CodeBlocks, animManager, x);
 }
 
 void HashTableUI::resize(int newSize) {
     hashtable.resize(newSize);
+}
+
+void HashTableUI::loadFromFile() {
+    hashtable.loadFromFile(CodeBlocks, animManager);
 }
 
 void HashTableUI::init() {
@@ -112,11 +114,15 @@ void HashTableUI::initButtons() {
 
     RectButton::insertHeadButton(Buttons, new TextBox("Clear"));
     Buttons[3]->animation = new RectMoveXAnim(Buttons[3], 0.5);
-    Buttons[3]->onClick = [this]() { hashtable.clear(); };
+    Buttons[3]->onClick = [this]() {
+        animManager.clear();
+        hashtable.clear();
+        };
 
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->animation = new RectMoveXAnim(Buttons[4], 0.5);
     Buttons[4]->onClick = [this]() {
+        animManager.clear();
         hashtable.clear();
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
@@ -125,12 +131,18 @@ void HashTableUI::initButtons() {
         }
         };
 
-    RectButton::insertHeadButton(Buttons, new TextBox("Bucket"));
+    RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
     Buttons[5]->animation = new RectMoveXAnim(Buttons[5], 0.5);
+    Buttons[5]->onClick = [this]() {
+        loadFromFile();
+        };
+
+    RectButton::insertHeadButton(Buttons, new TextBox("Bucket"));
+    Buttons[6]->animation = new RectMoveXAnim(Buttons[6], 0.5);
     RectButton* BucketInput = new NumberInputBox(2);
-    Buttons[5]->insertSubButton(new TextBox("Size:"));
-    Buttons[5]->insertSubButton(BucketInput);
-    Buttons[5]->insertSubButton(new TextBox(">"), [this, BucketInput]() {
+    Buttons[6]->insertSubButton(new TextBox("Size:"));
+    Buttons[6]->insertSubButton(BucketInput);
+    Buttons[6]->insertSubButton(new TextBox(">"), [this, BucketInput]() {
         int newSize = BucketInput->getNumber();
         if (newSize > 0) {
             resize(newSize);
@@ -158,35 +170,109 @@ void HashTableUI::displaySceneInCamera() {
 void HashTableUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
+    // Vẽ NumberInputBox và nút xác nhận nếu đang chỉnh sửa
+    if (editValueInput) {
+        editValueInput->draw();
+    }
+    if (editValueConfirm) {
+        editValueConfirm->draw();
+    }
 }
 
 void HashTableUI::updateScene() {
+    bool needUpdateHashTable = false;
+    int newValue = 0;
+    int oldValue = 0;
+    int bucketIdx = -1;
+
     for (int i = 0; i < hashtable.bucketCount; i++) {
         LLNode* cur = hashtable.buckets[i];
         while (cur) {
             cur->update();
             if (cur->animation) cur->animation->update(GetFrameTime());
 
-            if (cur->checkCollision() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            // Khi click vào node, hiển thị NumberInputBox
+            if (!isEditingNode && cur->checkCollision() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 selectedNode = cur;
                 selectedBucketIdx = i;
-            }
-            if (selectedNode == cur && GetGestureDetected() == GESTURE_TAP && !cur->checkCollision()) {
-                int oldValue = selectedNode->getNumber();
-                int newValue = cur->getNumber();
-                if (oldValue != newValue) {
-                    hashtable.removeFromBucket(oldValue, selectedBucketIdx);
-                    hashtable.insertNode(newValue);
-                }
-                selectedNode = nullptr;
-                selectedBucketIdx = -1;
+                isEditingNode = true;
+
+                // Tạo NumberInputBox gần node
+                editValueInput = new NumberInputBox(3);
+                editValueInput->rect.x = cur->getCenterX() + 50;
+                editValueInput->rect.y = cur->getCenterY() - 20;
+                static_cast<NumberInputBox*>(editValueInput)->setNumber(cur->getNumber()); // Ép kiểu để gọi setNumber
+
+                // Tạo nút xác nhận
+                editValueConfirm = new TextBox(">");
+                editValueConfirm->rect.x = editValueInput->rect.x + editValueInput->rect.width + 10;
+                editValueConfirm->rect.y = editValueInput->rect.y;
+                editValueConfirm->onClick = [this, cur, i, &needUpdateHashTable, &newValue, &oldValue, &bucketIdx]() {
+                    newValue = static_cast<NumberInputBox*>(editValueInput)->getNumber();
+                    oldValue = cur->getNumber();
+                    bucketIdx = i;
+                    needUpdateHashTable = true; // Đánh dấu cần cập nhật hash table
+                    isEditingNode = false; // Kết thúc trạng thái chỉnh sửa
+                    };
             }
             cur = cur->next;
         }
     }
+
+    // Cập nhật NumberInputBox và nút xác nhận
+    if (editValueInput) {
+        editValueInput->update();
+    }
+    if (editValueConfirm) {
+        editValueConfirm->update();
+    }
+
+    // Xử lý cập nhật hash table sau khi vòng lặp duyệt node hoàn tất
+    if (needUpdateHashTable && newValue != oldValue) {
+        hashtable.removeFromBucket(oldValue, bucketIdx);
+        vector<int> values = hashtable.collectValues();
+        values.push_back(newValue);
+        hashtable.clear();
+        for (int val : values) {
+            hashtable.randomInsert(val);
+        }
+    }
+
+    // Xóa editValueInput và editValueConfirm nếu không còn chỉnh sửa
+    if (!isEditingNode && editValueInput) {
+        delete editValueInput;
+        editValueInput = nullptr;
+    }
+    if (!isEditingNode && editValueConfirm) {
+        delete editValueConfirm;
+        editValueConfirm = nullptr;
+    }
+
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
-    if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    if (!Button::isCollision && !isEditingNode) SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 
 void HashTableUI::updateSceneInCamera(Camera2D cam) {}
+
+void HashTableUI::clearIndicatesAndHighlights() {
+    hashtable.clearIndicates();
+    for (int i = 1; i < CodeBlocks.size(); i++) {
+        CodeBlocks[i]->unhighlight();
+    }
+}
+
+void HashTableUI::replayOperation() {
+    if (isInsert) {
+        animManager.clear();
+        hashtable.restoreAfterInsert(insertParameters.first, insertParameters.second);
+        int pos = -1;
+        hashtable.insertNode(CodeBlocks, animManager, insertParameters.first, pos);
+    }
+    else if (isRemove && removeParameters.second != -1) {
+        animManager.clear();
+        hashtable.randomInsert(removeParameters.first);
+        int pos = -1;
+        hashtable.remove(CodeBlocks, animManager, removeParameters.first, pos);
+    }
+}

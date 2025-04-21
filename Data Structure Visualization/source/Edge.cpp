@@ -136,8 +136,8 @@ void CBEdge::drawArrowEdge()
 void CBEdge::addEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
 	Edges.push_back(new CBEdge(from, to));
 }
-void CBEdge::removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
 
+void CBEdge::removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
 	for (int i = 0; i < Edges.size(); i++) {
 		if (Edges[i]->from == from && Edges[i]->to == to) {
 			CBEdge* del = Edges[i];
@@ -147,6 +147,15 @@ void CBEdge::removeEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton
 			return;
 		}
 	}
+}
+CBEdge* CBEdge::findEdge(vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
+	if (!from)return nullptr;
+	for (int i = 0; i < Edges.size(); i++) {
+		if (Edges[i]->from == from && Edges[i]->to == to) {
+			return Edges[i];
+		}
+	}
+	return nullptr;
 }
 
 void CBEdge::addEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& Edges, CircleButton* from, CircleButton* to) {
@@ -168,8 +177,8 @@ void CBEdge::removeEdgeAndAnim(AnimationManager& animManager, vector<CBEdge*>& E
 		}
 	}
 
-	// remove the edge before operation
-	animManager.addAnimation(new Animation(0.5, [&Edges, from, to]() {
+	 //remove the edge before operation
+	animManager.addAnimation(new RemoveEdgeInAnim(0.5, from,to,[&Edges, from, to]() {
 		removeEdge(Edges, from, to);
 		}));
 }

@@ -235,7 +235,7 @@ void TreapUI::fixViolation(stack<int>& visited) {
         if (v->leftEdge->to->getPriority() > v->getPriority()) {
             cerr << "left node has higher priority" << endl;
             treap.rotateRightAtSpecificNode(v->getKey());
-            treap.reposition(treap.root, ROOT_POS, xOffset, yOffset);
+            //treap.reposition(treap.root, ROOT_POS, xOffset, yOffset);
 
             unordered_map<int, Vector2> positions = treap.getAllPositions();
 
@@ -256,7 +256,7 @@ void TreapUI::fixViolation(stack<int>& visited) {
         if (v->rightEdge->to->getPriority() > v->getPriority()) {
             cerr << "right node has higher priority" << endl;
             treap.rotateLeftAtSpecificNode(v->getKey());
-            treap.reposition(treap.root, ROOT_POS, xOffset, yOffset);
+            //treap.reposition(treap.root, ROOT_POS, xOffset, yOffset);
 
             unordered_map<int, Vector2> positions = treap.getAllPositions();
 
@@ -446,6 +446,40 @@ void TreapUI::removeWithAnimation(int key) {
             }));
 
         animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+    }
+    // Two children
+    else {
+        if (del->leftEdge->to->getPriority() > del->rightEdge->to->getPriority()) {
+            treap.rotateRightAtSpecificNode(key);
+
+            unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+            vector<TreapNode*> move;
+            getNodesToMove(move, del);
+
+            animManager.addAnimation(new Animation(0.1f, [this, key]() {
+                this->root = rotateRightAtSpecificNode(this->root, key);
+                }));
+
+            animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+        }
+        else {
+            treap.rotateLeftAtSpecificNode(key);
+            
+            unordered_map<int, Vector2> positions = treap.getAllPositions();
+
+            vector<TreapNode*> move;
+            getNodesToMove(move, del);
+
+            animManager.addAnimation(new Animation(0.1f, [this, key]() {
+                this->root = rotateLeftAtSpecificNode(this->root, key);
+                }));
+
+            animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+        }
+        animManager.addAnimation(new Animation(1.0f, [this, key]() {
+            removeWithAnimation(key);
+            }));
     }
 }
 

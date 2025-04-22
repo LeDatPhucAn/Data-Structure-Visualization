@@ -12,28 +12,55 @@
 
 class TreapUI : public SceneManager {
 private:
-    //Treap treap;
-    TreapNode* root = nullptr;
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
+
+    Treap treap;
+    TreapNode* root = nullptr;
+    bool drawInsideTreap = false;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 8;
+
     TreapNode* rotateLeft(TreapNode* root);
     TreapNode* rotateRight(TreapNode* root);
+    TreapNode* search(TreapNode* root, int key);
+    TreapNode* searchForNode(int key);
+    void clear(TreapNode* root);
+
+    TreapNode* rotateLeftAtSpecificNode(TreapNode* curr, int key);
+    TreapNode* rotateRightAtSpecificNode(TreapNode* curr, int key);
+    TreapNode* removeSpecificNode(TreapNode* curr, int key);
+
+    TreapNode* insertBST(TreapNode* root, int key, int priority);
+    void makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited);
+    void fixViolation(stack<int>& visited);
+
+    void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
+
+    bool searchBeforeRemove(TreapNode* curr, int key);
+    void makeNodeDisappear(TreapNode* curr, int key);
+    void makeNodeDisappearWithAnimation(TreapNode* curr, int key);
+
+    void insertWithAnimation(int key, int priority);
+    void searchWithAnimation(TreapNode* curr, int key); 
+    void removeWithAnimation(int key);
+
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);
-    TreapNode* insert(TreapNode* root, Vector2 pos, int key, int priority);
-    void searchWithAnimation(TreapNode* curr, int key);
-    TreapNode* remove(TreapNode* root, int key);
-    void clear(TreapNode* root);
     void reposition(TreapNode* root, Vector2 pos, const int xOffset, const int yOffset);
+
+    TreapNode* cloneTree(TreapNode* root);
+
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);
+
+    void cleanupForOperations();
+
 public:
-    void insert(int key, int priority = rand());
     void loadFromFile();
+    void insert(int key, int priority = rand(), bool isAnimated = true);
     void remove(int key);
     void search(int key);
     void clear();
@@ -42,6 +69,8 @@ public:
     ~TreapUI() {
         Button::deleteButtons<RectButton>(Buttons);
         Button::deleteButtons<RectButton>(CodeBlocks);
+        treap.clear();
+        clear();
     }
     void init() override;
     void initButtons() override;
@@ -52,10 +81,12 @@ public:
 
     void displayScene() override;
     void resetAnimations() {};
+    void clearIndicatesAndHighlights() override {};
 
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
-        drawTreap(root);
+        if(drawInsideTreap) treap.drawTreap(treap.root);
+        else drawTreap(root);
     }
 
 };

@@ -55,13 +55,14 @@ private:
 		int current = -1;
 	};
 	std::vector<DijkstraState> dijkstraHistory;
-	int currentStep = 0;
+	
 	bool isDijkstraPlaying = false;
-
+	int currentStep = 0;
 	float radiusNode = 50.0f;
 	int maxID = 0;
 	set<int> deleteIds; // luu danh sach cac node bi xoa.
 public:
+	
 	Graph() : numberVertices(0), maxID(0), visited(numberVertices, false), cost(numberVertices, INF),
 		path(numberVertices, {}) {}
 	Graph(int numVertices) : numberVertices(numVertices), maxID(0) {
@@ -106,7 +107,7 @@ public:
 		visited.assign(n, false);
 		path.assign(n, {});
 	}
-	void drawDijkstraTable();
+	void drawDijkstraTable(int current);
 	void drawDijkstra() {
 		if (!drawDijk) {
 			drawDijk = true;
@@ -115,6 +116,8 @@ public:
 			drawDijk = false;
 		}
 	}
+	void setCurrentStep() { currentStep--; }
+	int getCurrentStep() { return currentStep; }
 	bool getDrawDijkstra() { return drawDijk; }
 	vector<GraphNode*> ListNodeOnGraph() { return nodes; }
 	vector<EdgeOfGraph*> ListEdgeOnGraph() { return edges; }

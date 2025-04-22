@@ -10,9 +10,13 @@ protected:
     bool hidden = false;
     vector<RectButton*> CodeBlocks;
     vector<RectButton*> buttonsOnGraph;
-
+    int dijkstraParameters;
+    int tableDijkParameters;
+	int HighlightTableParameters;
     Graph* graph = nullptr;
 public:
+	static bool isDijkstra;
+	static bool isDijkstraTable;
     GraphUI() {
         graph = new Graph();
         init();
@@ -29,6 +33,12 @@ public:
         for (Button* codeBlock : CodeBlocks) delete codeBlock;
         CodeBlocks.clear();
     }
+    void cleanUpForOperation() {
+        animManager.goToLastStep();
+        animManager.clear();
+        animManager.resume();
+    }
+    void replayOperation() override;
     void Dijkstra(int n);
     void DijkstraTable();
     void init() override;

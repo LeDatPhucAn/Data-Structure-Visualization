@@ -2,23 +2,47 @@
 #include "../header/Animation.h"
 #include "../header/PseudoCode.h"
 #include "../header/Graph.h"
+
+bool GraphUI::isDijkstra = false;
+bool GraphUI::isDijkstraTable = false;
+
 void GraphUI::init() {
 	//buttonsOnGraph.push_back(new TextBox("Menu", 50, 50));
 	initButtons();
 }
 void GraphUI::Dijkstra(int n) {
-	animManager.clear();
+	cleanUpForOperation();
+	isDijkstra = true;
+	isDijkstraTable = false;
+	dijkstraParameters = n;
 	graph->DijkstraAnim(CodeBlocks, animManager, n);
 }
 void GraphUI::DijkstraTable() {
-	animManager.clear();
-	graph->drawDijkstraTable();
+	cleanUpForOperation();
+	isDijkstra = false;
+	isDijkstraTable = true;
+
+	tableDijkParameters = graph->getCurrentStep();
+	graph->drawDijkstraTable(tableDijkParameters);
+}
+void GraphUI::replayOperation() {
+	if (isDijkstra) {
+		animManager.goToLastStep();
+		animManager.clear();
+		graph->DijkstraAnim(CodeBlocks, animManager, dijkstraParameters);
+	}
+	else if (isDijkstraTable) {
+		animManager.goToLastStep();
+		animManager.clear();
+		graph->setCurrentStep();
+		graph->drawDijkstraTable(graph->getCurrentStep());
+	}
 }
 void GraphUI::displayScene() {
 	Button::drawButtons<RectButton>(buttonsOnGraph);
 	Button::drawButtons<RectButton>(CodeBlocks);
 	
-	graph->drawDijkstraTable();
+	graph->drawDijkstraTable(graph->getCurrentStep());
 
 }
 void GraphUI::updateScene() {

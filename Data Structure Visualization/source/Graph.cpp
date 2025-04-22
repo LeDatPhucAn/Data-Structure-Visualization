@@ -282,14 +282,14 @@ void Graph::initGraph(int n) {
 	setNumberOfVertices(n);
 	calculatePositions(n);
 	for (int i = 0; i < n; ++i) {
-		nodes.push_back(new GraphNode(i + 1, position[i], radiusNode));
-		maxID = std::max(maxID, i + 1);
+		nodes.push_back(new GraphNode(i, position[i], radiusNode));
+		maxID = std::max(maxID, i);
 	}
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			if (i < j && !inputs[i][j].empty()) {
-				int id1 = i + 1;
-				int id2 = j + 1;
+				int id1 = i;
+				int id2 = j;
 				float weight = std::stof(inputs[i][j]);
 				if (weight > 0) {
 					addEdge(id1, id2, weight);
@@ -381,7 +381,10 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			}));
 		for (int j = 0; j < n; ++j) {
 			if (!visited[j]) {
-				animManager.addAnimation(new DijkstraCellHighlightAnim(j, 2, 0.3f, RED));
+				animManager.addAnimation(new DijkstraCellHighlightAnim(j, 2, 0.3f, RED, [this]() {
+					//currentStep++;
+					}));
+				//saveDijkstraState(j);
 			}
 		}
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
@@ -522,16 +525,24 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 				}));
 
 		}
-		
-		animManager.addAnimation(new Animation(0.1f, [u, this]() {
-			nodes[u]->indicateNode = "";
-			
-			}));
 		animManager.addAnimation(new CircleHighLightAnim(nodes[u], 0.5f, GREEN, RAYWHITE, GREEN, [u, this]() {
 			nodes[u]->indicateNode = "Visited";
 			currentStep++;
 			}));
 		saveDijkstraState(u);
+		/*
+		animManager.addAnimation(new Animation(0.1f, [u, this]() {
+			nodes[u]->indicateNode = "";
+			
+			}));
+			*/
+		/*
+		animManager.addAnimation(new CircleHighLightAnim(nodes[u], 0.5f, GREEN, RAYWHITE, GREEN, [u, this]() {
+			nodes[u]->indicateNode = "Visited";
+			currentStep++;
+			}));
+		saveDijkstraState(u);
+		*/
 	}
 	
 	

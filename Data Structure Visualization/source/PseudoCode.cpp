@@ -44,13 +44,18 @@ namespace PseudoCode {
 
 
     std::string TreapInsert =
-        "If tree is empty, create new node with key and priority\n"
-        "If key < current node's key:\n"
-        "  Insert into left subtree\n"
-        "  If left child's priority > current node's priority, rotate right\n"
-        "Else:\n"
-        "  Insert into right subtree\n"
-        "  If right child's priority > current node's priority, rotate left\n";
+        "if(!root)\n"
+        "   return node(key, priority)\n"
+        "if(root->key == key)\n"
+        "   return root\n"
+        "else if(root->key > key)\n"
+        "   root->left = insert(root->left, key, priority)\n"
+        "   if(root->left->priority > root->priority)\n"
+        "       root = rotateRight(root)\n"
+        "else if(root->key < key)\n"
+        "   root->right = insert(root->right, key, priority)\n"
+        "   if(root->right->priority > root->priority)\n"
+        "       root = rotateLeft(root)\n";
 
     std::string TreapRemove =
         "If tree is empty, return\n"

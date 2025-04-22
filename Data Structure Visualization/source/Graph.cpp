@@ -376,7 +376,7 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 
 	for (int i = 0; i < n; ++i) {
 		//Find node with min cost
-		animManager.addAnimation(new Animation(0.5f, [&CodeBlocks, this] {
+		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
 			CodeBlocks[1]->highlight();
 			}));
 		for (int j = 0; j < n; ++j) {

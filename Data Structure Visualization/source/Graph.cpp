@@ -415,6 +415,7 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			currentStep++; 
 			});
 		saveDijkstraState(u);
+		
 		animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED));
 		animManager.addAnimation(nodeU);
 
@@ -423,8 +424,11 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			CodeBlocks[3]->highlight();
 			currentStep++;
 			});
-		animManager.addAnimation(CellU);
+		
 		saveDijkstraState(u);
+		animManager.addAnimation(CellU);
+
+		//saveDijkstraState(u);
 		//animManager.addAnimation(new DijkstraCellHighlightAnim(u, 1, 0.3f, RED));
 		visited[u] = true;
 		// Mark visited
@@ -477,16 +481,20 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 				
 					}));
 				saveDijkstraState(v);
+				
 
 				animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [&CodeBlocks, this]() {
 					CodeBlocks[4]->highlight();
-					currentStep++;
+					//currentStep++;
 					}));
-				saveDijkstraState(u);
+				//saveDijkstraState(u);
+		
 				animManager.addAnimation(new DijkstraCellHighlightAnim(v, 2, 0.3f, RED, [this]() {
-					currentStep++;
+					//currentStep++;
 					}));
-				saveDijkstraState(v);
+				//saveDijkstraState(v);
+				
+
 				//animManager.addAnimation(new GEdgeHighlightAnim(edge, 0.5f, RED));
 				//animManager.addAnimation(new GEdgeHighlightAnim(edge, 1));
 				//EdgeOfGraph::addEdgeAndAnim(animManager, edges, nodes[u], nodes[v]);
@@ -601,15 +609,15 @@ void Graph::Dijkstra(int startID) {
 
 }
 
-void Graph::drawDijkstraTable() {
+void Graph::drawDijkstraTable(int current) {
 	//if (drawDijk && !dijkstraHistory.empty()) 
 	if (drawDijk && !dijkstraHistory.empty())
 	{
 		//std::cout << "[Draw] Drawing Step: " << currentStep << std::endl;
-		if (currentStep >= dijkstraHistory.size()) {
-			currentStep = dijkstraHistory.size() - 1; 
+		if (current >= dijkstraHistory.size()) {
+			current = dijkstraHistory.size() - 1; 
 		}
-		const DijkstraState& state = dijkstraHistory[currentStep];
+		const DijkstraState& state = dijkstraHistory[current];
 
 		int n = state.cost.size();
 		const float cellWidth = 100;

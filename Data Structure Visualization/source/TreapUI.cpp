@@ -329,10 +329,9 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
         return;
     }
 
-    //animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
-
     if (curr->getKey() == key) {
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[3]->highlight();
             }));
@@ -340,10 +339,10 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
             unhighlightAllCodeBlocks();
             CodeBlocks[4]->highlight();
             }));
-        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
     }
     else if (curr->getKey() > key) {
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[5]->highlight();
             }));
@@ -352,7 +351,7 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[6]->highlight();
                 }));
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f));          
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 1.75f));          
             searchWithAnimation(curr->leftEdge->to, key);
         }
         else {
@@ -368,7 +367,7 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
         }
     }
     else {       
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[7]->highlight();
             }));
@@ -377,7 +376,7 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[8]->highlight();
                 }));
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 1.75f));
             searchWithAnimation(curr->rightEdge->to, key);
         }
         else {

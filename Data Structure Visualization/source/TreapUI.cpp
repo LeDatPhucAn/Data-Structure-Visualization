@@ -306,16 +306,6 @@ void TreapUI::insertWithAnimation(int key, int priority) {
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 }
 
-
-//"if(!curr)\n"
-//"   return false\n"
-//"if(curr->key == key)\n"
-//"   return true\n"
-//"if(curr->key > key)\n"
-//"   return search(curr->left)\n"
-//"if(curr->key < key)\n"
-//"   return search(curr->right)\n"
-
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     if (!curr) {
         animManager.addAnimation(new Animation(0.5f, [this]() {
@@ -683,6 +673,7 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
     if (isAnimated) {
         clear();
         this->root = cloneTree(treap.root);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         insertWithAnimation(key, priority);
     }
     else {

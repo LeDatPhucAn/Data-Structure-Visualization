@@ -58,8 +58,8 @@ namespace PseudoCode {
         "       root = rotateLeft(root)\n";
 
     std::string TreapRemove =
-        "If tree is empty, return\n"
-        "If key < current node's key, remove from left subtree\n"
+        "if(!root) return nullptr\n"
+        "if(root->key > key)\n"
         "Else if key > current node's key, remove from right subtree\n"
         "Else (current node's key == key):\n"
         "  If node has no children, delete it\n"

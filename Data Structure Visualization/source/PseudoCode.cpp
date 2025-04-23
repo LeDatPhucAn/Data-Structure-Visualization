@@ -59,17 +59,19 @@ namespace PseudoCode {
 
     std::string TreapRemove =
         "if(!root) return nullptr\n"
-        "if(root->key > key)\n"
-        "Else if key > current node's key, remove from right subtree\n"
-        "Else (current node's key == key):\n"
-        "  If node has no children, delete it\n"
-        "  Else if node has only left child, replace with left child\n"
-        "  Else if node has only right child, replace with right child\n"
-        "  Else:\n"
-        "    If left child's priority > right child's priority\n" 
-        "       Rotate right and remove from right subtree\n"
-        "    Else, rotate left and remove from left subtree\n";
-
+        "if(root->key > key) root->left = remove(root->left, key)\n"
+        "else if(root->key < key) root->right = remove(root->right, key)\n"
+        "else if(root->key == key)\n"
+        "   if(!root->left && !root->right) return nullptr\n"
+        "   else if(!root->left) return root->right\n"
+        "   else if(!root->right) return root->left\n"
+        "   else if(root->left && root->right)\n"
+        "       if(root->left->priority > root->right->priority)\n"
+        "           root = rotateRight(root)\n"
+        "           root->right = remove(root->right, key)\n"
+        "       else if(root->right->priority > root->left->priority)\n"
+        "           root = rotateLeft(root)\n"
+        "           root->left = remove(root->left, key)\n";
     std::string TreapSearch =
         "if(!curr)\n"
         "   return false\n"

@@ -737,6 +737,7 @@ void TreapUI::remove(int key) {
     cleanupForOperations();
     clear();
     this->root = cloneTree(treap.root);
+    RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
     if (!searchBeforeRemove(this->root, key)) return;
     removeWithAnimation(key);
 }

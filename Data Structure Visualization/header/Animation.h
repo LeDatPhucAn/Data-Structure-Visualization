@@ -330,7 +330,6 @@ public:
 };
 
 
-
 class NodeInitializeAnimation : public Animation {
 private:
 	Node* node;
@@ -361,6 +360,7 @@ public:
     void applyState() override;
     void resetColor() override;
 };
+
 
 class RectHighlight2Anim : public Animation {
 public:
@@ -459,3 +459,4 @@ public:
     MoveMultipleTreapNodesAnim(vector<TreapNode*> v, unordered_map<int, Vector2> m, float duration, function<void()> func = nullptr) : Animation(duration, func), nodesToMove(v), positions(m){}
     void applyState() override;
 };
+

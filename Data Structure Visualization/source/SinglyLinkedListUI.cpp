@@ -107,6 +107,7 @@ void SinglyLinkedListUI::initButtons() {
     RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
 
     /// Buttons
+
     RectButton::insertHeadButton(Buttons, new TextBox("Insert", 100, UI::screenHeight * 3 / 5));
     Buttons[0]->animation = new RectMoveXAnim(Buttons[0], 0.5);
 

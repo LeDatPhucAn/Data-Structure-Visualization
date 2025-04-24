@@ -333,6 +333,67 @@ void InputBox::draw() {
 }
 
 
+void DelayInputBox::update() {
+    if (GetGestureDetected() == GESTURE_TAP) {
+        inputHandler->temporaryText = inputHandler->getText();
+        inputHandler->setTexting(false);
+    }
+    if (!head || head->isActivated) {
+        Button::update();
+        if (checkCollision()) {
+            if (GetGestureDetected() == GESTURE_TAP) inputHandler->setTexting(true);
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                if (!head && isActivated) resetSubAni();
+            }
+        }
+        inputHandler->update();
+        if (inputHandler->isTexting() && IsKeyPressed(KEY_ENTER) && onClick) onClick();
+    }
+    if (next) next->update();
+}
+
+void DelayInputBox::draw() {
+    if (noDraw) return;
+    if (!head || head->isActivated) {
+        DrawRectangleRec(rect, FillColor);
+        string displayText;
+        if (inputHandler->isTexting()) {
+            displayText = inputHandler->temporaryText;
+
+            if ((inputHandler->getFramesCounter() / 20) % 2 == 0) {
+                displayText += "_";
+            }
+        }
+        else {
+            displayText = inputHandler->getText();
+        }
+
+        Vector2 textSize = MeasureTextEx(UI::font, displayText.c_str(), UI::fontSize, UI::spacing);
+        DrawText(displayText.c_str(), rect.x + rect.width / 2 - textSize.x / 2,
+            rect.y + rect.height / 2 - UI::fontSize / 2, UI::fontSize, TextColor);
+
+        DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
+    }
+}
+
+void DelayInputBox::hover() {
+    if (!isHovered) {
+        UI::darkenColor(FillColor, 30);
+        UI::darkenColor(TextColor, 30);
+        isHovered = true;
+    }
+    //OutLineColor = RED;
+}
+
+void DelayInputBox::unhover() {
+    if (isHovered) {
+        UI::lightenColor(FillColor, 30);
+        UI::lightenColor(TextColor, 30);
+        isHovered = false;
+    }
+    //OutLineColor = DARKGRAY;
+}
+
 // NumberInputBox::draw and update and clear inherits from InputBox
 
 // ### TextBox Methods
@@ -473,6 +534,7 @@ void InputCircle::draw() {
 
 Vector2 NumberInputBoxInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
 Vector2 NumberInputCircleInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
+Vector2 DelayNumberInputBoxInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
 
 void NumberInputCircleInCamera::Indicate(string Text){
     UI::drawtext2(Text, center.x, center.y + radius + 20, RED);

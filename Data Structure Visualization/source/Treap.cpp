@@ -3,13 +3,13 @@
 #include <math.h>
 
 TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
-    keyBox = new NumberInputBoxInCamera(3);
+    keyBox = new DelayNumberInputBoxInCamera(3);
     keyBox->setNumber(key);
     keyBox->FillColor = LIGHTGRAY;
     keyBox->TextColor = DARKGRAY;
     keyBox->OutLineColor = DARKGRAY;
 
-    priorityBox = new NumberInputBoxInCamera(3);
+    priorityBox = new DelayNumberInputBoxInCamera(3);
     priorityBox->setNumber(priority % 1000);
     priorityBox->FillColor = { 173, 216, 230, 255 }; // LIGHTBLUE
     priorityBox->TextColor = MAROON;

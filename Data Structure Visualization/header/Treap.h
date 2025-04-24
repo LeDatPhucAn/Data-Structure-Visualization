@@ -12,8 +12,8 @@ public:
     TreapEdge* rightEdge;
     int subtreeWidth;
     bool noDraw = false;
-	NumberInputBox* keyBox = nullptr;
-    NumberInputBox* priorityBox = nullptr;
+	DelayNumberInputBox* keyBox = nullptr;
+    DelayNumberInputBox* priorityBox = nullptr;
 
     TreapNode(int key, int priority, Vector2 pos);
     ~TreapNode();

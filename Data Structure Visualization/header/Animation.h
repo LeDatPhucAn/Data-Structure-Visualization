@@ -346,11 +346,11 @@ public:
 
 class RectHighlightAnim : public Animation {
 public:
-    NumberInputBox* button;
+    DelayNumberInputBox* button;
     Color startFill, endFill;
     Color startOutline, endOutline;
     Color startText, endText;
-    RectHighlightAnim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+    RectHighlightAnim(DelayNumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
         startFill = b->FillColor;
         startOutline = b->OutLineColor;
         startText = b->TextColor;
@@ -364,11 +364,11 @@ public:
 
 class RectHighlight2Anim : public Animation {
 public:
-    NumberInputBox* button;
+    DelayNumberInputBox* button;
     Color startFill, endFill;
     Color startOutline, endOutline;
     Color startText, endText;
-    RectHighlight2Anim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+    RectHighlight2Anim(DelayNumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
         startFill = b->FillColor;
         startOutline = b->OutLineColor;
         startText = b->TextColor;

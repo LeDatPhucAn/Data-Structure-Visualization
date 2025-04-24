@@ -2,6 +2,8 @@
 #include "sstream"
 #include "../header/tinyfiledialogs.h"
 #include "../header/Graph.h"
+#include "../header/Animation.h"
+
 void Graph::adjustPosWithAnim2(AnimationManager& animManager) {
 	
 }

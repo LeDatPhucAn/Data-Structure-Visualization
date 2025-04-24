@@ -74,9 +74,9 @@ void TreapEdgeHighlightAnim::applyState() {
     edge->edgeColor = UI::interpolateColors(start, end, easedT);
 }
 
-//void TreapEdgeHighlightAnim::resetColor() {
-//    edge->edgeColor = start;
-//}
+void TreapEdgeHighlightAnim::resetColor() {
+    edge->edgeColor = start;
+}
 
 void CBEdgeHighLightAnim::applyState() {
 	edge->noDraw = false; 
@@ -165,10 +165,10 @@ void RectHighlightAnim::resetColor() {
 //    edge->edgeColor = UI::interpolateColors(start, end, easedT);
 //}
 
-void TreapEdgeHighlightAnim::resetColor() {
-    if (!edge) return;
-    edge->edgeColor = start;
-}
+//void TreapEdgeHighlightAnim::resetColor() {
+//    if (!edge) return;
+//    edge->edgeColor = start;
+//}
 
 void TreapEdgeHighlight2Anim::applyState() {
     float easedT = EaseSineInOut(elapsed, 0.0f, 1.0f, duration);

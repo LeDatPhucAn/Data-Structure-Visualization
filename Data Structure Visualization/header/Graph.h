@@ -8,7 +8,6 @@
 #include "Button.h"
 #include "GraphEdge.h"
 #include "PseudoCode.h"
-#include "Animation.h"
 /*
 enum class InitStateOfGraph {
 	InputMatrix,

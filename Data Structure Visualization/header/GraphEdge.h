@@ -1,14 +1,10 @@
 #pragma once
 #include "Graph.h"
 #include "raylib.h"
-#include "Button.h"
-#include "Animation.h"
 #include "reasings.h"
-#include "SceneManager.h"
 #include <vector>
-
+#include "Animation.h"
 class CircleButton;
-class Animation;
 class EdgeOfGraph {
 protected:
 	

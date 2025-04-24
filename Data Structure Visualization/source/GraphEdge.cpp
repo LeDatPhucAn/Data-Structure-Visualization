@@ -1,4 +1,7 @@
 #include "../header/GraphEdge.h"
+#include "../header/Button.h"
+
+
 void EdgeOfGraph::drawEdge() {
 	if (!from || !to) return;
 	float a = from->getCenterX();

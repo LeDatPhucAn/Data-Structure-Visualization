@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "SceneHandler.h"
 #include "Button.h"
-#include "Graph.h" // Assuming you have this class
+#include "Graph.h"
 
 class GraphUI : public SceneManager, public Graph {
 protected:

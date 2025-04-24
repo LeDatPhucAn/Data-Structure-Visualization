@@ -49,6 +49,71 @@ public:
     int getFramesCounter() const { return framesCounter; }
 };
 
+class DelayInputHandler {  
+protected:  
+   std::string inputText;  
+   bool texting;  
+   double lastDeletedTime;  
+   int maxChars;  
+   int framesCounter;  
+
+public:  
+   std::string temporaryText;  
+   DelayInputHandler(int maxCh)  
+       : inputText(""), temporaryText(""), texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {  
+   }  
+
+   virtual ~DelayInputHandler() {} 
+
+   virtual bool isAllowedChar(char c) const { return c >= 32 && c <= 125; } // Printable ASCII  
+
+   virtual void update() {  
+       framesCounter++;  
+       if (!texting) return;  
+
+       int key = GetCharPressed();  
+       while (key > 0) {  
+           if (isAllowedChar(static_cast<char>(key)) && temporaryText.size() < maxChars) {  
+               temporaryText += static_cast<char>(key);  
+           }  
+           key = GetCharPressed();  
+       }  
+
+       double currentTime = GetTime();  
+       if (IsKeyPressed(KEY_BACKSPACE) && currentTime - lastDeletedTime >= 0.1 && !temporaryText.empty()) {  
+           temporaryText.pop_back();  
+           lastDeletedTime = currentTime;  
+       }  
+
+       if (IsKeyPressed(KEY_ENTER)) {  
+           finalizeInput();  
+       }  
+   }  
+   void setText(string s) {  
+       inputText = s;  
+       temporaryText = s;  
+   }  
+   const std::string& getText() const {  
+       return inputText;  
+   }  
+   bool isTexting() const {  
+       return texting;  
+   }  
+   void setTexting(bool state) {  
+       texting = state;  
+       if (state)  temporaryText = inputText;  
+   }  
+   void finalizeInput() {  
+       inputText = temporaryText;  
+       texting = false;  
+   }  
+   virtual void clear() {  
+       inputText.clear();  
+       temporaryText.clear();  
+   }  
+   int getFramesCounter() const { return framesCounter; }  
+};
+
 // ### NumericInputHandler Subclass
 // used for inputNumber
 class NumericInputHandler : public InputHandler {
@@ -59,6 +124,17 @@ public:
     int getNumber() const { 
         return getText().empty() ? 0 : std::stoi(getText()); }
 };
+
+class DelayNumericInputHandler : public DelayInputHandler {
+public:
+    DelayNumericInputHandler(int maxCh) : DelayInputHandler(maxCh) {}
+    bool isAllowedChar(char c) const override { return c >= '0' && c <= '9'; }
+
+    int getNumber() const {
+        return getText().empty() ? 0 : std::stoi(getText());
+    }
+};
+
 class Animation;
 class Button {
 public:
@@ -266,6 +342,30 @@ public:
     }
 };
 
+class DelayInputBox : public RectButton {
+public:
+    std::unique_ptr<DelayInputHandler> inputHandler;
+    DelayInputBox(int maxCh, float x = 0, float y = 0,
+        Color tc = MAROON, Color fc = LIGHTGRAY, Color olc = DARKGRAY)
+        : RectButton(x, y, 0, 0, tc, fc, olc),
+        inputHandler(std::make_unique<DelayInputHandler>(maxCh)) {
+        Vector2 textSize = UI::getMaxTextSize(maxCh - 1);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+
+    void update() override;
+    void draw() override;
+    void hover() override;
+    void unhover() override;
+    virtual void clear() {
+        inputHandler->clear();
+    }
+    void setCursor() override {
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    }
+};
+
 // Uses RectButton and Number Input Handler to create a button with text
 class NumberInputBox : public InputBox {
 public:
@@ -290,12 +390,45 @@ public:
     }
 };
 
+class DelayNumberInputBox : public DelayInputBox {
+public:
+    DelayNumberInputBox(int maxCh, float x = 0, float y = 0,
+        Color tc = MAROON, Color fc = LIGHTGRAY, Color olc = DARKGRAY)
+        : DelayInputBox(maxCh, x, y, tc, fc, olc) {
+        inputHandler = std::make_unique<DelayNumericInputHandler>(maxCh);
+        Vector2 textSize = UI::getMaxTextSize(maxCh + 2);
+        rect.width = textSize.x + padding;
+        rect.height = textSize.y + padding;
+    }
+
+    int getNumber() const { return dynamic_cast<DelayNumericInputHandler*>(inputHandler.get())->getNumber(); }
+    void setNumber(int x) {
+        inputHandler->setText(std::to_string(x));
+    }
+    const int getWidth() const {
+        return rect.width;
+    }
+    const int getHeight() const {
+        return rect.height;
+    }
+};
+
 // NumberInputBoxInCamera is NumberInputBox but uses the camera position to get the mouse position
 class NumberInputBoxInCamera : public NumberInputBox {
 public:
     NumberInputBoxInCamera(int maxCh, float x = 0, float y = 0,
         Color tc = MAROON, Color fc = LIGHTGRAY, Color olc = DARKGRAY)
         : NumberInputBox(maxCh, x, y, tc, fc, olc) {
+    }
+
+    Vector2 getMousePos() const override;
+};
+
+class DelayNumberInputBoxInCamera : public DelayNumberInputBox {
+public:
+    DelayNumberInputBoxInCamera(int maxCh, float x = 0, float y = 0,
+        Color tc = MAROON, Color fc = LIGHTGRAY, Color olc = DARKGRAY)
+        : DelayNumberInputBox(maxCh, x, y, tc, fc, olc) {
     }
 
     Vector2 getMousePos() const override;

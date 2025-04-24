@@ -14,6 +14,7 @@ class TreapUI : public SceneManager {
 private:
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
+    vector<TreapNode*> trashbin;
 
     Treap treap;
     TreapNode* root = nullptr;
@@ -52,6 +53,8 @@ private:
 
     TreapNode* cloneTree(TreapNode* root);
 
+    void unhighlightAllCodeBlocks();
+
     void drawTreapNode(TreapNode* curr);
     void drawTreapEdge(TreapEdge* edge);
     void drawTreap(TreapNode* curr);
@@ -71,6 +74,9 @@ public:
         Button::deleteButtons<RectButton>(CodeBlocks);
         treap.clear();
         clear();
+        for (TreapNode* curr : trashbin) {
+            clear(curr);
+        }
     }
     void init() override;
     void initButtons() override;

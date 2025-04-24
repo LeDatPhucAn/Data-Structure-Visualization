@@ -3,14 +3,16 @@
 #include <math.h>
 
 TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
-    keyBox = new NumberInputBoxInCamera(3);
+    keyBox = new DelayNumberInputBoxInCamera(3);
     keyBox->setNumber(key);
+    originalKey = key;
     keyBox->FillColor = LIGHTGRAY;
     keyBox->TextColor = DARKGRAY;
     keyBox->OutLineColor = DARKGRAY;
 
-    priorityBox = new NumberInputBoxInCamera(3);
+    priorityBox = new DelayNumberInputBoxInCamera(3);
     priorityBox->setNumber(priority % 1000);
+    originalPriority = priority % 1000;
     priorityBox->FillColor = { 173, 216, 230, 255 }; // LIGHTBLUE
     priorityBox->TextColor = MAROON;
     priorityBox->OutLineColor = DARKGRAY;
@@ -39,6 +41,15 @@ int TreapNode::getPriority() const {
 
 void TreapNode::setPriority(int p) {
     priorityBox->setNumber(p);
+}
+
+bool TreapNode::isModified() const {
+    return getKey() != originalKey || getPriority() != originalPriority;
+}
+
+void TreapNode::updateOriginalValues() {
+    originalKey = getKey();
+    originalPriority = getPriority();
 }
 
 void TreapNode::syncPosition() {

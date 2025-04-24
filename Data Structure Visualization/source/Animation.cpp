@@ -54,30 +54,6 @@ void CircleHighLightAnim::applyState() {
     button->OgOutLineColor = UI::interpolateColors(startRC, endRC, easedT);
 }
 
-void RectHighlightAnim::applyState() {
-    button->noDraw = false;
-    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
-    button->TextColor = UI::interpolateColors(startText, endText, easedT);
-    button->FillColor = UI::interpolateColors(startFill, endFill, easedT);
-    button->OutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
-}
-
-//void RectHighlightAnim::resetColor() {
-//    button->FillColor = startFill;
-//    button->OutLineColor = startOutline;
-//    button->TextColor = startText;
-//}
-
-void TreapEdgeHighlightAnim::applyState() {
-    edge->noDraw = false;
-    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
-    edge->edgeColor = UI::interpolateColors(start, end, easedT);
-}
-
-void TreapEdgeHighlightAnim::resetColor() {
-    edge->edgeColor = start;
-}
-
 void CBEdgeHighLightAnim::applyState() {
 	edge->noDraw = false; 
     float easedT = EaseSineIn(elapsed, 0, 1.0f, duration);

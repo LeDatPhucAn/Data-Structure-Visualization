@@ -345,11 +345,11 @@ public:
 
 class RectHighlightAnim : public Animation {
 public:
-    NumberInputBox* button;
+    DelayNumberInputBox* button;
     Color startFill, endFill;
     Color startOutline, endOutline;
     Color startText, endText;
-    RectHighlightAnim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+    RectHighlightAnim(DelayNumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
         startFill = b->FillColor;
         startOutline = b->OutLineColor;
         startText = b->TextColor;
@@ -364,11 +364,11 @@ public:
 
 class RectHighlight2Anim : public Animation {
 public:
-    NumberInputBox* button;
+    DelayNumberInputBox* button;
     Color startFill, endFill;
     Color startOutline, endOutline;
     Color startText, endText;
-    RectHighlight2Anim(NumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
+    RectHighlight2Anim(DelayNumberInputBox* b, float duration, Color fill = ORANGE, Color outline = RED, Color text = BLACK, std::function<void()> func = nullptr) : Animation(duration, func), button(b) {
         startFill = b->FillColor;
         startOutline = b->OutLineColor;
         startText = b->TextColor;
@@ -383,17 +383,18 @@ class TreapEdgeHighlightAnim : public Animation {
 public:
     TreapEdge* edge;
     Color start, end;
-    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
+    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(e->edgeColor), end(ec) {}
     void applyState() override;
     void resetColor() override;
 };
 
-class TreapEdgeHighlight2Anim : public Animation {
-public:
-    TreapEdge* edge;
-    Color start, end;
-    TreapEdgeHighlight2Anim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
-    void applyState() override;
+class TreapEdgeHighlight2Anim : public Animation {  
+public:  
+   TreapEdge* edge;  
+   Color start, end;  
+   TreapEdgeHighlight2Anim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr)  
+       : Animation(duration, func), edge(e), start(e->edgeColor), end(ec) {}  
+   void applyState() override;  
 };
 
 #include "Treap.h"

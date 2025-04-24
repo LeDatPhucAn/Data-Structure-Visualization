@@ -180,6 +180,14 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
     if (!curr) return;
 
     if (curr->getKey() == key) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[1]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[2]->highlight();
+            }));
         TreapNode* target = curr;
         target->keyBox->noDraw = true;
         target->priorityBox->noDraw = true;
@@ -193,21 +201,37 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
     }
 
     visited.push(curr->getKey());
-    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+    //animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() > key) {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[5]->highlight();
+            }));
         if (curr->leftEdge && curr->leftEdge->to) {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[6]->highlight();
+                }));
             TreapEdge* edge = curr->leftEdge;
             if (edge->to->getKey() == key) edge->noDraw = true;
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f, ORANGE, [edge]() {edge->noDraw = false; }));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 1.75f, ORANGE, [edge]() {edge->noDraw = false; }));
             makeNewNodeAppear(curr->leftEdge->to, key, visited);
         }
     }
     else if (curr->getKey() < key) {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[9]->highlight();
+            }));
         if (curr->rightEdge && curr->rightEdge->to) {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[10]->highlight();
+                }));
             TreapEdge* edge = curr->rightEdge;
             if (edge->to->getKey() == key) edge->noDraw = true;
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f, ORANGE, [edge]() {edge->noDraw = false; }));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 1.75f, ORANGE, [edge]() {edge->noDraw = false; }));
             makeNewNodeAppear (curr->rightEdge->to, key, visited);
         }
     }
@@ -229,11 +253,15 @@ void TreapUI::fixViolation(stack<int>& visited) {
 
     cerr << "Handling node with key " << v->getKey() << endl;
     bool hasRotated = false;
-    animManager.addAnimation(new RectHighlight2Anim(v->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+    animManager.addAnimation(new RectHighlight2Anim(v->priorityBox, 1.75f, ORANGE, DARKGRAY, WHITE));
 
     if (v->leftEdge && v->leftEdge->to) {
         if (v->leftEdge->to->getPriority() > v->getPriority()) {
-            animManager.addAnimation(new RectHighlight2Anim(v->leftEdge->to->priorityBox, 3.0f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[7]->highlight();
+                }));
+            animManager.addAnimation(new RectHighlight2Anim(v->leftEdge->to->priorityBox, 1.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
             cerr << "left node has higher priority" << endl;
             treap.rotateRightAtSpecificNode(v->getKey());
 
@@ -241,6 +269,11 @@ void TreapUI::fixViolation(stack<int>& visited) {
 
             vector<TreapNode*> move;
             getNodesToMove(move, v);
+
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[8]->highlight();
+                }));
 
             animManager.addAnimation(new Animation(0.1f, [this, key]() {
                 this->root = rotateRightAtSpecificNode(this->root, key);
@@ -254,7 +287,11 @@ void TreapUI::fixViolation(stack<int>& visited) {
 
     if (!hasRotated && v->rightEdge && v->rightEdge->to) {
         if (v->rightEdge->to->getPriority() > v->getPriority()) {
-            animManager.addAnimation(new RectHighlight2Anim(v->rightEdge->to->priorityBox, 3.0f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[11]->highlight();
+                }));
+            animManager.addAnimation(new RectHighlight2Anim(v->rightEdge->to->priorityBox, 1.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
             cerr << "right node has higher priority" << endl;
             treap.rotateLeftAtSpecificNode(v->getKey());
 
@@ -262,6 +299,11 @@ void TreapUI::fixViolation(stack<int>& visited) {
 
             vector<TreapNode*> move;
             getNodesToMove(move, v);
+
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[12]->highlight();
+                }));
 
             animManager.addAnimation(new Animation(0.1f, [this, key]() {
                 this->root = rotateLeftAtSpecificNode(this->root, key);
@@ -307,42 +349,112 @@ void TreapUI::insertWithAnimation(int key, int priority) {
 }
 
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
-    if (!curr) return;
-
-    cout << "Compare with " << curr->getKey() << endl;
-    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+    if (!curr) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[1]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[2]->highlight();
+            }));
+        return;
+    }
 
     if (curr->getKey() == key) {
-        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[3]->highlight();
+            }));
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[4]->highlight();
+            }));
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
     }
     else if (curr->getKey() > key) {
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[5]->highlight();
+            }));
         if (curr->leftEdge) {
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[6]->highlight();
+                }));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 1.75f));          
             searchWithAnimation(curr->leftEdge->to, key);
         }
+        else {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[5]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[6]->highlight();
+                }));
+            searchWithAnimation(nullptr, key);
+        }
     }
-    else {
+    else {       
+        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[7]->highlight();
+            }));
         if (curr->rightEdge) {
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[8]->highlight();
+                }));
+            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 1.75f));
             searchWithAnimation(curr->rightEdge->to, key);
+        }
+        else {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[7]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[8]->highlight();
+                }));
+            searchWithAnimation(nullptr, key);
         }
     }
 }
 
 bool TreapUI::searchBeforeRemove(TreapNode* curr, int key) {
-    if (!curr) return false;
+    if (!curr) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[1]->highlight();
+            }));
+        return false;
+    }
     
-    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[4]->highlight();
+            }));
         return true;
     }
     else if (curr->getKey() > key) {
-        if (curr->leftEdge && curr->leftEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 3.0f));
+        if (curr->leftEdge && curr->leftEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 1.75f, ORANGE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[2]->highlight();
+            }));
         return searchBeforeRemove(curr->leftEdge ? curr->leftEdge->to : nullptr, key);
     }
     else {
-        if (curr->rightEdge && curr->rightEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 3.0f));
+        if (curr->rightEdge && curr->rightEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 1.75f, ORANGE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[3]->highlight();
+            }));
         return searchBeforeRemove(curr->rightEdge ? curr->rightEdge->to : nullptr, key);
     }
 }
@@ -408,6 +520,10 @@ void TreapUI::removeWithAnimation(int key) {
     animManager.addAnimation(new RectHighlight2Anim(del->keyBox, 3.0f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
     // No child
     if ((!del->leftEdge || !del->leftEdge->to) && (!del->rightEdge || !del->rightEdge->to)) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[5]->highlight();
+            }));
         makeNodeDisappearWithAnimation(this->root, key);
         treap.remove(key);
         unordered_map<int, Vector2> positions = treap.getAllPositions();
@@ -419,6 +535,10 @@ void TreapUI::removeWithAnimation(int key) {
     }
     // Only right child
     else if (!del->leftEdge || !del->leftEdge->to) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[6]->highlight();
+            }));
         animManager.addAnimation(new RectHighlight2Anim(del->rightEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
         treap.remove(key);
         unordered_map<int, Vector2> positions = treap.getAllPositions();
@@ -437,6 +557,10 @@ void TreapUI::removeWithAnimation(int key) {
     }
     // Only left child
     else if (!del->rightEdge || !del->rightEdge->to) {
+        animManager.addAnimation(new Animation(0.5f, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[7]->highlight();
+            }));
         animManager.addAnimation(new RectHighlight2Anim(del->leftEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
         treap.remove(key);
         unordered_map<int, Vector2> positions = treap.getAllPositions();
@@ -456,7 +580,14 @@ void TreapUI::removeWithAnimation(int key) {
     // Two children
     else {
         if (del->leftEdge->to->getPriority() > del->rightEdge->to->getPriority()) {
-            animManager.addAnimation(new RectHighlight2Anim(del->leftEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+            animManager.addAnimation(new RectHighlight2Anim(del->leftEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[8]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[9]->highlight();
+                }));
             animManager.addAnimation(new RectHighlight2Anim(del->leftEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
             treap.rotateRightAtSpecificNode(key);
 
@@ -470,9 +601,25 @@ void TreapUI::removeWithAnimation(int key) {
                 }));
 
             animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[10]->highlight();
+                }));
+
+            animManager.addAnimation(new Animation(1.0f, [this, key]() {
+                removeWithAnimation(key);
+                }));
         }
         else {
-            animManager.addAnimation(new RectHighlight2Anim(del->rightEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE));
+            animManager.addAnimation(new RectHighlight2Anim(del->rightEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[11]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[12]->highlight();
+                }));
             animManager.addAnimation(new RectHighlight2Anim(del->rightEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
             treap.rotateLeftAtSpecificNode(key);
             
@@ -486,10 +633,16 @@ void TreapUI::removeWithAnimation(int key) {
                 }));
 
             animManager.addAnimation(new MoveMultipleTreapNodesAnim(move, positions, 1.5f));
+
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[13]->highlight();
+                }));
+
+            animManager.addAnimation(new Animation(1.0f, [this, key]() {
+                removeWithAnimation(key);
+                }));
         }
-        animManager.addAnimation(new Animation(1.0f, [this, key]() {
-            removeWithAnimation(key);
-            }));
     }
 }
 
@@ -544,6 +697,12 @@ TreapNode* TreapUI::cloneTree(TreapNode* root) {
     }
 
     return cloneRoot;
+}
+
+void TreapUI::unhighlightAllCodeBlocks() {
+    for (auto& c : CodeBlocks) {
+        c->unhighlight();
+    }
 }
 
 void TreapUI::drawTreapNode(TreapNode* curr) {
@@ -613,6 +772,7 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
     if (isAnimated) {
         clear();
         this->root = cloneTree(treap.root);
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         insertWithAnimation(key, priority);
     }
     else {
@@ -626,6 +786,7 @@ void TreapUI::search(int key) {
     cleanupForOperations();
     clear();
     this->root = cloneTree(treap.root);
+    RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
     searchWithAnimation(root, key);
 }
 
@@ -633,6 +794,7 @@ void TreapUI::remove(int key) {
     cleanupForOperations();
     clear();
     this->root = cloneTree(treap.root);
+    RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
     if (!searchBeforeRemove(this->root, key)) return;
     removeWithAnimation(key);
 }
@@ -738,8 +900,10 @@ void TreapUI::initButtons() {
 
     RectButton::insertHeadButton(Buttons, new TextBox(" Clear ",0,0, WHITE, { 214, 102, 49, 255 }, DARKGRAY));
     Buttons[5]->onClick = [this]() {
+        cleanupForOperations();
+        clear();
+        this->root = nullptr;
         treap.clear();
-        this->clear();
         };
 
     updateButtonPositions();
@@ -767,6 +931,15 @@ void TreapUI::updateScene() {
     std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {
         if (!node) return;
         node->update();
+        if (node->isModified()) {
+            //trashbin.push_back(this->root);
+            treap.remove(node->originalKey);
+            node->updateOriginalValues();
+            cleanupForOperations();
+            this->root = cloneTree(treap.root);
+            RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
+            insertWithAnimation(node->getKey(), node->getPriority());
+        }
         if (node->leftEdge) updateTreapNodes(node->leftEdge->to);
         if (node->rightEdge) updateTreapNodes(node->rightEdge->to);
         };

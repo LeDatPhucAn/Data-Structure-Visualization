@@ -44,32 +44,42 @@ namespace PseudoCode {
 
 
     std::string TreapInsert =
-        "If tree is empty, create new node with key and priority\n"
-        "If key < current node's key:\n"
-        "  Insert into left subtree\n"
-        "  If left child's priority > current node's priority, rotate right\n"
-        "Else:\n"
-        "  Insert into right subtree\n"
-        "  If right child's priority > current node's priority, rotate left\n";
+        "if(!root)\n"
+        "   return node(key, priority)\n"
+        "if(root->key == key)\n"
+        "   return root\n"
+        "else if(root->key > key)\n"
+        "   root->left = insert(root->left, key, priority)\n"
+        "   if(root->left->priority > root->priority)\n"
+        "       root = rotateRight(root)\n"
+        "else if(root->key < key)\n"
+        "   root->right = insert(root->right, key, priority)\n"
+        "   if(root->right->priority > root->priority)\n"
+        "       root = rotateLeft(root)\n";
 
     std::string TreapRemove =
-        "If tree is empty, return\n"
-        "If key < current node's key, remove from left subtree\n"
-        "Else if key > current node's key, remove from right subtree\n"
-        "Else (current node's key == key):\n"
-        "  If node has no children, delete it\n"
-        "  Else if node has only left child, replace with left child\n"
-        "  Else if node has only right child, replace with right child\n"
-        "  Else:\n"
-        "    If left child's priority > right child's priority\n" 
-        "       Rotate right and remove from right subtree\n"
-        "    Else, rotate left and remove from left subtree\n";
-
+        "if(!root) return nullptr\n"
+        "if(root->key > key) root->left = remove(root->left, key)\n"
+        "else if(root->key < key) root->right = remove(root->right, key)\n"
+        "else if(root->key == key)\n"
+        "   if(!root->left && !root->right) return nullptr\n"
+        "   else if(!root->left) return root->right\n"
+        "   else if(!root->right) return root->left\n"
+        "   if(root->left->priority > root->right->priority)\n"
+        "       root = rotateRight(root)\n"
+        "       root->right = remove(root->right, key)\n"
+        "   else if(root->right->priority > root->left->priority)\n"
+        "       root = rotateLeft(root)\n"
+        "       root->left = remove(root->left, key)\n";
     std::string TreapSearch =
-        "If tree is empty, return nullptr\n"
-        "If key == current node's key, return current node\n"
-        "If key < current node's key, search in left subtree\n"
-        "Else, search in right subtree\n";
+        "if(!curr)\n"
+        "   return false\n"
+        "if(curr->key == key)\n"
+        "   return true\n"
+        "else if(curr->key > key)\n"
+        "   return search(curr->left)\n"
+        "else if(curr->key < key)\n"
+        "   return search(curr->right)\n";
     
     std::string HashTableInsert =
         "Calculate index = value % size\n"

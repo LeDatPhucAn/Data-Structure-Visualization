@@ -900,8 +900,10 @@ void TreapUI::initButtons() {
 
     RectButton::insertHeadButton(Buttons, new TextBox(" Clear ",0,0, WHITE, { 214, 102, 49, 255 }, DARKGRAY));
     Buttons[5]->onClick = [this]() {
+        cleanupForOperations();
+        clear();
+        this->root = nullptr;
         treap.clear();
-        this->clear();
         };
 
     updateButtonPositions();
@@ -929,6 +931,15 @@ void TreapUI::updateScene() {
     std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {
         if (!node) return;
         node->update();
+        if (node->isModified()) {
+            //trashbin.push_back(this->root);
+            treap.remove(node->originalKey);
+            node->updateOriginalValues();
+            cleanupForOperations();
+            this->root = cloneTree(treap.root);
+            RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
+            insertWithAnimation(node->getKey(), node->getPriority());
+        }
         if (node->leftEdge) updateTreapNodes(node->leftEdge->to);
         if (node->rightEdge) updateTreapNodes(node->rightEdge->to);
         };

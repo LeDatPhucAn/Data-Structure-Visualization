@@ -299,7 +299,6 @@ void InputBox::unhover() {
 
 void InputBox::update() {
     if (GetGestureDetected() == GESTURE_TAP) {
-        //inputHandler->temporaryText = inputHandler->getText();
         inputHandler->setTexting(false);
     }
     if (!head || head->isActivated) {
@@ -320,26 +319,13 @@ void InputBox::draw() {
 	if (noDraw) return;
     if (!head || head->isActivated) {
         DrawRectangleRec(rect, FillColor);
-        string displayText;
-        if (inputHandler->isTexting()) {
-            displayText = inputHandler->temporaryText;
-
-            if ((inputHandler->getFramesCounter() / 20) % 2 == 0) {
-                displayText += "_";
-            }
-
-        } else {
-                displayText = inputHandler->getText();
+        if (inputHandler->isTexting() && (inputHandler->getFramesCounter() / 20) % 2 == 0) {
+            std::string underscore = inputHandler->getText() + "_";
+            Vector2 textSize = MeasureTextEx(UI::font, inputHandler->getText().c_str(), UI::fontSize, UI::spacing);
+            DrawText(underscore.c_str(), rect.x + rect.width / 2 - textSize.x / 2,
+                rect.y + rect.height / 2 - UI::fontSize / 2, UI::fontSize, TextColor);
         }
-            // std::string underscore = inputHandler->getText() + "_";
-            // Vector2 textSize = MeasureTextEx(UI::font, inputHandler->getText().c_str(), UI::fontSize, UI::spacing);
-            // DrawText(underscore.c_str(), rect.x + rect.width / 2 - textSize.x / 2,
-            //     rect.y + rect.height / 2 - UI::fontSize / 2, UI::fontSize, TextColor);
-            Vector2 textSize = MeasureTextEx(UI::font, displayText.c_str(), UI::fontSize, UI::spacing);
-            DrawText(displayText.c_str(), rect.x + rect.width / 2 - textSize.x / 2,
-                    rect.y + rect.height / 2 - UI::fontSize / 2, UI::fontSize, TextColor);
-
-        //else UI::drawtext2(inputHandler->getText(), rect.x + rect.width / 2, rect.y + rect.height / 2, TextColor);
+        else UI::drawtext2(inputHandler->getText(), rect.x + rect.width / 2, rect.y + rect.height / 2, TextColor);
 
         DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
     }

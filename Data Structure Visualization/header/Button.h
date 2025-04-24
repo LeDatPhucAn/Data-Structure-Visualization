@@ -15,9 +15,9 @@ protected:
     int framesCounter;
 
 public:
+    std::string temporaryText;  
     InputHandler(int maxCh)
-        : inputText(""), texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {
-    }
+        : inputText(""), temporaryText(""), texting(false), lastDeletedTime(0), maxChars(maxCh), framesCounter(0) {}
 
     virtual ~InputHandler() = default;
 
@@ -29,23 +29,41 @@ public:
 
         int key = GetCharPressed();
         while (key > 0) {
-            if (isAllowedChar(static_cast<char>(key)) && inputText.size() < maxChars) {
-                inputText += static_cast<char>(key);
+            if (isAllowedChar(static_cast<char>(key)) && temporaryText.size() < maxChars) {
+                temporaryText += static_cast<char>(key);
             }
             key = GetCharPressed();
         }
 
         double currentTime = GetTime();
-        if (IsKeyPressed(KEY_BACKSPACE) && currentTime - lastDeletedTime >= 0.1 && !inputText.empty()) {
-            inputText.pop_back();
+        if (IsKeyPressed(KEY_BACKSPACE) && currentTime - lastDeletedTime >= 0.1 && !temporaryText.empty()) {
+            temporaryText.pop_back();
             lastDeletedTime = currentTime;
         }
+
+        if (IsKeyPressed(KEY_ENTER)) {
+            inputText = temporaryText;
+            texting = false;
+        }
     }
-    void setText(string s) { inputText = s; }
-    const std::string& getText() const { return inputText; }
-    bool isTexting() const { return texting; }
-    void setTexting(bool state) { texting = state; }
-    virtual void clear() { inputText.clear(); }
+    void setText(string s) { 
+        inputText = s;
+        temporaryText = s; 
+    }
+    const std::string& getText() const { 
+        return inputText; 
+    }
+    bool isTexting() const { 
+        return texting; 
+    }
+    void setTexting(bool state) { 
+        texting = state; 
+        if(state)  temporaryText = inputText;
+    }
+    virtual void clear() { 
+        inputText.clear(); 
+        temporaryText.clear();
+    }
     int getFramesCounter() const { return framesCounter; }
 };
 

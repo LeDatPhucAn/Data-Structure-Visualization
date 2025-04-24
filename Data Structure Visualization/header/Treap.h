@@ -15,9 +15,6 @@ public:
 	NumberInputBox* keyBox = nullptr;
     NumberInputBox* priorityBox = nullptr;
 
-    int originalKey;
-    int originalPriority;
-
     TreapNode(int key, int priority, Vector2 pos);
     ~TreapNode();
 
@@ -25,8 +22,6 @@ public:
     void setKey(int key);
     int getPriority() const;
     void setPriority(int p);
-    bool isModified() const;
-    void updateOriginalValues();
 
     void syncPosition();
 	void setVisualPosition(float x, float y);

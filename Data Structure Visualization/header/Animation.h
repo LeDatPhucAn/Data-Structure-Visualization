@@ -383,17 +383,18 @@ class TreapEdgeHighlightAnim : public Animation {
 public:
     TreapEdge* edge;
     Color start, end;
-    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
+    TreapEdgeHighlightAnim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(e->edgeColor), end(ec) {}
     void applyState() override;
     void resetColor() override;
 };
 
-class TreapEdgeHighlight2Anim : public Animation {
-public:
-    TreapEdge* edge;
-    Color start, end;
-    TreapEdgeHighlight2Anim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr) : Animation(duration, func), edge(e), start(edge->edgeColor), end(ec) {}
-    void applyState() override;
+class TreapEdgeHighlight2Anim : public Animation {  
+public:  
+   TreapEdge* edge;  
+   Color start, end;  
+   TreapEdgeHighlight2Anim(TreapEdge* e, float duration, Color ec = ORANGE, function<void()> func = nullptr)  
+       : Animation(duration, func), edge(e), start(e->edgeColor), end(ec) {}  
+   void applyState() override;  
 };
 
 #include "Treap.h"

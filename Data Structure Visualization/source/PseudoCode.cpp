@@ -65,13 +65,12 @@ namespace PseudoCode {
         "   if(!root->left && !root->right) return nullptr\n"
         "   else if(!root->left) return root->right\n"
         "   else if(!root->right) return root->left\n"
-        "   else if(root->left && root->right)\n"
-        "       if(root->left->priority > root->right->priority)\n"
-        "           root = rotateRight(root)\n"
-        "           root->right = remove(root->right, key)\n"
-        "       else if(root->right->priority > root->left->priority)\n"
-        "           root = rotateLeft(root)\n"
-        "           root->left = remove(root->left, key)\n";
+        "   if(root->left->priority > root->right->priority)\n"
+        "       root = rotateRight(root)\n"
+        "       root->right = remove(root->right, key)\n"
+        "   else if(root->right->priority > root->left->priority)\n"
+        "       root = rotateLeft(root)\n"
+        "       root->left = remove(root->left, key)\n";
     std::string TreapSearch =
         "if(!curr)\n"
         "   return false\n"

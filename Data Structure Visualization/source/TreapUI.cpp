@@ -932,7 +932,7 @@ void TreapUI::updateScene() {
         if (!node) return;
         node->update();
         if (node->isModified()) {
-            //trashbin.push_back(this->root);
+            trashbin.push_back(this->root);
             treap.remove(node->originalKey);
             node->updateOriginalValues();
             cleanupForOperations();

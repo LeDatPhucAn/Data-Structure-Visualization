@@ -2,7 +2,7 @@
 #include "../header/SceneHandler.h"
 #include <math.h>
 
-TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
+TreapNode::TreapNode(int key, int priority, Vector2 pos) : Node(key, pos, 0), originalKey(key), originalPriority(priority), leftEdge(nullptr), rightEdge(nullptr), subtreeWidth(1){
     keyBox = new NumberInputBoxInCamera(3);
     keyBox->setNumber(key);
     keyBox->FillColor = LIGHTGRAY;
@@ -39,6 +39,15 @@ int TreapNode::getPriority() const {
 
 void TreapNode::setPriority(int p) {
     priorityBox->setNumber(p);
+}
+
+bool TreapNode::isModified() const {
+    return getKey() != originalKey || getPriority() != originalPriority;
+}
+
+void TreapNode::updateOriginalValues() {
+    originalKey = getKey();
+    originalPriority = getPriority();
 }
 
 void TreapNode::syncPosition() {

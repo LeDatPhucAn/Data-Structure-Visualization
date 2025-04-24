@@ -925,13 +925,37 @@ void TreapUI::updateScene() {
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 
-    // Update treap node buttons recursively
+    // Check for modifications in the treap nodes
+    std::function<void(TreapNode*)> checkForModifications = [&](TreapNode* node) {
+        if (!node) return;
+
+        // If the node is modified, remove and reinsert it
+        if (node->isModified()) {
+            int newKey = node->getKey();
+            int newPriority = node->getPriority();
+
+            treap.remove(node->originalKey);
+
+            treap.insert(newKey, newPriority);
+
+            this->root = cloneTree(treap.root);
+
+            node->updateOriginalValues();
+        }
+
+        // Recursively check the left and right subtrees
+        if (node->leftEdge) checkForModifications(node->leftEdge->to);
+        if (node->rightEdge) checkForModifications(node->rightEdge->to);
+    };
+
+    checkForModifications(this->root);
+
     std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {
         if (!node) return;
         node->update();
         if (node->leftEdge) updateTreapNodes(node->leftEdge->to);
         if (node->rightEdge) updateTreapNodes(node->rightEdge->to);
-        };
+    };
     updateTreapNodes(root);
 
     if (!Button::isCollision) SetMouseCursor(MOUSE_CURSOR_DEFAULT);

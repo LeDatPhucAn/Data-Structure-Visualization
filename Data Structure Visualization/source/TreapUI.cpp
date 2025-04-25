@@ -936,13 +936,17 @@ void TreapUI::initButtons() {
 
     CircleButton* test = new TextCircle("*", {
             GoPrevious->getCenterX(),
-            GoPrevious->getCenterY() - 60
+            GoPrevious->getCenterY() - 60 - 55
         },
         55.0f, BLACK, ORANGE, RED);
 
-    test->onClick = [this]() {
+    test->onClick = [this, test]() {
         this->stepByStepAnimation = !this->stepByStepAnimation;
+        if (stepByStepAnimation) cerr << "turn on step by step animations option" << endl;
+        else cerr << "turn off step by step animations option" << endl;
         };
+
+    OverrideButtons.push_back(test);
 }
 
 

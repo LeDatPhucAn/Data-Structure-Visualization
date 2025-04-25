@@ -36,7 +36,7 @@ void HashTable::loadFromFile(vector<RectButton*>& CodeBlocks, AnimationManager& 
             int value;
             while (fin >> value) {
                 if (value >= 0) {
-                    randomInsert(value);
+                    randomInsert(value,99);
                 }
             }
             fin.close();
@@ -129,7 +129,7 @@ void HashTable::insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& an
     }
 }
 
-void HashTable::randomInsert(int x) {
+void HashTable::randomInsert(int x, int pos) {
     int idx = hashFunction(x);
     LLNode* newNode = new LLNode(x, 250 + idx * 200, 200);
 
@@ -138,11 +138,16 @@ void HashTable::randomInsert(int x) {
     }
     else {
         LLNode* cur = buckets[idx];
-        while (cur->next) {
+        for (int i = 1; i < pos - 1 && cur && cur->next; i++) {
             cur = cur->next;
         }
+
+        newNode->next = cur->next;
+        CBEdge::addEdge(Edges, newNode, cur->next);
+        CBEdge::removeEdge(Edges,cur,cur->next);
         cur->next = newNode;
         CBEdge::addEdge(Edges, cur, newNode);
+
     }
     adjustPos(buckets[idx], idx);
 }
@@ -178,6 +183,7 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
     const float moveDistance = 1.5f * nodeRadius;
 
     if (cur->getNumber() == x) {
+        deleteLater.insert(cur);
         animManager.addAnimation(new CircleHighLightAnim(cur, 0.5f, GREEN, RAYWHITE, GREEN, [&CodeBlocks, cur]() {
             CodeBlocks[2]->unhighlight();
             CodeBlocks[3]->highlight();
@@ -207,7 +213,6 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
         }
         animManager.addAnimation(new Animation(0.5f, [this, cur, idx, nextNode, &CodeBlocks, &animManager]() {
             buckets[idx] = nextNode;
-            deleteLater.insert(cur);
             adjustPosWithAnim(animManager, buckets[idx], idx);
             CodeBlocks[3]->unhighlight();
             }));
@@ -224,7 +229,10 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             }
         }
         if (cur->next->getNumber() == x) {
+
             LLNode* temp = cur->next;
+            deleteLater.insert(temp);
+
             animManager.addAnimation(new CircleHighLightAnim(temp, 0.5f, GREEN, RAYWHITE, GREEN, [&CodeBlocks, temp]() {
                 CodeBlocks[2]->unhighlight();
                 CodeBlocks[3]->highlight();
@@ -245,37 +253,42 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             }
             if (edgeToCur) {
                 animManager.addAnimation(new CBEdgeHighLightAnim(edgeToCur, 0.5f, PURPLE));
-                animManager.addAnimation(new Animation(0.5f, [this, edgeToCur]() {
-                    for (auto it = Edges.begin(); it != Edges.end(); ++it) {
-                        if (*it == edgeToCur) {
-                            delete* it;
-                            Edges.erase(it);
-                            break;
-                        }
-                    }
-                    }));
+
+                CBEdge::removeEdgeAndAnim(animManager,Edges, edgeToCur->from, edgeToCur->to);
+                //animManager.addAnimation(new Animation(0.5f, [this, edgeToCur]() {
+                //    for (auto it = Edges.begin(); it != Edges.end(); ++it) {
+                //        if (*it == edgeToCur) {
+                //            delete* it;
+                //            Edges.erase(it);
+                //            break;
+                //        }
+                //    }
+                //    }));
             }
             if (edgeToNext) {
                 animManager.addAnimation(new CBEdgeHighLightAnim(edgeToNext, 0.5f, PURPLE));
-                animManager.addAnimation(new Animation(0.5f, [this, edgeToNext]() {
-                    for (auto it = Edges.begin(); it != Edges.end(); ++it) {
-                        if (*it == edgeToNext) {
-                            delete* it;
-                            Edges.erase(it);
-                            break;
-                        }
-                    }
-                    }));
+
+                CBEdge::removeEdgeAndAnim(animManager, Edges, edgeToNext->from, edgeToNext->to);
+                //animManager.addAnimation(new Animation(0.5f, [this, edgeToNext]() {
+                //    for (auto it = Edges.begin(); it != Edges.end(); ++it) {
+                //        if (*it == edgeToNext) {
+                //            delete* it;
+                //            Edges.erase(it);
+                //            break;
+                //        }
+                //    }
+                //    }));
             }
             if (nextNode) {
-                animManager.addAnimation(new Animation(0.5f, [this, cur, nextNode, &animManager]() {
-                    CBEdge::addEdgeAndAnim(animManager, Edges, cur, nextNode);
-                    Edges.back()->noDraw = true;
-                    }));
+                CBEdge::addEdgeAndAnim(animManager, Edges, cur, nextNode);
+                Edges.back()->noDraw = true;
+                //animManager.addAnimation(new Animation(0.5f, [this, cur, nextNode, &animManager]() {
+                //    CBEdge::addEdgeAndAnim(animManager, Edges, cur, nextNode);
+                //    Edges.back()->noDraw = true;
+                //    }));
             }
             animManager.addAnimation(new Animation(0.5f, [this, cur, temp, idx, nextNode, &CodeBlocks, &animManager]() {
                 cur->next = nextNode;
-                deleteLater.insert(temp);
                 adjustPosWithAnim(animManager, buckets[idx], idx);
                 CodeBlocks[3]->unhighlight();
                 }));
@@ -419,7 +432,7 @@ void HashTable::resize(int newSize) {
         while (cur) {
             LLNode* next = cur->next;
             cur->next = nullptr;
-            randomInsert(cur->getNumber());
+            randomInsert(cur->getNumber(),99);
             cur = next;
         }
     }

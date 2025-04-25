@@ -15,6 +15,7 @@ void GraphUI::Dijkstra(int n) {
 	isDijkstra = true;
 	isDijkstraTable = false;
 	dijkstraParameters = n;
+	graph->resetDijkstra();
 	graph->DijkstraAnim(CodeBlocks, animManager, n);
 }
 void GraphUI::DijkstraTable() {

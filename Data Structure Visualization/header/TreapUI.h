@@ -10,6 +10,38 @@
 #include <sstream>
 #include <functional>
 
+struct TreapStep {
+    TreapNode* root;
+    vector<TreapNode*> highlightedNodes;
+    vector<TreapEdge*> highlightedEdges;
+    vector<int> highlightedCodeLines;
+    
+    TreapStep(TreapNode* root = nullptr) : root(root){}
+
+    ~TreapStep() {
+        if (root) {
+            clear(root);
+        }
+    }
+
+    void clear(TreapNode* curr) {
+        if (!curr) return;
+
+        if (curr->leftEdge) {
+            clear(curr->leftEdge->to);
+            delete curr->leftEdge;
+            curr->leftEdge = nullptr;
+        }
+        if (curr->rightEdge) {
+            clear(curr->rightEdge->to);
+            delete curr->rightEdge;
+            curr->rightEdge = nullptr;
+        }
+
+        delete curr;
+    }
+};
+
 class TreapUI : public SceneManager {
 private:
     vector<CircleButton*> OverrideButtons;
@@ -17,8 +49,11 @@ private:
     vector<RectButton*>CodeBlocks;
     vector<TreapNode*> trashbin;
 
+
     Treap treap;
     TreapNode* root = nullptr;
+    vector<TreapStep> steps;
+    int currentStep = 0;
     bool drawInsideTreap = false;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
@@ -68,6 +103,26 @@ public:
     void remove(int key);
     void search(int key);
     void clear();
+
+    void addStep(TreapNode* root, const vector<TreapNode*>& highlightedNodes, const vector<TreapEdge*>& highlightedEdges, const vector<int>& highlightedCodeLines) {
+        TreapStep step(cloneTree(root)); // Clone the current tree
+        step.highlightedNodes = highlightedNodes;
+        step.highlightedEdges = highlightedEdges;
+        step.highlightedCodeLines = highlightedCodeLines;
+        steps.push_back(step);
+    }
+
+    void goToNextStep() {
+        if (currentStep < steps.size() - 1) {
+            currentStep++;
+        }
+    }
+
+    void goToPreviousStep() {
+        if (currentStep > 0) {
+            currentStep--;
+        }
+    }
 
     TreapUI();
     ~TreapUI() {

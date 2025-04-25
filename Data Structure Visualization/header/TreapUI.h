@@ -55,6 +55,7 @@ private:
     vector<TreapStep> steps;
     int currentStep = 0;
     bool drawInsideTreap = false;
+    bool stepByStepAnimation = false;
     static const Vector2 ROOT_POS;
     const int xOffset = UI::screenWidth / 2 - 20;
     const int yOffset = UI::screenHeight / 8;

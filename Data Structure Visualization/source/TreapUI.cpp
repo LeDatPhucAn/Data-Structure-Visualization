@@ -933,6 +933,16 @@ void TreapUI::initButtons() {
         };
 
     OverrideButtons.push_back(GoNext);
+
+    CircleButton* test = new TextCircle("*", {
+            GoPrevious->getCenterX(),
+            GoPrevious->getCenterY() - 60
+        },
+        55.0f, BLACK, ORANGE, RED);
+
+    test->onClick = [this]() {
+        this->stepByStepAnimation = !this->stepByStepAnimation;
+        };
 }
 
 

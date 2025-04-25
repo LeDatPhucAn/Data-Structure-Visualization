@@ -99,6 +99,8 @@ int AnimationManager::getStep() {
 }
 // Go to step k: state after animation k completes (step 0 is initial state)
 void AnimationManager::goToStep(int k) {
+    //if (k < 0)k = 0;
+    //else if (k > animations.size()) k = animations.size();
     if (k < 0 || k > animations.size()) return;
 
     paused = true;
@@ -108,11 +110,14 @@ void AnimationManager::goToStep(int k) {
         anim->reset();
     }
 
+    int originalSize = animations.size();
     // Apply animations 0 to k-1 fully
     for (int i = 0; i < k; ++i) {
         animations[i]->makeComplete();
     }
-
+    while (animations.size() > originalSize) {
+        animations.pop_back();
+    }
     // Update currentTime to the end of animation k-1 (or 0 if k == 0)
     if (k == 0) {
         currentTime = 0;
@@ -142,17 +147,7 @@ void AnimationManager::goToPreviousStep() {
 // Go to the next step (modify existing goToNext for consistency)
 void AnimationManager::goToNextStep() {
     if (animations.empty()) return;
-    // Find the current step based on currentTime
-    int currentStep = 0;
-    for (int i = 0; i < animations.size(); ++i) {
-        if (currentTime < startTimes[i] + animations[i]->duration) {
-            currentStep = i;
-            break;
-        }
-        else if (i == animations.size() - 1 && currentTime >= startTimes[i] + animations[i]->duration) {
-            currentStep = animations.size();
-        }
-    }
+
     goToStep(getStep() + 1);
     
 }

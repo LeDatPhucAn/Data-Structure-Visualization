@@ -19,8 +19,8 @@ public:
     void adjustPos(LLNode* head, int bucketIdx);
     void adjustPosWithAnim(AnimationManager& animManager, LLNode* head, int bucketIdx);
     void insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int& pos);
-    void randomInsert(int x);
-    bool remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x, int& pos);
+    void randomInsert(int x, int pos);
+    bool remove(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x,int& pos);
     bool removeFromBucket(int x, int bucketIdx);
     bool search(vector<RectButton*>& CodeBlocks, AnimationManager& animManager, int x);
     void clear();

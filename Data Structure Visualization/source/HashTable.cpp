@@ -98,17 +98,20 @@ void HashTable::insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& an
         CodeBlocks[1]->highlight();
         }));
 
+    std::string indicateText = std::to_string(x) + "%" + std::to_string(bucketCount) + "=" + std::to_string(idx);
+
     Animation* insertAnim = new CircleHighLightAnim(newNode, 0.5f, GREEN, RAYWHITE, GREEN);
-    insertAnim->Function = [newNode]() {
+    insertAnim->Function = [newNode, indicateText]() {
         newNode->noDraw = false;
-        newNode->indicateNode = "InsertedNode";
+        newNode->indicateNode = indicateText;
         };
     animManager.addAnimation(insertAnim);
 
     if (!buckets[idx]) {
         buckets[idx] = newNode;
-        animManager.addAnimation(new CircleMoveAnim(newNode, 0.5f, newNode->getCenterX(), 400, 250 + idx * 200, 200, [&CodeBlocks]() {
+        animManager.addAnimation(new CircleMoveAnim(newNode, 0.5f, newNode->getCenterX(), 400, 250 + idx * 200, 200, [&CodeBlocks, newNode]() {
             CodeBlocks[1]->unhighlight();
+            newNode->indicateNode = "InsertedNode";
             }));
     }
     else {
@@ -123,7 +126,8 @@ void HashTable::insertNode(vector<RectButton*>& CodeBlocks, AnimationManager& an
         CBEdge::addEdgeAndAnim(animManager, Edges, prev, newNode);
         Edges.back()->noDraw = true;
         adjustPosWithAnim(animManager, buckets[idx], idx);
-        animManager.addAnimation(new Animation(0.1f, [&CodeBlocks]() {
+        animManager.addAnimation(new Animation(0.1f, [newNode, &CodeBlocks]() {
+            newNode->indicateNode = "InsertedNode";
             CodeBlocks[1]->unhighlight();
             }));
     }

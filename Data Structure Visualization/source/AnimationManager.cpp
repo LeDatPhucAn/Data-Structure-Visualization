@@ -154,5 +154,6 @@ void AnimationManager::goToNextStep() {
         }
     }
     goToStep(getStep() + 1);
+    
 }
 

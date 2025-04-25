@@ -907,11 +907,38 @@ void TreapUI::initButtons() {
         };
 
     updateButtonPositions();
+
+    CircleButton* GoPrevious = new TextCircle("<",
+        {
+            (float)UI::screenWidth / 2 - 60 - 55,
+            (float)UI::screenHeight - 100
+        },
+        55.0f, BLACK, ORANGE, RED);
+
+    GoPrevious->onClick = [this]() {
+        cerr << "click new GoPrevious" << endl;
+        };
+
+    OverrideButtons.push_back(GoPrevious);
+
+    CircleButton* GoNext = new TextCircle(">",
+        {
+            (float)UI::screenWidth / 2 + 60 + 55,
+            (float)UI::screenHeight - 100
+        },
+        55.0f, BLACK, ORANGE, RED);
+
+    GoNext->onClick = [this]() {
+        cerr << "click new GoNext" << endl;
+        };
+
+    OverrideButtons.push_back(GoNext);
 }
 
 
 void TreapUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
+    Button::drawButtons<CircleButton>(OverrideButtons);
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 
@@ -924,6 +951,7 @@ void TreapUI::updateButtonPositions() {
 void TreapUI::updateScene() {
     animManager.update(GetFrameTime());
 
+    Button::updateButtons<CircleButton>(OverrideButtons);
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
 

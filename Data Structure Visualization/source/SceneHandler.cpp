@@ -149,6 +149,17 @@ void SceneHandler::changeScene(Scene newScene) {
     if (currentSceneObject) currentSceneObject->resetAnimations();
     currentSceneObject = scenes[newScene];
     currentSceneObject->CurrentScene = newScene;
+
+    if (newScene == TREAP) {
+        SceneButtons[2]->useless = true;
+        SceneButtons[4]->useless = true;
+    }
+    else {
+        if (4 < SceneButtons.size()) {
+            SceneButtons[2]->useless = false;
+            SceneButtons[4]->useless = false;
+        }
+    }
     
 }
 

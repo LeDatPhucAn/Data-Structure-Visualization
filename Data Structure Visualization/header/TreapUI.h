@@ -12,6 +12,7 @@
 
 class TreapUI : public SceneManager {
 private:
+    vector<CircleButton*> OverrideButtons;
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
     vector<TreapNode*> trashbin;

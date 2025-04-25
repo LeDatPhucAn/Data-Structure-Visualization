@@ -357,7 +357,7 @@ public:
         endOutline = outline;
         endText = text;
     }
-    void applyState() override;
+    void applyState() override {};
     void resetColor() override;
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <set>
+#include <queue>
 #include "Edge.h"
 #include "Node.h"
 #include "raylib.h"
@@ -8,6 +9,7 @@
 #include "Button.h"
 #include "GraphEdge.h"
 #include "PseudoCode.h"
+#include "Animation.h"
 /*
 enum class InitStateOfGraph {
 	InputMatrix,
@@ -54,7 +56,7 @@ private:
 		int current = -1;
 	};
 	std::vector<DijkstraState> dijkstraHistory;
-	
+	queue<DijkstraState> dijkstraStateQueue;
 	bool isDijkstraPlaying = false;
 	int currentStep = 0;
 	float radiusNode = 50.0f;
@@ -99,12 +101,17 @@ public:
 
 	void Dijkstra(int startID);
 	void saveDijkstraState(int current);
+	void enqueueDijkstraState(int current);
+	void applyNextDijkstraState();
 	void snapshot(int current);
 	void resetDijkstra() {
 		int n = numberVertices;
 		cost.assign(n, INF);
 		visited.assign(n, false);
 		path.assign(n, {});
+		dijkstraHistory.clear();
+		while (!dijkstraStateQueue.empty()) dijkstraStateQueue.pop();
+		currentStep = 0;
 	}
 	void drawDijkstraTable(int current);
 	void drawDijkstra() {
@@ -124,4 +131,10 @@ public:
 	float radiusOfNode() const { return radiusNode; }
 	~Graph();
 
+};
+class StateUpdateAnimation : public Animation {
+public:
+	StateUpdateAnimation(float duration, std::function<void()> callback)
+		: Animation(duration, callback) {
+	}
 };

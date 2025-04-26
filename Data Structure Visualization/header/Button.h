@@ -447,6 +447,19 @@ public:
     }
     void draw() override;
 };
+class TextBoxInCamera : public RectButton {
+public:
+    string Text;
+    TextBoxInCamera(string t, float x = 0, float y = 0,
+        Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
+        : RectButton(x, y, 0, 0, tc, fc, olc), Text(t){
+        Vector2 tsize = MeasureTextEx(UI::font, t.c_str(), UI::fontSize, UI::spacing);
+        rect.width = tsize.x + padding;
+        rect.height = tsize.y + padding;
+    }
+    Vector2 getMousePos() const override;
+    void draw() override;
+};
 
 // RectButton but for displaying code blocks
 class CodeBlock : public TextBox {

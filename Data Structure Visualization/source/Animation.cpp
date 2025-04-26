@@ -105,12 +105,19 @@ void RectMoveYAnim::applyState() {
     button->rect.y = EaseExpoOut(elapsed, startY, endY - startY, duration);
 }
 
-//void RectHighlightAnim::applyState() {
-//    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
-//    button->TextColor = UI::interpolateColors(startText, endText, easedT);
-//    button->FillColor = UI::interpolateColors(startFill, endFill, easedT);
-//    button->OutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
-//}
+void RectHighlightAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    button->TextColor = UI::interpolateColors(startText, endText, easedT);
+    button->FillColor = UI::interpolateColors(startFill, endFill, easedT);
+    button->OutLineColor = UI::interpolateColors(startOutline, endOutline, easedT);
+}
+
+void RectHighlightAnim::resetColor() {
+    if (!button) return;
+    button->FillColor = startFill;
+    button->OutLineColor = startOutline;
+    button->TextColor = startText;
+}
 
 void RectHighlight2Anim::applyState() {
     float easedT = EaseSineInOut(elapsed, 0.0f, 1.0f, duration);
@@ -129,22 +136,15 @@ void RectHighlight2Anim::applyState() {
     }
 }
 
-void RectHighlightAnim::resetColor() {
-    if (!button) return;
-    button->FillColor = startFill;
-    button->OutLineColor = startOutline;
-    button->TextColor = startText;
+void TreapEdgeHighlightAnim::applyState() {
+    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
+    edge->edgeColor = UI::interpolateColors(start, end, easedT);
 }
 
-//void TreapEdgeHighlightAnim::applyState() {
-//    float easedT = EaseSineIn(elapsed, 0.0f, 1.0f, duration);
-//    edge->edgeColor = UI::interpolateColors(start, end, easedT);
-//}
-
-//void TreapEdgeHighlightAnim::resetColor() {
-//    if (!edge) return;
-//    edge->edgeColor = start;
-//}
+void TreapEdgeHighlightAnim::resetColor() {
+    if (!edge) return;
+    edge->edgeColor = start;
+}
 
 void TreapEdgeHighlight2Anim::applyState() {
     float easedT = EaseSineInOut(elapsed, 0.0f, 1.0f, duration);

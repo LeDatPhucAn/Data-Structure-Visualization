@@ -148,6 +148,7 @@ public:
     bool isHovered;
     bool isClicked;
     bool isActivated;
+    bool useless;
     bool noDraw;
     static bool isCollision;
     static bool isClicking;
@@ -155,7 +156,7 @@ public:
     Button(Color tc = WHITE, Color fc = BLUE, Color olc = DARKGRAY)
         : TextColor(tc), FillColor(fc), OutLineColor(olc),
         OgTextColor(tc), OgFillColor(fc), OgOutLineColor(olc),
-        animation(nullptr), isHovered(false), isClicked(false), isActivated(false),noDraw(false) {
+        animation(nullptr), isHovered(false), isClicked(false), isActivated(false), useless(false), noDraw(false) {
     }
     virtual Vector2 getMousePos() const;
     /**

@@ -49,6 +49,7 @@ void Button::unclick() {
     }
 }
 void Button::update() {
+    if (useless) return;
     if (checkCollision()) {
         hover();
         setCursor();

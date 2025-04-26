@@ -44,10 +44,8 @@ namespace PseudoCode {
 
 
     std::string TreapInsert =
-        "if(!root)\n"
-        "   return node(key, priority)\n"
-        "if(root->key == key)\n"
-        "   return root\n"
+        "if(!root) return node(key, priority)\n"
+        "if(root->key == key) return root\n"
         "else if(root->key > key)\n"
         "   root->left = insert(root->left, key, priority)\n"
         "   if(root->left->priority > root->priority)\n"
@@ -72,10 +70,8 @@ namespace PseudoCode {
         "       root = rotateLeft(root)\n"
         "       root->left = remove(root->left, key)\n";
     std::string TreapSearch =
-        "if(!curr)\n"
-        "   return false\n"
-        "if(curr->key == key)\n"
-        "   return true\n"
+        "if(!curr) return false\n"
+        "if(curr->key == key) return true\n"
         "else if(curr->key > key)\n"
         "   return search(curr->left)\n"
         "else if(curr->key < key)\n"

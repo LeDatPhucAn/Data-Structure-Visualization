@@ -5,6 +5,7 @@
 #include "Button.h"
 #include "UI.h"
 #include "tinyfiledialogs.h"
+#include "PseudoCode.h"
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -15,6 +16,11 @@ private:
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
     vector<TreapNode*> trashbin;
+
+    static bool isInsert;
+    static bool isRemove;
+    pair<int, int> insertParameter;
+    pair<int, int> removeParameter;
 
     Treap treap;
     TreapNode* root = nullptr;
@@ -61,10 +67,14 @@ private:
 
     void cleanupForOperations();
 
+    void restoreAfterInsert();
+    void restoreAfterRemove();
+    void replayOperation() override;
+
 public:
     void loadFromFile();
     void insert(int key, int priority = rand(), bool isAnimated = true);
-    void remove(int key);
+    void remove(int key, bool isAnimated = true);
     void search(int key);
     void clear();
 
@@ -91,8 +101,7 @@ public:
 
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
-        if(drawInsideTreap) treap.drawTreap(treap.root);
+        if (drawInsideTreap) treap.drawTreap(treap.root);
         else drawTreap(root);
     }
-
 };

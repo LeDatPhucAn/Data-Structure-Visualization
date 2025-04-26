@@ -2,6 +2,9 @@
 //#include "../header/PseudoCode.h"
 #include "../header/Animation.h"
 
+bool TreapUI::isInsert = false;
+bool TreapUI::isRemove = false;
+
 const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
 
 TreapUI::TreapUI() : root(nullptr) {
@@ -176,45 +179,6 @@ TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
     return root;
 }
 
-void TreapUI::sbs_insertBST(TreapNode* root, int key, int priority, stack<int>& visited) {
-    if (!root) {
-        treap.insertBST(key, priority);
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 1 }));
-        return;
-    }
-
-    visited.push(root->getKey());
-
-    if (root->getKey() == key) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 2 }));
-    }
-    else if (root->getKey() > key) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, {3}));
-        if (root->leftEdge && root->leftEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {{root->getKey(), root->leftEdge->to->getKey()}}, {4}));
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, {4}));
-        }
-        sbs_insertBST(root->leftEdge ? root->leftEdge->to : nullptr, key, priority, visited);
-    }
-    else {
-        cerr << "go right" << endl;
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 7 }));
-        if (root->rightEdge && root->rightEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {root->getKey(), root->rightEdge->to->getKey()} }, { 8 }));
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 8 }));
-        }
-        sbs_insertBST(root->rightEdge ? root->rightEdge->to : nullptr, key, priority, visited);
-    }
-}
-
-void sbs_fixViolation() {
-
-}
-
 void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
     if (!curr) return;
 
@@ -230,16 +194,16 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
             target->keyBox->noDraw = false;
             target->priorityBox->noDraw = false;
             }));
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 4.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 4.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
         curr->noDraw = false;
         return;
     }
 
     visited.push(curr->getKey());
-    //animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
+    //animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() > key) {
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[3]->highlight();
             }));
@@ -250,12 +214,12 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
                 }));
             TreapEdge* edge = curr->leftEdge;
             if (edge->to->getKey() == key) edge->noDraw = true;
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 1.75f, ORANGE, [edge]() {edge->noDraw = false; }));
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 1.75f, ORANGE, [edge]() {edge->noDraw = false; }));
             makeNewNodeAppear(curr->leftEdge->to, key, visited);
         }
     }
     else if (curr->getKey() < key) {
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[7]->highlight();
             }));
@@ -266,7 +230,7 @@ void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
                 }));
             TreapEdge* edge = curr->rightEdge;
             if (edge->to->getKey() == key) edge->noDraw = true;
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 1.75f, ORANGE, [edge]() {edge->noDraw = false; }));
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 1.75f, ORANGE, [edge]() {edge->noDraw = false; }));
             makeNewNodeAppear (curr->rightEdge->to, key, visited);
         }
     }
@@ -288,7 +252,7 @@ void TreapUI::fixViolation(stack<int>& visited) {
 
     cerr << "Handling node with key " << v->getKey() << endl;
     bool hasRotated = false;
-    animManager.addAnimation(new RectHighlight2Anim(v->priorityBox, 1.75f, ORANGE, DARKGRAY, WHITE));
+    animManager.addAnimation(new RectHighlightAnim(v->priorityBox, 1.75f, ORANGE, DARKGRAY, WHITE));
 
     if (v->leftEdge && v->leftEdge->to) {
         if (v->leftEdge->to->getPriority() > v->getPriority()) {
@@ -296,7 +260,7 @@ void TreapUI::fixViolation(stack<int>& visited) {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[5]->highlight();
                 }));
-            animManager.addAnimation(new RectHighlight2Anim(v->leftEdge->to->priorityBox, 1.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+            animManager.addAnimation(new RectHighlightAnim(v->leftEdge->to->priorityBox, 1.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
             cerr << "left node has higher priority" << endl;
             treap.rotateRightAtSpecificNode(v->getKey());
 
@@ -326,7 +290,7 @@ void TreapUI::fixViolation(stack<int>& visited) {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[9]->highlight();
                 }));
-            animManager.addAnimation(new RectHighlight2Anim(v->rightEdge->to->priorityBox, 1.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+            animManager.addAnimation(new RectHighlightAnim(v->rightEdge->to->priorityBox, 1.75f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
             cerr << "right node has higher priority" << endl;
             treap.rotateLeftAtSpecificNode(v->getKey());
 
@@ -352,37 +316,6 @@ void TreapUI::fixViolation(stack<int>& visited) {
         fixViolation(visited);
         }));
     reposition(this->root, ROOT_POS, xOffset, yOffset);
-}
-
-void TreapUI::sbs_fixViolation(stack<int>& visited) {
-    if (visited.empty()) return;
-
-    int key = visited.top();
-    visited.pop();
-
-    TreapNode* curr = treap.searchForNode(treap.root, key);
-
-    steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'p', {ORANGE, DARKGRAY, WHITE} } } }));
-
-    bool hasRotated = false;
-
-    if (curr->leftEdge && curr->leftEdge->to) {
-        if (curr->leftEdge->to->getPriority() > curr->getPriority()) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {{curr->leftEdge->to->getKey(), {'p', {{208, 82, 82, 255}, DARKGRAY, WHITE}}}}, {}, {5}));
-            treap.rotateRightAtSpecificNode(curr->getKey());
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 6 }));
-            hasRotated = true;
-        }
-    }
-    if (!hasRotated && curr->rightEdge && curr->rightEdge->to) {
-        if (curr->rightEdge->to->getPriority() > curr->getPriority()) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), { {curr->rightEdge->to->getKey(), {'p', {{208, 82, 82, 255}, DARKGRAY, WHITE}}} }, {}, { 9 }));
-            treap.rotateLeftAtSpecificNode(curr->getKey());
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 10 }));
-        }
-    }
-
-    sbs_fixViolation(visited);
 }
 
 void TreapUI::getNodesToMove(vector<TreapNode*>& res, TreapNode* curr) {
@@ -414,50 +347,60 @@ void TreapUI::insertWithAnimation(int key, int priority) {
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 }
 
-
-void TreapUI::sbs_insertWithAnimation(int key, int priority) {
-    stack<int> visited;
-    sbs_insertBST(treap.root, key, priority, visited);
-    sbs_fixViolation(visited);
-}
-
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     if (!curr) {
         animManager.addAnimation(new Animation(0.5f, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[1]->highlight();
             }));
-        animManager.addAnimation(new Animation(0.5f, [this]() {
-            unhighlightAllCodeBlocks();
-            CodeBlocks[2]->highlight();
-            }));
         return;
     }
 
     if (curr->getKey() == key) {
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
         animManager.addAnimation(new Animation(0.5f, [this]() {
             unhighlightAllCodeBlocks();
-            CodeBlocks[3]->highlight();
-            }));
-        animManager.addAnimation(new Animation(0.5f, [this]() {
-            unhighlightAllCodeBlocks();
-            CodeBlocks[4]->highlight();
+            CodeBlocks[2]->highlight();
             }));
         animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
     }
     else if (curr->getKey() > key) {
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
             unhighlightAllCodeBlocks();
-            CodeBlocks[5]->highlight();
+            CodeBlocks[3]->highlight();
             }));
         if (curr->leftEdge) {
             animManager.addAnimation(new Animation(0.5f, [this]() {
                 unhighlightAllCodeBlocks();
+                CodeBlocks[4]->highlight();
+                }));
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 1.75f));          
+            searchWithAnimation(curr->leftEdge->to, key);
+        }
+        else {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[3]->highlight();
+                }));
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
+                CodeBlocks[4]->highlight();
+                }));
+            searchWithAnimation(nullptr, key);
+        }
+    }
+    else {       
+        animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
+            unhighlightAllCodeBlocks();
+            CodeBlocks[5]->highlight();
+            }));
+        if (curr->rightEdge) {
+            animManager.addAnimation(new Animation(0.5f, [this]() {
+                unhighlightAllCodeBlocks();
                 CodeBlocks[6]->highlight();
                 }));
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 1.75f));          
-            searchWithAnimation(curr->leftEdge->to, key);
+            animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 1.75f));
+            searchWithAnimation(curr->rightEdge->to, key);
         }
         else {
             animManager.addAnimation(new Animation(0.5f, [this]() {
@@ -468,67 +411,8 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[6]->highlight();
                 }));
-            searchWithAnimation(nullptr, key);
+            searchWithAnimation(nullptr, key);  
         }
-    }
-    else {       
-        animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE, [this]() {
-            unhighlightAllCodeBlocks();
-            CodeBlocks[7]->highlight();
-            }));
-        if (curr->rightEdge) {
-            animManager.addAnimation(new Animation(0.5f, [this]() {
-                unhighlightAllCodeBlocks();
-                CodeBlocks[8]->highlight();
-                }));
-            animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 1.75f));
-            searchWithAnimation(curr->rightEdge->to, key);
-        }
-        else {
-            animManager.addAnimation(new Animation(0.5f, [this]() {
-                unhighlightAllCodeBlocks();
-                CodeBlocks[7]->highlight();
-                }));
-            animManager.addAnimation(new Animation(0.5f, [this]() {
-                unhighlightAllCodeBlocks();
-                CodeBlocks[8]->highlight();
-                }));
-            searchWithAnimation(nullptr, key);
-        }
-    }
-}
-
-void TreapUI::sbs_searchWithAnimation(TreapNode* curr, int key) {
-    if (!curr) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, {1}));
-        return;
-    }
-
-    cerr << "handle node with key " << curr->getKey() << endl;
-    if (curr->getKey() == key) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 2 }));
-    }
-    else if (curr->getKey() > key) {
-        cerr << "go left" << endl;
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 3 }));
-        if (curr->leftEdge && curr->leftEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->leftEdge->to->getKey()} }, { 4 }));
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 4 }));
-        }
-        sbs_searchWithAnimation(curr->leftEdge ? curr->leftEdge->to : nullptr, key);
-    }
-    else {
-        cerr << "go right" << endl;
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 5 }));
-        if (curr->rightEdge && curr->rightEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->rightEdge->to->getKey()} }, { 6 }));
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 6 }));
-        }
-        sbs_searchWithAnimation(curr->rightEdge ? curr->rightEdge->to : nullptr, key);
     }
 }
 
@@ -541,7 +425,7 @@ bool TreapUI::searchBeforeRemove(TreapNode* curr, int key) {
         return false;
     }
     
-    animManager.addAnimation(new RectHighlight2Anim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
+    animManager.addAnimation(new RectHighlightAnim(curr->keyBox, 1.75f, ORANGE, DARKGRAY, WHITE));
 
     if (curr->getKey() == key) {
         animManager.addAnimation(new Animation(0.5f, [this]() {
@@ -551,14 +435,14 @@ bool TreapUI::searchBeforeRemove(TreapNode* curr, int key) {
         return true;
     }
     else if (curr->getKey() > key) {
-        if (curr->leftEdge && curr->leftEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->leftEdge, 1.75f, ORANGE, [this]() {
+        if (curr->leftEdge && curr->leftEdge->to) animManager.addAnimation(new TreapEdgeHighlightAnim(curr->leftEdge, 1.75f, ORANGE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[2]->highlight();
             }));
         return searchBeforeRemove(curr->leftEdge ? curr->leftEdge->to : nullptr, key);
     }
     else {
-        if (curr->rightEdge && curr->rightEdge->to) animManager.addAnimation(new TreapEdgeHighlight2Anim(curr->rightEdge, 1.75f, ORANGE, [this]() {
+        if (curr->rightEdge && curr->rightEdge->to) animManager.addAnimation(new TreapEdgeHighlightAnim(curr->rightEdge, 1.75f, ORANGE, [this]() {
             unhighlightAllCodeBlocks();
             CodeBlocks[3]->highlight();
             }));
@@ -624,7 +508,7 @@ void TreapUI::makeNodeDisappearWithAnimation(TreapNode* curr, int key) {
 
 void TreapUI::removeWithAnimation(int key) {
     TreapNode* del = searchForNode(key);
-    animManager.addAnimation(new RectHighlight2Anim(del->keyBox, 3.0f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
+    animManager.addAnimation(new RectHighlightAnim(del->keyBox, 3.0f, { 208, 82, 82, 255 }, DARKGRAY, WHITE));
     // No child
     if ((!del->leftEdge || !del->leftEdge->to) && (!del->rightEdge || !del->rightEdge->to)) {
         animManager.addAnimation(new Animation(0.5f, [this]() {
@@ -646,7 +530,7 @@ void TreapUI::removeWithAnimation(int key) {
             unhighlightAllCodeBlocks();
             CodeBlocks[6]->highlight();
             }));
-        animManager.addAnimation(new RectHighlight2Anim(del->rightEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlightAnim(del->rightEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
         treap.remove(key);
         unordered_map<int, Vector2> positions = treap.getAllPositions();
         positions[del->getKey()] = positions[del->rightEdge->to->getKey()];
@@ -668,7 +552,7 @@ void TreapUI::removeWithAnimation(int key) {
             unhighlightAllCodeBlocks();
             CodeBlocks[7]->highlight();
             }));
-        animManager.addAnimation(new RectHighlight2Anim(del->leftEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+        animManager.addAnimation(new RectHighlightAnim(del->leftEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
         treap.remove(key);
         unordered_map<int, Vector2> positions = treap.getAllPositions();
         positions[del->getKey()] = positions[del->leftEdge->to->getKey()];
@@ -687,7 +571,7 @@ void TreapUI::removeWithAnimation(int key) {
     // Two children
     else {
         if (del->leftEdge->to->getPriority() > del->rightEdge->to->getPriority()) {
-            animManager.addAnimation(new RectHighlight2Anim(del->leftEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+            animManager.addAnimation(new RectHighlightAnim(del->leftEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[8]->highlight();
                 }));
@@ -695,7 +579,7 @@ void TreapUI::removeWithAnimation(int key) {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[9]->highlight();
                 }));
-            animManager.addAnimation(new RectHighlight2Anim(del->leftEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+            animManager.addAnimation(new RectHighlightAnim(del->leftEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
             treap.rotateRightAtSpecificNode(key);
 
             unordered_map<int, Vector2> positions = treap.getAllPositions();
@@ -719,7 +603,7 @@ void TreapUI::removeWithAnimation(int key) {
                 }));
         }
         else {
-            animManager.addAnimation(new RectHighlight2Anim(del->rightEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
+            animManager.addAnimation(new RectHighlightAnim(del->rightEdge->to->priorityBox, 3.0f, ORANGE, DARKGRAY, WHITE, [this]() {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[11]->highlight();
                 }));
@@ -727,7 +611,7 @@ void TreapUI::removeWithAnimation(int key) {
                 unhighlightAllCodeBlocks();
                 CodeBlocks[12]->highlight();
                 }));
-            animManager.addAnimation(new RectHighlight2Anim(del->rightEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
+            animManager.addAnimation(new RectHighlightAnim(del->rightEdge->to->keyBox, 3.0f, { 82, 172, 16, 255 }, DARKGRAY, WHITE));
             treap.rotateLeftAtSpecificNode(key);
             
             unordered_map<int, Vector2> positions = treap.getAllPositions();
@@ -749,87 +633,6 @@ void TreapUI::removeWithAnimation(int key) {
             animManager.addAnimation(new Animation(1.0f, [this, key]() {
                 removeWithAnimation(key);
                 }));
-        }
-    }
-}
-
-bool TreapUI::sbs_searchBeforeRemove(TreapNode* curr, int key) {
-    if (!curr) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 1 }));
-        return false;
-    }
-
-    if (curr->getKey() == key) {
-        cerr << "found" << endl;
-        return true;
-    }
-    else if (curr->getKey() > key) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 2 }));
-        if (curr->leftEdge && curr->leftEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->leftEdge->to->getKey()} }, { 2 }));
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 2 }));
-        }
-        return sbs_searchBeforeRemove(curr->leftEdge ? curr->leftEdge->to : nullptr, key);
-    }
-    else {
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 3 }));
-        if (curr->rightEdge && curr->rightEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->rightEdge->to->getKey()} }, { 3 }));
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 3 }));
-        }
-        return sbs_searchBeforeRemove(curr->rightEdge ? curr->rightEdge->to : nullptr, key);
-    }
-}
-
-void TreapUI::sbs_removeWithAnimation(int key) {
-    cerr << "call" << endl;
-    TreapNode* del = treap.searchForNode(key);
-    if (!del) {
-        cerr << "not del" << endl;
-        return;
-    }
-    else cerr << "still here" << endl;
-    if ((!del->leftEdge || !del->leftEdge->to) && (!del->rightEdge || !del->rightEdge->to)) {
-        cerr << "no child" << endl;
-        steps.push_back(new TreapStep(cloneTree(treap.root), { {key, {'k', {{208, 82, 82, 255}, DARKGRAY, WHITE}}} }, {}, {5}));
-        //treap.remove(key);
-        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 5 }));
-        return;
-    }
-    else if (!del->leftEdge || !del->leftEdge->to) {
-        cerr << "right child" << endl;
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { del->rightEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}}}, {}, {6}));
-        //treap.remove(key);
-        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 6 }));
-        return;
-    }
-    else if (!del->rightEdge || !del->rightEdge->to) {
-        cerr << "left child" << endl;
-        steps.push_back(new TreapStep(cloneTree(treap.root), { { del->leftEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}}}, {}, {7}));
-        //treap.remove(key);
-        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 7 }));
-        return;
-    }
-    else {
-        cerr << "two children" << endl;
-        if (del->leftEdge->to->getPriority() > del->rightEdge->to->getPriority()) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), { { del->leftEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}}}, {}, {8}));
-            clone = rotateRightAtSpecificNode(clone, key);
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 9 }));
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 10 }));
-            sbs_removeWithAnimation(key);
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), { { del->rightEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}} }, {}, { 11 }));
-            treap.rotateLeftAtSpecificNode(key);
-            clone = rotateLeftAtSpecificNode(clone, key);
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 12 }));
-            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 13 }));
-            sbs_removeWithAnimation(key);
         }
     }
 }
@@ -923,8 +726,35 @@ void TreapUI::cleanupForOperations() {
     animManager.goToLastStep();
     animManager.clear();
     animManager.resume();
-    steps = vector<TreapStep*>();
-    currentStep = 0;
+}
+
+void TreapUI::restoreAfterInsert() {
+    remove(insertParameter.first, false);
+}
+
+void TreapUI::restoreAfterRemove() {
+    insert(removeParameter.first, removeParameter.second, false);
+}
+
+void TreapUI::replayOperation() {
+    if (isInsert) {
+        animManager.goToLastStep();
+
+        animManager.clear();
+
+        restoreAfterInsert();
+
+        insert(insertParameter.first, insertParameter.second);
+    }
+    else if (isRemove) {
+        animManager.goToLastStep();
+
+        animManager.clear();
+
+        restoreAfterRemove();
+
+        remove(removeParameter.first);
+    }
 }
 
 void TreapUI::loadFromFile(){
@@ -963,15 +793,11 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
         clear();
         this->root = nullptr;
         RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
-        if (!stepByStepAnimation) {
-            this->root = cloneTree(treap.root);
-            insertWithAnimation(key, priority);
-        }
-        else {
-            steps.push_back(new TreapStep(cloneTree(treap.root)));
-            sbs_insertWithAnimation(key, priority);
-            steps.push_back(new TreapStep(cloneTree(treap.root)));
-        }
+        isInsert = true;
+        isRemove = false;
+        insertParameter = { key, priority };
+        this->root = cloneTree(treap.root);
+        insertWithAnimation(key, priority);
     }
     else {
         clear();
@@ -983,37 +809,32 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
 void TreapUI::search(int key) {
     cleanupForOperations();
     clear();
-    this->root = nullptr;
     RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
-    if (!stepByStepAnimation) {
-        this->root = cloneTree(treap.root);
-        searchWithAnimation(root, key);
-    }
-    else {
-        steps.push_back(new TreapStep(cloneTree(treap.root)));
-        sbs_searchWithAnimation(treap.root, key);
-        steps.push_back(new TreapStep(cloneTree(treap.root)));
-    }
+    this->root = cloneTree(treap.root);
+    searchWithAnimation(root, key);
+
 }
 
-void TreapUI::remove(int key) {
-    cleanupForOperations();
-    clear();
-    this->root = nullptr;
-    RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
-    if (!stepByStepAnimation) {
+void TreapUI::remove(int key, bool isAnimated) {
+    if (isAnimated) {
+        cleanupForOperations();
+        clear();
+        this->root = nullptr;
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
+        isRemove = true;
+        isInsert = false;
         this->root = cloneTree(treap.root);
+        TreapNode* temp = searchForNode(key);
+        if (temp) {
+            removeParameter = { temp->getKey(), temp->getPriority()};
+        }
         if (!searchBeforeRemove(this->root, key)) return;
         removeWithAnimation(key);
     }
     else {
-        steps.push_back(new TreapStep(cloneTree(treap.root)));
-        this->root = cloneTree(treap.root);
-        if (!sbs_searchBeforeRemove(this->root, key)) return;
-        cerr << "after search" << endl;
-        sbs_removeWithAnimation(key);
+        clear();
         treap.remove(key);
-        steps.push_back(new TreapStep(cloneTree(treap.root)));
+        this->root = cloneTree(treap.root);
     }
 }
 
@@ -1093,16 +914,15 @@ void TreapUI::initButtons() {
         static_cast<NumberInputBox*>(ValueInput2)->clear();
         });
 
-    /*RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
+    RectButton::insertHeadButton(Buttons, new TextBox("LoadFile"));
     Buttons[3]->onClick = [this]() {
         this->loadFromFile();
-        };*/
-
-    RectButton::insertHeadButton(Buttons, new TextBox("DrawInside"));
-    Buttons[3]->onClick = [this]() {
-        this->drawInsideTreap = !(this->drawInsideTreap);
         };
 
+    /*RectButton::insertHeadButton(Buttons, new TextBox("DrawInside"));
+    Buttons[3]->onClick = [this]() {
+        this->drawInsideTreap = !(this->drawInsideTreap);
+        };*/
     RectButton::insertHeadButton(Buttons, new TextBox("Random"));
     Buttons[4]->onClick = [this]() {
         cleanupForOperations();
@@ -1123,93 +943,25 @@ void TreapUI::initButtons() {
         this->root = nullptr;
         treap.clear();
         };
-
-    CircleButton* GoPrevious = new TextCircle("<",
-        {
-            (float)UI::screenWidth / 2 - 60 - 55,
-            (float)UI::screenHeight - 100
-        },
-        55.0f, BLACK, ORANGE, RED);
-
-    GoPrevious->onClick = [this]() {
-        goToPreviousStep();
-        cerr << "click new GoPrevious" << endl;
-        };
-
-    OverrideButtons.push_back(GoPrevious);
-
-    CircleButton* GoNext = new TextCircle(">",
-        {
-            (float)UI::screenWidth / 2 + 60 + 55,
-            (float)UI::screenHeight - 100
-        },
-        55.0f, BLACK, ORANGE, RED);
-
-    GoNext->onClick = [this]() {
-        goToNextStep();
-        cerr << "click new GoNext" << endl;
-        };
-
-    OverrideButtons.push_back(GoNext);
-
-    CircleButton* test = new TextCircle("*", {
-            GoPrevious->getCenterX(),
-            GoPrevious->getCenterY() - 60 - 55
-        },
-        55.0f, BLACK, ORANGE, RED);
-
-    test->onClick = [this, test]() {
-        this->stepByStepAnimation = !this->stepByStepAnimation;
-        if (stepByStepAnimation) cerr << "turn on step by step animations option" << endl;
-        else cerr << "turn off step by step animations option" << endl;
-        };
-
-    OverrideButtons.push_back(test);
-
-
     updateButtonPositions();
 }
 
 
 void TreapUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
-    Button::drawButtons<CircleButton>(OverrideButtons);
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 
-// 0: go previous
-// 1: go next
 void TreapUI::updateButtonPositions() {
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
-    if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
-        OverrideButtons[0]->setCenter(
-            (float)UI::screenWidth / 2 - 60 - 55,
-            (float)UI::screenHeight - 100
-        );
-        OverrideButtons[1]->setCenter(
-            (float)UI::screenWidth / 2 + 60 + 55,
-            (float)UI::screenHeight - 100
-        );
-        OverrideButtons[2]->setCenter(
-            OverrideButtons[0]->getCenterX(),
-            OverrideButtons[0]->getCenterY() - 60 - 55
-        );
-    }
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
 
 void TreapUI::updateScene() {
     animManager.update(GetFrameTime());
 
-    Button::updateButtons<CircleButton>(OverrideButtons);
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
-    if (stepByStepAnimation && currentStep >= 0 && currentStep < steps.size()) {
-        unhighlightAllCodeBlocks();
-        for (int x : steps[currentStep]->highlightedCodeLines) {
-            CodeBlocks[x]->highlight();
-        }
-    }
 
     // Update treap node buttons recursively
     std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {

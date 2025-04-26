@@ -101,14 +101,13 @@ void GraphUI::initButtons() {
 	RectButton* vertice2 = new TextBox("Input n:");
 	RectButton* verticeInput2 = new NumberInputBox(4);
 	RectButton* Enter2 = new TextBox(">");
-	RectButton* Enter2_ = new TextBox("HIDDEN TABLE");
+	RectButton* Enter2_ = new TextBox("TABLE");
 
 	buttonsOnGraph[2]->insertSubButton(vertice2);
 	buttonsOnGraph[2]->insertSubButton(verticeInput2);
 	buttonsOnGraph[2]->insertSubButton(Enter2, [this, verticeInput2]() {
 		if (graph->numberOfVertices() > 0) {
-
-			graph->drawDijkstra();
+			
 			Dijkstra(verticeInput2->getNumber());
 
 			RectButton::insertPseudoCode(CodeBlocks, PseudoCode::GraphDijkstra);

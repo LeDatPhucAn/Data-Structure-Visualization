@@ -403,17 +403,17 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
 			CodeBlocks[1]->highlight();
 			}));
-			
-		for (int j = 0; j < n; ++j) {
-			if (!visited[j]) {
-				animManager.addAnimation(new DijkstraCellHighlightAnim(j, 2, 0.1f, RED));
+		if (drawDijk) {
+			for (int j = 0; j < n; ++j) {
+				if (!visited[j]) {
+					animManager.addAnimation(new DijkstraCellHighlightAnim(j, 2, 0.1f, RED));
 
+				}
 			}
 		}
-			
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
 			CodeBlocks[1]->unhighlight();
-
+		
 			}));
 
 		int u = -1;
@@ -434,53 +434,43 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 
 
 		Animation* nodeU = new CircleHighLightAnim(nodes[u], 0.5f, RED, RAYWHITE, RED, [&CodeBlocks, u, this]() {
-			CodeBlocks[2]->highlight();
+			
 			nodes[u]->indicateNode = "Current";
 			nodes[u]->animation->reset();
 			nodes[u]->noDraw = false;
-			//currentStep++; 
-			});
-			/*
-			animManager.addAnimation(new StateUpdateAnimation(0.2f, [this]() {
-				applyNextDijkstraState();
-				}));
-
-			enqueueDijkstraState(u);
-			*/
-		visited[u] = true;
 			
-		animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED));
-		animManager.addAnimation(nodeU);
-
-		Animation* CellU = new DijkstraCellHighlightAnim(u, 1, 0.3f, RED, [&CodeBlocks, this]() {
-			CodeBlocks[2]->unhighlight();
-			CodeBlocks[3]->highlight();
-			//currentStep++;
-
 			});
+			
+		
+		visited[u] = true;
+		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
+			
+			CodeBlocks[2]->highlight();
+			}));
+		if (drawDijk) {
+			animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED));
+			animManager.addAnimation(nodeU);
+		
+		
+			Animation* CellU = new DijkstraCellHighlightAnim(u, 1, 0.3f, RED, [&CodeBlocks, this]() {
+				//CodeBlocks[2]->unhighlight();
+				//odeBlocks[3]->highlight();
+				//currentStep++;
+
+				});
 
 
-		animManager.addAnimation(CellU);
-
+			animManager.addAnimation(CellU);
+		}
 			
 
 
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
-			CodeBlocks[3]->unhighlight();
+			CodeBlocks[2]->unhighlight();
 
 			}));
 
-		/*
-
-		ActualStep++;
-		animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
-			cout << "the Current Step is " << currentStep << " and ";
-			cout << "the Actual Step is " << ActualStep << "\n";
-			applyNextDijkstraState(ActualStep);
-			}));
-
-		enqueueDijkstraState(-1);
-		*/
+	
 		enqueueDijkstraState(-1);
 		ActualStep = dijkstraStateQueue.size() - 1;
 		animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
@@ -491,7 +481,7 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 		// Traverse all neighbors
 		for (auto& edge : edges) {
 			animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
-				CodeBlocks[4]->highlight();
+				CodeBlocks[3]->highlight();
 				}));
 			int v = -1;
 			float weight = edge->weight;
@@ -514,7 +504,7 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			}
 			if (v == -1 || visited[v]) {
 				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
-					CodeBlocks[4]->unhighlight();
+					CodeBlocks[3]->unhighlight();
 					}));
 			}
 			else {
@@ -532,26 +522,26 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 					}));
 
 					
-
-				animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [&CodeBlocks, this]() {
-					
-
-					}));
+				if (drawDijk) {
+					animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [&CodeBlocks, this]() {
 
 
-				animManager.addAnimation(new DijkstraCellHighlightAnim(v, 2, 0.3f, RED, [this]() {
-
-					}));
+						}));
 
 
+					animManager.addAnimation(new DijkstraCellHighlightAnim(v, 2, 0.3f, RED, [this]() {
+
+						}));
+
+				}
 					
 
 
 
 
 				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
-					CodeBlocks[4]->unhighlight();
-					CodeBlocks[5]->highlight();
+					CodeBlocks[3]->unhighlight();
+					CodeBlocks[4]->highlight();
 
 					}));
 
@@ -565,8 +555,8 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 				}
 
 				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
-					CodeBlocks[5]->unhighlight();
-					CodeBlocks[6]->highlight();
+					CodeBlocks[4]->unhighlight();
+					CodeBlocks[5]->highlight();
 
 					}));
 				/*
@@ -591,7 +581,7 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 				// Unhighlight edge + node v
 
 				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, v, this]() {
-					CodeBlocks[6]->unhighlight();
+					CodeBlocks[5]->unhighlight();
 					nodes[v]->indicateNode = "";
 
 					}));

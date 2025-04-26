@@ -157,9 +157,9 @@ void HashTableUI::resetAnimations() {
     Button::resetButtonsAnimations<RectButton>(Buttons);
     Button::resetButtonsAnimations<RectButton>(CodeBlocks);
 }
-
+// This function is change to move the button up and avoid missing button that is not on the screen
 void HashTableUI::updateButtonPositions() {
-    RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
+    RectButton::setHeadPosition(Buttons, 100, 300);
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
 
@@ -170,7 +170,6 @@ void HashTableUI::displaySceneInCamera() {
 void HashTableUI::displayScene() {
     Button::drawButtons<RectButton>(Buttons);
     Button::drawButtons<RectButton>(CodeBlocks);
-    // Vẽ NumberInputBox và nút xác nhận nếu đang chỉnh sửa
     if (editValueInput) {
         editValueInput->draw();
     }
@@ -191,19 +190,16 @@ void HashTableUI::updateScene() {
             cur->update();
             if (cur->animation) cur->animation->update(GetFrameTime());
 
-            // Khi click vào node, hiển thị NumberInputBox
             if (!isEditingNode && cur->checkCollision() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 selectedNode = cur;
                 selectedBucketIdx = i;
                 isEditingNode = true;
 
-                // Tạo NumberInputBox gần node
                 editValueInput = new NumberInputBox(3);
                 editValueInput->rect.x = cur->getCenterX() + 50;
                 editValueInput->rect.y = cur->getCenterY() - 20;
                 static_cast<NumberInputBox*>(editValueInput)->setNumber(cur->getNumber()); // Ép kiểu để gọi setNumber
 
-                // Tạo nút xác nhận
                 editValueConfirm = new TextBox(">");
                 editValueConfirm->rect.x = editValueInput->rect.x + editValueInput->rect.width + 10;
                 editValueConfirm->rect.y = editValueInput->rect.y;
@@ -219,7 +215,6 @@ void HashTableUI::updateScene() {
         }
     }
 
-    // Cập nhật NumberInputBox và nút xác nhận
     if (editValueInput) {
         editValueInput->update();
     }
@@ -227,7 +222,6 @@ void HashTableUI::updateScene() {
         editValueConfirm->update();
     }
 
-    // Xử lý cập nhật hash table sau khi vòng lặp duyệt node hoàn tất
     if (needUpdateHashTable && newValue != oldValue) {
         hashtable.removeFromBucket(oldValue, bucketIdx);
         vector<int> values = hashtable.collectValues();
@@ -238,7 +232,6 @@ void HashTableUI::updateScene() {
         }
     }
 
-    // Xóa editValueInput và editValueConfirm nếu không còn chỉnh sửa
     if (!isEditingNode && editValueInput) {
         delete editValueInput;
         editValueInput = nullptr;

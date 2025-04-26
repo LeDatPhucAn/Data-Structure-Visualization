@@ -408,6 +408,7 @@ void Treap::drawTreap(TreapNode* curr) {
 }
 
 TreapNode* Treap::searchForNode(TreapNode* curr, int key) {
+    cerr << "call search for node" << endl;
     if (!curr) return nullptr;
     if (curr->getKey() == key) return curr;
     else if (curr->getKey() > key) {

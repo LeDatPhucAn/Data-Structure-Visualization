@@ -753,6 +753,87 @@ void TreapUI::removeWithAnimation(int key) {
     }
 }
 
+bool TreapUI::sbs_searchBeforeRemove(TreapNode* curr, int key) {
+    if (!curr) {
+        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 1 }));
+        return false;
+    }
+
+    if (curr->getKey() == key) {
+        cerr << "found" << endl;
+        return true;
+    }
+    else if (curr->getKey() > key) {
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 2 }));
+        if (curr->leftEdge && curr->leftEdge->to) {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->leftEdge->to->getKey()} }, { 2 }));
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 2 }));
+        }
+        return sbs_searchBeforeRemove(curr->leftEdge ? curr->leftEdge->to : nullptr, key);
+    }
+    else {
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 3 }));
+        if (curr->rightEdge && curr->rightEdge->to) {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->rightEdge->to->getKey()} }, { 3 }));
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 3 }));
+        }
+        return sbs_searchBeforeRemove(curr->rightEdge ? curr->rightEdge->to : nullptr, key);
+    }
+}
+
+void TreapUI::sbs_removeWithAnimation(int key) {
+    cerr << "call" << endl;
+    TreapNode* del = treap.searchForNode(key);
+    if (!del) {
+        cerr << "not del" << endl;
+        return;
+    }
+    else cerr << "still here" << endl;
+    if ((!del->leftEdge || !del->leftEdge->to) && (!del->rightEdge || !del->rightEdge->to)) {
+        cerr << "no child" << endl;
+        steps.push_back(new TreapStep(cloneTree(treap.root), { {key, {'k', {{208, 82, 82, 255}, DARKGRAY, WHITE}}} }, {}, {5}));
+        //treap.remove(key);
+        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 5 }));
+        return;
+    }
+    else if (!del->leftEdge || !del->leftEdge->to) {
+        cerr << "right child" << endl;
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { del->rightEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}}}, {}, {6}));
+        //treap.remove(key);
+        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 6 }));
+        return;
+    }
+    else if (!del->rightEdge || !del->rightEdge->to) {
+        cerr << "left child" << endl;
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { del->leftEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}}}, {}, {7}));
+        //treap.remove(key);
+        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 7 }));
+        return;
+    }
+    else {
+        cerr << "two children" << endl;
+        if (del->leftEdge->to->getPriority() > del->rightEdge->to->getPriority()) {
+            steps.push_back(new TreapStep(cloneTree(treap.root), { { del->leftEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}}}, {}, {8}));
+            clone = rotateRightAtSpecificNode(clone, key);
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 9 }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 10 }));
+            sbs_removeWithAnimation(key);
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root), { { del->rightEdge->to->getKey(), {'k', {{82, 172, 16, 255}, DARKGRAY, WHITE}}} }, {}, { 11 }));
+            treap.rotateLeftAtSpecificNode(key);
+            clone = rotateLeftAtSpecificNode(clone, key);
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 12 }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 13 }));
+            sbs_removeWithAnimation(key);
+        }
+    }
+}
+
 int TreapUI::getSubtreeWidth(TreapNode* curr) {
     if (!curr) return 0;
     return curr->subtreeWidth;
@@ -918,10 +999,22 @@ void TreapUI::search(int key) {
 void TreapUI::remove(int key) {
     cleanupForOperations();
     clear();
-    this->root = cloneTree(treap.root);
+    this->root = nullptr;
     RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapRemove);
-    if (!searchBeforeRemove(this->root, key)) return;
-    removeWithAnimation(key);
+    if (!stepByStepAnimation) {
+        this->root = cloneTree(treap.root);
+        if (!searchBeforeRemove(this->root, key)) return;
+        removeWithAnimation(key);
+    }
+    else {
+        steps.push_back(new TreapStep(cloneTree(treap.root)));
+        this->root = cloneTree(treap.root);
+        if (!sbs_searchBeforeRemove(this->root, key)) return;
+        cerr << "after search" << endl;
+        sbs_removeWithAnimation(key);
+        treap.remove(key);
+        steps.push_back(new TreapStep(cloneTree(treap.root)));
+    }
 }
 
 void TreapUI::clear() {

@@ -171,6 +171,8 @@ private:
     void sbs_insertBST(TreapNode* root, int key, int priority, stack<int>& visited);
     void sbs_fixViolation(stack<int>& visited);
 
+    bool sbs_searchBeforeRemove(TreapNode* curr, int key);
+
     void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
 
     bool searchBeforeRemove(TreapNode* curr, int key);
@@ -183,6 +185,7 @@ private:
 
     void sbs_insertWithAnimation(int key, int priority);
     void sbs_searchWithAnimation(TreapNode* curr, int key);
+    void sbs_removeWithAnimation(int key);
 
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);

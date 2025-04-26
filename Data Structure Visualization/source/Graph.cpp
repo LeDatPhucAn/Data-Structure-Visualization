@@ -370,15 +370,27 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 	resetDijkstra();
 	dijkstraHistory.clear();
 	currentStep = 0;
-
+	int ActualStep = 1;
 	int n = nodes.size();
 	cost[startID] = 0;
 	path[startID].push_back(nodes[startID]->getNumber());
+	/*
+	animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+		cout << "the Current Step is " << currentStep << " and ";
+		cout << "the Actual Step is " << ActualStep << "\n";
+		applyNextDijkstraState(ActualStep);
 
-	animManager.addAnimation(new StateUpdateAnimation(0.2f, [this]() {
-		applyNextDijkstraState();
 		}));
+
 	enqueueDijkstraState(-1);
+	*/
+	enqueueDijkstraState(-1);
+	ActualStep = dijkstraStateQueue.size() - 1;
+	animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+		cout << "the Current Step is " << currentStep << " and ";
+		cout << "the Actual Step is " << ActualStep << "\n";
+		applyNextDijkstraState(ActualStep);
+		}));
 	for (int i = 0; i < n; ++i) {
 		//Find node with min cost
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
@@ -450,14 +462,28 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			CodeBlocks[3]->unhighlight();
 
 			}));
-		animManager.addAnimation(new StateUpdateAnimation(0.2f, [this]() {
-			applyNextDijkstraState();
+		/*
+		ActualStep++;
+		animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+			cout << "the Current Step is " << currentStep << " and ";
+			cout << "the Actual Step is " << ActualStep << "\n";
+			applyNextDijkstraState(ActualStep);
 			}));
-		enqueueDijkstraState(-1);
 
+		enqueueDijkstraState(-1);
+		*/
+		enqueueDijkstraState(-1);
+		ActualStep = dijkstraStateQueue.size() - 1;
+		animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+			cout << "the Current Step is " << currentStep << " and ";
+			cout << "the Actual Step is " << ActualStep << "\n";
+			applyNextDijkstraState(ActualStep);
+			}));
 		// Traverse all neighbors
 		for (auto& edge : edges) {
-
+			animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
+				CodeBlocks[4]->highlight();
+				}));
 			int v = -1;
 			float weight = edge->weight;
 
@@ -477,8 +503,12 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 					}
 				}
 			}
-
-			if (v != -1 && !visited[v]) {
+			if (v == -1 || visited[v]) {
+				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
+					CodeBlocks[4]->unhighlight();
+					}));
+			}
+			else {
 
 				//highlight edge u-v
 
@@ -495,7 +525,7 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 					
 
 				animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [&CodeBlocks, this]() {
-					CodeBlocks[4]->highlight();
+					
 
 					}));
 
@@ -509,7 +539,11 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 
 
 
+				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
+					CodeBlocks[4]->unhighlight();
+					CodeBlocks[5]->highlight();
 
+					}));
 
 				if (cost[u] + weight < cost[v]) {
 
@@ -521,15 +555,33 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 
 
 				}
-				animManager.addAnimation(new StateUpdateAnimation(0.2f, [this]() {
-					applyNextDijkstraState();
+				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
+					CodeBlocks[5]->unhighlight();
+					CodeBlocks[6]->highlight();
+
+					}));
+				/*
+				ActualStep++;
+
+				animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+					cout << "the Current Step is " << currentStep << " and ";
+					cout << "the Actual Step is " << ActualStep << "\n";
+					applyNextDijkstraState(ActualStep);
 					}));
 
 				enqueueDijkstraState(u);
+				*/
+				enqueueDijkstraState(u);
+				ActualStep = dijkstraStateQueue.size() - 1;
+				animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+					cout << "the Current Step is " << currentStep << " and ";
+					cout << "the Actual Step is " << ActualStep << "\n";
+					applyNextDijkstraState(ActualStep);
+					}));
 				// Unhighlight edge + node v
 
 				animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, v, this]() {
-					CodeBlocks[4]->unhighlight();
+					CodeBlocks[6]->unhighlight();
 					nodes[v]->indicateNode = "";
 
 					}));
@@ -611,17 +663,17 @@ void Graph::Dijkstra(int startID) {
 }
 
 void Graph::drawDijkstraTable(int current) {
-	if (drawDijk && !dijkstraHistory.empty())
+	if (drawDijk && !dijkstraStateQueue.empty())
 	{
 		//std::cout << "[Draw] Drawing Step: " << currentStep << std::endl;
-		if (current >= dijkstraHistory.size()) {
-			current = dijkstraHistory.size() - 1; 
+		if (current >= dijkstraStateQueue.size()) {
+			current = dijkstraStateQueue.size() - 1; 
 		}
-		const DijkstraState& state = dijkstraHistory[current];
+		const DijkstraState& state = dijkstraStateQueue[current];
 
 		int n = state.cost.size();
-		const float cellWidth = 100;
-		const float cellHeight = 40;
+		const float cellWidth = 150;
+		const float cellHeight = 50;
 		const float tableWidth = cellWidth * 4;
 		const float tableHeight = cellHeight * (n + 1);
 
@@ -730,7 +782,7 @@ void Graph::enqueueDijkstraState(int current) {
 	state.visited = visited;
 	state.path = path;
 	state.current = current;
-	dijkstraStateQueue.push(state);
+	dijkstraStateQueue.push_back(state);
 	std::cout << "[Snapshot] Step " << dijkstraHistory.size() - 1 << ": ";
 	for (size_t i = 0; i < state.visited.size(); ++i) {
 		if (state.visited[i])
@@ -740,11 +792,10 @@ void Graph::enqueueDijkstraState(int current) {
 	}
 	std::cout << "| Current: " << current << std::endl;
 }
-void Graph::applyNextDijkstraState() {
-	if (!dijkstraStateQueue.empty()) {
-		dijkstraHistory.push_back(dijkstraStateQueue.front());
-		dijkstraStateQueue.pop();
-		currentStep++;
+void Graph::applyNextDijkstraState(int i) {
+	if (i < dijkstraStateQueue.size()) {
+		dijkstraHistory.push_back(dijkstraStateQueue[i]);
+		currentStep = i;
 	}
 }
 void Graph::clearIndicates() {

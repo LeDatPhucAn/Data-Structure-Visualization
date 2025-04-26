@@ -73,7 +73,7 @@ public:
 	bool started = false;
 	DijkstraCellHighlightAnim(int r, int c, float dur, Color col, 
 		std::function<void()> callback = nullptr,
-		float cellW = 100, float cellH = 40,
+		float cellW = 150, float cellH = 50,
 		float originX = 150, float originY = 10
 		)
 		: Animation(dur, callback), row(r), col(c),

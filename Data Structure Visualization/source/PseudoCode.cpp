@@ -114,6 +114,8 @@ namespace PseudoCode {
         "Traversal all vertices which haven't been visited.\n"
         "Set u as the current vertex with the smallest cost\n"
         "Mark visited[u] is True\n"
-        "If d(v) > d(u) + (u,v). Update d(v)\n"
-        "Update the shortest path to v (path[v])\n";
+        "for (int i  = 0; i < n && visited[i] = false, ++i)\n"
+        "   if d(u) + (u,v) < d(v)\n"
+        "       d(v) = d(u) + (u,v)\n";
+        
 }

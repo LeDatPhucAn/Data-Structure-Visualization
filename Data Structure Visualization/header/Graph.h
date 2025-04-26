@@ -115,6 +115,9 @@ public:
 		//while (!dijkstraStateQueue.empty()) dijkstraStateQueue.pop();
 		currentStep = 0;
 	}
+	void setDijkstra() {
+		drawDijk = true;
+	}
 	void drawDijkstraTable(int current);
 	void drawDijkstra() {
 		if (!drawDijk) {

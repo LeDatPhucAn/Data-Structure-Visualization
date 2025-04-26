@@ -403,14 +403,15 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
 			CodeBlocks[1]->highlight();
 			}));
-		if (drawDijk) {
-			for (int j = 0; j < n; ++j) {
-				if (!visited[j]) {
-					animManager.addAnimation(new DijkstraCellHighlightAnim(j, 2, 0.1f, RED));
+		for (int j = 0; j < n; ++j) {
+			if (!visited[j]) {
+				animManager.addAnimation(new DijkstraCellHighlightAnim(j, 2, 0.1f, RED, [this]() {
+					if (!drawDijk) return;
+					}));
 
-				}
 			}
 		}
+		
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this] {
 			CodeBlocks[1]->unhighlight();
 		
@@ -447,23 +448,29 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			
 			CodeBlocks[2]->highlight();
 			}));
-		if (drawDijk) {
-			animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED));
-			animManager.addAnimation(nodeU);
+
+		animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [this]() {
+			if (!drawDijk) return;
+			}));
+		animManager.addAnimation(nodeU);
+
 		
+		/*
+		Animation* CellU = new DijkstraCellHighlightAnim(u, 1, 0.3f, RED, [&CodeBlocks, this]() {
+			//CodeBlocks[2]->unhighlight();
+			//odeBlocks[3]->highlight();
+			//currentStep++;
+
+			});
+
+
+		animManager.addAnimation(CellU);
 		
-			Animation* CellU = new DijkstraCellHighlightAnim(u, 1, 0.3f, RED, [&CodeBlocks, this]() {
-				//CodeBlocks[2]->unhighlight();
-				//odeBlocks[3]->highlight();
-				//currentStep++;
+		*/
+		animManager.addAnimation(new DijkstraCellHighlightAnim(u, 1, 0.3f, RED, [this]() {
+			if (!drawDijk) return;
 
-				});
-
-
-			animManager.addAnimation(CellU);
-		}
-			
-
+			}));
 
 		animManager.addAnimation(new Animation(0.1f, [&CodeBlocks, this]() {
 			CodeBlocks[2]->unhighlight();
@@ -521,19 +528,16 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 
 					}));
 
-					
-				if (drawDijk) {
-					animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [&CodeBlocks, this]() {
+				animManager.addAnimation(new DijkstraCellHighlightAnim(u, 2, 0.3f, RED, [&CodeBlocks, this]() {
+					if (!drawDijk) return;
+
+					}));
 
 
-						}));
-
-
-					animManager.addAnimation(new DijkstraCellHighlightAnim(v, 2, 0.3f, RED, [this]() {
-
-						}));
-
-				}
+				animManager.addAnimation(new DijkstraCellHighlightAnim(v, 2, 0.3f, RED, [this]() {
+					if (!drawDijk) return;
+					}));
+				
 					
 
 

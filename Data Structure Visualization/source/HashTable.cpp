@@ -36,7 +36,7 @@ void HashTable::loadFromFile(vector<RectButton*>& CodeBlocks, AnimationManager& 
             int value;
             while (fin >> value) {
                 if (value >= 0) {
-                    randomInsert(value,99);
+                    randomInsert(value, 99);
                 }
             }
             fin.close();
@@ -148,7 +148,7 @@ void HashTable::randomInsert(int x, int pos) {
 
         newNode->next = cur->next;
         CBEdge::addEdge(Edges, newNode, cur->next);
-        CBEdge::removeEdge(Edges,cur,cur->next);
+        CBEdge::removeEdge(Edges, cur, cur->next);
         cur->next = newNode;
         CBEdge::addEdge(Edges, cur, newNode);
 
@@ -258,7 +258,7 @@ bool HashTable::remove(vector<RectButton*>& CodeBlocks, AnimationManager& animMa
             if (edgeToCur) {
                 animManager.addAnimation(new CBEdgeHighLightAnim(edgeToCur, 0.5f, PURPLE));
 
-                CBEdge::removeEdgeAndAnim(animManager,Edges, edgeToCur->from, edgeToCur->to);
+                CBEdge::removeEdgeAndAnim(animManager, Edges, edgeToCur->from, edgeToCur->to);
                 //animManager.addAnimation(new Animation(0.5f, [this, edgeToCur]() {
                 //    for (auto it = Edges.begin(); it != Edges.end(); ++it) {
                 //        if (*it == edgeToCur) {
@@ -436,7 +436,7 @@ void HashTable::resize(int newSize) {
         while (cur) {
             LLNode* next = cur->next;
             cur->next = nullptr;
-            randomInsert(cur->getNumber(),99);
+            randomInsert(cur->getNumber(), 99);
             cur = next;
         }
     }

@@ -99,8 +99,7 @@ int AnimationManager::getStep() {
 }
 // Go to step k: state after animation k completes (step 0 is initial state)
 void AnimationManager::goToStep(int k) {
-    //if (k < 0)k = 0;
-    //else if (k > animations.size()) k = animations.size();
+
     if (k < 0 || k > animations.size()) return;
 
     paused = true;
@@ -144,11 +143,10 @@ void AnimationManager::goToPreviousStep() {
     goToStep(getStep() - 1);
 }
 
+
 // Go to the next step (modify existing goToNext for consistency)
 void AnimationManager::goToNextStep() {
     if (animations.empty()) return;
 
     goToStep(getStep() + 1);
-    
 }
-

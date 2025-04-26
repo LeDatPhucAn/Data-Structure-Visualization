@@ -59,7 +59,7 @@ void HashTableUI::init() {
     int n = rand() % 10;
     for (int i = 0; i < n; ++i) {
         int x = rand() % 100;
-        hashtable.randomInsert(x,99);
+        hashtable.randomInsert(x, 99);
     }
     initButtons();
 }
@@ -127,7 +127,7 @@ void HashTableUI::initButtons() {
         int n = rand() % 10;
         for (int i = 0; i < n; ++i) {
             int x = rand() % 100;
-            hashtable.randomInsert(x,99);
+            hashtable.randomInsert(x, 99);
         }
         };
 
@@ -228,7 +228,7 @@ void HashTableUI::updateScene() {
         values.push_back(newValue);
         hashtable.clear();
         for (int val : values) {
-            hashtable.randomInsert(val,99);
+            hashtable.randomInsert(val, 99);
         }
     }
 
@@ -266,7 +266,7 @@ void HashTableUI::replayOperation() {
     else if (isRemove) {
         animManager.goToLastStep();
         animManager.clear();
-        hashtable.randomInsert(removeParameters.first,removeParameters.second);
+        hashtable.randomInsert(removeParameters.first, removeParameters.second);
         int pos = -1;
         hashtable.remove(CodeBlocks, animManager, removeParameters.first, pos);
     }

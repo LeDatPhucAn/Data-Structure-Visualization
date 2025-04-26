@@ -15,7 +15,6 @@ void GraphUI::Dijkstra(int n) {
 	isDijkstra = true;
 	isDijkstraTable = false;
 	dijkstraParameters = n;
-	graph->resetDijkstra();
 	graph->DijkstraAnim(CodeBlocks, animManager, n);
 }
 void GraphUI::DijkstraTable() {
@@ -32,17 +31,18 @@ void GraphUI::replayOperation() {
 		animManager.clear();
 		graph->DijkstraAnim(CodeBlocks, animManager, dijkstraParameters);
 	}
-	else if (isDijkstraTable) {
-		animManager.goToLastStep();
-		animManager.clear();
-		graph->setCurrentStep();
-		graph->drawDijkstraTable(graph->getCurrentStep());
-	}
+	//else if (isDijkstraTable) {
+	//	animManager.goToLastStep();
+	//	animManager.clear();
+	//	graph->setCurrentStep();
+	//	graph->drawDijkstraTable(graph->getCurrentStep());
+	//}
 }
 void GraphUI::displayScene() {
 	Button::drawButtons<RectButton>(buttonsOnGraph);
 	Button::drawButtons<RectButton>(CodeBlocks);
 	
+	//cout << graph->getCurrentStep() << "\n";
 	graph->drawDijkstraTable(graph->getCurrentStep());
 
 }

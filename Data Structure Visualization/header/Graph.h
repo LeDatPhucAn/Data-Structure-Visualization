@@ -56,7 +56,7 @@ private:
 		int current = -1;
 	};
 	std::vector<DijkstraState> dijkstraHistory;
-	queue<DijkstraState> dijkstraStateQueue;
+	vector<DijkstraState> dijkstraStateQueue;
 	bool isDijkstraPlaying = false;
 	int currentStep = 0;
 	float radiusNode = 50.0f;
@@ -102,7 +102,7 @@ public:
 	void Dijkstra(int startID);
 	void saveDijkstraState(int current);
 	void enqueueDijkstraState(int current);
-	void applyNextDijkstraState();
+	void applyNextDijkstraState(int i);
 	void snapshot(int current);
 	void resetDijkstra() {
 		int n = numberVertices;
@@ -110,7 +110,10 @@ public:
 		visited.assign(n, false);
 		path.assign(n, {});
 		dijkstraHistory.clear();
-		while (!dijkstraStateQueue.empty()) dijkstraStateQueue.pop();
+		dijkstraStateQueue.clear();
+		dijkstraHistory.reserve(100);
+		dijkstraStateQueue.reserve(100);
+		//while (!dijkstraStateQueue.empty()) dijkstraStateQueue.pop();
 		currentStep = 0;
 	}
 	void drawDijkstraTable(int current);

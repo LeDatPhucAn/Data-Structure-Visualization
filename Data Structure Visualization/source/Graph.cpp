@@ -369,15 +369,24 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 	clearIndicates();
 	resetDijkstra();
 	dijkstraHistory.clear();
+
+
 	currentStep = 0;
+
+	int ActualStep = 1;
+
 
 	int n = nodes.size();
 	cost[startID] = 0;
 	path[startID].push_back(nodes[startID]->getNumber());
 
-	animManager.addAnimation(new StateUpdateAnimation(0.2f, [this]() {
-		applyNextDijkstraState();
+	animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+		cout << "the Current Step is " << currentStep << " and ";
+		cout << "the Actual Step is " << ActualStep << "\n";
+		applyNextDijkstraState(ActualStep);
+
 		}));
+
 	enqueueDijkstraState(-1);
 	for (int i = 0; i < n; ++i) {
 		//Find node with min cost
@@ -450,9 +459,14 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 			CodeBlocks[3]->unhighlight();
 
 			}));
-		animManager.addAnimation(new StateUpdateAnimation(0.2f, [this]() {
-			applyNextDijkstraState();
+
+		ActualStep++;
+		animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+			cout << "the Current Step is " << currentStep << " and ";
+			cout << "the Actual Step is " << ActualStep << "\n";
+			applyNextDijkstraState(ActualStep);
 			}));
+
 		enqueueDijkstraState(-1);
 
 		// Traverse all neighbors
@@ -504,12 +518,6 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 
 					}));
 
-					
-
-
-
-
-
 
 				if (cost[u] + weight < cost[v]) {
 
@@ -517,12 +525,14 @@ void Graph::DijkstraAnim(vector<RectButton*>& CodeBlocks, AnimationManager& anim
 					path[v] = path[u];
 					path[v].push_back(nodes[v]->getNumber());
 
-
-
-
 				}
-				animManager.addAnimation(new StateUpdateAnimation(0.2f, [this]() {
-					applyNextDijkstraState();
+
+				ActualStep++;
+
+				animManager.addAnimation(new StateUpdateAnimation(0.2f, [this, ActualStep]() {
+					cout << "the Current Step is " << currentStep << " and ";
+					cout << "the Actual Step is " << ActualStep << "\n";
+					applyNextDijkstraState(ActualStep);
 					}));
 
 				enqueueDijkstraState(u);
@@ -611,13 +621,13 @@ void Graph::Dijkstra(int startID) {
 }
 
 void Graph::drawDijkstraTable(int current) {
-	if (drawDijk && !dijkstraHistory.empty())
+	if (drawDijk && !dijkstraStateQueue.empty())
 	{
 		//std::cout << "[Draw] Drawing Step: " << currentStep << std::endl;
-		if (current >= dijkstraHistory.size()) {
-			current = dijkstraHistory.size() - 1; 
+		if (current >= dijkstraStateQueue.size()) {
+			current = dijkstraStateQueue.size() - 1;
 		}
-		const DijkstraState& state = dijkstraHistory[current];
+		const DijkstraState& state = dijkstraStateQueue[current];
 
 		int n = state.cost.size();
 		const float cellWidth = 100;
@@ -730,7 +740,7 @@ void Graph::enqueueDijkstraState(int current) {
 	state.visited = visited;
 	state.path = path;
 	state.current = current;
-	dijkstraStateQueue.push(state);
+	dijkstraStateQueue.push_back(state);
 	std::cout << "[Snapshot] Step " << dijkstraHistory.size() - 1 << ": ";
 	for (size_t i = 0; i < state.visited.size(); ++i) {
 		if (state.visited[i])
@@ -740,12 +750,14 @@ void Graph::enqueueDijkstraState(int current) {
 	}
 	std::cout << "| Current: " << current << std::endl;
 }
-void Graph::applyNextDijkstraState() {
-	if (!dijkstraStateQueue.empty()) {
-		dijkstraHistory.push_back(dijkstraStateQueue.front());
-		dijkstraStateQueue.pop();
-		currentStep++;
-	}
+void Graph::applyNextDijkstraState(int i) {
+	//if (!dijkstraStateQueue.empty()) {
+	//	dijkstraHistory.push_back(dijkstraStateQueue.front());
+	//	dijkstraStateQueue.pop();
+	//	currentStep = i;
+	//}
+	//dijkstraHistory.push_back(dijkstraStateQueue[i]);
+	currentStep = i;
 }
 void Graph::clearIndicates() {
 	for (auto& node : nodes) {

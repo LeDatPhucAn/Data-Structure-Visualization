@@ -205,6 +205,7 @@ void HashTableUI::updateScene() {
                 editValueConfirm->rect.y = editValueInput->rect.y;
                 editValueConfirm->onClick = [this, cur, i, &needUpdateHashTable, &newValue, &oldValue, &bucketIdx]() {
                     newValue = static_cast<NumberInputBox*>(editValueInput)->getNumber();
+                    RectButton::insertPseudoCode(CodeBlocks, PseudoCode::HashTableInsert);
                     oldValue = cur->getNumber();
                     bucketIdx = i;
                     needUpdateHashTable = true; // Đánh dấu cần cập nhật hash table
@@ -225,11 +226,12 @@ void HashTableUI::updateScene() {
     if (needUpdateHashTable && newValue != oldValue) {
         hashtable.removeFromBucket(oldValue, bucketIdx);
         vector<int> values = hashtable.collectValues();
-        values.push_back(newValue);
         hashtable.clear();
         for (int val : values) {
             hashtable.randomInsert(val, 99);
         }
+
+        insert(newValue);
     }
 
     if (!isEditingNode && editValueInput) {

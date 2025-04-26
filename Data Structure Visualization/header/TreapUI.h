@@ -11,34 +11,124 @@
 #include <functional>
 
 struct TreapStep {
-    TreapNode* root;
-    vector<TreapNode*> highlightedNodes;
-    vector<TreapEdge*> highlightedEdges;
-    vector<int> highlightedCodeLines;
-    
-    TreapStep(TreapNode* root = nullptr) : root(root){}
+    TreapNode* root; // Root of the treap at this step
+    vector<TreapNode*> nodes; // All nodes in the treap at this step
+    vector<TreapEdge*> edges; // All edges in the treap at this step
+    vector<pair<int, pair<char, vector<Color>>>> highlightedNodes; // Highlighted nodes
+    vector<pair<int, int>> highlightedEdges; // Highlighted edges
+    vector<int> highlightedCodeLines; // Highlighted lines of code
 
-    ~TreapStep() {
+    // Constructor
+    TreapStep(TreapNode* r = nullptr,
+        vector<pair<int, pair<char, vector<Color>>>> n = {},
+        vector<pair<int, int>> e = {},
+        vector<int> c = {})
+        : root(r), highlightedNodes(n), highlightedEdges(e), highlightedCodeLines(c) {
         if (root) {
-            clear(root);
+            collectNodesAndEdges(root);
+            applyHighlights();
         }
     }
 
+    // Destructor
+    ~TreapStep() {
+        clear(root);
+        highlightedNodes.clear();
+        highlightedEdges.clear();
+        for (auto ptr : nodes) delete ptr;
+        nodes.clear();
+        for (auto ptr : edges) delete ptr;
+        edges.clear();
+    }
+
+    // Collect all nodes and edges in the tree
+    void collectNodesAndEdges(TreapNode* curr) {
+        if (!curr) return;
+
+        nodes.push_back(curr);
+
+        if (curr->leftEdge) {
+            edges.push_back(curr->leftEdge);
+            collectNodesAndEdges(curr->leftEdge->to);
+        }
+
+        if (curr->rightEdge) {
+            edges.push_back(curr->rightEdge);
+            collectNodesAndEdges(curr->rightEdge->to);
+        }
+    }
+
+    // Apply highlights to nodes and edges
+    void applyHighlights() {
+        for (auto& p : highlightedNodes) {
+            for (auto ptr : nodes) {
+                if (ptr->getKey() == p.first) {
+                    if (p.second.first == 'k') { // Highlight keyBox
+                        ptr->keyBox->FillColor = p.second.second[0];
+                        ptr->keyBox->OutLineColor = p.second.second[1];
+                        ptr->keyBox->TextColor = p.second.second[2];
+                    }
+                    else { // Highlight priorityBox
+                        ptr->priorityBox->FillColor = p.second.second[0];
+                        ptr->priorityBox->OutLineColor = p.second.second[1];
+                        ptr->priorityBox->TextColor = p.second.second[2];
+                    }
+                }
+            }
+        }
+
+        for (auto& p : highlightedEdges) {
+            for (auto ptr : edges) {
+                if (ptr->from->getKey() == p.first && ptr->to->getKey() == p.second) {
+                    ptr->edgeColor = ORANGE;
+                }
+            }
+        }
+    }
+
+    // Clear the tree recursively
     void clear(TreapNode* curr) {
         if (!curr) return;
 
         if (curr->leftEdge) {
             clear(curr->leftEdge->to);
             delete curr->leftEdge;
-            curr->leftEdge = nullptr;
         }
         if (curr->rightEdge) {
             clear(curr->rightEdge->to);
             delete curr->rightEdge;
-            curr->rightEdge = nullptr;
         }
 
         delete curr;
+    }
+
+    // Draw a single node
+    void drawTreapNode(TreapNode* curr) {
+        if (!curr) return;
+        curr->draw();
+    }
+
+    // Draw a single edge
+    void drawTreapEdge(TreapEdge* edge) {
+        if (!edge || !edge->from || !edge->to) return;
+        edge->draw();
+    }
+
+    // Draw the entire treap
+    void drawTreap(TreapNode* curr) {
+        if (!curr) return;
+
+        drawTreapNode(curr);
+
+        if (curr->leftEdge) {
+            drawTreapEdge(curr->leftEdge);
+            drawTreap(curr->leftEdge->to);
+        }
+
+        if (curr->rightEdge) {
+            drawTreapEdge(curr->rightEdge);
+            drawTreap(curr->rightEdge->to);
+        }
     }
 };
 
@@ -52,7 +142,7 @@ private:
 
     Treap treap;
     TreapNode* root = nullptr;
-    vector<TreapStep> steps;
+    vector<TreapStep*> steps;
     int currentStep = 0;
     bool drawInsideTreap = false;
     bool stepByStepAnimation = false;
@@ -73,6 +163,8 @@ private:
     TreapNode* insertBST(TreapNode* root, int key, int priority);
     void makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited);
     void fixViolation(stack<int>& visited);
+
+    void sbs_insertBST(TreapNode* root, int key, int priority);
 
     void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
 
@@ -104,14 +196,6 @@ public:
     void remove(int key);
     void search(int key);
     void clear();
-
-    void addStep(TreapNode* root, const vector<TreapNode*>& highlightedNodes, const vector<TreapEdge*>& highlightedEdges, const vector<int>& highlightedCodeLines) {
-        TreapStep step(cloneTree(root)); // Clone the current tree
-        step.highlightedNodes = highlightedNodes;
-        step.highlightedEdges = highlightedEdges;
-        step.highlightedCodeLines = highlightedCodeLines;
-        steps.push_back(step);
-    }
 
     void goToNextStep() {
         if (currentStep < steps.size() - 1) {
@@ -148,8 +232,8 @@ public:
 
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
-        if(drawInsideTreap) treap.drawTreap(treap.root);
+        if (drawInsideTreap) treap.drawTreap(treap.root);
+        else if (stepByStepAnimation && currentStep < steps.size()) steps[currentStep]->drawTreap(steps[currentStep]->root);
         else drawTreap(root);
     }
-
 };

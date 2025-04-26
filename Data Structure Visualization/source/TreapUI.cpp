@@ -176,6 +176,41 @@ TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
     return root;
 }
 
+void TreapUI::sbs_insertBST(TreapNode* root, int key, int priority) {
+    if (!root) {
+        treap.insertBST(key, priority);
+        steps.emplace_back(new TreapStep(cloneTree(treap.root), { {key, {'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE}}} }, {}));
+        return;
+    }
+
+    cerr << "handle node with key " << root->getKey() << endl;
+    /*TreapStep* s =  new TreapStep(cloneTree(treap.root), { {root->getKey(), {'k', {ORANGE, DARKGRAY, WHITE}}} }, {});
+    cerr << s.root->getKey() << endl;
+    cerr << s.highlightedNodes.size() << endl;
+    cerr << s.highlightedEdges.size() << endl;*/
+    steps.emplace_back(new TreapStep(cloneTree(treap.root), { {root->getKey(), {'k', {ORANGE, DARKGRAY, WHITE}}} }, {}));
+    cerr << "reach here" << endl;
+    cerr << "handle node with key " << root->getKey() << endl;
+
+    if (root->getKey() == key) {
+        steps.emplace_back(new TreapStep(cloneTree(treap.root), { {key, {'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE}}} }, {}));
+    }
+    else if (root->getKey() > key) {
+        cerr << "goleft" << endl;
+        if (root->leftEdge && root->leftEdge->to) {
+            steps.emplace_back(new TreapStep(cloneTree(treap.root), {}, { {root->getKey(), root->leftEdge->to->getKey()} }));
+        }
+        sbs_insertBST(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
+    }
+    else {
+        cerr << "go right" << endl;
+        if (root->rightEdge && root->rightEdge->to) {
+            steps.emplace_back(new TreapStep(cloneTree(treap.root), {}, { {root->getKey(), root->rightEdge->to->getKey()} }));
+        }
+        sbs_insertBST(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
+    }
+}
+
 void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
     if (!curr) return;
 
@@ -735,6 +770,7 @@ void TreapUI::cleanupForOperations() {
     animManager.goToLastStep();
     animManager.clear();
     animManager.resume();
+    steps.clear();
 }
 
 void TreapUI::loadFromFile(){
@@ -768,12 +804,20 @@ void TreapUI::loadFromFile(){
 }
 
 void TreapUI::insert(int key, int priority, bool isAnimated) {
-    cleanupForOperations();
     if (isAnimated) {
+        cleanupForOperations();
         clear();
-        this->root = cloneTree(treap.root);
-        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
-        insertWithAnimation(key, priority);
+        this->root = nullptr;
+        if (!stepByStepAnimation) {
+            this->root = cloneTree(treap.root);
+            RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
+            insertWithAnimation(key, priority);
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root)));
+            sbs_insertBST(treap.root, key, priority);
+            steps.push_back(new TreapStep(cloneTree(treap.root)));
+        }
     }
     else {
         clear();
@@ -916,6 +960,7 @@ void TreapUI::initButtons() {
         55.0f, BLACK, ORANGE, RED);
 
     GoPrevious->onClick = [this]() {
+        goToPreviousStep();
         cerr << "click new GoPrevious" << endl;
         };
 
@@ -929,6 +974,7 @@ void TreapUI::initButtons() {
         55.0f, BLACK, ORANGE, RED);
 
     GoNext->onClick = [this]() {
+        goToNextStep();
         cerr << "click new GoNext" << endl;
         };
 

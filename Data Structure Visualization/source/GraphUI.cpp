@@ -101,6 +101,7 @@ void GraphUI::initButtons() {
 	RectButton* vertice2 = new TextBox("Input n:");
 	RectButton* verticeInput2 = new NumberInputBox(4);
 	RectButton* Enter2 = new TextBox(">");
+	RectButton* Enter2_ = new TextBox("HIDDEN TABLE");
 
 	buttonsOnGraph[2]->insertSubButton(vertice2);
 	buttonsOnGraph[2]->insertSubButton(verticeInput2);
@@ -114,7 +115,9 @@ void GraphUI::initButtons() {
 			static_cast<NumberInputBox*>(verticeInput2)->clear();
 		}
 		});
-
+	buttonsOnGraph[2]->insertSubButton(Enter2_, [this]() {
+		graph->drawDijkstra();
+		});
 	
 
 

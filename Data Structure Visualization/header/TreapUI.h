@@ -182,6 +182,7 @@ private:
     void removeWithAnimation(int key);
 
     void sbs_insertWithAnimation(int key, int priority);
+    void sbs_searchWithAnimation(TreapNode* curr, int key);
 
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);
@@ -240,7 +241,7 @@ public:
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
         if (drawInsideTreap) treap.drawTreap(treap.root);
-        else if (stepByStepAnimation && currentStep < steps.size() && steps[currentStep]) steps[currentStep]->draw();
+        else if (stepByStepAnimation && currentStep < steps.size()) steps[currentStep]->draw();
         else drawTreap(root);
     }
 };

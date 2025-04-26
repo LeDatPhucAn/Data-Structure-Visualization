@@ -498,6 +498,40 @@ void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
     }
 }
 
+void TreapUI::sbs_searchWithAnimation(TreapNode* curr, int key) {
+    if (!curr) {
+        steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, {1}));
+        return;
+    }
+
+    cerr << "handle node with key " << curr->getKey() << endl;
+    if (curr->getKey() == key) {
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 2 }));
+    }
+    else if (curr->getKey() > key) {
+        cerr << "go left" << endl;
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 3 }));
+        if (curr->leftEdge && curr->leftEdge->to) {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->leftEdge->to->getKey()} }, { 4 }));
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 4 }));
+        }
+        sbs_searchWithAnimation(curr->leftEdge ? curr->leftEdge->to : nullptr, key);
+    }
+    else {
+        cerr << "go right" << endl;
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { curr->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 5 }));
+        if (curr->rightEdge && curr->rightEdge->to) {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {curr->getKey(), curr->rightEdge->to->getKey()} }, { 6 }));
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 6 }));
+        }
+        sbs_searchWithAnimation(curr->rightEdge ? curr->rightEdge->to : nullptr, key);
+    }
+}
+
 bool TreapUI::searchBeforeRemove(TreapNode* curr, int key) {
     if (!curr) {
         animManager.addAnimation(new Animation(0.5f, [this]() {
@@ -808,6 +842,8 @@ void TreapUI::cleanupForOperations() {
     animManager.goToLastStep();
     animManager.clear();
     animManager.resume();
+    steps = vector<TreapStep*>();
+    currentStep = 0;
 }
 
 void TreapUI::loadFromFile(){
@@ -851,8 +887,6 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
             insertWithAnimation(key, priority);
         }
         else {
-            steps = vector<TreapStep*>(0);
-            currentStep = 0;
             steps.push_back(new TreapStep(cloneTree(treap.root)));
             sbs_insertWithAnimation(key, priority);
             steps.push_back(new TreapStep(cloneTree(treap.root)));
@@ -868,9 +902,17 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
 void TreapUI::search(int key) {
     cleanupForOperations();
     clear();
-    this->root = cloneTree(treap.root);
+    this->root = nullptr;
     RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapSearch);
-    searchWithAnimation(root, key);
+    if (!stepByStepAnimation) {
+        this->root = cloneTree(treap.root);
+        searchWithAnimation(root, key);
+    }
+    else {
+        steps.push_back(new TreapStep(cloneTree(treap.root)));
+        sbs_searchWithAnimation(treap.root, key);
+        steps.push_back(new TreapStep(cloneTree(treap.root)));
+    }
 }
 
 void TreapUI::remove(int key) {

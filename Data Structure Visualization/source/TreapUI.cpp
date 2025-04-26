@@ -176,37 +176,43 @@ TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
     return root;
 }
 
-void TreapUI::sbs_insertBST(TreapNode* root, int key, int priority) {
+void TreapUI::sbs_insertBST(TreapNode* root, int key, int priority, stack<int>& visited) {
     if (!root) {
         treap.insertBST(key, priority);
-        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 1 }));
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 1 }));
         return;
     }
 
+    visited.push(root->getKey());
+
     if (root->getKey() == key) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 2 }));
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 2 }));
     }
     else if (root->getKey() > key) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, {3}));
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, {3}));
         if (root->leftEdge && root->leftEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, {{root->getKey(), root->leftEdge->to->getKey()}}, {4}));
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {{root->getKey(), root->leftEdge->to->getKey()}}, {4}));
         }
         else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, {}, {4}));
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, {4}));
         }
-        sbs_insertBST(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
+        sbs_insertBST(root->leftEdge ? root->leftEdge->to : nullptr, key, priority, visited);
     }
     else {
         cerr << "go right" << endl;
-        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 7 }));
+        steps.push_back(new TreapStep(cloneTree(treap.root), { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 7 }));
         if (root->rightEdge && root->rightEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, { {root->getKey(), root->rightEdge->to->getKey()} }, { 8 }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, { {root->getKey(), root->rightEdge->to->getKey()} }, { 8 }));
         }
         else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, {}, { 8 }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 8 }));
         }
-        sbs_insertBST(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
+        sbs_insertBST(root->rightEdge ? root->rightEdge->to : nullptr, key, priority, visited);
     }
+}
+
+void sbs_fixViolation() {
+
 }
 
 void TreapUI::makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited) {
@@ -348,6 +354,37 @@ void TreapUI::fixViolation(stack<int>& visited) {
     reposition(this->root, ROOT_POS, xOffset, yOffset);
 }
 
+void TreapUI::sbs_fixViolation(stack<int>& visited) {
+    if (visited.empty()) return;
+
+    int key = visited.top();
+    visited.pop();
+
+    TreapNode* curr = treap.searchForNode(treap.root, key);
+
+    steps.push_back(new TreapStep(cloneTree(treap.root), { { key, { 'p', {ORANGE, DARKGRAY, WHITE} } } }));
+
+    bool hasRotated = false;
+
+    if (curr->leftEdge && curr->leftEdge->to) {
+        if (curr->leftEdge->to->getPriority() > curr->getPriority()) {
+            steps.push_back(new TreapStep(cloneTree(treap.root), {{curr->leftEdge->to->getKey(), {'p', {{208, 82, 82, 255}, DARKGRAY, WHITE}}}}, {}, {5}));
+            treap.rotateRightAtSpecificNode(curr->getKey());
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 6 }));
+            hasRotated = true;
+        }
+    }
+    if (!hasRotated && curr->rightEdge && curr->rightEdge->to) {
+        if (curr->rightEdge->to->getPriority() > curr->getPriority()) {
+            steps.push_back(new TreapStep(cloneTree(treap.root), { {curr->rightEdge->to->getKey(), {'p', {{208, 82, 82, 255}, DARKGRAY, WHITE}}} }, {}, { 9 }));
+            treap.rotateLeftAtSpecificNode(curr->getKey());
+            steps.push_back(new TreapStep(cloneTree(treap.root), {}, {}, { 10 }));
+        }
+    }
+
+    sbs_fixViolation(visited);
+}
+
 void TreapUI::getNodesToMove(vector<TreapNode*>& res, TreapNode* curr) {
     if (!curr) return;
     res.push_back(curr);
@@ -375,6 +412,13 @@ void TreapUI::insertWithAnimation(int key, int priority) {
         }));
 
     reposition(this->root, ROOT_POS, xOffset, yOffset);
+}
+
+
+void TreapUI::sbs_insertWithAnimation(int key, int priority) {
+    stack<int> visited;
+    sbs_insertBST(treap.root, key, priority, visited);
+    sbs_fixViolation(visited);
 }
 
 void TreapUI::searchWithAnimation(TreapNode* curr, int key) {
@@ -808,9 +852,10 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
             insertWithAnimation(key, priority);
         }
         else {
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert));
-            sbs_insertBST(treap.root, key, priority);
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::nothing));
+            steps.clear();
+            steps.push_back(new TreapStep(cloneTree(treap.root)));
+            sbs_insertWithAnimation(key, priority);
+            steps.push_back(new TreapStep(cloneTree(treap.root)));
         }
     }
     else {

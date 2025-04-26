@@ -11,34 +11,20 @@
 #include <sstream>
 #include <functional>
 
-enum class CodeBlocksType {
-    nothing,
-    insert, 
-    searching, 
-    remove
-};
-
 struct TreapStep {
     TreapNode* root; // Root of the treap at this step
     vector<TreapNode*> nodes; // All nodes in the treap at this step
     vector<TreapEdge*> edges; // All edges in the treap at this step
-    vector<RectButton*> CodeBlocks;
-    CodeBlocksType type;
     vector<pair<int, pair<char, vector<Color>>>> highlightedNodes; // Highlighted nodes
     vector<pair<int, int>> highlightedEdges; // Highlighted edges
     vector<int> highlightedCodeLines; // Highlighted lines of code
 
     // Constructor
     TreapStep(TreapNode* r,
-        CodeBlocksType t,
         vector<pair<int, pair<char, vector<Color>>>> n = {},
         vector<pair<int, int>> e = {},
         vector<int> c = {})
-        : root(r), type(t), highlightedNodes(n), highlightedEdges(e), highlightedCodeLines(c) {
-        if (t == CodeBlocksType::insert) {
-            RectButton::insertPseudoCode(this->CodeBlocks, PseudoCode::TreapInsert);
-            cerr << "size " << this->CodeBlocks.size() << endl;
-        }
+        : root(r), highlightedNodes(n), highlightedEdges(e), highlightedCodeLines(c) {
         if (root) {
             collectNodesAndEdges(root);
             applyHighlights();
@@ -98,10 +84,6 @@ struct TreapStep {
                     ptr->edgeColor = ORANGE;
                 }
             }
-        }
-
-        for (int& x : highlightedCodeLines) {
-            if(x >= 0 && x < CodeBlocks.size()) CodeBlocks[x]->highlight();
         }
     }
 
@@ -186,7 +168,8 @@ private:
     void makeNewNodeAppear(TreapNode* curr, int key, stack<int>& visited);
     void fixViolation(stack<int>& visited);
 
-    void sbs_insertBST(TreapNode* root, int key, int priority);
+    void sbs_insertBST(TreapNode* root, int key, int priority, stack<int>& visited);
+    void sbs_fixViolation(stack<int>& visited);
 
     void getNodesToMove(vector<TreapNode*>& res, TreapNode* curr);
 
@@ -197,6 +180,8 @@ private:
     void insertWithAnimation(int key, int priority);
     void searchWithAnimation(TreapNode* curr, int key); 
     void removeWithAnimation(int key);
+
+    void sbs_insertWithAnimation(int key, int priority);
 
     int getSubtreeWidth(TreapNode* curr);
     void updateSubtreeWidth(TreapNode* curr);

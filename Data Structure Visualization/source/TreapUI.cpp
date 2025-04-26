@@ -179,7 +179,7 @@ TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
 void TreapUI::sbs_insertBST(TreapNode* root, int key, int priority) {
     if (!root) {
         treap.insertBST(key, priority);
-        steps.emplace_back(new TreapStep(cloneTree(treap.root), { {key, {'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE}}} }, {}));
+        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 1, 2 }));
         return;
     }
 
@@ -188,24 +188,24 @@ void TreapUI::sbs_insertBST(TreapNode* root, int key, int priority) {
     cerr << s.root->getKey() << endl;
     cerr << s.highlightedNodes.size() << endl;
     cerr << s.highlightedEdges.size() << endl;*/
-    steps.emplace_back(new TreapStep(cloneTree(treap.root), { {root->getKey(), {'k', {ORANGE, DARKGRAY, WHITE}}} }, {}));
+    steps.push_back(new TreapStep(cloneTree(treap.root), {}, { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }));
     cerr << "reach here" << endl;
     cerr << "handle node with key " << root->getKey() << endl;
 
     if (root->getKey() == key) {
-        steps.emplace_back(new TreapStep(cloneTree(treap.root), { {key, {'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE}}} }, {}));
+        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 3, 4 }));
     }
     else if (root->getKey() > key) {
         cerr << "goleft" << endl;
         if (root->leftEdge && root->leftEdge->to) {
-            steps.emplace_back(new TreapStep(cloneTree(treap.root), {}, { {root->getKey(), root->leftEdge->to->getKey()} }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, {}, { {root->getKey(), root->leftEdge->to->getKey()} }));
         }
         sbs_insertBST(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
     }
     else {
         cerr << "go right" << endl;
         if (root->rightEdge && root->rightEdge->to) {
-            steps.emplace_back(new TreapStep(cloneTree(treap.root), {}, { {root->getKey(), root->rightEdge->to->getKey()} }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, {}, { {root->getKey(), root->rightEdge->to->getKey()} }));
         }
         sbs_insertBST(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
     }
@@ -950,8 +950,6 @@ void TreapUI::initButtons() {
         treap.clear();
         };
 
-    updateButtonPositions();
-
     CircleButton* GoPrevious = new TextCircle("<",
         {
             (float)UI::screenWidth / 2 - 60 - 55,
@@ -993,6 +991,9 @@ void TreapUI::initButtons() {
         };
 
     OverrideButtons.push_back(test);
+
+
+    updateButtonPositions();
 }
 
 
@@ -1002,9 +1003,24 @@ void TreapUI::displayScene() {
     Button::drawButtons<RectButton>(CodeBlocks);
 }
 
+// 0: go previous
+// 1: go next
 void TreapUI::updateButtonPositions() {
     RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
-
+    if (UI::lastScreenWidth != UI::screenWidth || UI::lastScreenHeight != UI::screenHeight) {
+        OverrideButtons[0]->setCenter(
+            (float)UI::screenWidth / 2 - 60 - 55,
+            (float)UI::screenHeight - 100
+        );
+        OverrideButtons[1]->setCenter(
+            (float)UI::screenWidth / 2 + 60 + 55,
+            (float)UI::screenHeight - 100
+        );
+        OverrideButtons[2]->setCenter(
+            OverrideButtons[0]->getCenterX(),
+            OverrideButtons[0]->getCenterY() - 60 - 55
+        );
+    }
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
 

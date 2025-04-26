@@ -14,16 +14,18 @@ struct TreapStep {
     TreapNode* root; // Root of the treap at this step
     vector<TreapNode*> nodes; // All nodes in the treap at this step
     vector<TreapEdge*> edges; // All edges in the treap at this step
+    vector<RectButton*> CodeBlocks;
     vector<pair<int, pair<char, vector<Color>>>> highlightedNodes; // Highlighted nodes
     vector<pair<int, int>> highlightedEdges; // Highlighted edges
     vector<int> highlightedCodeLines; // Highlighted lines of code
 
     // Constructor
     TreapStep(TreapNode* r = nullptr,
+        vector<RectButton*> cb = {},
         vector<pair<int, pair<char, vector<Color>>>> n = {},
         vector<pair<int, int>> e = {},
         vector<int> c = {})
-        : root(r), highlightedNodes(n), highlightedEdges(e), highlightedCodeLines(c) {
+        : root(r), CodeBlocks(cb), highlightedNodes(n), highlightedEdges(e), highlightedCodeLines(c) {
         if (root) {
             collectNodesAndEdges(root);
             applyHighlights();
@@ -130,6 +132,20 @@ struct TreapStep {
             drawTreap(curr->rightEdge->to);
         }
     }
+
+    void openCodeBlock() {
+        RectButton* OpenCodeBlocks = new TextBox("<");
+        OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
+        OpenCodeBlocks->rect.y = UI::screenHeight / 4;
+        OpenCodeBlocks->rect.height = 0;
+        OpenCodeBlocks->isActivated = true;
+        RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
+    }
+
+    void draw() {
+        drawTreap(root);
+        openCodeBlock();
+    }
 };
 
 class TreapUI : public SceneManager {
@@ -233,7 +249,7 @@ public:
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
         if (drawInsideTreap) treap.drawTreap(treap.root);
-        else if (stepByStepAnimation && currentStep < steps.size()) steps[currentStep]->drawTreap(steps[currentStep]->root);
+        else if (stepByStepAnimation && currentStep < steps.size()) steps[currentStep]->draw();
         else drawTreap(root);
     }
 };

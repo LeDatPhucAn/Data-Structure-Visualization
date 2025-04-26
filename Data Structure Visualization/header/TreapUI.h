@@ -240,7 +240,7 @@ public:
     void displaySceneInCamera() override {
         // Implement the display logic for treap in camera scene
         if (drawInsideTreap) treap.drawTreap(treap.root);
-        else if (stepByStepAnimation && currentStep < steps.size()) steps[currentStep]->draw();
+        else if (stepByStepAnimation && currentStep < steps.size() && steps[currentStep]) steps[currentStep]->draw();
         else drawTreap(root);
     }
 };

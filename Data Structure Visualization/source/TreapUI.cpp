@@ -808,7 +808,6 @@ void TreapUI::cleanupForOperations() {
     animManager.goToLastStep();
     animManager.clear();
     animManager.resume();
-    steps.clear();
 }
 
 void TreapUI::loadFromFile(){
@@ -852,7 +851,8 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
             insertWithAnimation(key, priority);
         }
         else {
-            steps.clear();
+            steps = vector<TreapStep*>(0);
+            currentStep = 0;
             steps.push_back(new TreapStep(cloneTree(treap.root)));
             sbs_insertWithAnimation(key, priority);
             steps.push_back(new TreapStep(cloneTree(treap.root)));

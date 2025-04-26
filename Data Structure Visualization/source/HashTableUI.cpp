@@ -159,23 +159,24 @@ void HashTableUI::resetAnimations() {
 }
 // This function is change to move the button up and avoid missing button that is not on the screen
 void HashTableUI::updateButtonPositions() {
-    RectButton::setHeadPosition(Buttons, 100, 300);
+    RectButton::setHeadPosition(Buttons, 100, UI::screenHeight * 3 / 5);
     RectButton::setCodeBlockPosition(CodeBlocks, UI::screenWidth - CodeBlocks[0]->rect.width, UI::screenHeight / 4);
 }
 
 void HashTableUI::displaySceneInCamera() {
     drawHashTable();
-}
-
-void HashTableUI::displayScene() {
-    Button::drawButtons<RectButton>(Buttons);
-    Button::drawButtons<RectButton>(CodeBlocks);
     if (editValueInput) {
         editValueInput->draw();
     }
     if (editValueConfirm) {
         editValueConfirm->draw();
     }
+}
+
+void HashTableUI::displayScene() {
+    Button::drawButtons<RectButton>(Buttons);
+    Button::drawButtons<RectButton>(CodeBlocks);
+    
 }
 
 void HashTableUI::updateScene() {
@@ -195,16 +196,16 @@ void HashTableUI::updateScene() {
                 selectedBucketIdx = i;
                 isEditingNode = true;
 
-                editValueInput = new NumberInputBox(3);
-                editValueInput->rect.x = cur->getCenterX() + 50;
-                editValueInput->rect.y = cur->getCenterY() - 20;
-                static_cast<NumberInputBox*>(editValueInput)->setNumber(cur->getNumber()); // Ép kiểu để gọi setNumber
+                editValueInput = new NumberInputBoxInCamera(3);
+                editValueInput->rect.x = cur->getCenterX() + cur->getRadius();
+                editValueInput->rect.y = cur->getCenterY() + cur->getRadius();
+                static_cast<NumberInputBoxInCamera*>(editValueInput)->setNumber(cur->getNumber()); // Ép kiểu để gọi setNumber
 
-                editValueConfirm = new TextBox(">");
+                editValueConfirm = new TextBoxInCamera(">");
                 editValueConfirm->rect.x = editValueInput->rect.x + editValueInput->rect.width + 10;
                 editValueConfirm->rect.y = editValueInput->rect.y;
                 editValueConfirm->onClick = [this, cur, i, &needUpdateHashTable, &newValue, &oldValue, &bucketIdx]() {
-                    newValue = static_cast<NumberInputBox*>(editValueInput)->getNumber();
+                    newValue = static_cast<NumberInputBoxInCamera*>(editValueInput)->getNumber();
                     RectButton::insertPseudoCode(CodeBlocks, PseudoCode::HashTableInsert);
                     oldValue = cur->getNumber();
                     bucketIdx = i;

@@ -534,6 +534,7 @@ void InputCircle::draw() {
 
 Vector2 NumberInputBoxInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
 Vector2 NumberInputCircleInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
+Vector2 TextBoxInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
 Vector2 DelayNumberInputBoxInCamera::getMousePos() const { return SceneHandler::mouseWorldPos; }
 
 void NumberInputCircleInCamera::Indicate(string Text){
@@ -542,4 +543,14 @@ void NumberInputCircleInCamera::Indicate(string Text){
 void NumberInputCircleInCamera::draw() {
     if (indicateNode !="") Indicate(indicateNode);
     InputCircle::draw();
+}
+void TextBoxInCamera::draw() {
+    if (noDraw) return;
+    if (!head || head->isActivated) {
+        DrawRectangleRec(rect, FillColor);
+        DrawRectangleLines((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, OutLineColor);
+        DrawTextEx(UI::font, Text.c_str(), { rect.x + padding / 2, rect.y + rect.height / 2 - padding / 2 },
+            UI::fontSize, UI::spacing, TextColor);
+    }
+    if (next) next->draw();
 }

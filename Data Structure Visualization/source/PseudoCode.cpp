@@ -112,8 +112,12 @@ namespace PseudoCode {
         "if nodeFrom and nodeTo found, remove Edge\n";
     std::string GraphDijkstra =
         "Traversal all vertices which haven't been visited.\n"
-        "Set visited[u]=T as the current vertex with the smallest cost\n"
-        "for (int i  = 0; i < n && visited[i] = false, ++i)\n"
+        "Set visited[u] = true as the current vertex with the smallest cost\n"
+        "for (auto& edge : edges)\n"
+		"   if (edge->from == nodes[u])\n"
+        "       v = edge->to\n"
+		"   else if (edge->to == nodes[u])\n"
+        "       v = edge->from\n"  
         "   if d(u) + (u,v) < d(v)\n"
         "       d(v) = d(u) + (u,v)\n";
         

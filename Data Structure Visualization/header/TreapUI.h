@@ -5,27 +5,40 @@
 #include "Button.h"
 #include "UI.h"
 #include "tinyfiledialogs.h"
+#include "PseudoCode.h"
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <functional>
+
+enum class CodeBlocksType {
+    nothing,
+    insert, 
+    searching, 
+    remove
+};
 
 struct TreapStep {
     TreapNode* root; // Root of the treap at this step
     vector<TreapNode*> nodes; // All nodes in the treap at this step
     vector<TreapEdge*> edges; // All edges in the treap at this step
     vector<RectButton*> CodeBlocks;
+    CodeBlocksType type;
     vector<pair<int, pair<char, vector<Color>>>> highlightedNodes; // Highlighted nodes
     vector<pair<int, int>> highlightedEdges; // Highlighted edges
     vector<int> highlightedCodeLines; // Highlighted lines of code
 
     // Constructor
-    TreapStep(TreapNode* r = nullptr,
-        vector<RectButton*> cb = {},
+    TreapStep(TreapNode* r,
+        CodeBlocksType t,
         vector<pair<int, pair<char, vector<Color>>>> n = {},
         vector<pair<int, int>> e = {},
         vector<int> c = {})
-        : root(r), CodeBlocks(cb), highlightedNodes(n), highlightedEdges(e), highlightedCodeLines(c) {
+        : root(r), type(t), highlightedNodes(n), highlightedEdges(e), highlightedCodeLines(c) {
+        if (t == CodeBlocksType::insert) {
+            RectButton::insertPseudoCode(this->CodeBlocks, PseudoCode::TreapInsert);
+            cerr << "size " << this->CodeBlocks.size() << endl;
+        }
         if (root) {
             collectNodesAndEdges(root);
             applyHighlights();
@@ -86,6 +99,10 @@ struct TreapStep {
                 }
             }
         }
+
+        for (int& x : highlightedCodeLines) {
+            if(x >= 0 && x < CodeBlocks.size()) CodeBlocks[x]->highlight();
+        }
     }
 
     // Clear the tree recursively
@@ -133,18 +150,8 @@ struct TreapStep {
         }
     }
 
-    void openCodeBlock() {
-        RectButton* OpenCodeBlocks = new TextBox("<");
-        OpenCodeBlocks->rect.x = UI::screenWidth - OpenCodeBlocks->rect.width;
-        OpenCodeBlocks->rect.y = UI::screenHeight / 4;
-        OpenCodeBlocks->rect.height = 0;
-        OpenCodeBlocks->isActivated = true;
-        RectButton::insertCodeBlock(CodeBlocks, OpenCodeBlocks);
-    }
-
     void draw() {
         drawTreap(root);
-        openCodeBlock();
     }
 };
 
@@ -154,7 +161,6 @@ private:
     vector<RectButton*>Buttons;
     vector<RectButton*>CodeBlocks;
     vector<TreapNode*> trashbin;
-
 
     Treap treap;
     TreapNode* root = nullptr;

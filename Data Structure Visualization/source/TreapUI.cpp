@@ -1,5 +1,5 @@
 #include "../header/TreapUI.h"
-#include "../header/PseudoCode.h"
+//#include "../header/PseudoCode.h"
 #include "../header/Animation.h"
 
 const Vector2 TreapUI::ROOT_POS = { static_cast<float> (UI::screenWidth) / 2, 0 };
@@ -179,33 +179,31 @@ TreapNode* TreapUI::insertBST(TreapNode* root, int key, int priority) {
 void TreapUI::sbs_insertBST(TreapNode* root, int key, int priority) {
     if (!root) {
         treap.insertBST(key, priority);
-        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 1, 2 }));
+        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 1 }));
         return;
     }
 
-    cerr << "handle node with key " << root->getKey() << endl;
-    /*TreapStep* s =  new TreapStep(cloneTree(treap.root), { {root->getKey(), {'k', {ORANGE, DARKGRAY, WHITE}}} }, {});
-    cerr << s.root->getKey() << endl;
-    cerr << s.highlightedNodes.size() << endl;
-    cerr << s.highlightedEdges.size() << endl;*/
-    steps.push_back(new TreapStep(cloneTree(treap.root), {}, { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }));
-    cerr << "reach here" << endl;
-    cerr << "handle node with key " << root->getKey() << endl;
-
     if (root->getKey() == key) {
-        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 3, 4 }));
+        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { key, { 'k', {{ 82, 172, 16, 255 }, DARKGRAY, WHITE} } } }, {}, { 2 }));
     }
     else if (root->getKey() > key) {
-        cerr << "goleft" << endl;
+        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, {3}));
         if (root->leftEdge && root->leftEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, {}, { {root->getKey(), root->leftEdge->to->getKey()} }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, {{root->getKey(), root->leftEdge->to->getKey()}}, {4}));
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, {}, {4}));
         }
         sbs_insertBST(root->leftEdge ? root->leftEdge->to : nullptr, key, priority);
     }
     else {
         cerr << "go right" << endl;
+        steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, { { root->getKey(), { 'k', {ORANGE, DARKGRAY, WHITE} } } }, {}, { 7 }));
         if (root->rightEdge && root->rightEdge->to) {
-            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocks, {}, { {root->getKey(), root->rightEdge->to->getKey()} }));
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, { {root->getKey(), root->rightEdge->to->getKey()} }, { 8 }));
+        }
+        else {
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert, {}, {}, { 8 }));
         }
         sbs_insertBST(root->rightEdge ? root->rightEdge->to : nullptr, key, priority);
     }
@@ -804,15 +802,15 @@ void TreapUI::insert(int key, int priority, bool isAnimated) {
         cleanupForOperations();
         clear();
         this->root = nullptr;
+        RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
         if (!stepByStepAnimation) {
             this->root = cloneTree(treap.root);
-            RectButton::insertPseudoCode(CodeBlocks, PseudoCode::TreapInsert);
             insertWithAnimation(key, priority);
         }
         else {
-            steps.push_back(new TreapStep(cloneTree(treap.root)));
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::insert));
             sbs_insertBST(treap.root, key, priority);
-            steps.push_back(new TreapStep(cloneTree(treap.root)));
+            steps.push_back(new TreapStep(cloneTree(treap.root), CodeBlocksType::nothing));
         }
     }
     else {
@@ -1026,6 +1024,12 @@ void TreapUI::updateScene() {
     Button::updateButtons<CircleButton>(OverrideButtons);
     Button::updateButtons<RectButton>(Buttons);
     Button::updateButtons<RectButton>(CodeBlocks);
+    if (stepByStepAnimation && currentStep >= 0 && currentStep < steps.size()) {
+        unhighlightAllCodeBlocks();
+        for (int x : steps[currentStep]->highlightedCodeLines) {
+            CodeBlocks[x]->highlight();
+        }
+    }
 
     // Update treap node buttons recursively
     std::function<void(TreapNode*)> updateTreapNodes = [&](TreapNode* node) {

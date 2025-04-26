@@ -44,10 +44,8 @@ namespace PseudoCode {
 
 
     std::string TreapInsert =
-        "if(!root)\n"
-        "   return node(key, priority)\n"
-        "if(root->key == key)\n"
-        "   return root\n"
+        "if(!root) return node(key, priority)\n"
+        "if(root->key == key) return root\n"
         "else if(root->key > key)\n"
         "   root->left = insert(root->left, key, priority)\n"
         "   if(root->left->priority > root->priority)\n"
